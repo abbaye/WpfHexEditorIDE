@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "X.509 Certificate Revocation List",
   "formatId": "X509_CRL",
@@ -18,6 +19,23 @@
       "https://www.rfc-editor.org/rfc/rfc5280",
       "https://www.openssl.org/docs/man3.0/man1/openssl-crl.html",
       "https://learn.microsoft.com/en-us/windows/win32/seccrypto/certificate-revocation-lists"
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    { "value": "3082", "offset": 0, "label": "30 82 — DER SEQUENCE with 2-byte length (CRL outer ASN.1 container)", "weight": 0.7, "strength": "Moderate" },
+    { "value": "2D2D2D2D2D424547494E20583530392043524C", "offset": 0, "label": "-----BEGIN X509 CRL — PEM-encoded X.509 CRL", "weight": 1.0, "strength": "Strong" }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "asnTag", "type": "uint8", "offset": 0, "length": 1, "description": "ASN.1 SEQUENCE tag (0x30)" },
+      { "name": "asnLenByte", "type": "uint8", "offset": 1, "length": 1, "description": "Length indicator (0x82 = 2-byte length)" },
+      { "name": "asnLen", "type": "uint16be", "offset": 2, "length": 2, "description": "Total CRL content length (big-endian)" },
+      { "name": "tbsCertListTag", "type": "uint8", "offset": 4, "length": 1, "description": "tbsCertList SEQUENCE tag (0x30)" },
+      { "name": "issuer", "type": "asn1", "offset": -1, "length": -1, "description": "Issuer Distinguished Name" },
+      { "name": "thisUpdate", "type": "asn1time", "offset": -1, "length": -1, "description": "CRL issue date" },
+      { "name": "nextUpdate", "type": "asn1time", "offset": -1, "length": -1, "description": "CRL expiry date" }
     ]
   },
   "detection": {
@@ -161,7 +179,30 @@
       "Delta CRLs without a corresponding base CRL cannot be used for complete revocation checking"
     ]
   },
-  "aiHints": {
+  "useCases": [
+    "TLS/HTTPS certificate revocation checking in PKI",
+    "Code signing certificate validation",
+    "S/MIME email certificate revocation",
+    "Smart card and client certificate validation",
+    "Enterprise CA (Active Directory Certificate Services) revocation management"
+  ],
+  "technicalDetails": {
+    "format": "DER-encoded ASN.1 (binary) or PEM (base64)",
+    "derMagic": "30 82 at offset 0 (SEQUENCE with 2-byte length)",
+    "pemHeader": "-----BEGIN X509 CRL-----",
+    "asn1Standard": "ITU-T X.680/X.690 DER encoding rules",
+    "inspect": "openssl crl -in file.crl -text -noout",
+    "alternative": "OCSP (RFC 6960) provides real-time per-certificate revocation status"
+  },
+  "aiHints": [
+    "CRL DER layout: SEQUENCE { tbsCertList SEQUENCE { version + signature_alg + issuer + thisUpdate + nextUpdate + revokedCerts[] + extensions } + signatureAlgorithm + signatureValue }",
+    "30 82 at offset 0 is shared with X.509 certs and PKCS#7 — use .crl extension or PEM header for disambiguation",
+    "thisUpdate and nextUpdate fields in tbsCertList determine CRL freshness — stale CRLs are security risks",
+    "CRL Number extension (OID 2.5.29.20) tracks sequence number — gaps may indicate missing updates",
+    "Delta CRL Indicator (OID 2.5.29.27) identifies delta CRLs that require a base CRL to be complete",
+    "Use: openssl crl -in file.crl -text -noout to display issuer, dates, and revoked serial numbers"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "CRL DER structure: 30(SEQUENCE) 82(2B-len) LLLL(len) { 30(SEQUENCE tbsCertList) LL { [02 01 01](version v2=INTEGER 1) + 30(AlgorithmIdentifier sig_alg) + 30(issuer Name) + 17/18(thisUpdate) + 17/18(nextUpdate) + 30(revokedCerts) { 30(entry) { 02(serial INTEGER) + 17(revocationDate) + [30(crlEntryExtensions)] }... } + A0(crlExtensions) } + 30(signatureAlgorithm) + 03(signatureValue BIT STRING) }. Time encoding: 17=UTCTime (YYMMDDHHMMSSZ), 18=GeneralizedTime (YYYYMMDDHHMMSSZ).",
     "suggestedInspections": [
       "Verify outer SEQUENCE tag 0x30 at offset 0 and 2-byte length indicator 0x82 at offset 1",
@@ -202,7 +243,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 7,
     "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ARJ Archive",
   "formatId": "ARJ",
@@ -21,6 +22,98 @@
       "http://fileformats.archiveteam.org/wiki/ARJ",
       "https://github.com/FarGroup/FarManager/blob/master/plugins/multiarc/arc.doc/arj.txt",
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000337.shtml"
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "60EA",
+      "offset": 0,
+      "label": "60 EA — ARJ archive magic marker (LE 0xEA60)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "uint16le",
+        "offset": 0,
+        "length": 2,
+        "description": "ARJ magic: 0xEA60 (little-endian bytes 60 EA)"
+      },
+      {
+        "name": "basicHeaderSize",
+        "type": "uint16le",
+        "offset": 2,
+        "length": 2,
+        "description": "Basic header body size (0 = end-of-archive)"
+      },
+      {
+        "name": "firstHeaderSize",
+        "type": "uint8",
+        "offset": 4,
+        "length": 1,
+        "description": "Fixed header size (30 bytes for ARJ 3.x)"
+      },
+      {
+        "name": "archiveVersion",
+        "type": "uint8",
+        "offset": 5,
+        "length": 1,
+        "description": "ARJ version: 3 = most common"
+      },
+      {
+        "name": "minExtractVersion",
+        "type": "uint8",
+        "offset": 6,
+        "length": 1,
+        "description": "Minimum ARJ version to extract"
+      },
+      {
+        "name": "hostOS",
+        "type": "uint8",
+        "offset": 7,
+        "length": 1,
+        "description": "Host OS (0=MSDOS, 2=UNIX, 10=WIN95)"
+      },
+      {
+        "name": "arjFlags",
+        "type": "uint8",
+        "offset": 8,
+        "length": 1,
+        "description": "Flags: bit 0=encrypted, bit 3=multi-volume"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint32le",
+        "offset": 12,
+        "length": 4,
+        "description": "MS-DOS packed timestamp"
+      },
+      {
+        "name": "compressedSize",
+        "type": "uint32le",
+        "offset": 16,
+        "length": 4,
+        "description": "Compressed size in bytes"
+      },
+      {
+        "name": "originalSize",
+        "type": "uint32le",
+        "offset": 20,
+        "length": 4,
+        "description": "Uncompressed size in bytes"
+      },
+      {
+        "name": "crc32",
+        "type": "uint32le",
+        "offset": 24,
+        "length": 4,
+        "description": "CRC-32 of original data"
+      }
     ]
   },
   "detection": {
@@ -90,7 +183,7 @@
       "offset": 4,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Size of the fixed-length portion of the basic header (first header size), in bytes. For ARJ version 3.x this is 30 bytes. This value marks the boundary between the fixed header fields and the variable-length filename and comment strings that follow.",
       "storeAs": "firstHeaderSize",
       "valueType": "uint8",
@@ -121,7 +214,7 @@
       "offset": 6,
       "length": 1,
       "color": "#45B7D1",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Minimum ARJ version required to extract this archive. If the extractor version is less than this value, it should refuse to extract and notify the user that a newer ARJ version is required.",
       "storeAs": "minExtractVersion",
       "valueType": "uint8"
@@ -132,7 +225,7 @@
       "offset": 7,
       "length": 1,
       "color": "#96CEB4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Operating system on which the archive was created. Affects how file attributes and timestamps are interpreted.",
       "storeAs": "hostOS",
       "valueType": "uint8",
@@ -162,14 +255,46 @@
       "storeAs": "arjFlags",
       "valueType": "uint8",
       "bitfields": [
-        { "bit": 0, "name": "GARBLED", "description": "Archive is password-encrypted (DES 8-byte key)" },
-        { "bit": 1, "name": "ANSIPAGE", "description": "Filename is stored in ANSI code page" },
-        { "bit": 2, "name": "MAINHDRID", "description": "This is the main archive header (not a file header)" },
-        { "bit": 3, "name": "MULTIVOLUME", "description": "Archive spans multiple volumes" },
-        { "bit": 4, "name": "EXTFILE", "description": "Extended file position (file exceeds 4GB) — ARJ32 only" },
-        { "bit": 5, "name": "PATHSYM", "description": "Path separators are stored as '/' (Unix style)" },
-        { "bit": 6, "name": "BACKUP", "description": "Archive was created for backup purposes" },
-        { "bit": 7, "name": "SECURED", "description": "Archive has security envelope (digital signature)" }
+        {
+          "bit": 0,
+          "name": "GARBLED",
+          "description": "Archive is password-encrypted (DES 8-byte key)"
+        },
+        {
+          "bit": 1,
+          "name": "ANSIPAGE",
+          "description": "Filename is stored in ANSI code page"
+        },
+        {
+          "bit": 2,
+          "name": "MAINHDRID",
+          "description": "This is the main archive header (not a file header)"
+        },
+        {
+          "bit": 3,
+          "name": "MULTIVOLUME",
+          "description": "Archive spans multiple volumes"
+        },
+        {
+          "bit": 4,
+          "name": "EXTFILE",
+          "description": "Extended file position (file exceeds 4GB) — ARJ32 only"
+        },
+        {
+          "bit": 5,
+          "name": "PATHSYM",
+          "description": "Path separators are stored as '/' (Unix style)"
+        },
+        {
+          "bit": 6,
+          "name": "BACKUP",
+          "description": "Archive was created for backup purposes"
+        },
+        {
+          "bit": 7,
+          "name": "SECURED",
+          "description": "Archive has security envelope (digital signature)"
+        }
       ]
     },
     {
@@ -197,7 +322,7 @@
       "offset": 12,
       "length": 4,
       "color": "#87CEEB",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "File modification timestamp in MS-DOS packed date/time format (little-endian 32-bit). High word is the date: bits 15-9=year-1980, bits 8-5=month(1-12), bits 4-0=day(1-31). Low word is time: bits 15-11=hour(0-23), bits 10-5=minute(0-59), bits 4-0=2-second intervals(0-29).",
       "storeAs": "timestamp",
       "valueType": "uint32",
@@ -209,7 +334,7 @@
       "offset": 16,
       "length": 4,
       "color": "#98D8C8",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Size of the compressed data in the archive in bytes (little-endian 32-bit). For file headers, this is the size of the compressed file data. For the main header, this may be 0.",
       "storeAs": "compressedSize",
       "valueType": "uint32",
@@ -221,7 +346,7 @@
       "offset": 20,
       "length": 4,
       "color": "#F7DC6F",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Original uncompressed size of the stored content in bytes (little-endian 32-bit). For file headers, this is the size of the extracted file. The compression ratio can be computed as compressedSize/originalSize.",
       "storeAs": "originalSize",
       "valueType": "uint32",
@@ -233,7 +358,7 @@
       "offset": 24,
       "length": 4,
       "color": "#FF6B9D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CRC-32 checksum of the original (uncompressed) file data. Used to verify extraction integrity. The CRC polynomial is the standard IEEE 802.3 polynomial (0xEDB88320 reflected). If the extracted data CRC does not match this field, the archive is corrupted.",
       "storeAs": "crc32",
       "valueType": "uint32",
@@ -313,13 +438,13 @@
       {
         "name": "ARJ Main Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "ARJ Basic Header",
         "offset": 4,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       }
     ]
@@ -331,18 +456,32 @@
     "groups": [
       {
         "title": "Archive Header",
-        "icon": "\uE71B",
-        "fields": ["arjSignature", "basicHeaderSize", "firstHeaderSize", "archiveVersion"]
+        "icon": "",
+        "fields": [
+          "arjSignature",
+          "basicHeaderSize",
+          "firstHeaderSize",
+          "archiveVersion"
+        ]
       },
       {
         "title": "Compression",
-        "icon": "\uE8A5",
-        "fields": ["fileType", "compressedSize", "originalSize", "crc32"]
+        "icon": "",
+        "fields": [
+          "fileType",
+          "compressedSize",
+          "originalSize",
+          "crc32"
+        ]
       },
       {
         "title": "Platform & Flags",
-        "icon": "\uE9D9",
-        "fields": ["hostOS", "arjFlags", "timestamp"]
+        "icon": "",
+        "fields": [
+          "hostOS",
+          "arjFlags",
+          "timestamp"
+        ]
       }
     ]
   },
@@ -350,12 +489,27 @@
     {
       "name": "ARJ Header (JSON)",
       "format": "json",
-      "fields": ["arjSignature", "basicHeaderSize", "archiveVersion", "minExtractVersion", "hostOS", "arjFlags", "fileType", "compressedSize", "originalSize", "crc32"]
+      "fields": [
+        "arjSignature",
+        "basicHeaderSize",
+        "archiveVersion",
+        "minExtractVersion",
+        "hostOS",
+        "arjFlags",
+        "fileType",
+        "compressedSize",
+        "originalSize",
+        "crc32"
+      ]
     },
     {
       "name": "Python ARJ check",
       "format": "python-bytes",
-      "fields": ["arjSignature", "archiveVersion", "hostOS"]
+      "fields": [
+        "arjSignature",
+        "archiveVersion",
+        "hostOS"
+      ]
     }
   ],
   "forensic": {
@@ -382,21 +536,13 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "ARJ archive header: magic(2,LE)=0xEA60 + basicHeaderSize(2,LE) + [basicHeader body]. Basic header body: firstHeaderSize(1) + archiverVersion(1) + minExtractVersion(1) + hostOS(1) + arjFlags(1) + securityVersion(1) + fileType(1) + reserved(1) + timestamp(4,LE,DOS format) + compressedSize(4,LE) + originalSize(4,LE) + originalCRC32(4,LE) + filespecOffset(2,LE) + fileAccessMode(2,LE) + firstChapter(1) + lastChapter(1) + [filename null-term string] + [comment null-term string] + header CRC32(4,LE). Each file header also starts with 0xEA60 magic. End of archive: basicHeaderSize == 0.",
-    "knownVulnerabilities": [
-      "ARJ 8-byte DES encryption is cryptographically weak — passwords can be brute-forced",
-      "Path traversal via ../ in stored filenames (pre-2003 arj.exe versions)",
-      "Integer overflow in originalSize * X computation in naive extractors"
-    ],
-    "suggestedInspections": [
-      "Verify 0x60 0xEA at offset 0 (little-endian 0xEA60)",
-      "Check arjFlags bit 0 (GARBLED=encryption) and bit 3 (MULTIVOLUME)",
-      "Read hostOS to understand file attribute interpretation (DOS vs UNIX)",
-      "Scan stored filenames for path traversal characters (../ or absolute paths)",
-      "Verify CRC-32 of extracted data matches originalCRC32 field"
-    ]
-  },
+  "aiHints": [
+    "ARJ header: magic 60 EA (LE 0xEA60) + basicHeaderSize(2,LE) at offset 2 + 30-byte fixed basic header",
+    "GARBLED flag (bit 0 of arjFlags) means DES-8 password encryption — cryptographically weak",
+    "ARJ filenames are null-terminated strings appended after the 30-byte fixed header",
+    "End of archive: basicHeaderSize == 0 at any header position",
+    "Common in 1990s BBS/DOS software distribution; 7-Zip can extract without recreating"
+  ],
   "software": [
     "ARJ (Robert Jung)",
     "ARJ32",
@@ -407,8 +553,14 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".arj"],
-    "relatedFormats": ["ZIP", "LZH", "RAR"],
+    "extensions": [
+      ".arj"
+    ],
+    "relatedFormats": [
+      "ZIP",
+      "LZH",
+      "RAR"
+    ],
     "era": "DOS BBS era (1991-2000)"
   },
   "MimeTypes": [
@@ -425,7 +577,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

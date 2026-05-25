@@ -5,6 +5,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.Core.Interfaces;
@@ -99,6 +100,9 @@ public sealed class HexEditorServiceImpl : IHexEditorService
 
     public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block)
         => _activeEditor?.AddCustomBackgroundBlock(block);
+
+    public void AddCustomBackgroundBlockRange(IEnumerable<WpfHexEditor.Core.CustomBackgroundBlock> blocks)
+        => _activeEditor?.AddCustomBackgroundBlockRange(blocks);
 
     public void ClearCustomBackgroundBlockByTag(string tag)
         => _activeEditor?.ClearCustomBackgroundBlockByTag(tag);

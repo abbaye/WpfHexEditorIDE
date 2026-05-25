@@ -1,0 +1,98 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "age Encrypted File",
+  "formatId": "AGE_ENCRYPTED",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "age encryption format payload file as specified at age-encryption.org/v1. A simple, modern encryption tool using X25519, scrypt, or SSH keys. Text header followed by binary ciphertext.",
+  "extensions": [".age"],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "6167652D656E6372",
+      "offset": 0,
+      "label": "age format header prefix 'age-encr'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 8, "name": "magic", "type": "bytes", "description": "age format magic: 'age-encr' (first 8 bytes of 'age-encryption.org/v1')", "storeAs": "ascii" },
+      { "offset": 0, "size": 21, "name": "version_line", "type": "bytes", "description": "Full version string: 'age-encryption.org/v1'", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "version_line"],
+    "valueMaps": {
+      "recipient_type": {
+        "X25519": "X25519 public key recipient",
+        "scrypt": "Passphrase-based scrypt recipient",
+        "ssh-rsa": "SSH RSA key recipient",
+        "ssh-ed25519": "SSH Ed25519 key recipient"
+      }
+    },
+    "tooltips": {
+      "magic": "age files always begin with ASCII 'age-encryption.org/v1' followed by newline",
+      "version_line": "Version line is the entire first line; recipient stanzas follow on subsequent lines"
+    }
+  },
+  "assertions": [
+    { "id": "AGE_MAGIC", "field": "magic", "operator": "equals", "value": "6167652D656E6372", "description": "File must begin with 'age-encr' (first 8 bytes of version string)" },
+    { "id": "AGE_VERSION_LINE", "field": "version_line", "operator": "equals", "value": "6167652D656E6372797074696F6E2E6F72672F7631", "description": "First 21 bytes must be 'age-encryption.org/v1'" },
+    { "id": "AGE_NEWLINE_AFTER_VERSION", "field": "version_line", "operator": "minLength", "value": "20", "description": "Version line must be followed by newline and recipient stanza(s)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "age Version Header", "color": "#3498DB" },
+      { "offset": 21, "label": "Recipient Stanzas", "color": "#E74C3C" },
+      { "offset": 0, "label": "Payload Boundary (---)", "color": "#2ECC71" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "age Header Summary",
+      "fields": ["magic", "version_line"],
+      "format": "text"
+    },
+    {
+      "name": "age CSV Export",
+      "fields": ["magic"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "age files start with 'age-encryption.org/v1' followed by one or more recipient stanzas starting with '->'",
+    "Recipient stanzas begin with '-> TYPE ARGS' — e.g., '-> X25519 <base64-public-key>'",
+    "The header ends with '--- <base64-encoded-MAC>' on its own line; binary STREAM ciphertext follows",
+    "age uses ChaCha20-Poly1305 for the payload STREAM cipher; each 64KB chunk is independently authenticated",
+    "scrypt recipient stanzas contain the work factor; high scrypt-N values (>20) indicate strong passphrase KDF"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "age ciphertext is opaque without the recipient private key or passphrase",
+      "Recipient stanza type reveals the encryption method (X25519 key vs passphrase vs SSH key)",
+      "Multiple recipient stanzas indicate the same payload was encrypted for multiple parties"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GPG", "relationship": "alternative", "note": "age is a modern simpler alternative to GPG for file encryption" },
+    { "format": "SOPS", "relationship": "related", "note": "SOPS (Secrets OPerationS) can use age as its encryption backend" }
+  ],
+  "software": [
+    { "name": "age (filippo.io/age)", "role": "Reference Go implementation of the age encryption spec" },
+    { "name": "rage", "role": "Rust implementation of the age encryption format" },
+    { "name": "SOPS", "role": "Secrets management tool using age for encrypting YAML/JSON secret files" }
+  ],
+  "useCases": [
+    "Forensic identification of age-encrypted files in incident investigations",
+    "Auditing secret storage practices — age files may contain sensitive configuration",
+    "CI/CD pipeline secret management using age-encrypted files committed to version control"
+  ],
+  "technicalDetails": "age (age-encryption.org/v1) uses a text header and binary payload. The header contains a version line, one or more recipient stanzas (each wrapping a file key), and a MAC. The file key (16 bytes, random) is wrapped per-recipient using X25519+HKDF+ChaCha20-Poly1305, scrypt+ChaCha20-Poly1305, or SSH key encryption. The payload uses STREAM (ChaCha20-Poly1305) with 64KB chunks for authenticated streaming decryption.",
+  "completenessScore": 82
+}

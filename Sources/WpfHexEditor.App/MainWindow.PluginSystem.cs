@@ -33,6 +33,7 @@ using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell;
+using WpfHexEditor.App.Models;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.PluginHost;
@@ -83,6 +84,7 @@ public partial class MainWindow
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
     private DockingAdapter? _dockingAdapter;
     private HexEditorServiceImpl? _hexEditorService;
+    private CodeEditorServiceImpl? _codeEditorService;
     private OutputServiceImpl? _outputService;
     private ErrorPanelServiceImpl? _errorPanelService;
     private ThemeServiceImpl? _themeService;
@@ -102,6 +104,9 @@ public partial class MainWindow
     private TerminalPanel? _pendingTerminalPanel;
     private WpfHexEditor.PluginHost.UI.PluginMonitoringPanel? _pendingPluginMonitorPanel;
     private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
+
+    // Active Plugin Monitor VM — tracked so it can be disposed before a new one is created (e.g. Reset Layout).
+    private WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel? _pluginMonitorVm;
 
     // VS solution path deferred from TryRestoreSession() because plugin loaders are not yet
     // registered at startup. Opened at the end of InitializePluginSystemAsync once loaders are live.
@@ -184,7 +189,8 @@ public partial class MainWindow
 
             var solutionService = new SolutionExplorerServiceImpl(_solutionManager);
             solutionService.OpenFileHandler = path => Dispatcher.InvokeAsync(() => OpenStandaloneFileWithEditor(path, null)).Task;
-            var codeEditorService = new NullCodeEditorService();
+            var codeEditorService = new CodeEditorServiceImpl();
+            _codeEditorService = codeEditorService;
             var parsedFieldService = new NullParsedFieldService();
 
             // 2b. Construct IDE EventBus + Extension/Capability services
@@ -505,7 +511,93 @@ public partial class MainWindow
 
             // Binary Analysis module — #110 strings, #111 hash, #112 carver, #118 sig db, #119 freq heatmap.
             _binaryAnalysisModule = new WpfHexEditor.App.BinaryAnalysis.BinaryAnalysisModule();
-            await _binaryAnalysisModule.InitializeAsync(hostContext).ConfigureAwait(true);
+            var hexDefaults = AppSettingsService.Instance.Current.HexEditorDefaults;
+            await _binaryAnalysisModule.InitializeAsync(hostContext, hexDefaults).ConfigureAwait(true);
+
+            // Navigate-to-offset: any panel (e.g. String Extraction) publishes this; MainWindow opens
+            // the target file if needed then moves the HexEditor caret to the requested offset.
+            _ideEventBus.Subscribe<WpfHexEditor.Core.Events.IDEEvents.NavigateToOffsetEvent>(e =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    // Prefer the file-path lookup so navigation works even when a tool panel
+                    // (e.g. BinaryAnalysis/StringExtraction) holds focus and ActiveHexEditor is null.
+                    WpfHexEditor.HexEditor.HexEditor? hex = null;
+                    string?                           targetContentId = null;
+
+                    if (!string.IsNullOrEmpty(e.FilePath))
+                    {
+                        foreach (var kv in _contentCache)
+                        {
+                            var candidate = UnwrapEditor(kv.Value) as WpfHexEditor.HexEditor.HexEditor;
+                            if (candidate is null) continue;
+                            if (string.Equals(candidate.FileName, e.FilePath, StringComparison.OrdinalIgnoreCase))
+                            {
+                                hex             = candidate;
+                                targetContentId = kv.Key;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Fall back to ActiveHexEditor when no FilePath was provided or matched.
+                    hex ??= ActiveHexEditor;
+
+                    if (hex is null) return;
+                    if (e.Offset < 0 || e.Offset >= hex.Length) return;
+
+                    hex.SetPosition(e.Offset);
+
+                    // Bring the document tab to the foreground so the user sees the result.
+                    targetContentId ??= _contentCache.FirstOrDefault(kv => ReferenceEquals(UnwrapEditor(kv.Value), hex)).Key;
+                    if (targetContentId is not null)
+                    {
+                        var item = _layout?.FindItemByContentId(targetContentId);
+                        if (item?.Owner is { } owner)
+                        {
+                            owner.ActiveItem = item;
+                            DockHost.RebuildVisualTree();
+                        }
+                    }
+                });
+            });
+
+            _ideEventBus.Subscribe<LoadTblEvent>(e =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    ActiveHexEditor?.LoadTBLFile(e.FilePath); // LoadTBLFile handles missing file internally
+
+                    // Single O(n) scan: find existing entry and detect whether the section header exists
+                    bool hasSection = false;
+                    TblSelectionItem? existing = null;
+                    foreach (var item in _tblItems)
+                    {
+                        if (item.Kind == TblSelectionKind.ExternalFile)
+                        {
+                            hasSection = true;
+                            if (string.Equals(item.ExternalPath, e.FilePath, StringComparison.OrdinalIgnoreCase))
+                            {
+                                existing = item;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (existing is null)
+                    {
+                        if (!hasSection)
+                        {
+                            _tblItems.Add(TblSelectionItem.MakeSeparator());
+                            _tblItems.Add(TblSelectionItem.MakeHeader(AppResources.App_Editor_ExternalTables));
+                        }
+                        _tblItems.Add(TblSelectionItem.MakeExternalFile(e.FilePath));
+                        SyncTblDropdownToActiveEditor();
+                    }
+
+                    OutputLogger.Info($"TBL loaded externally: {Path.GetFileName(e.FilePath)} (from {e.Source})");
+                });
+            });
 
             // Hex Diff module — byte-level diff of two binary files with patch export.
             _hexDiffModule = new WpfHexEditor.App.HexDiff.HexDiffModule();
@@ -652,6 +744,13 @@ public partial class MainWindow
                 await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
             }
 
+            // Diagnostic: log plugin count after LoadAllAsync
+            var allPlugins = _pluginHost.GetAllPlugins();
+            if (allPlugins.Count == 0)
+                OutputLogger.PluginError($"[PluginSystem] WARNING — 0 plugins in registry after LoadAllAsync. bundledPluginsDir='{bundledPluginsDir}' exists={Directory.Exists(bundledPluginsDir)}");
+            else
+                OutputLogger.PluginInfo($"[PluginSystem] LoadAllAsync complete — {allPlugins.Count} plugin(s) in registry: {string.Join(", ", allPlugins.Select(p => $"{p.Manifest.Name}({p.State})"))}");
+
             // Bridge IBuildAdapter extensions registered by plugins into the build system.
             // Must run after LoadAllAsync so that MSBuildPlugin has registered its adapter.
             if (_buildSystem is not null)
@@ -696,8 +795,7 @@ public partial class MainWindow
             {
                 if (_pendingPluginMonitorPanel is not null && _pluginHost is not null)
                 {
-                    var vm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-                    _pendingPluginMonitorPanel.DataContext = vm;
+                    _pendingPluginMonitorPanel.DataContext = CreatePluginMonitorViewModel();
                     _pendingPluginMonitorPanel = null;
                 }
 
@@ -762,7 +860,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            OutputLogger.PluginError($"[PluginSystem] Failed to initialize: {ex.Message}");
+            OutputLogger.PluginError($"[PluginSystem] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
         }
     }
 
@@ -1052,8 +1150,7 @@ public partial class MainWindow
         if (_pluginHost is null) return;
         if (ActivateExistingDockPanel(PluginMonitorContentId)) return;
 
-        var vm      = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-        var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = vm };
+        var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = CreatePluginMonitorViewModel() };
         var item    = new DockItem { ContentId = PluginMonitorContentId, Title = AppResources.App_DockTitle_ExtensionsMonitor, CanClose = true };
 
         DockPanelToBottom(PluginMonitorContentId, item, control);
@@ -1275,6 +1372,17 @@ public partial class MainWindow
     }
 
     /// <summary>
+    /// Disposes the current Plugin Monitor ViewModel (if any) and creates a fresh one.
+    /// Centralises the dispose + create pattern used at layout restore, Reset Layout, and panel open.
+    /// </summary>
+    private WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel CreatePluginMonitorViewModel()
+    {
+        _pluginMonitorVm?.Dispose();
+        _pluginMonitorVm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost!, Dispatcher, _outputService);
+        return _pluginMonitorVm;
+    }
+
+    /// <summary>
     /// Creates the Plugin Monitor panel during layout restoration.
     /// If the plugin system is not yet initialised, the DataContext is deferred.
     /// </summary>
@@ -1284,8 +1392,7 @@ public partial class MainWindow
 
         if (_pluginHost is not null)
         {
-            var vm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-            panel.DataContext = vm;
+            panel.DataContext = CreatePluginMonitorViewModel();
         }
         else
         {
@@ -1469,6 +1576,7 @@ public partial class MainWindow
 
         // --- Hex editor ---
         reg.Register(typeof(EditorSelectionChangedEvent),   "Editor Selection Changed",   "HexEditorService");
+        reg.Register(typeof(NavigateToOffsetEvent),         "Navigate To Offset",         "BinaryAnalysis");
 
         // --- Code editor ---
         reg.Register(typeof(CodeEditorDocumentOpenedEvent),          "Code Document Opened",       "CodeEditor");

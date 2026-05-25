@@ -1,0 +1,101 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Parallels Desktop HDD Disk Image",
+  "formatId": "PARALLELS_HDD",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Parallels Desktop virtual hard disk image format (.hdd). Uses a 'WithoutFreeSpace' or 'WithoutFreeSpacExt' signature. Supports sparse and plain disk variants with cluster-based allocation.",
+  "extensions": [".hdd"],
+  "category": "Disk",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "576974686F757420",
+      "offset": 0,
+      "label": "Parallels HDD signature 'Without '",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 16,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 16, "name": "signature", "type": "bytes", "description": "ASCII signature: 'WithoutFreeSpace' (sparse) or 'WithoutFreeSpacExt' (extended)", "storeAs": "ascii" },
+      { "offset": 16, "size": 4, "name": "version", "type": "uint32le", "description": "Image format version (typically 2 for HDD v2)", "storeAs": "uint" },
+      { "offset": 20, "size": 4, "name": "heads", "type": "uint32le", "description": "Number of disk heads (CHS geometry)", "storeAs": "uint" },
+      { "offset": 24, "size": 4, "name": "cyl_per_head", "type": "uint32le", "description": "Number of cylinders per head (CHS geometry)", "storeAs": "uint" },
+      { "offset": 28, "size": 4, "name": "sect_per_cyl", "type": "uint32le", "description": "Number of sectors per cylinder", "storeAs": "uint" },
+      { "offset": 32, "size": 4, "name": "total_sectors", "type": "uint32le", "description": "Total number of 512-byte sectors in the virtual disk", "storeAs": "uint" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["signature", "version", "heads", "cyl_per_head", "sect_per_cyl", "total_sectors"],
+    "valueMaps": {
+      "version": {
+        "2": "Parallels HDD v2 (sparse, current)"
+      }
+    },
+    "tooltips": {
+      "signature": "16-byte ASCII signature identifies the variant; 'WithoutFreeSpace' = standard sparse HDD",
+      "total_sectors": "Multiply by 512 to get virtual disk capacity in bytes",
+      "version": "Version 2 is the current Parallels Desktop sparse disk format"
+    }
+  },
+  "assertions": [
+    { "id": "PARALLELS_SIG_PREFIX", "field": "signature", "operator": "startsWith", "value": "576974686F757420", "description": "Signature must begin with 'Without ' (0x576974686F757420)" },
+    { "id": "PARALLELS_VERSION_VALID", "field": "version", "operator": "range", "value": "1:5", "description": "HDD format version must be in the expected Parallels version range" },
+    { "id": "PARALLELS_TOTAL_SECTORS_NONZERO", "field": "total_sectors", "operator": "greaterThan", "value": "0", "description": "Total sector count must be positive for a valid disk image" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Disk Signature", "color": "#3498DB" },
+      { "offset": 16, "label": "Format Version", "color": "#2ECC71" },
+      { "offset": 32, "label": "Total Sector Count", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Parallels HDD Header",
+      "fields": ["signature", "version", "heads", "cyl_per_head", "sect_per_cyl", "total_sectors"],
+      "format": "text"
+    },
+    {
+      "name": "Parallels HDD CSV",
+      "fields": ["version", "heads", "cyl_per_head", "sect_per_cyl", "total_sectors"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "Parallels HDD v2 sparse images store only allocated clusters; unallocated regions are not physically present in the file",
+    "The 'WithoutFreeSpace' signature distinguishes Parallels HDD from other virtual disk formats",
+    "Parallels Desktop uses a cluster allocation table (BAT) immediately after the header for sparse disk mapping",
+    "HDD images can be converted to/from VMDK and VHD using qemu-img for cross-platform analysis",
+    "Modern Parallels Desktop uses HDD bundles (directories with .hdd extension) containing multiple data files"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "HDD images contain a complete virtual disk including potentially sensitive user data and OS files",
+      "Sparse HDD files may contain filesystem artifacts from previously allocated but now freed clusters",
+      "Parallels HDD bundles (.hdd directories) require mounting the entire bundle for full forensic access"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "VMDK", "relationship": "alternative", "note": "Parallels HDD is macOS-native; VMDK is VMware's equivalent virtual disk format" },
+    { "format": "VHD", "relationship": "alternative", "note": "VHD is Microsoft's virtual disk format; convertible from Parallels HDD via qemu-img" },
+    { "format": "QCOW2", "relationship": "alternative", "note": "QCOW2 is QEMU's sparse virtual disk format; cross-convertible with Parallels HDD" }
+  ],
+  "software": [
+    { "name": "Parallels Desktop", "role": "Primary application creating and using .hdd virtual disk images on macOS" },
+    { "name": "qemu-img", "role": "Cross-platform tool for converting Parallels HDD to/from VMDK, VHD, QCOW2" },
+    { "name": "Autopsy / FTK", "role": "Digital forensics tools capable of mounting and analyzing HDD virtual disk images" }
+  ],
+  "useCases": [
+    "Forensic acquisition and analysis of virtual machine disk contents from macOS Parallels deployments",
+    "Cross-platform VM migration from Parallels Desktop to VMware or VirtualBox via format conversion",
+    "Recovery of deleted files from the allocated clusters in a Parallels sparse HDD image"
+  ],
+  "technicalDetails": "Parallels HDD v2 format starts with a 16-byte ASCII signature followed by a header containing version, CHS geometry (heads, cylinders per head, sectors per cylinder), and total sector count. The Block Allocation Table (BAT) follows the header and maps virtual cluster numbers to physical offsets within the .hdd file. Unallocated clusters are marked as 0xFFFFFFFF in the BAT. Modern Parallels Desktop wraps the HDD in a bundle directory for metadata management.",
+  "completenessScore": 82
+}

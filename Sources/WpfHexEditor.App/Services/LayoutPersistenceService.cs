@@ -186,7 +186,8 @@ internal static class LayoutPersistenceService
     }
 
     /// <summary>
-    /// Removes document tabs whose backing file no longer exists on disk.
+    /// Removes document tabs whose backing file no longer exists on disk,
+    /// and plugin-managed document tabs that are always recreated by their plugin on startup.
     /// </summary>
     public static void PruneStaleDocumentItems(DockLayoutRoot layout)
     {
@@ -196,10 +197,48 @@ internal static class LayoutPersistenceService
         PruneStaleItemsFromList(layout.AutoHideItems, pruned);
         PruneStaleItemsFromList(layout.HiddenItems,   pruned);
 
+        PrunePluginDocItemsFromNode(layout.RootNode, pruned);
+        PrunePluginDocItemsFromList(layout.FloatingItems, pruned);
+        PrunePluginDocItemsFromList(layout.AutoHideItems, pruned);
+        PrunePluginDocItemsFromList(layout.HiddenItems,   pruned);
+
         if (pruned.Count > 0)
             OutputLogger.Info(
-                $"Layout restore: skipped {pruned.Count} document(s) — file no longer exists: " +
+                $"Layout restore: skipped {pruned.Count} document(s) — file no longer exists or plugin-managed: " +
                 string.Join(", ", pruned));
+    }
+
+    private static void PrunePluginDocItemsFromNode(DockNode node, List<string> pruned)
+    {
+        switch (node)
+        {
+            case DockGroupNode group:
+                foreach (var item in group.Items.ToList())
+                {
+                    if (IsPluginDocumentItem(item))
+                    {
+                        group.RemoveItem(item);
+                        pruned.Add(item.Title ?? item.ContentId);
+                    }
+                }
+                break;
+            case DockSplitNode split:
+                foreach (var child in split.Children)
+                    PrunePluginDocItemsFromNode(child, pruned);
+                break;
+        }
+    }
+
+    private static void PrunePluginDocItemsFromList(List<DockItem> items, List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (IsPluginDocumentItem(items[i]))
+            {
+                pruned.Add(items[i].Title ?? items[i].ContentId);
+                items.RemoveAt(i);
+            }
+        }
     }
 
     /// <summary>
@@ -317,13 +356,24 @@ internal static class LayoutPersistenceService
         return true;
     }
 
+    // Plugin-managed document tabs whose content is recreated by the plugin on startup.
+    // They must never be saved into the layout XML — the plugin owns their lifecycle.
+    private static readonly string[] PluginDocumentPrefixes =
+    [
+        "doc-WpfHexEditor.Plugins.ScreenRecorder.Document",
+    ];
+
+    public static bool IsPluginDocumentItem(DockItem item)
+        => PluginDocumentPrefixes.Any(p => item.ContentId.StartsWith(p));
+
     private static bool IsDocumentItem(DockItem item)
         => item.ContentId.StartsWith("doc-file-")
         || item.ContentId.StartsWith("doc-hex-")
         || item.ContentId.StartsWith("doc-proj-")
         || item.ContentId.StartsWith("doc-src-nav-")
         || item.ContentId.StartsWith("doc-new-text-")
-        || item.ContentId.StartsWith("doc-new-code-");
+        || item.ContentId.StartsWith("doc-new-code-")
+        || IsPluginDocumentItem(item);
 
     /// <summary>
     /// Returns a normalized (path, editorId) key for dedup, or null if item is not a document.

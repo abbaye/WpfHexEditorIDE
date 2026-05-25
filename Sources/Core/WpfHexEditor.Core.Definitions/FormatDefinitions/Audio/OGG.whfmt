@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OGG Container",
   "formatId": "OGG",
@@ -9,6 +10,17 @@
     ".ogv",
     ".ogx"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "4F676753",
+      "offset": 0,
+      "label": "OGG capture pattern 'OggS'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "Ogg is a free, open container format maintained by the Xiph.Org Foundation, defined in RFC 3533. The file is a sequence of pages, each starting with the 4-byte 'OggS' capture pattern. Every page has a 27-byte fixed header (magic, version, header-type flags, 64-bit granule position, 32-bit stream serial number, 32-bit sequence number, CRC-32 of the full page, and segment count) followed by a variable-length segment table. Ogg multiplexes one or more logical bitstreams identified by serial number. Audio codecs carried by Ogg include Vorbis, Opus, FLAC, and Speex; video includes Theora and Daala.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

@@ -59,8 +59,9 @@ public partial class WhfmtBrowserPanel : UserControl,
     {
         _vm = new WhfmtBrowserViewModel();
         _vm.OpenFormatRequested   += OnVmOpenFormatRequested;
-        _vm.ExportFormatRequested += OnVmExportFormatRequested;
-        _vm.ViewJsonRequested     += OnVmViewJsonRequested;
+        _vm.ExportFormatRequested     += OnVmExportFormatRequested;
+        _vm.ViewJsonRequested         += OnVmViewJsonRequested;
+        _vm.GenerateParserRequested   += OnVmGenerateParserRequested;
         _vm.PropertyChanged       += OnVmPropertyChanged;
 
         DataContext = _vm;
@@ -282,6 +283,7 @@ public partial class WhfmtBrowserPanel : UserControl,
     public event EventHandler<FormatOpenRequest>? OpenFormatRequested;
     public event EventHandler<string>? ExportFormatRequested;
     public event EventHandler<string>? ViewJsonRequested;
+    public event EventHandler<string>? GenerateParserRequested;
 
     public void SetCatalog(
         IEmbeddedFormatCatalog  embCatalog,
@@ -365,6 +367,9 @@ public partial class WhfmtBrowserPanel : UserControl,
 
     private void OnVmViewJsonRequested(object? sender, string keyOrPath)
         => ViewJsonRequested?.Invoke(this, keyOrPath);
+
+    private void OnVmGenerateParserRequested(object? sender, string keyOrPath)
+        => GenerateParserRequested?.Invoke(this, keyOrPath);
 
     // ------------------------------------------------------------------
     // VM property change → refresh status bar and toolbar state

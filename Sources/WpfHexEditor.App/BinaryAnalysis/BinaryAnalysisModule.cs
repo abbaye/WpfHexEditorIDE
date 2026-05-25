@@ -10,14 +10,16 @@ using System.Windows;
 using WpfHexEditor.App.BinaryAnalysis.Panels;
 using WpfHexEditor.App.BinaryAnalysis.Services;
 using WpfHexEditor.App.BinaryAnalysis.ViewModels;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.SDK.Contracts;
 
 namespace WpfHexEditor.App.BinaryAnalysis;
 
 /// <summary>
-/// App-layer module providing 5 dockable binary analysis panels:
+/// App-layer module providing 8 dockable binary analysis panels:
 /// #110 String Extraction, #111 Hash Inspector, #112 File Carver,
-/// #118 Custom Signature DB, #119 Byte Frequency Heatmap.
+/// #114 PE Analyzer, #118 Custom Signature DB, #119 Byte Frequency Heatmap,
+/// #119b Byte Bigram Heatmap, #120 XOR/ROT Cipher Decoder.
 ///
 /// Follows the same architecture as <c>AssemblyExplorerModule</c>:
 /// panels are built lazily on first <see cref="GetPanel"/> call; no SDK plugin path.
@@ -29,12 +31,19 @@ internal sealed class BinaryAnalysisModule
     public const string ContentIdCarver   = "panel-ba-carver";
     public const string ContentIdSigDb    = "panel-ba-sigdb";
     public const string ContentIdFreq     = "panel-ba-freq";
+    public const string ContentIdPe       = "panel-ba-pe";
+    public const string ContentIdCipher   = "panel-ba-cipher";
+    public const string ContentIdBigram   = "panel-ba-bigram";
 
-    private IIDEHostContext? _context;
+    private IIDEHostContext?       _context;
+    private HexEditorDefaultSettings? _settings;
     private bool _activated;
 
     // Shared service (one process-wide signature store)
     private readonly UserSignatureDbStore _sigStore = new();
+
+    // Entropy heatmap service — lifetime tied to this module
+    private EntropyHeatmapService? _entropyService;
 
     // Panels — built once, reused across dock/undock
     private StringExtractionPanel? _stringsPanel;
@@ -42,16 +51,40 @@ internal sealed class BinaryAnalysisModule
     private FileCarverPanel?       _carverPanel;
     private SignatureDbPanel?      _sigDbPanel;
     private ByteFrequencyPanel?    _freqPanel;
+    private PeAnalyzerPanel?       _pePanel;
+    private CipherDecoderPanel?      _cipherPanel;
+    private ByteBigramHeatmapPanel?  _bigramPanel;
 
-    public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
+    public Task InitializeAsync(IIDEHostContext context, HexEditorDefaultSettings settings, CancellationToken ct = default)
     {
-        _context = context;
+        _context  = context;
+        _settings = settings;
 
         context.HexEditor.FileOpened          += OnFileOpened;
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
 
+        _entropyService = new EntropyHeatmapService(context.HexEditor, settings);
+        if (settings.ShowEntropyHeatmap)
+            _entropyService.Enable();
+
+        // Eagerly build all panels so that when RefreshModulePanels / RebuildVisualTree
+        // fires (immediately after this returns), GetPanel() can return the real panel
+        // instead of deferring to a transparent placeholder that never gets replaced on
+        // inactive tabs.
+        EnsureActivated();
+
         return Task.CompletedTask;
     }
+
+    /// <summary>Called by the host when the user toggles via context menu or options.</summary>
+    public void SetEntropyHeatmapEnabled(bool enabled)
+    {
+        if (_settings is not null) _settings.ShowEntropyHeatmap = enabled;
+        if (enabled) _entropyService?.Enable();
+        else         _entropyService?.Disable();
+    }
+
+    public bool IsEntropyHeatmapEnabled => _entropyService?.IsEnabled ?? false;
 
     public void Shutdown()
     {
@@ -61,6 +94,8 @@ internal sealed class BinaryAnalysisModule
             _context.HexEditor.ActiveEditorChanged -= OnActiveEditorChanged;
             _context = null;
         }
+        _entropyService?.Dispose();
+        _entropyService = null;
     }
 
     public UIElement? GetPanel(string contentId)
@@ -73,6 +108,9 @@ internal sealed class BinaryAnalysisModule
             ContentIdCarver  => _carverPanel,
             ContentIdSigDb   => _sigDbPanel,
             ContentIdFreq    => _freqPanel,
+            ContentIdPe      => _pePanel,
+            ContentIdCipher  => _cipherPanel,
+            ContentIdBigram  => _bigramPanel,
             _                => null
         };
     }
@@ -91,7 +129,10 @@ internal sealed class BinaryAnalysisModule
         var sigDbVm = new SignatureDbViewModel(_sigStore);
         _sigDbPanel = new SignatureDbPanel(sigDbVm);
 
-        _freqPanel = new ByteFrequencyPanel();
+        _freqPanel   = new ByteFrequencyPanel();
+        _pePanel     = new PeAnalyzerPanel();
+        _cipherPanel = new CipherDecoderPanel();
+        _bigramPanel = new ByteBigramHeatmapPanel();
 
         // Wire context into all panels
         _stringsPanel.SetContext(_context);
@@ -99,6 +140,9 @@ internal sealed class BinaryAnalysisModule
         _carverPanel.SetContext(_context);
         _sigDbPanel.SetContext(_context);
         _freqPanel.SetContext(_context);
+        _pePanel.SetContext(_context);
+        _cipherPanel.SetContext(_context);
+        _bigramPanel.SetContext(_context);
     }
 
     private void OnFileOpened(object? sender, EventArgs e)
@@ -108,6 +152,9 @@ internal sealed class BinaryAnalysisModule
         _hashPanel?.OnFileOpened();
         _carverPanel?.OnFileOpened();
         _freqPanel?.OnFileOpened();
+        _pePanel?.OnFileOpened();
+        _cipherPanel?.OnFileOpened();
+        _bigramPanel?.OnFileOpened();
     }
 
     private void OnActiveEditorChanged(object? sender, EventArgs e) => OnFileOpened(sender, e);

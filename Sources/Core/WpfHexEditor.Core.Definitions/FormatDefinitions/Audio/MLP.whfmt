@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Meridian Lossless Packing",
   "formatId": "MLP",
@@ -6,6 +7,17 @@
   "extensions": [
     ".mlp"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "18E371F3",
+      "offset": 4,
+      "label": "MLP/TrueHD major sync word 0x18E371F3 at offset 4",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
   "description": "MLP (Meridian Lossless Packing) — a lossless audio compression codec developed by Meridian Audio, used for DVD-Audio and as the foundation of Dolby TrueHD. Raw MLP files consist of access units, each with a 4-byte header followed by the major sync word 0x18E371F3 at offset 4 in major sync frames. The format sync byte 0xBB (187) distinguishes MLP from TrueHD (0xBA). MLP supports up to 6 channels, 192 kHz, and 24-bit depth. DVD-Audio uses MLP for lossless surround sound tracks, while Dolby TrueHD is the Blu-ray successor built on MLP.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

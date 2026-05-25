@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "FlatBuffers Binary",
   "formatId": "FLATBUF",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".bin",
     ".fbs",
@@ -11,6 +12,7 @@
   "description": "FlatBuffers binary serialization format (Google, 2014). No fixed global magic — file identification relies on schema-specific file_identifier (4-byte ASCII string embedded at offset 4 in the buffer, if declared with 'file_identifier' in the .fbs schema). Buffer layout: uint32 LE root_table_offset (4B at offset 0) + optional file_identifier (4B ASCII at offset 4, schema-declared) + table/vector/string data. Root offset points to the root table. Tables use virtual table (vtable) indirection for forward/backward compatibility: each table has a pointer to a vtable that maps field offsets. Vtable: uint16 vtable_size + uint16 table_data_size + uint16 field_offset[]. Known identifiers: 'TFL3' (TensorFlow Lite), 'NNEF' (Neural Net Exchange Format), 'BFBS' (FlatBuffers Binary Schema). Used in: Android (Google Play Services), TFLite, Unity, games.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -25,23 +27,99 @@
       "https://google.github.io/flatbuffers/"
     ]
   },
-  "detection": {
-    "signatures": [
-      { "value": "544C4633", "offset": 4, "label": "TFL3 — TensorFlow Lite FlatBuffer file identifier at offset 4", "weight": 0.7 },
-      { "value": "4E4E4546", "offset": 4, "label": "NNEF — Neural Net Exchange Format FlatBuffer identifier", "weight": 0.5 },
-      { "value": "42464253", "offset": 4, "label": "BFBS — FlatBuffers Binary Schema identifier", "weight": 0.8 }
+  "signatures": [
+    { "value": "544C4633", "offset": 4, "label": "TFL3 — TensorFlow Lite FlatBuffer file identifier at offset 4", "weight": 0.7, "strength": "Medium" },
+    { "value": "4E4E4546", "offset": 4, "label": "NNEF — Neural Net Exchange Format FlatBuffer identifier", "weight": 0.5, "strength": "Weak" },
+    { "value": "42464253", "offset": 4, "label": "BFBS — FlatBuffers Binary Schema identifier", "weight": 0.8, "strength": "Strong" }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "name": "root_offset",    "type": "uint32le", "offset": "0x00", "length": 4, "description": "uint32 LE offset from byte 0 to the root table object" },
+      { "name": "file_identifier","type": "ascii",    "offset": "0x04", "length": 4, "description": "Optional 4-byte ASCII file identifier declared in .fbs schema" }
+    ]
+  },
+  "inspector": {
+    "badge": "fileIdentifier",
+    "primaryField": "rootOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Buffer Header",
+        "icon": "",
+        "fields": ["rootOffset", "fileIdentifier"]
+      },
+      {
+        "title": "Root VTable",
+        "icon": "",
+        "fields": ["vtableOffset", "vtableSize", "tableDataSize"]
+      }
     ],
-    "matchMode": "any",
-    "MinimumScore": 0.3,
-    "required": false,
-    "Strength": "Weak",
-    "EntropyHint": { "min": 3.0, "max": 7.5 },
-    "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 4,
-      "note": "FlatBuffers has no universal magic. Detection requires schema-specific file_identifier at offset 4. Without a known identifier, only heuristic detection is possible (rootOffset > 0 and < fileSize, small value at offset 0)."
+    "displayFields": ["root_offset", "file_identifier"],
+    "valueMaps": {
+      "file_identifier": {
+        "TFL3": "TensorFlow Lite model",
+        "BFBS": "FlatBuffers Binary Schema",
+        "NNEF": "Neural Net Exchange Format",
+        "GRPC": "gRPC FlatBuffers service"
+      }
+    },
+    "tooltips": {
+      "root_offset": "uint32 LE at offset 0; must be > 0 and < fileSize; root table is at buffer[root_offset]",
+      "file_identifier": "4-byte ASCII at offset 4; only present if .fbs schema declares 'file_identifier \"XXXX\"'"
     }
   },
+  "assertions": [
+    {
+      "name": "Root offset is positive",
+      "expression": "rootOffset > 0",
+      "severity": "error",
+      "message": "FlatBuffers root table offset must be greater than 0 — value 0 indicates an invalid or empty buffer"
+    },
+    {
+      "name": "Root offset within file bounds",
+      "expression": "rootOffset < fileSize",
+      "severity": "error",
+      "message": "FlatBuffers root table offset exceeds file size — file is truncated or corrupt"
+    },
+    {
+      "name": "File size minimum",
+      "expression": "fileSize >= 8",
+      "severity": "error",
+      "message": "FlatBuffers buffer must be at least 8 bytes (4-byte root offset + 4-byte identifier region)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Root Offset",      "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "File Identifier",  "offset": 4, "icon": "", "color": "#4ECDC4" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FlatBuffers Header (JSON)",
+      "format": "json",
+      "fields": ["rootOffset", "fileIdentifier", "vtableOffset", "vtableSize"]
+    },
+    {
+      "name": "FlatBuffers Header (C struct)",
+      "format": "c-struct",
+      "structName": "FLATBUF_HEADER",
+      "fields": ["rootOffset", "fileIdentifier"]
+    },
+    {
+      "name": "Python FlatBuffers check",
+      "format": "python-bytes",
+      "fields": ["rootOffset", "fileIdentifier"]
+    }
+  ],
+  "aiHints": [
+    "FlatBuffers has no universal magic; identification requires schema-specific file_identifier at offset 4 or heuristic root_offset check",
+    "Root table offset (uint32 LE at offset 0) must be > 0 and < fileSize; value of 8 is typical when file_identifier is present",
+    "Navigate to root table at buffer[rootOffset]; first field is a signed int32 soffset to its vtable (usually negative)",
+    "Vtable at table_start + soffset: vtable_size (uint16) + table_data_size (uint16) + field_offset[] (uint16 each)",
+    "Known identifiers: TFL3=TensorFlow Lite (0x54464C33), BFBS=FlatBuffers Binary Schema (0x42464253)"
+  ],
   "variables": {
     "rootOffset": 0,
     "fileIdentifier": "",
@@ -57,7 +135,7 @@
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.45,
-      "description": "uint32 little-endian offset from offset 0 to the root table object in the buffer. This is always the first 4 bytes of any FlatBuffer. The root table is located at buffer[rootOffset]. Must be > 0 (tables cannot start at offset 0, which is reserved for the offset field itself) and < file size. For most small FlatBuffers, this value is 8 (when file_identifier is present) or 4 (when no identifier). The root table starts with a signed int32 offset to its vtable (relative to the table's start position).",
+      "description": "uint32 little-endian offset from offset 0 to the root table object in the buffer. This is always the first 4 bytes of any FlatBuffer. The root table is located at buffer[rootOffset]. Must be > 0 and < file size.",
       "storeAs": "rootOffset",
       "valueType": "uint32",
       "endianness": "little"
@@ -69,7 +147,7 @@
       "length": 4,
       "color": "#4ECDC4",
       "opacity": 0.35,
-      "description": "Optional 4-byte ASCII file identifier declared in the .fbs schema with 'file_identifier'. Present only if the schema declares 'file_identifier \"XXXX\"'. Known identifiers: 'TFL3' (0x54464C33) = TensorFlow Lite model (used by tflite_convert), 'BFBS' (0x42464253) = FlatBuffers Binary Schema file, 'NNEF' (0x4E4E4546) = Neural Net Exchange Format, 'GRPC' = gRPC FlatBuffers service. If no file_identifier was declared in the schema, these 4 bytes are part of the root table data, not a magic identifier.",
+      "description": "Optional 4-byte ASCII file identifier declared in the .fbs schema with 'file_identifier'. Present only if the schema declares 'file_identifier \"XXXX\"'. Known identifiers: 'TFL3' (0x54464C33) = TensorFlow Lite model, 'BFBS' (0x42464253) = FlatBuffers Binary Schema file, 'NNEF' (0x4E4E4546) = Neural Net Exchange Format.",
       "storeAs": "fileIdentifier",
       "valueType": "ascii"
     },
@@ -92,64 +170,64 @@
       "description": "Root table inline data size in bytes (uint16 LE at vtable[2]) — size of the table's fixed-size fields section"
     }
   ],
-  "assertions": [
+  "software": [
+    "flatc (FlatBuffers schema compiler and binary inspector)",
+    "Google FlatBuffers (C++, Java, Python, C#, Go, Rust)",
+    "TensorFlow Lite (tflite_convert, TFL3 identifier)",
+    "Unity (uses FlatBuffers for asset bundles)",
+    "Netron (visualizes TFLite/FlatBuffers model files)"
+  ],
+  "formatRelationships": [
     {
-      "name": "Root offset is positive",
-      "expression": "rootOffset > 0",
-      "severity": "error",
-      "message": "FlatBuffers root table offset must be greater than 0 — value 0 indicates an invalid or empty buffer"
-    },
-    {
-      "name": "Root offset within file bounds",
-      "expression": "rootOffset < fileSize",
-      "severity": "error",
-      "message": "FlatBuffers root table offset exceeds file size — file is truncated or corrupt"
+      "formatId": "PROTOBUF",
+      "relation": "alternative",
+      "note": "FlatBuffers is a zero-copy binary format vs protobuf's parsing-required encoding; both use field IDs for schema evolution"
     }
   ],
-  "navigation": {
-    "bookmarks": [
-      { "name": "Root Offset", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
-      { "name": "File Identifier", "offset": 4, "icon": "\uE8A5", "color": "#4ECDC4" }
-    ]
-  },
-  "inspector": {
-    "badge": "fileIdentifier",
-    "primaryField": "rootOffset",
-    "showQualityScore": true,
-    "groups": [
-      {
-        "title": "Buffer Header",
-        "icon": "\uE71B",
-        "fields": ["rootOffset", "fileIdentifier"]
-      },
-      {
-        "title": "Root VTable",
-        "icon": "\uE9D9",
-        "fields": ["vtableOffset", "vtableSize", "tableDataSize"]
-      }
-    ]
-  },
-  "exportTemplates": [
-    {
-      "name": "FlatBuffers Header (JSON)",
-      "format": "json",
-      "fields": ["rootOffset", "fileIdentifier", "vtableOffset", "vtableSize"]
-    },
-    {
-      "name": "FlatBuffers Header (C struct)",
-      "format": "c-struct",
-      "structName": "FLATBUF_HEADER",
-      "fields": ["rootOffset", "fileIdentifier"]
-    },
-    {
-      "name": "Python FlatBuffers check",
-      "format": "python-bytes",
-      "fields": ["rootOffset", "fileIdentifier"]
-    }
+  "useCases": [
+    "TensorFlow Lite model distribution (TFL3 identifier)",
+    "Android Google Play Services internal data exchange",
+    "Game engine save data and asset bundle serialization",
+    "High-frequency trading and low-latency financial data",
+    "IoT device firmware configuration and telemetry"
   ],
+  "technicalDetails": "FlatBuffers binary layout: [rootOffset: uint32 LE] + [optional fileIdentifier: 4B ASCII] + [buffer data]. Root table at buffer[rootOffset]: [vtable_soffset: int32 LE (negative = vtable is before table)] then vtable at table_start - vtable_soffset: [vtable_size: uint16 LE] + [table_data_size: uint16 LE] + [field_offset[0]: uint16 LE] ... All offsets within tables are relative (soffset int32 or uoffset uint32 from the field's own position). Strings: uint32 LE length + UTF-8 bytes + null terminator. Vectors: uint32 LE length + element bytes.",
+  "completenessScore": 88,
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/x-flatbuffers"
+  ],
+  "UseCases": [
+    "TensorFlow Lite model distribution (TFL3 identifier)",
+    "Android Google Play Services internal data exchange",
+    "Game engine save data and asset bundle serialization",
+    "High-frequency trading and low-latency financial data",
+    "IoT device firmware configuration and telemetry"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Magic": "None (schema-specific 4B identifier at offset 4 if declared)",
+    "RootPointer": "uint32 LE at offset 0 — byte offset to root table",
+    "TableEvolution": "VTable indirection — fields can be added/removed without breaking compatibility",
+    "ZeroCopySupport": true,
+    "Endianness": "little-endian (all integers)",
+    "SupportsStreaming": false
+  },
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
+    "notes": [
+      "TFLite .tflite files are FlatBuffers with TFL3 identifier; may contain model architecture and weights",
+      "FlatBuffers with unknown file_identifier should be cross-referenced with application schema context",
+      "Zero root offset indicates an invalid/empty buffer — not a valid FlatBuffer"
+    ],
     "suspiciousPatterns": [
       {
         "name": "Zero root offset",
@@ -165,61 +243,8 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "FlatBuffers binary layout: [rootOffset: uint32 LE] + [optional fileIdentifier: 4B ASCII] + [buffer data]. Root table at buffer[rootOffset]: [vtable_soffset: int32 LE (negative = vtable is before table)] then vtable at table_start - vtable_soffset: [vtable_size: uint16 LE] + [table_data_size: uint16 LE] + [field_offset[0]: uint16 LE] ... All offsets within tables are relative (soffset int32 or uoffset uint32 from the field's own position). Strings: uint32 LE length + UTF-8 bytes + null terminator. Vectors: uint32 LE length + element bytes. For TFLite: use flatc --binary with the TFLite schema or Netron to visualize.",
-    "suggestedInspections": [
-      "Read root table offset (uint32 LE) at bytes 0-3 — must be > 0 and < fileSize",
-      "Check bytes 4-7 for known file identifier: TFL3 (TFLite), BFBS (FB schema), NNEF",
-      "Navigate to root table at file[rootOffset] and read vtable soffset (int32 LE)",
-      "Parse vtable to count fields and determine schema structure",
-      "For TFLite files (TFL3): use Netron or tensorflow-lite Python to inspect model structure"
-    ]
-  },
-  "software": [
-    "flatc (FlatBuffers schema compiler and binary inspector)",
-    "Google FlatBuffers (C++, Java, Python, C#, Go, Rust)",
-    "TensorFlow Lite (tflite_convert, TFL3 identifier)",
-    "Unity (uses FlatBuffers for asset bundles)",
-    "Netron (visualizes TFLite/FlatBuffers model files)"
-  ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [".bin", ".fbs", ".flatbuffers"],
-    "relatedFormats": ["CAPNPROTO", "ARROW_IPC", "ION"],
-    "note": "FlatBuffers (.bin/.flatbuffers) and Cap'n Proto (.capnp/.bin) are both zero-copy binary formats without a universal magic. FlatBuffers uses vtable indirection for field evolution; Cap'n Proto uses pointer words. Apache Arrow IPC uses FlatBuffers internally for schema and message metadata."
-  },
-  "MimeTypes": [
-    "application/octet-stream",
-    "application/x-flatbuffers"
-  ],
-  "UseCases": [
-    "TensorFlow Lite model distribution (TFL3 identifier)",
-    "Android Google Play Services internal data exchange",
-    "Game engine save data and asset bundle serialization",
-    "High-frequency trading and low-latency financial data",
-    "IoT device firmware configuration and telemetry"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 78,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
-  },
-  "TechnicalDetails": {
-    "Magic": "None (schema-specific 4B identifier at offset 4 if declared)",
-    "RootPointer": "uint32 LE at offset 0 — byte offset to root table",
-    "TableEvolution": "VTable indirection — fields can be added/removed without breaking compatibility",
-    "ZeroCopySupport": true,
-    "Endianness": "little-endian (all integers)",
-    "SupportsStreaming": false
-  },
   "diff": {
-    "keyFields": [
-      "root_offset"
-    ],
+    "keyFields": ["root_offset"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for FLATBUF. Compare key structural fields; ignore volatile metadata."
   },

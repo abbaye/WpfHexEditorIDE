@@ -1,0 +1,106 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "LoRaWAN MAC Frame",
+  "formatId": "LORAWAN_FRAME",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "LoRaWAN MAC layer frame format as defined by the LoRa Alliance LoRaWAN specification. Long-range, low-power wide-area network (LPWAN) protocol for IoT devices transmitting over kilometers.",
+  "extensions": [".lorawan"],
+  "category": "IoT",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "40",
+      "offset": 0,
+      "label": "LoRaWAN UnconfirmedDataUp MType (0x40)",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "mhdr", "type": "uint8", "description": "MAC Header: MType (bits 7-5) + RFU (bits 4-2) + Major (bits 1-0)", "storeAs": "hex" },
+      { "offset": 1, "size": 4, "name": "dev_addr", "type": "uint32le", "description": "Device address (32 bits, little-endian) assigned by network server", "storeAs": "hex" },
+      { "offset": 5, "size": 1, "name": "fctrl", "type": "uint8", "description": "Frame Control: ADR(1), ADRACKReq(1), ACK(1), FPending(1), FOptsLen(4)", "storeAs": "hex" },
+      { "offset": 6, "size": 2, "name": "fcnt", "type": "uint16le", "description": "Frame counter (16-bit, little-endian) for replay protection", "storeAs": "uint" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["mhdr", "dev_addr", "fctrl", "fcnt"],
+    "valueMaps": {
+      "mtype": {
+        "00": "Join Request",
+        "20": "Join Accept",
+        "40": "UnconfirmedDataUp",
+        "60": "UnconfirmedDataDown",
+        "80": "ConfirmedDataUp",
+        "A0": "ConfirmedDataDown",
+        "C0": "Rejoin Request",
+        "E0": "Proprietary"
+      }
+    },
+    "tooltips": {
+      "mhdr": "Bits 7-5 encode MType; bits 1-0 encode Major version (must be 00 for LoRaWAN 1.x)",
+      "dev_addr": "Network-assigned 32-bit address; 7 MSBs are NwkID identifying the network",
+      "fctrl": "ADR bit enables network-controlled data rate adaptation; FOptsLen encodes FOpts length",
+      "fcnt": "16-bit LSB of 32-bit frame counter; server tracks full counter to detect rollover/replay"
+    }
+  },
+  "assertions": [
+    { "id": "LORAWAN_MAJOR_VER", "field": "mhdr", "operator": "maskEquals", "value": "03:00", "description": "Major version bits (1-0) must be 00 for LoRaWAN 1.x" },
+    { "id": "LORAWAN_MTYPE_VALID", "field": "mhdr", "operator": "maskIn", "value": "E0:00,20,40,60,80,A0,C0,E0", "description": "MType bits (7-5) must be a known LoRaWAN frame type" },
+    { "id": "LORAWAN_DEVADDR_NONZERO", "field": "dev_addr", "operator": "notEquals", "value": "00000000", "description": "DevAddr must not be all-zero for data frames (only valid in join context)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "MAC Header (MHDR)", "color": "#3498DB" },
+      { "offset": 1, "label": "Device Address", "color": "#2ECC71" },
+      { "offset": 5, "label": "Frame Control + Counter", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "LoRaWAN Frame Summary",
+      "fields": ["mhdr", "dev_addr", "fctrl", "fcnt"],
+      "format": "text"
+    },
+    {
+      "name": "LoRaWAN CSV Export",
+      "fields": ["mhdr", "dev_addr", "fcnt"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "LoRaWAN data frames have MHDR(1) + DevAddr(4) + FCtrl(1) + FCnt(2) + FOpts(0-15) + FPort(0-1) + FRMPayload + MIC(4)",
+    "FPort=0 indicates MAC commands in the payload; FPort=1-223 are application-specific ports",
+    "MIC (4 bytes at end) uses AES-128-CMAC with NwkSKey for integrity; payload encrypted with AppSKey",
+    "LoRaWAN 1.1 separates NwkSKey into SNwkSIntKey, FNwkSIntKey, and NwkSEncKey for improved security",
+    "ADR (Adaptive Data Rate) bit in FCtrl allows network to optimize spreading factor and TX power per device"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "LoRaWAN DevAddr reveals network assignment and can be used to track device across gateways",
+      "FCnt rollover attacks (resetting frame counter to replay old sessions) affect LoRaWAN 1.0 deployments",
+      "Join Request/Accept captures expose OTAA device EUI and network join credentials"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MQTT_PACKET", "relationship": "related", "note": "LoRaWAN network servers typically forward decoded payloads to applications via MQTT" },
+    { "format": "COAP_DATAGRAM", "relationship": "related", "note": "CoAP is used as application layer protocol over LoRaWAN in some LwM2M deployments" }
+  ],
+  "software": [
+    { "name": "ChirpStack", "role": "Open-source LoRaWAN network server processing LoRaWAN frames from gateways" },
+    { "name": "The Things Network (TTN)", "role": "Public LoRaWAN network infrastructure and decoder platform" },
+    { "name": "Semtech Packet Forwarder", "role": "Gateway software forwarding LoRa radio frames to network server" }
+  ],
+  "useCases": [
+    "Debugging LoRaWAN device activation (OTAA/ABP) and data transmission failures",
+    "Security audit of LoRaWAN deployments for frame counter and key management compliance",
+    "Forensic analysis of captured LoRaWAN frames from gateway logs or radio captures"
+  ],
+  "technicalDetails": "LoRaWAN MAC frames begin with a 1-byte MHDR encoding MType and Major version. Data frames (Up/Down) have a 7-byte FHDR: DevAddr(4, LE) + FCtrl(1) + FCnt(2, LE). Optional FOpts (0-15 bytes) carry MAC commands. FPort(1 byte, optional) indicates application port. FRMPayload is AES-128 encrypted with AppSKey. MIC (4 bytes) provides integrity using AES-128-CMAC. Total overhead: 13 bytes minimum (MHDR+FHDR+MIC) leaving 242 bytes for payload in the longest LoRa frame.",
+  "completenessScore": 82
+}

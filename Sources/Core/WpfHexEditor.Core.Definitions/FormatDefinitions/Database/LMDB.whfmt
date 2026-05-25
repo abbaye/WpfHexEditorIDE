@@ -1,8 +1,30 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "LMDB Database",
   "formatId": "LMDB",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 95,
+  "maxSignatureOffset": 4,
+  "signatures": [
+    {
+      "value": "DEC0EFBE",
+      "offset": 0,
+      "label": "LMDB magic 0xBEEFC0DE stored little-endian (DE C0 EF BE)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "lmdb_magic", "offset": 0, "size": 4, "type": "uint32le", "description": "LMDB magic 0xBEEFC0DE (little-endian)" },
+      { "name": "lmdb_version", "offset": 4, "size": 4, "type": "uint32le", "description": "LMDB format version (must be 1)" },
+      { "name": "fixed_map_addr", "offset": 8, "size": 8, "type": "uint64le", "description": "Fixed memory-map address hint" },
+      { "name": "map_size", "offset": 16, "size": 8, "type": "uint64le", "description": "Maximum database size in bytes" },
+      { "name": "page_size", "offset": 52, "size": 4, "type": "uint32le", "description": "Page size (power of 2, typically 4096)" }
+    ]
+  },
   "extensions": [
     ".mdb",
     ".lmdb"
@@ -282,7 +304,15 @@
       }
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "LMDB magic 0xBEEFC0DE is stored little-endian at offset 0 (bytes: DE C0 EF BE)",
+    "LMDB format version at offset 4 must always be 1 — any other value indicates corruption or incompatible fork",
+    "Page size at offset 52 (uint32 LE) must be a power of 2; use bitwise (pageSize & (pageSize-1)) == 0 to verify",
+    "Two alternating meta-pages (page 0 and page 1): the one with the higher last_txnid (offset 32) is the active state",
+    "Map size at offset 16 (uint64 LE) is the hard database growth limit — must be larger than actual file size",
+    "LMDB has no WAL — durability is provided by msync/fsync at commit time on the memory-mapped file"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "LMDB uses memory-mapped B-trees with copy-on-write (CoW) semantics. Page 0 is the meta-page containing the file header. Two alternating meta-pages (0 and 1) provide atomic updates — the one with the higher last_txnid is the current state. Pages use a freelist B-tree alongside the data B-tree. No write-ahead log — durability by msync/fsync at transaction commit.",
     "suggestedInspections": [
       "Verify magic at offset 0 equals DE C0 EF BE (LE 0xBEEFC0DE)",
@@ -321,7 +351,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 9,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

@@ -1021,4 +1021,21 @@
     <SolidColorBrush x:Key="GC_BlameHashForeground"        Color="#FFB86C"/>
     <SolidColorBrush x:Key="GC_BranchPickerHoverBackground" Color="#282A36"/>
     <SolidColorBrush x:Key="GC_SectionHeaderForeground"    Color="#888888"/>
-    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/></ResourceDictionary>
+    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/>
+    <!-- WS_* Welcome Panel colors -->
+    <Color x:Key="WS_CardBackgroundColor">#3D3F4E</Color>
+    <Color x:Key="WS_CardBorderColor">#4D4F60</Color>
+    <Color x:Key="WS_CardHoverBackgroundColor">#44475A</Color>
+    <Color x:Key="WS_RecentItemBackgroundColor">Transparent</Color>
+    <Color x:Key="WS_RecentItemHoverBackgroundColor">#44475A</Color>
+    <Color x:Key="WS_PinActiveColor">#F1FA8C</Color>
+    <Color x:Key="WS_SearchBoxBackgroundColor">#3D3F4E</Color>
+    <!-- WS_* brushes -->
+    <SolidColorBrush x:Key="WS_CardBackgroundBrush"            Color="{StaticResource WS_CardBackgroundColor}"/>
+    <SolidColorBrush x:Key="WS_CardBorderBrush"                Color="{StaticResource WS_CardBorderColor}"/>
+    <SolidColorBrush x:Key="WS_CardHoverBackgroundBrush"       Color="{StaticResource WS_CardHoverBackgroundColor}"/>
+    <SolidColorBrush x:Key="WS_RecentItemBackgroundBrush"      Color="{StaticResource WS_RecentItemBackgroundColor}"/>
+    <SolidColorBrush x:Key="WS_RecentItemHoverBackgroundBrush" Color="{StaticResource WS_RecentItemHoverBackgroundColor}"/>
+    <SolidColorBrush x:Key="WS_PinActiveColorBrush"            Color="{StaticResource WS_PinActiveColor}"/>
+    <SolidColorBrush x:Key="WS_SearchBoxBackgroundBrush"       Color="{StaticResource WS_SearchBoxBackgroundColor}"/>
+</ResourceDictionary>

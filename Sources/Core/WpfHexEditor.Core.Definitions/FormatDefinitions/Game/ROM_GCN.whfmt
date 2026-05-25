@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Nintendo GameCube Disc",
   "formatId": "ROM_GCN",
-  "version": "2.52",
+  "version": "2.53",
   "extensions": [
     ".gcm",
     ".iso"
@@ -10,6 +11,7 @@
   "description": "Nintendo GameCube disc image format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -24,15 +26,101 @@
       "https://wit.wiimm.de/info/iso-images.html"
     ]
   },
-  "detection": {
-    "signature": "C2339F3D",
-    "offset": 28,
-    "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "C2339F3D",
+      "offset": 28,
+      "label": "GameCube disc magic word at 0x1C",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 32,
+  "structure": {
+    "fields": [
+      { "name": "disc_id",              "type": "ascii",    "offset": "0x00", "length": 1,  "description": "Console ID: G=GameCube, D=Demo, P=Promotional" },
+      { "name": "game_code",            "type": "ascii",    "offset": "0x01", "length": 2,  "description": "Unique 2-char game identifier" },
+      { "name": "country_code",         "type": "ascii",    "offset": "0x03", "length": 1,  "description": "Region: E=USA, P=Europe, J=Japan, K=Korea" },
+      { "name": "maker_code",           "type": "ascii",    "offset": "0x04", "length": 2,  "description": "Publisher code: 01=Nintendo, 08=Capcom" },
+      { "name": "disc_number",          "type": "uint8",    "offset": "0x06", "length": 1,  "description": "Disc number (0 for single-disc games)" },
+      { "name": "disc_version",         "type": "uint8",    "offset": "0x07", "length": 1,  "description": "Game version/revision number" },
+      { "name": "audio_streaming",      "type": "uint8",    "offset": "0x08", "length": 1,  "description": "0=No audio streaming, 1=Enabled" },
+      { "name": "streaming_buf_size",   "type": "uint8",    "offset": "0x09", "length": 1,  "description": "Audio stream buffer size" },
+      { "name": "magic",                "type": "uint32be", "offset": "0x1C", "length": 4,  "description": "GCN magic word: 0xC2339F3D" },
+      { "name": "game_title",           "type": "ascii",    "offset": "0x20", "length": 64, "description": "Game title, null-terminated ASCII" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["disc_id", "game_code", "country_code", "maker_code", "disc_number", "disc_version"],
+    "valueMaps": {
+      "disc_id": {
+        "G": "GameCube retail",
+        "D": "Demo disc",
+        "P": "Promotional disc",
+        "R": "GameCube (alternate)"
+      },
+      "country_code": {
+        "E": "USA (NTSC-U)",
+        "J": "Japan (NTSC-J)",
+        "P": "Europe/Australia (PAL)",
+        "K": "Korea"
+      }
+    },
+    "tooltips": {
+      "magic": "0xC2339F3D at 0x1C uniquely identifies a GCN disc; Wii uses 0x5D1C9EA3 at the same offset",
+      "maker_code": "01=Nintendo, 08=Capcom, 0Q=THQ, 4F=Eidos, 52=Activision",
+      "disc_number": "Multi-disc games increment this; most games use 0"
     }
   },
+  "assertions": [
+    {
+      "name": "GCN magic present",
+      "expression": "bytes[0x1C..0x1F] == C2339F3D",
+      "severity": "error",
+      "message": "GameCube magic word 0xC2339F3D not found at offset 0x1C; not a valid GCN disc image"
+    },
+    {
+      "name": "Disc ID is valid console marker",
+      "expression": "disc_id == 'G' || disc_id == 'D' || disc_id == 'P'",
+      "severity": "warning",
+      "message": "Disc ID does not match expected GameCube console codes (G/D/P)"
+    },
+    {
+      "name": "Country code is known",
+      "expression": "country_code == 'E' || country_code == 'J' || country_code == 'P' || country_code == 'K'",
+      "severity": "warning",
+      "message": "Country code is not a standard GameCube region identifier"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Disc ID",        "offset": 0,  "icon": "", "color": "#FFE66D" },
+      { "name": "Game Code",      "offset": 1,  "icon": "", "color": "#FFE66D" },
+      { "name": "Maker Code",     "offset": 4,  "icon": "", "color": "#C7CEEA" },
+      { "name": "GCN Magic",      "offset": 28, "icon": "", "color": "#FF6B6B" },
+      { "name": "Game Title",     "offset": 32, "icon": "", "color": "#4ECDC4" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GCN Disc Header (JSON)",
+      "format": "json",
+      "fields": ["disc_id", "game_code", "country_code", "maker_code", "disc_version", "game_title"]
+    },
+    {
+      "name": "GCN Disc Header (C struct)",
+      "format": "c-struct",
+      "structName": "GCN_DISC_HEADER",
+      "fields": ["disc_id", "game_code", "country_code", "maker_code", "disc_number", "disc_version"]
+    }
+  ],
+  "aiHints": [
+    "Magic 0xC2339F3D at offset 0x1C is the definitive GameCube identifier; Wii disc uses 0x5D1C9EA3 at the same location",
+    "The 6-char game code (disc_id + game_code + country_code + maker_code) uniquely identifies the title and region",
+    "FST (File System Table) is located at the offset stored at 0x0424; boot.bin is at 0x2440",
+    "Disc image size is either 1.35 GB (single layer) or 2.7 GB (dual layer GameCube media)",
+    "Audio streaming flag at 0x08 and buffer size at 0x09 affect music playback performance"
+  ],
   "variables": {
     "currentOffset": 0,
     "gameCode": "",
@@ -95,7 +183,7 @@
     },
     {
       "type": "field",
-      "name": "Disc ID",
+      "name": "Disc Number",
       "offset": 6,
       "length": 1,
       "color": "#4ECDC4",
@@ -190,16 +278,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "Dolphin Emulator",
+    "Nintendont",
+    "WIT (Wiimm ISO Tools)",
+    "GCTool"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".gcm",
-      ".iso"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_WII",
+      "relation": "predecessor",
+      "note": "Wii discs extend the GCN format; Dolphin handles both; magic differs (0x5D1C9EA3 for Wii)"
+    }
+  ],
+  "useCases": [
+    "GameCube game preservation and archiving",
+    "Disc image backup and restoration",
+    "File extraction from FST for modding",
+    "Emulation accuracy testing with Dolphin"
+  ],
+  "technicalDetails": "GameCube disc images are 1.35 GB GCM/ISO files. The disc header occupies the first 0x440 bytes. Boot files (boot.bin, bi2.bin, apploader.img) reside at fixed offsets. FST at offset stored in 0x0424 describes the file tree. GCN uses a 24-bit addressing scheme with an address shift of 2 (all offsets in the FST are multiplied by 4).",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -217,11 +315,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -233,23 +331,15 @@
     "extractASCIIString": "Read file list"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Nintendo GameCube disc image format",
-    "suggestedInspections": [
-      "Validate Nintendo GameCube Disc container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "Missing or wrong magic at 0x1C is the most common indicator of a corrupt or improperly trimmed image",
+      "Verify the boot.bin hash to detect tampered or region-converted disc images",
+      "Non-Nintendo maker codes may indicate unlicensed or homebrew disc images"
     ]
   },
   "diff": {
-    "keyFields": [
-      "stream_buffer_size",
-      "magic_word"
-    ],
+    "keyFields": ["game_code", "country_code", "disc_version", "magic_word"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for ROM_GCN. Compare key structural fields; ignore volatile metadata."
   },

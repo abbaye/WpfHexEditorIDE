@@ -14,36 +14,36 @@ public static class RegionSelectorService
 {
     public static async Task<CaptureRegion?> SelectRegionAsync()
     {
-        // Must run on UI thread — minimize IDE first so user can draw over any app.
+        // Hide all open windows so the selector overlays the full desktop cleanly.
+        var hiddenWindows = await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            var windows = Application.Current.Windows
+                .OfType<Window>()
+                .Where(w => w.IsVisible)
+                .ToList();
+            foreach (var w in windows)
+                w.Hide();
+            return windows;
+        });
+
+        // Give Windows time to actually remove the windows from screen.
+        await Task.Delay(200);
+
+        var region = await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            var win = new RegionSelectorWindow();
+            win.ShowDialog();
+            return win.SelectedRegion;
+        });
+
+        // Restore all hidden windows.
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            var main = Application.Current.MainWindow;
-            if (main is not null)
-            {
-                main.Topmost     = false;
-                main.WindowState = WindowState.Minimized;
-            }
+            foreach (var w in hiddenWindows)
+                w.Show();
+            Application.Current.MainWindow?.Activate();
         });
 
-        // Give Windows time to actually hide the IDE window before showing the selector.
-        await Task.Delay(350);
-
-        return await Application.Current.Dispatcher.InvokeAsync(() =>
-        {
-            var main      = Application.Current.MainWindow;
-            var prevState = main?.WindowState ?? WindowState.Normal;
-
-            try
-            {
-                var win = new RegionSelectorWindow();
-                win.ShowDialog();
-                return win.SelectedRegion;
-            }
-            finally
-            {
-                if (main is not null)
-                    main.WindowState = prevState;
-            }
-        });
+        return region;
     }
 }

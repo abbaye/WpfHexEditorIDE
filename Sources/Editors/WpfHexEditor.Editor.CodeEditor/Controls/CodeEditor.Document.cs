@@ -551,6 +551,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     _validationErrors = _validator.Validate(textToValidate);
 
+                    // R10 — expression static validation for .whfmt files (P16).
+                    // Runs WhfmtExpressionValidator and merges issues as Semantic-layer errors.
+                    if (langId == "whfmt")
+                        AppendWhfmtR10Diagnostics(textToValidate, _validationErrors);
+
                     // Apply language-specific prefix to raw error codes (e.g. "JSON_SYNTAX" → "JSON_SYNTAX").
                     // For named languages the prefix comes from the LanguageDefinition.DiagnosticPrefix.
                     var prefix = Language?.DiagnosticPrefix;
@@ -578,6 +583,44 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _validationErrors.Clear();
                 _validationByLine.Clear();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Runs R10 WhfmtExpressionValidator against <paramref name="text"/> and appends any
+        /// issues as <c>ValidationLayer.Semantic</c> entries to <paramref name="errors"/>.
+        /// Line numbers are not available from the validator (it works on JSON paths), so
+        /// issues are pinned to line 0 with the JSON path in the message for IDE display.
+        /// </summary>
+        private static void AppendWhfmtR10Diagnostics(
+            string text, List<Models.ValidationError> errors)
+        {
+            IReadOnlyList<WpfHexEditor.Core.Definitions.Models.Validation.WhfmtValidationIssue> r10;
+            try
+            {
+                r10 = WpfHexEditor.Core.Definitions.Models.Validation.WhfmtExpressionValidator.Validate(text);
+            }
+            catch { return; }   // validator must never crash the editor
+
+            foreach (var issue in r10)
+            {
+                var sev = issue.Severity switch
+                {
+                    WpfHexEditor.Core.Definitions.Models.Validation.WhfmtIssueSeverity.Error   => Models.ValidationSeverity.Error,
+                    WpfHexEditor.Core.Definitions.Models.Validation.WhfmtIssueSeverity.Warning => Models.ValidationSeverity.Warning,
+                    _                                                                            => Models.ValidationSeverity.Info
+                };
+
+                string msg = issue.Path is not null
+                    ? $"[{issue.RuleId}] {issue.Path}: {issue.Message}"
+                    : $"[{issue.RuleId}] {issue.Message}";
+
+                errors.Add(new Models.ValidationError(0, 0, msg, sev)
+                {
+                    ErrorCode = issue.RuleId,
+                    Layer     = Models.ValidationLayer.Semantic,
+                    Source    = "whfmt-r10"
+                });
             }
         }
 

@@ -66,7 +66,7 @@ public sealed class SignatureDbPanel : UserControl
         {
             Header  = header,
             Binding = new Binding(path) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged },
-            Width   = width > 0 ? width : double.NaN,
+            Width   = width > 0 ? new DataGridLength(width) : DataGridLength.Auto,
         };
     }
 }

@@ -1,14 +1,16 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PlayStation 4 Package",
   "formatId": "ROM_PS4",
-  "version": "2.42.1",
+  "version": "2.43",
   "extensions": [
     ".pkg"
   ],
   "description": "PlayStation 4 PKG package format (encrypted game/update packages)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -23,16 +25,102 @@
       "https://www.psxhax.com/threads/ps4-pkg-information-on-playstation-4-packages-and-keys-via-maxton.7280/"
     ]
   },
-  "detection": {
-    "signature": "7F434E54",
-    "offset": 0,
-    "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024,
-      "note": "Shares Sony CNT magic 7F434E54 with PS5 CNT. Discriminate via pkg_content_type uint32-BE at offset 0x74: PS4 values 0x1A (Game), 0x1B (DLC), 0x1C (License), 0x1D (Patch), 0x1E (Theme). See psdevwiki.com/ps4/PKG_files."
+  "signatures": [
+    {
+      "value": "7F434E54",
+      "offset": 0,
+      "label": "PS4 PKG magic \\x7FCNT",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "magic",                  "type": "uint32be", "offset": "0x00", "length": 4, "description": "CNT magic 0x7F434E54 (\\x7FCNT)" },
+      { "name": "pkg_type",               "type": "uint32be", "offset": "0x04", "length": 4, "description": "Package type flags (PS4-specific)" },
+      { "name": "pkg_file_count",         "type": "uint32be", "offset": "0x08", "length": 4, "description": "Number of files in the package" },
+      { "name": "entry_count",            "type": "uint16be", "offset": "0x0C", "length": 2, "description": "Number of entry table entries" },
+      { "name": "sc_entry_count",         "type": "uint16be", "offset": "0x0E", "length": 2, "description": "Number of SC entry table entries" },
+      { "name": "entry_count2",           "type": "uint16be", "offset": "0x10", "length": 2, "description": "Secondary entry count" },
+      { "name": "entry_table_offset",     "type": "uint32be", "offset": "0x12", "length": 4, "description": "Offset to the entry table" },
+      { "name": "main_entry_data_size",   "type": "uint32be", "offset": "0x16", "length": 4, "description": "Size of main entry data" },
+      { "name": "body_offset",            "type": "uint64be", "offset": "0x18", "length": 8, "description": "Offset to the package body" },
+      { "name": "body_size",              "type": "uint64be", "offset": "0x20", "length": 8, "description": "Size of the package body" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "pkg_type", "pkg_file_count", "entry_count", "body_offset", "body_size"],
+    "valueMaps": {
+      "pkg_type": {
+        "0x1A000000": "PS4 Game (Full)",
+        "0x1B000000": "PS4 DLC",
+        "0x1C000000": "PS4 License",
+        "0x1D000000": "PS4 Patch/Update",
+        "0x1E000000": "PS4 Theme"
+      }
+    },
+    "tooltips": {
+      "magic": "0x7F434E54 (CNT) is shared with PS5 PKG; pkg_content_type at 0x74 distinguishes PS4 vs PS5",
+      "body_offset": "Points to the encrypted PFS image; decryption requires OrbisOS platform keys",
+      "pkg_file_count": "Number of files declared in the PKG entry table"
     }
   },
+  "assertions": [
+    {
+      "name": "CNT magic present",
+      "expression": "bytes[0..3] == 7F434E54",
+      "severity": "error",
+      "message": "PS4 CNT magic 0x7F434E54 not found at offset 0; not a valid PS4 PKG file"
+    },
+    {
+      "name": "Body offset within file",
+      "expression": "body_offset < body_offset + body_size",
+      "severity": "error",
+      "message": "Package body size overflow; file is corrupt or truncated"
+    },
+    {
+      "name": "File count positive",
+      "expression": "pkg_file_count > 0",
+      "severity": "warning",
+      "message": "Package file count is zero; this may indicate an empty or invalid package"
+    },
+    {
+      "name": "Entry table offset reasonable",
+      "expression": "entry_table_offset >= 32",
+      "severity": "warning",
+      "message": "Entry table offset is less than 32 bytes; overlaps with PKG header"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "CNT Magic",         "offset": 0,  "icon": "", "color": "#FF6B6B" },
+      { "name": "PKG Type",          "offset": 4,  "icon": "", "color": "#FFE66D" },
+      { "name": "Entry Table Ptr",   "offset": 18, "icon": "", "color": "#4ECDC4" },
+      { "name": "Body Offset",       "offset": 24, "icon": "", "color": "#95E1D3" },
+      { "name": "Body Size",         "offset": 32, "icon": "", "color": "#95E1D3" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PS4 PKG Header (JSON)",
+      "format": "json",
+      "fields": ["magic", "pkg_type", "pkg_file_count", "entry_count", "body_offset", "body_size"]
+    },
+    {
+      "name": "PS4 PKG Header (C struct)",
+      "format": "c-struct",
+      "structName": "PS4_PKG_HEADER",
+      "fields": ["magic", "pkg_type", "pkg_file_count", "body_offset", "body_size"]
+    }
+  ],
+  "aiHints": [
+    "Magic 0x7F434E54 ('\\x7FCNT') is shared with PS5 PKG; check pkg_content_type at 0x74 for platform: PS4 values are 0x1A–0x1E",
+    "The encrypted PFS (PlayStation File System) image begins at body_offset and contains all game files",
+    "Entry table at entry_table_offset lists all files with their offsets, sizes, and encryption info",
+    "Content ID at offset 0x47 (36 bytes) follows format: UP####-CUSA#####_00-################",
+    "PS4 PKG files use different encryption keys than PS3; requires OrbisOS or fpkg tooling to decrypt"
+  ],
   "variables": {
     "currentOffset": 0,
     "crc32Valid": false,
@@ -138,15 +226,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "PS4 PKG Tool (pearlxcore)",
+    "LibOrbisPkg (maxton)",
+    "FPKG (fake-pkg tools)",
+    "Goldhen PKG utilities"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".pkg"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_PS5",
+      "relation": "predecessor",
+      "note": "PS5 PKG uses the same CNT magic but different pkg_content_type values; PS5 can also run PS4 PKG"
+    }
+  ],
+  "useCases": [
+    "PS4 game and DLC installation from downloaded packages",
+    "PKG content inspection for title ID and content type",
+    "Forensic analysis of OrbisOS package structure",
+    "Homebrew distribution via fake-PKG (fpkg) format"
+  ],
+  "technicalDetails": "PS4 PKG uses magic 0x7F434E54. The package body contains an encrypted PFS (Pseudo-File System) image. Entry table maps files to their encrypted offsets. pkg_content_type at 0x74 distinguishes PS4 (0x1A–0x1E) from PS5 (0x1F+) packages. Content ID format: UP####-CUSA#####_00-################.",
+  "completenessScore": 84,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -164,11 +263,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 56,
+    "CompletenessScore": 84,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -180,25 +279,15 @@
     "readUInt32LE": "Read size"
   },
   "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "PlayStation 4 PKG package format (encrypted game/update packages)",
-    "suggestedInspections": [
-      "Validate PlayStation 4 Package container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "riskLevel": "medium",
+    "notes": [
+      "PS4 PKG content is encrypted with OrbisOS keys; hex inspection shows only the unencrypted header",
+      "Shared CNT magic with PS5 requires checking pkg_content_type at 0x74 for definitive platform ID",
+      "Fake-PKG (fpkg) files have modified headers to bypass signature verification"
     ]
   },
   "diff": {
-    "keyFields": [
-      "cnt_magic",
-      "file_offset",
-      "file_count",
-      "package_size"
-    ],
+    "keyFields": ["cnt_magic", "file_offset", "file_count", "package_size"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for ROM_PS4. Compare key structural fields; ignore volatile metadata."
   },

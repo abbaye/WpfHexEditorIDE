@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Windows System Driver",
   "formatId": "SYS",
@@ -104,7 +105,7 @@
       "offsetAdd": 6,
       "length": 2,
       "color": "#FFE66D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Count of section entries (IMAGE_SECTION_HEADER) in the section table. Kernel drivers typically have 4-10 sections: .text (code), .rdata (read-only data), .data (writable data), INIT (discardable init code), PAGE (pageable code), .reloc (relocations). The INIT and PAGE sections are driver-specific section naming conventions.",
       "storeAs": "coffNumberOfSections",
       "valueType": "uint16",
@@ -117,7 +118,7 @@
       "offsetAdd": 8,
       "length": 4,
       "color": "#FFA07A",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Unix epoch timestamp (seconds since 1970-01-01 UTC) when the driver was linked. Kernel drivers with forged or zeroed timestamps may fail Authenticode signature validation in strict kernel integrity checking modes. Modern MSVC produces reproducible-build timestamps (0xFFFFFFFF or 0) by default.",
       "storeAs": "coffTimeDateStamp",
       "valueType": "uint32",
@@ -136,9 +137,21 @@
       "valueType": "uint16",
       "endianness": "little",
       "bitfields": [
-        { "bit": 1, "name": "EXECUTABLE_IMAGE", "description": "File is a loadable PE image" },
-        { "bit": 5, "name": "LARGE_ADDRESS_AWARE", "description": "Driver can handle addresses > 2GB (needed for 64-bit or /3GB 32-bit)" },
-        { "bit": 13, "name": "DLL", "description": "Set if this .sys file is DLL-style (uncommon for drivers)" }
+        {
+          "bit": 1,
+          "name": "EXECUTABLE_IMAGE",
+          "description": "File is a loadable PE image"
+        },
+        {
+          "bit": 5,
+          "name": "LARGE_ADDRESS_AWARE",
+          "description": "Driver can handle addresses > 2GB (needed for 64-bit or /3GB 32-bit)"
+        },
+        {
+          "bit": 13,
+          "name": "DLL",
+          "description": "Set if this .sys file is DLL-style (uncommon for drivers)"
+        }
       ]
     },
     {
@@ -148,7 +161,7 @@
       "offsetAdd": 24,
       "length": 2,
       "color": "#C7CEEA",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Optional Header format identifier: 0x010B = PE32 (32-bit driver), 0x020B = PE32+ (64-bit driver). On 64-bit Windows, all newly loaded kernel drivers must be PE32+ (AMD64 or ARM64).",
       "storeAs": "optionalMagic",
       "valueType": "uint16",
@@ -277,19 +290,19 @@
       {
         "name": "DOS Header (MZ)",
         "offset": 0,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "PE Header (e_lfanew)",
         "offsetVar": "peHeaderOffset",
-        "icon": "\uE7EF",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "Driver Entry Point",
         "offsetVar": "addressOfEntryPoint",
-        "icon": "\uE72E",
+        "icon": "",
         "color": "#FF4444"
       }
     ]
@@ -301,18 +314,32 @@
     "groups": [
       {
         "title": "DOS / PE Identity",
-        "icon": "\uE8A5",
-        "fields": ["dosSignature", "peHeaderOffset"]
+        "icon": "",
+        "fields": [
+          "dosSignature",
+          "peHeaderOffset"
+        ]
       },
       {
         "title": "COFF Header",
-        "icon": "\uE7EF",
-        "fields": ["coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffCharacteristics"]
+        "icon": "",
+        "fields": [
+          "coffMachine",
+          "coffNumberOfSections",
+          "coffTimeDateStamp",
+          "coffCharacteristics"
+        ]
       },
       {
         "title": "Driver Properties",
-        "icon": "\uE946",
-        "fields": ["optionalMagic", "subsystemType", "addressOfEntryPoint", "is64Bit", "isDLL"]
+        "icon": "",
+        "fields": [
+          "optionalMagic",
+          "subsystemType",
+          "addressOfEntryPoint",
+          "is64Bit",
+          "isDLL"
+        ]
       }
     ]
   },
@@ -320,12 +347,28 @@
     {
       "name": "SYS Driver Header (JSON)",
       "format": "json",
-      "fields": ["dosSignature", "peHeaderOffset", "coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffCharacteristics", "optionalMagic", "subsystemType", "addressOfEntryPoint", "is64Bit"]
+      "fields": [
+        "dosSignature",
+        "peHeaderOffset",
+        "coffMachine",
+        "coffNumberOfSections",
+        "coffTimeDateStamp",
+        "coffCharacteristics",
+        "optionalMagic",
+        "subsystemType",
+        "addressOfEntryPoint",
+        "is64Bit"
+      ]
     },
     {
       "name": "Python SYS magic check",
       "format": "python-bytes",
-      "fields": ["dosSignature", "peHeaderOffset", "coffMachine", "subsystemType"]
+      "fields": [
+        "dosSignature",
+        "peHeaderOffset",
+        "coffMachine",
+        "subsystemType"
+      ]
     }
   ],
   "forensic": {
@@ -365,24 +408,14 @@
       "DKOM (Direct Kernel Object Manipulation) via driver for process/handle hiding"
     ]
   },
-  "aiHints": {
-    "analysisContext": "Windows .sys kernel driver is a PE image with IMAGE_SUBSYSTEM_NATIVE (1) in the Optional Header. Structure: MZ header + PE sig at e_lfanew + COFF(20B) + Optional header (224/240B) + sections. Driver-specific sections: INIT (discardable after init), PAGE (pageable code/data, swapped out at runtime). Entry point is DriverEntry(PDRIVER_OBJECT, PUNICODE_STRING). On 64-bit Windows, drivers must be Authenticode-signed (Microsoft kernel code signing certificate). The .sys extension is the only reliable PE-level differentiator from EXE/DLL (subsystem=NATIVE is common but not strictly required).",
-    "knownVulnerabilities": [
-      "BYOVD (Bring Your Own Vulnerable Driver): attackers load a legitimately signed but vulnerable driver to gain kernel access",
-      "CVE-2021-21551: Dell DBUtil_2_3.sys — arbitrary kernel read/write used by ransomware groups",
-      "Kernel Patch Protection (PatchGuard) bypass via driver exploits on x64 Windows",
-      "Driver TOCTOU races in interrupt handlers"
-    ],
-    "suggestedInspections": [
-      "Verify MZ at offset 0 and PE sig at e_lfanew",
-      "Check Optional Header Subsystem field == 1 (NATIVE) — non-1 is suspicious for a .sys file",
-      "Check coffTimeDateStamp — zero/0xFFFFFFFF = reproducible build; outside 1990-2050 = suspicious",
-      "Identify section names: INIT (discardable), PAGE (pageable) are driver-specific naming conventions",
-      "Verify Authenticode signature block (data directory index 4) is present for 64-bit drivers",
-      "Look for Import Directory (index 1) references to ntoskrnl.exe, hal.dll, ndis.sys — kernel APIs",
-      "Check if driver imports ZwMapViewOfSection + ZwAllocateVirtualMemory — common in BYOVD exploits"
-    ]
-  },
+  "aiHints": [
+    "Windows .sys drivers are PE files with IMAGE_SUBSYSTEM_NATIVE (1) in Optional Header Subsystem field",
+    "Driver entry point is DriverEntry(PDRIVER_OBJECT, PUNICODE_STRING) not WinMain or DllMain",
+    "Import table typically references ntoskrnl.exe, hal.dll, NDIS.sys, wdfldr.sys for kernel APIs",
+    "Code signing required for kernel drivers on 64-bit Windows (test signing bypasses for development)",
+    "Forensic: unsigned or self-signed .sys files at non-standard paths are high-risk rootkit indicators",
+    "KMDF/NDIS drivers have IMAGE_FILE_DLL (0x2000) characteristic despite being loaded as drivers"
+  ],
   "software": [
     "Windows Driver Kit (WDK)",
     "IDA Pro",
@@ -394,8 +427,13 @@
   ],
   "formatRelationships": {
     "category": "Executables",
-    "extensions": [".sys"],
-    "relatedFormats": ["PE_EXE", "DLL"],
+    "extensions": [
+      ".sys"
+    ],
+    "relatedFormats": [
+      "PE_EXE",
+      "DLL"
+    ],
     "sameStructureAs": "PE format (MZ + PE + COFF + Optional + Sections)"
   },
   "MimeTypes": [
@@ -413,7 +451,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 13,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -476,5 +514,48 @@
       }
     ],
     "note": "Inferred fuzz strategies for SYS. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "signatures": [
+    {
+      "value": "4D5A",
+      "offset": 0,
+      "label": "MZ — Windows driver/kernel module (PE format) header magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      {
+        "name": "mzMagic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 2,
+        "description": "MZ DOS header signature"
+      },
+      {
+        "name": "peOffset",
+        "type": "uint32le",
+        "offset": 60,
+        "length": 4,
+        "description": "Offset to PE header"
+      },
+      {
+        "name": "peSignature",
+        "type": "ascii",
+        "offset": -1,
+        "length": 4,
+        "description": "'PE\u0000\u0000' signature"
+      },
+      {
+        "name": "subsystem",
+        "type": "uint16le",
+        "offset": -1,
+        "length": 2,
+        "description": "Subsystem: 1=native (kernel driver), 2=Windows GUI, 3=Windows CUI"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "maxSignatureOffset": 0
 }

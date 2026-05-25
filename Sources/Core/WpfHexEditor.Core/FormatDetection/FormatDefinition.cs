@@ -208,6 +208,12 @@ namespace WpfHexEditor.Core.FormatDetection
         public TechnicalDetails TechnicalDetails { get; set; }
 
         /// <summary>
+        /// Absorbs unknown JSON properties (e.g. "$schema") without throwing.
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> ExtensionData { get; set; }
+
+        /// <summary>
         /// Validate this format definition.
         /// Text formats (IsTextFormat=true) do not require a blocks array —
         /// they are identified by their extension/signature alone and opened

@@ -1,51 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -58,8 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
-  <!-- Finnish (fi-FI) -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
     <value>Olet saavuttanut tiedoston lopun. Haluatko lisätä tavun? Tätä toimintoa ei voi peruuttaa jatkaessasi.</value>
   </data>
@@ -699,8 +697,6 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Invertoi kaikki bitit jokaisessa tavussa (XOR 0xFF:llä)</value>
   </data>
-
-  <!-- TBL Editor Localizations -->
   <data name="TblEditor_Title" xml:space="preserve">
     <value>TBL-merkkitaulukon muokkain</value>
     <comment>TBL Editor - Title</comment>
@@ -833,257 +829,246 @@
     <value>● Muokattu</value>
     <comment>TBL Editor - Modified</comment>
   </data>
-
-<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Näytä rivinumerot (väliaikainen)</value>
   </data>
-<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
     <value>Tämä ominaisuus ei ole vielä käytettävissä V2:ssa</value>
   </data>
-<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
     <value>Näytä tavuvihje</value>
   </data>
-
-
-
-<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
     <value>Salli lisäys mihin tahansa</value>
   </data>
-<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
     <value>Salli tavun poistaminen</value>
   </data>
-<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
     <value>Salli tiedoston laajentaminen</value>
   </data>
-<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
     <value>Liittäminen vaatii vahvistuksen</value>
   </data>
-
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+  <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
     <value>Ylikirjoita</value>
   </data>
-
-
-
-
-<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Salli tiedoston pudottaminen</value>
   </data>
-<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
     <value>Vahvistus tiedoston pudottamisesta</value>
   </data>
-<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Salli tekstin pudottaminen</value>
   </data>
-
-<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
     <value>Automaattinen saman tavun valinta (kaksoisnapsautus)</value>
   </data>
-<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+  <data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
     <value>Salli merkistä navigointi napsauttamalla</value>
   </data>
-<data name="HexSettings_Highlight_Color" xml:space="preserve">
+  <data name="HexSettings_Highlight_Color" xml:space="preserve">
     <value>Automaattinen korostusväri:</value>
   </data>
-<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+  <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
     <value>Ota rinnakkaishaku käyttöön</value>
   </data>
-<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+  <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
     <value>Käytä jokerimerkkihakua (??)</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+  <data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
     <value>Korosta kaikki tulokset</value>
   </data>
-
-<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
     <value>Salli tavujen laskenta</value>
   </data>
-<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Tavusiirto vasemmalle:</value>
   </data>
-
-
-<data name="HexSettings_Title" xml:space="preserve">
+  <data name="HexSettings_Title" xml:space="preserve">
     <value>HEX-EDITORIN ASETUKSET</value>
   </data>
-<data name="HexSettings_Display_Title" xml:space="preserve">
+  <data name="HexSettings_Display_Title" xml:space="preserve">
     <value>📺 Näyttöasetukset</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
     <value>Näytä rivinumerot (paikkamerkki)</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
     <value>Tämä ominaisuus ei ole vielä käytettävissä V2:ssa</value>
   </data>
-<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
     <value>Näytä tavuvihje</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+  <data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
     <value>Tavua per rivi:</value>
   </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+  <data name="HexSettings_Display_ZoomScale" xml:space="preserve">
     <value>Zoomaustaso:</value>
   </data>
-<data name="HexSettings_Editing_Title" xml:space="preserve">
+  <data name="HexSettings_Editing_Title" xml:space="preserve">
     <value>✏️ Muokkausasetukset</value>
   </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+  <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
     <value>Vain luku -tila</value>
   </data>
-<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
     <value>Salli lisäys mihin tahansa</value>
   </data>
-<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
     <value>Salli tavun poistaminen</value>
   </data>
-<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
     <value>Salli tiedoston laajentaminen</value>
   </data>
-<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
     <value>Liittäminen vaatii vahvistuksen</value>
   </data>
-<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+  <data name="HexSettings_Editing_EditMode" xml:space="preserve">
     <value>Muokkaustila:</value>
   </data>
-
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
+  <data name="HexSettings_Editing_Insert" xml:space="preserve">
     <value>Lisää</value>
   </data>
-<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+  <data name="HexSettings_Editing_CaretMode" xml:space="preserve">
     <value>Kohdistintila:</value>
   </data>
-<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+  <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 Leikepöytäasetukset</value>
   </data>
-<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
     <value>Oletuskopiointi-tila:</value>
   </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+  <data name="HexSettings_Clipboard_HexString" xml:space="preserve">
     <value>Hex-merkkijono</value>
   </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+  <data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
     <value>Tavutaulukko</value>
   </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
     <value>C#-koodi</value>
   </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
     <value>VB-koodi</value>
   </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CCode" xml:space="preserve">
     <value>C-koodi</value>
   </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
     <value>Java-koodi</value>
   </data>
-<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+  <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 Vedä ja pudota -asetukset</value>
   </data>
-<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
     <value>Salli tiedoston pudottaminen</value>
   </data>
-<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
     <value>Vahvistus tiedoston pudottamisesta</value>
   </data>
-<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
     <value>Salli tekstin pudottaminen</value>
   </data>
-<data name="HexSettings_Highlight_Title" xml:space="preserve">
+  <data name="HexSettings_Highlight_Title" xml:space="preserve">
     <value>🎨 Korostus ja valinta</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
     <value>Korosta valittu tavu automaattisesti</value>
   </data>
-<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
     <value>Valitse sama tavu automaattisesti (kaksoisnapsautus)</value>
   </data>
-<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
     <value>Salli merkistä navigointi napsauttamalla</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
     <value>Automaattinen korostusväri:</value>
   </data>
-<data name="HexSettings_Search_Title" xml:space="preserve">
+  <data name="HexSettings_Search_Title" xml:space="preserve">
     <value>🔍 Hakuasetukset</value>
   </data>
-<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+  <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
     <value>Ota rinnakkaishaku käyttöön</value>
   </data>
-<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+  <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>Käytä jokerimerkkihakua (??)</value>
   </data>
-
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+  <data name="HexSettings_Search_ResultLimit" xml:space="preserve">
     <value>Hakutulosraja:</value>
   </data>
-<data name="HexSettings_Statistics_Title" xml:space="preserve">
+  <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 Tilastot</value>
   </data>
-<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
     <value>Salli tavujen laskenta</value>
   </data>
-<data name="HexSettings_Advanced_Title" xml:space="preserve">
+  <data name="HexSettings_Advanced_Title" xml:space="preserve">
     <value>⚙️ Lisäasetukset</value>
   </data>
-<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Tavusiirto vasemmalle:</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+  <data name="HexSettings_Advanced_SaveState" xml:space="preserve">
     <value>Tallenna nykyinen tila</value>
   </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+  <data name="HexSettings_Advanced_LoadState" xml:space="preserve">
     <value>Lataa tallennettu tila</value>
   </data>
-<data name="HexSettings_ResetButton" xml:space="preserve">
+  <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 Palauta kaikki oletusasetuksiin</value>
   </data>
-<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+  <data name="HexSettings_StatusBar_Title" xml:space="preserve">
     <value>Tilarivi</value>
   </data>
-<data name="HexSettings_Colors_Title" xml:space="preserve">
+  <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>Värit</value>
   </data>
-<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+  <data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
     <value>Vieritysmerkit</value>
     <comment>Hex editor settings - Scroll Markers category header</comment>
   </data>
-<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
     <value>Näytä kirjanmerkkimerkit</value>
     <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
     <value>Näytä muokattujen tavujen merkit</value>
     <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
     <value>Näytä lisättyjen tavujen merkit</value>
     <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
     <value>Näytä poistettujen tavujen merkit</value>
     <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
     <value>Näytä hakutulosmerkit</value>
     <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
   </data>
-<data name="HexSettings_Behavior_Title" xml:space="preserve">
+  <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>Toiminta</value>
   </data>
-<data name="HexSettings_Data_Title" xml:space="preserve">
+  <data name="HexSettings_Data_Title" xml:space="preserve">
     <value>Data</value>
   </data>
-<data name="HexSettings_Visual_Title" xml:space="preserve">
+  <data name="HexSettings_Visual_Title" xml:space="preserve">
     <value>Visuaalinen</value>
   </data>
-<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+  <data name="HexSettings_Keyboard_Title" xml:space="preserve">
     <value>Näppäimistö</value>
   </data>
-<data name="HexSettings_TBL_Title" xml:space="preserve">
+  <data name="HexSettings_TBL_Title" xml:space="preserve">
     <value>Merkkitaulukko</value>
   </data>
-<data name="HexSettings_SaveButton" xml:space="preserve"><value>Tallenna tila</value></data>
-<data name="HexSettings_LoadButton" xml:space="preserve"><value>Lataa tila</value></data>
+  <data name="HexSettings_SaveButton" xml:space="preserve">
+    <value>Tallenna tila</value>
+  </data>
+  <data name="HexSettings_LoadButton" xml:space="preserve">
+    <value>Lataa tila</value>
+  </data>
   <data name="HexSettings_BarChart_Title" xml:space="preserve">
     <value>📈 Bar Chart</value>
     <comment>Hex editor settings - Bar Chart category header</comment>
@@ -1120,35 +1105,75 @@
     <value>Näytä tilastot</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
-
-  <!-- ByteValueTooltip labels -->
-  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Ei dataa</value></data>
-  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Etumerkillinen</value></data>
-  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binääri</value></data>
-  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
-  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(ei tulostettava)</value></data>
-  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Oktaali</value></data>
-
-  <!-- HexEditor status messages -->
-  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Toiminto peruutettu</value></data>
-  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Tiedosto on jo olemassa</value></data>
-  <data name="StatusText_Ready" xml:space="preserve"><value>Valmis</value></data>
-  <data name="StatusText_FileSaved" xml:space="preserve"><value>Tiedosto tallennettu</value></data>
-  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Hakumerkit tyhjennetty.</value></data>
-  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Kaikki muutokset tyhjennetty</value></data>
-  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL suljettu, käytetään ASCII:ta</value></data>
-  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Ei valintaa käännettäväksi</value></data>
-  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Valinta on tyhjä</value></data>
-  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Ei valintaa bitti-invertointiin</value></data>
-  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Ei valintaa etsittäväksi</value></data>
-  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Tuloksia ei löydetty.</value></data>
-  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Koko: -</value></data>
-  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Ei valintaa</value></data>
-  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Sijainti: 0</value></data>
-  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Tila: Ylikirjoitus</value></data>
-  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Tavua/rivi: 16</value></data>
-
-  <!-- Search Module -->
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Ei dataa</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>Etumerkillinen</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>Binääri</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(ei tulostettava)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>Oktaali</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>Toiminto peruutettu</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Tiedosto on jo olemassa</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Valmis</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>Tiedosto tallennettu</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Hakumerkit tyhjennetty.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Kaikki muutokset tyhjennetty</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL suljettu, käytetään ASCII:ta</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Ei valintaa käännettäväksi</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>Valinta on tyhjä</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Ei valintaa bitti-invertointiin</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Ei valintaa etsittäväksi</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Tuloksia ei löydetty.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Koko: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Ei valintaa</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>Sijainti: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>Tila: Ylikirjoitus</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Tavua/rivi: 16</value>
+  </data>
   <data name="Search_NoMatches" xml:space="preserve">
     <value>Ei tuloksia</value>
   </data>
@@ -1206,7 +1231,6 @@
   <data name="Search_CloseTBL_Title" xml:space="preserve">
     <value>Sulje TBL</value>
   </data>
-  <!-- IPS Patcher -->
   <data name="IPS_Error_NoFileOpen" xml:space="preserve">
     <value>Avaa ensin ROM-tiedosto ennen patchin soveltamista.</value>
   </data>
@@ -1252,7 +1276,6 @@
   <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
     <value>Patch luotu</value>
   </data>
-  <!-- Undo/Redo history popup -->
   <data name="UndoHistory_Undo" xml:space="preserve">
     <value>Kumoa</value>
   </data>
@@ -1265,7 +1288,6 @@
   <data name="UndoHistory_Actions" xml:space="preserve">
     <value>toimintoa</value>
   </data>
-
   <data name="DynSettings_Title" xml:space="preserve">
     <value>Hex-editorin asetukset</value>
   </data>
@@ -1787,17 +1809,39 @@ Huomio: Täysi integraatio HexEditoriin vaatii yhteyden pääkäyttöliittymäma
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>Kopioi (auto)</value>
   </data>
-  <data name="WrapAroundString" xml:space="preserve"><value>Kierrä haku</value></data>
-  <data name="EncodingLabel" xml:space="preserve"><value>Koodaus:</value></data>
-  <data name="HexadecimalString" xml:space="preserve"><value>Heksadesimaali</value></data>
-  <data name="DecimalString" xml:space="preserve"><value>Desimaali</value></data>
-  <data name="GoToPositionTitle" xml:space="preserve"><value>Siirry sijaintiin</value></data>
-  <data name="GoToPositionHeader" xml:space="preserve"><value>Sijainti</value></data>
-  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 tai desimaali</value></data>
-  <data name="WildcardCheckbox" xml:space="preserve"><value>Jokeri (??)</value></data>
-  <data name="TruncateReplacementString" xml:space="preserve"><value>Katkaise korvaus hakupituuteen</value></data>
-  <data name="FindNextButtonLabel" xml:space="preserve"><value>Seuraava</value></data>
-  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Edellinen</value></data>
+  <data name="WrapAroundString" xml:space="preserve">
+    <value>Kierrä haku</value>
+  </data>
+  <data name="EncodingLabel" xml:space="preserve">
+    <value>Koodaus:</value>
+  </data>
+  <data name="HexadecimalString" xml:space="preserve">
+    <value>Heksadesimaali</value>
+  </data>
+  <data name="DecimalString" xml:space="preserve">
+    <value>Desimaali</value>
+  </data>
+  <data name="GoToPositionTitle" xml:space="preserve">
+    <value>Siirry sijaintiin</value>
+  </data>
+  <data name="GoToPositionHeader" xml:space="preserve">
+    <value>Sijainti</value>
+  </data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve">
+    <value>0x00000000 tai desimaali</value>
+  </data>
+  <data name="WildcardCheckbox" xml:space="preserve">
+    <value>Jokeri (??)</value>
+  </data>
+  <data name="TruncateReplacementString" xml:space="preserve">
+    <value>Katkaise korvaus hakupituuteen</value>
+  </data>
+  <data name="FindNextButtonLabel" xml:space="preserve">
+    <value>Seuraava</value>
+  </data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve">
+    <value>Edellinen</value>
+  </data>
   <data name="HE_SearchDialogTitle" xml:space="preserve">
     <value>Find / Replace</value>
   </data>
@@ -1927,26 +1971,64 @@ Huomio: Täysi integraatio HexEditoriin vaatii yhteyden pääkäyttöliittymäma
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
-  <data name="HE_CompareFileWith" xml:space="preserve"><value>Vertaile tiedostoa...</value></data>
-  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Vertaile valintaa vasemmalla...</value></data>
-  <data name="HE_NoTblLoaded" xml:space="preserve"><value>TBL-tiedostoa ei ladattu</value></data>
-  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEKSTI</value></data>
-  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
-  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKERI</value></data>
-  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL-TEKSTI</value></data>
-  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>SUHTEELLINEN</value></data>
-  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Havaittu tiedostoformaatti</value></data>
-  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Tunnistuksen luottamusarvo</value></data>
-  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Tunnistuksen luottamus: {0}</value></data>
-  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formaatti</value></data>
-  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Vaihda havaittu formaatti</value></data>
-  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Etsii kaikki esiintymät edistymisen näyttämällä</value></data>
-  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_CompareFileWith" xml:space="preserve">
+    <value>Vertaile tiedostoa...</value>
+  </data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve">
+    <value>Vertaile valintaa vasemmalla...</value>
+  </data>
+  <data name="HE_ToggleEntropyHeatmap" xml:space="preserve">
+    <value>Entropy Heatmap</value>
+  </data>
+  <data name="HE_NoTblLoaded" xml:space="preserve">
+    <value>TBL-tiedostoa ei ladattu</value>
+  </data>
+  <data name="HE_SearchTypeText" xml:space="preserve">
+    <value>TEKSTI</value>
+  </data>
+  <data name="HE_SearchTypeHex" xml:space="preserve">
+    <value>HEX</value>
+  </data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve">
+    <value>JOKERI</value>
+  </data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve">
+    <value>TBL-TEKSTI</value>
+  </data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve">
+    <value>SUHTEELLINEN</value>
+  </data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve">
+    <value>Havaittu tiedostoformaatti</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve">
+    <value>Tunnistuksen luottamusarvo</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve">
+    <value>Tunnistuksen luottamus: {0}</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve">
+    <value>Formaatti</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve">
+    <value>Vaihda havaittu formaatti</value>
+  </data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve">
+    <value>Etsii kaikki esiintymät edistymisen näyttämällä</value>
+  </data>
+  <data name="HE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Tulokset</value>
   </data>
-  <!-- HexEditor split view -->
-  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Jaa</value></data>
-  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Avaa tai sulje synkronoitu toinen hex-ruutu</value></data>
-  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Sulje jako</value></data>
+  <data name="HexEditor_SplitView_Toggle" xml:space="preserve">
+    <value>Jaa</value>
+  </data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve">
+    <value>Avaa tai sulje synkronoitu toinen hex-ruutu</value>
+  </data>
+  <data name="HexEditor_SplitView_Close" xml:space="preserve">
+    <value>Sulje jako</value>
+  </data>
 </root>

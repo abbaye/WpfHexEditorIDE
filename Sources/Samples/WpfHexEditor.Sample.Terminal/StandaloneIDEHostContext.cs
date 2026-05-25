@@ -154,6 +154,7 @@ file sealed class NullHexEditorService : IHexEditorService
     public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)  { }
     public void DisconnectParsedFieldsPanel()                       { }
     public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) { }
+    public void AddCustomBackgroundBlockRange(IEnumerable<WpfHexEditor.Core.CustomBackgroundBlock> blocks) { }
     public void ClearCustomBackgroundBlockByTag(string tag)         { }
 
 #pragma warning disable 67
@@ -175,6 +176,10 @@ file sealed class NullCodeEditorService : ICodeEditorService
 
     public string? GetContent()      => null;
     public string  GetSelectedText() => string.Empty;
+
+    public void NavigateToLine(int line, int column = 1)                                                             { }
+    public void AddLineHighlight(int line, System.Windows.Media.SolidColorBrush color, string description, string tag, double opacity = 0.35) { }
+    public void ClearLineHighlightsByTag(string tag)                                                                 { }
 
 #pragma warning disable 67
     public event EventHandler? DocumentChanged;

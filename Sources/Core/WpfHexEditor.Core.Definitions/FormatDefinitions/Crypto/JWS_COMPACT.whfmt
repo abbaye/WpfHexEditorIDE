@@ -1,0 +1,104 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "JSON Web Signature Compact Serialization",
+  "formatId": "JWS_COMPACT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "JSON Web Signature (JWS) compact serialization as defined by RFC 7515, also used as the JWT (JSON Web Token, RFC 7519) format. Three base64url-encoded segments: header, payload, and signature.",
+  "extensions": [".jws", ".jwt"],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "6579",
+      "offset": 0,
+      "label": "Base64url-encoded JSON header prefix 'ey'",
+      "weight": 0.6,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "ey_prefix", "type": "bytes", "description": "Base64url 'ey' prefix encoding the start of a JSON object header", "storeAs": "ascii" },
+      { "offset": 0, "size": 64, "name": "jose_header", "type": "bytes", "description": "Base64url-encoded JOSE header with alg (and optionally kid, typ, cty)", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["ey_prefix", "jose_header"],
+    "valueMaps": {
+      "alg": {
+        "HS256": "HMAC-SHA-256 symmetric signing",
+        "HS384": "HMAC-SHA-384 symmetric signing",
+        "HS512": "HMAC-SHA-512 symmetric signing",
+        "RS256": "RSASSA-PKCS1-v1_5 with SHA-256",
+        "RS384": "RSASSA-PKCS1-v1_5 with SHA-384",
+        "RS512": "RSASSA-PKCS1-v1_5 with SHA-512",
+        "ES256": "ECDSA P-256 with SHA-256",
+        "ES384": "ECDSA P-384 with SHA-384",
+        "PS256": "RSASSA-PSS with SHA-256",
+        "none": "Unsecured JWS (no signature)"
+      }
+    },
+    "tooltips": {
+      "ey_prefix": "JWS/JWT tokens begin with 'eyJ' (base64url of '{\"'), distinguishing them from random base64",
+      "jose_header": "First segment before first dot; contains 'alg' and optionally 'typ':'JWT', 'kid'"
+    }
+  },
+  "assertions": [
+    { "id": "JWS_EY_PREFIX", "field": "ey_prefix", "operator": "equals", "value": "6579", "description": "JWS/JWT compact tokens must begin with base64url 'ey' prefix" },
+    { "id": "JWS_THREE_PARTS", "field": "jose_header", "operator": "contains", "value": "2E", "description": "Must contain dot separators (0x2E) for the 3-segment structure" },
+    { "id": "JWS_HEADER_MINLEN", "field": "jose_header", "operator": "minLength", "value": "10", "description": "JOSE header segment must be at least 10 characters long" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "JOSE Header (base64url)", "color": "#3498DB" },
+      { "offset": 0, "label": "Payload (segment 2)", "color": "#2ECC71" },
+      { "offset": 0, "label": "Signature (segment 3)", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "JWS/JWT Summary",
+      "fields": ["ey_prefix", "jose_header"],
+      "format": "text"
+    },
+    {
+      "name": "JWS CSV Export",
+      "fields": ["ey_prefix"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "JWS compact serialization has exactly 3 dot-separated segments: header.payload.signature",
+    "alg:'none' in the header produces an unsecured JWS with empty signature; many libraries reject it as a security measure",
+    "JWT (RFC 7519) is a JWS whose payload is a JSON object with registered claims: iss, sub, aud, exp, nbf, iat, jti",
+    "HMAC-based algs (HS256/384/512) require the same secret for both signing and verification; unsuitable for public-key scenarios",
+    "ES256 with P-256 produces a 64-byte (512-bit) signature; RS256 produces signature equal in length to the RSA key modulus"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "JWT payloads are base64url-encoded but not encrypted; sensitive claims are visible without the signing key",
+      "Expired JWTs (exp claim in past) found in logs indicate replay-attack potential if not validated",
+      "alg:none tokens in application logs indicate a critical authentication bypass vulnerability"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "JWK_JSON", "relationship": "related", "note": "JWK provides public/private key material for JWS RS*/ES*/PS* algorithms" },
+    { "format": "JWE_COMPACT", "relationship": "sibling", "note": "JWE adds confidentiality on top of JWS integrity protection" }
+  ],
+  "software": [
+    { "name": "jwt.io", "role": "Online JWT debugger for decoding and verifying JWS/JWT tokens" },
+    { "name": "PyJWT / python-jose", "role": "Python libraries for JWT generation and verification" },
+    { "name": "jsonwebtoken (npm)", "role": "Node.js library for signing and verifying JWT/JWS tokens" }
+  ],
+  "useCases": [
+    "OAuth2 bearer token analysis in API traffic captures and access logs",
+    "Forensic inspection of JWT claims (iss, sub, exp, roles) in authentication incidents",
+    "Security audit of JWT algorithm choices to detect weak or 'none' algorithm usage"
+  ],
+  "technicalDetails": "JWS (RFC 7515) compact serialization encodes BASE64URL(JOSE Header) || '.' || BASE64URL(JWS Payload) || '.' || BASE64URL(JWS Signature). JWT (RFC 7519) is JWS with a JSON payload containing registered, public, or private claims. The signing input is ASCII(BASE64URL(header) || '.' || BASE64URL(payload)). ECDSA signatures in JWS use (r || s) concatenation, not DER encoding used in X.509.",
+  "completenessScore": 81
+}

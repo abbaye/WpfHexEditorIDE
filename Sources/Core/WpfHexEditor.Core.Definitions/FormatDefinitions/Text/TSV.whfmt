@@ -1,0 +1,123 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Tab-Separated Values",
+  "formatId": "TSV",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Tab-Separated Values (TSV) — a plain-text tabular data format where fields within a record are separated by horizontal tab characters (0x09) and records are separated by newline characters. TSV is safer than CSV for data that may contain commas, since tab characters rarely appear in typical data values. Widely used in bioinformatics (BLAST output, UCSC Genome Browser tracks, BED/GFF files), database exports, and spreadsheet interchange. Unlike CSV, TSV has no quoting convention in common use, making parsing simpler but requiring that field values do not contain tabs.",
+  "extensions": [".tsv"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "Header Row",
+        "type": "ascii",
+        "description": "Optional first line containing tab-separated column names. No universal standard mandates a header row, but many tools assume one by default.",
+        "storeAs": "headerRow"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Data Rows",
+        "type": "ascii",
+        "description": "One or more lines of tab-separated field values. Each row must have the same number of tab-delimited fields as the header (if present). Newlines within field values are not supported without escaping.",
+        "storeAs": "dataRows"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["headerRow", "dataRows"],
+    "valueMaps": {},
+    "tooltips": {
+      "headerRow": "First line of the file; tab-separated column names if present",
+      "dataRows": "Subsequent lines of tab-separated data records"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "headerRow",
+      "operator": "regex",
+      "value": "\t",
+      "severity": "warning",
+      "description": "TSV header row must contain at least one tab character (0x09) as field delimiter"
+    },
+    {
+      "id": "A2",
+      "field": "headerRow",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "TSV file must contain at least one row"
+    },
+    {
+      "id": "A3",
+      "field": "dataRows",
+      "operator": "notNull",
+      "severity": "info",
+      "description": "TSV file should contain data rows in addition to the header row"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First Data Row", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Last Row", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TSV Metadata (JSON)",
+      "format": "json",
+      "fields": ["headerRow", "dataRows"]
+    },
+    {
+      "name": "TSV as CSV (converted)",
+      "format": "csv",
+      "description": "Convert TSV to CSV by replacing tab delimiters with commas and quoting fields containing commas"
+    }
+  ],
+  "aiHints": [
+    "TSV uses horizontal tab (0x09) as field delimiter; no standard quoting convention exists unlike CSV",
+    "TSV is safer than CSV for data containing commas since tabs rarely appear in typical data values",
+    "Widely used in bioinformatics: BLAST output, UCSC Genome Browser tracks, BED, GFF, and GTF annotation formats all use tab separation",
+    "Many bioinformatics tools (SAMtools, BEDtools) output TSV by default; TSV is the de facto format for tab-delimited genomic data",
+    "TSV files from different operating systems may use LF (Unix), CRLF (Windows), or CR (old Mac) line endings",
+    "No MIME type is universally standardized; text/tab-separated-values and text/tsv are both used"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "TSV files may contain sensitive tabular data such as exported database records or spreadsheets",
+      "No encoding header; character set must be inferred (UTF-8 BOM or heuristic detection)",
+      "Maliciously crafted TSV imported into spreadsheet applications can trigger formula injection via =CMD, @SUM, etc."
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "CSV",
+      "relationship": "sibling",
+      "note": "CSV uses comma delimiter; TSV uses tab delimiter. Both are plain-text tabular formats."
+    }
+  ],
+  "software": [
+    "Microsoft Excel (open/save TSV)",
+    "LibreOffice Calc",
+    "Google Sheets",
+    "Python pandas (read_csv with sep='\\t')",
+    "R data.frame / read.table",
+    "UNIX cut, awk, sort tools"
+  ],
+  "useCases": [
+    "Bioinformatics data interchange (BLAST, UCSC Genome Browser, GFF)",
+    "Database table export and import",
+    "Spreadsheet data exchange without comma ambiguity"
+  ],
+  "technicalDetails": "TSV encodes tabular data as UTF-8 (or ASCII) plain text. Fields are delimited by U+0009 HORIZONTAL TAB. Records are delimited by U+000A LINE FEED (or U+000D U+000A CRLF on Windows). The format has no universally standardized MIME type, header convention, or quoting rules, making strict interoperability dependent on application-level agreements.",
+  "completenessScore": 81
+}

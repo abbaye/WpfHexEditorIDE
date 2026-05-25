@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Dolby Digital Plus",
   "formatId": "EAC3",
@@ -7,6 +8,24 @@
     ".eac3",
     ".ec3"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "0B77",
+      "offset": 0,
+      "label": "E-AC-3/AC-3 sync word 0x0B77 (big-endian)",
+      "weight": 0.9,
+      "strength": "Strong"
+    },
+    {
+      "value": "770B",
+      "offset": 0,
+      "label": "E-AC-3/AC-3 sync word 0x770B (little-endian byte-swap variant)",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "Dolby Digital Plus (E-AC-3 / Enhanced AC-3) — an advanced lossy multi-channel audio codec standardized in ATSC A/52:2012. Raw E-AC-3 files start with the same 2-byte sync word 0x0B77 as AC-3. The first frame header contains: strmtyp (stream type: independent/dependent/reserved), substreamid, frmsiz (frame size in 16-bit words), fscod (sample rate code), numblkscod (number of audio blocks per sync frame), acmod (audio channel mode), lfeon (LFE channel present). E-AC-3 extends AC-3 with: JOC (Joint Object Coding for Atmos), channel-based mixing, and up to 15.1 channels. Dolby Atmos metadata may be encoded as JOC extension in the enhanced bitstream.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

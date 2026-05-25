@@ -1,0 +1,106 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "High Efficiency Image Format",
+  "formatId": "HEIF",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "High Efficiency Image Format (HEIF/HEIC) is an image container format based on ISOBMFF (ISO Base Media File Format). HEIC uses HEVC (H.265) compression, offering roughly 2x better compression than JPEG. Developed by MPEG and popularized by Apple on iOS 11+.",
+  "extensions": [".heif", ".heic"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "66747970",
+      "offset": 4,
+      "label": "'ftyp' ISOBMFF box marker",
+      "weight": 0.7,
+      "strength": "Moderate"
+    },
+    {
+      "value": "68656963",
+      "offset": 8,
+      "label": "'heic' major brand",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 12,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "box_size", "type": "uint32be", "description": "Size of the ftyp box in bytes (big-endian)", "storeAs": "uint32" },
+      { "offset": 4, "size": 4, "name": "ftyp_marker", "type": "ascii", "description": "Box type identifier 'ftyp'", "storeAs": "string" },
+      { "offset": 8, "size": 4, "name": "major_brand", "type": "ascii", "description": "Major brand identifier (e.g. 'heic', 'heix', 'mif1')", "storeAs": "string" },
+      { "offset": 12, "size": 4, "name": "minor_version", "type": "uint32be", "description": "Minor version of the major brand specification", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["major_brand", "ftyp_marker", "box_size"],
+    "valueMaps": {
+      "major_brand": {
+        "heic": "HEVC-compressed still image (HEIC)",
+        "heix": "HEVC-compressed image with extended features",
+        "hevc": "HEVC image sequence",
+        "hevx": "HEVC image sequence extended",
+        "mif1": "Multi-image container (HEIF generic)",
+        "msf1": "HEIF image sequence"
+      }
+    },
+    "tooltips": {
+      "box_size": "Size of the ftyp box; typically 24 bytes for a simple heic file",
+      "ftyp_marker": "Must be 'ftyp' at offset 4; this is the ISOBMFF file type box",
+      "major_brand": "Defines the primary specification; 'heic' indicates HEVC-compressed still images",
+      "minor_version": "Typically 0; indicates minor revision of the major brand spec"
+    }
+  },
+  "assertions": [
+    { "id": "HEIF_001", "field": "ftyp_marker", "operator": "equals", "value": "ftyp", "description": "Bytes 4-7 must be 'ftyp' ISOBMFF box type" },
+    { "id": "HEIF_002", "field": "major_brand", "operator": "in", "value": ["heic", "heix", "hevc", "hevx", "mif1", "msf1"], "description": "Major brand must be a recognized HEIF brand" },
+    { "id": "HEIF_003", "field": "box_size", "operator": "greaterThanOrEqual", "value": 16, "description": "ftyp box must be at least 16 bytes" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "ftyp Box Size", "color": "#FF6B35" },
+      { "offset": 4, "label": "ftyp Box Type", "color": "#4ECDC4" },
+      { "offset": 8, "label": "Major Brand", "color": "#45B7D1" },
+      { "offset": 12, "label": "Minor Version", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Brand Info", "fields": ["major_brand", "minor_version", "ftyp_marker"], "format": "text" },
+    { "name": "ISOBMFF Header Hex", "fields": ["box_size", "ftyp_marker", "major_brand", "minor_version"], "format": "hex" }
+  ],
+  "aiHints": [
+    "HEIF is an ISOBMFF container; the first box is always 'ftyp' but may not start at offset 0 if a preceding box exists — however in practice it is at offset 0",
+    "The offset-4 signature is more reliable than offset-0 because box_size varies; always verify both 'ftyp' at offset 4 and brand at offset 8",
+    "HEIC uses HEVC (H.265) codec internally; HEIF is the container format, HEIC is the brand for HEVC-compressed content",
+    "Compatible brands listed after minor_version (multiple 4-byte entries) indicate additional specs the file conforms to",
+    "Apple's HEIC files typically include an 'exif' metadata box and often GPS + color profile data"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "HEIF files can embed multiple images, thumbnails, depth maps, and auxiliary images in one container — check all boxes for hidden payloads",
+      "EXIF metadata within HEIC may contain precise GPS coordinates and device identifiers",
+      "Mismatched box sizes in the ISOBMFF structure can indicate corruption or intentional manipulation"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "JPEG", "relationship": "successor", "note": "HEIC achieves roughly 2x better compression than JPEG at equivalent quality" },
+    { "format": "MP4", "relationship": "sibling", "note": "Both use ISOBMFF container structure; HEIF is the image-focused variant" },
+    { "format": "AVIF", "relationship": "sibling", "note": "AVIF uses the same ISOBMFF ftyp container but with AV1 codec instead of HEVC" }
+  ],
+  "software": [
+    { "name": "Apple Photos", "role": "Primary capture and display application on iOS/macOS producing HEIC files" },
+    { "name": "ImageMagick", "role": "Cross-platform conversion between HEIC and other formats via libheif" },
+    { "name": "libheif", "role": "Open-source reference library for reading and writing HEIF/HEIC files" },
+    { "name": "Windows 11", "role": "Native HEIC support via HEVC Video Extensions codec package" }
+  ],
+  "useCases": [
+    "Primary still image format for Apple iOS 11+ and macOS High Sierra+ cameras",
+    "Space-efficient photo storage where HEVC compression reduces file size vs JPEG",
+    "Multi-image sequences and burst photography stored in a single .heic container"
+  ],
+  "technicalDetails": "HEIF is defined by ISO/IEC 23008-12. It uses the ISO Base Media File Format (ISOBMFF, ISO/IEC 14496-12) as its container, which is also the basis for MP4. The file structure consists of boxes (atoms): the first is 'ftyp' identifying the brand, followed by 'mdat' (media data) and 'meta' (metadata including item locations). HEIC specifically uses HEVC (H.265) for compression. Images are stored as items referenced by an item location box ('iloc'). The format supports sequences, image grids, auxiliary images (depth maps, alpha channels), and derived images (rotation, cropping).",
+  "completenessScore": 84
+}

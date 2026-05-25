@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Sega Genesis/Mega Drive ROM",
   "formatId": "ROM_GEN",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".md",
     ".bin",
@@ -12,6 +13,7 @@
   "description": "Sega Genesis / Mega Drive ROM cartridge format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -26,15 +28,100 @@
       "https://github.com/sikthehedgehog/mdtools/blob/master/headgen/doc/header"
     ]
   },
-  "detection": {
-    "signature": "5345474120",
-    "offset": 256,
-    "required": false,
-    "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "53454741",
+      "offset": 256,
+      "label": "SEGA marker at 0x100 (console name field)",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 260,
+  "structure": {
+    "fields": [
+      { "name": "console_name",   "type": "ascii",    "offset": "0x100", "length": 16, "description": "SEGA MEGA DRIVE or SEGA GENESIS" },
+      { "name": "copyright",      "type": "ascii",    "offset": "0x110", "length": 16, "description": "Publisher and year: (C)SEGA YYYY.MMM" },
+      { "name": "domestic_name",  "type": "ascii",    "offset": "0x120", "length": 48, "description": "Japanese/domestic game title, space-padded" },
+      { "name": "overseas_name",  "type": "ascii",    "offset": "0x150", "length": 48, "description": "International game title, space-padded" },
+      { "name": "serial",         "type": "ascii",    "offset": "0x180", "length": 14, "description": "Serial number: GM XXXXXXX-XX" },
+      { "name": "checksum",       "type": "uint16be", "offset": "0x18E", "length": 2,  "description": "16-bit checksum of ROM bytes from 0x200" },
+      { "name": "io_support",     "type": "ascii",    "offset": "0x190", "length": 16, "description": "Supported I/O devices (J=3-btn, 6=6-btn, K=keyboard)" },
+      { "name": "rom_start",      "type": "uint32be", "offset": "0x1A0", "length": 4,  "description": "ROM start address (always 0x00000000)" },
+      { "name": "rom_end",        "type": "uint32be", "offset": "0x1A4", "length": 4,  "description": "ROM end address (file size - 1)" },
+      { "name": "ram_start",      "type": "uint32be", "offset": "0x1A8", "length": 4,  "description": "RAM start address (0xFF0000)" },
+      { "name": "ram_end",        "type": "uint32be", "offset": "0x1AC", "length": 4,  "description": "RAM end address (0xFFFFFF)" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["console_name", "domestic_name", "overseas_name", "serial", "checksum", "rom_end"],
+    "valueMaps": {
+      "console_name": {
+        "SEGA MEGA DRIVE ": "Japan/PAL variant",
+        "SEGA GENESIS    ": "USA variant"
+      }
+    },
+    "tooltips": {
+      "checksum": "16-bit big-endian sum of all words from offset 0x200; used for piracy detection",
+      "serial": "Format: GM XXXXXXX-XX; revision is encoded after the hyphen",
+      "io_support": "J=3-button pad, 6=6-button pad, K=keyboard, P=printer, T=tablet, V=paddle"
     }
   },
+  "assertions": [
+    {
+      "name": "SEGA marker present",
+      "expression": "bytes[0x100..0x103] == 53454741",
+      "severity": "error",
+      "message": "SEGA console name not found at 0x100; not a valid Mega Drive ROM"
+    },
+    {
+      "name": "ROM start is zero",
+      "expression": "rom_start == 0x00000000",
+      "severity": "warning",
+      "message": "ROM start address should be 0x00000000; unusual values indicate a non-standard ROM"
+    },
+    {
+      "name": "ROM end matches file size",
+      "expression": "rom_end == fileSize - 1",
+      "severity": "warning",
+      "message": "ROM end address does not match file size; ROM may be padded or truncated"
+    },
+    {
+      "name": "Checksum field present",
+      "expression": "checksum != 0",
+      "severity": "info",
+      "message": "Checksum at 0x18E is zero; this is unusual for commercial releases"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Console Name",   "offset": 256, "icon": "", "color": "#FF6B6B" },
+      { "name": "Domestic Title", "offset": 288, "icon": "", "color": "#4ECDC4" },
+      { "name": "Overseas Title", "offset": 336, "icon": "", "color": "#4ECDC4" },
+      { "name": "Serial/Checksum","offset": 384, "icon": "", "color": "#FFE66D" },
+      { "name": "ROM Address Map","offset": 416, "icon": "", "color": "#95E1D3" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Genesis ROM Header (JSON)",
+      "format": "json",
+      "fields": ["console_name", "domestic_name", "overseas_name", "serial", "checksum", "rom_end"]
+    },
+    {
+      "name": "Genesis ROM Header (C struct)",
+      "format": "c-struct",
+      "structName": "GEN_ROM_HEADER",
+      "fields": ["console_name", "domestic_name", "serial", "checksum", "rom_start", "rom_end"]
+    }
+  ],
+  "aiHints": [
+    "Console name at 0x100 is either 'SEGA MEGA DRIVE ' (Japan/Europe) or 'SEGA GENESIS    ' (USA variant)",
+    "Checksum at 0x18E is a 16-bit sum of all 16-bit words from offset 0x200 to end of ROM",
+    "ROM end address at 0x1A4 should equal file_size - 1; larger values indicate padding",
+    "I/O support string at 0x190 lists peripheral codes; 'J' is the standard 3-button controller",
+    "The first 0x100 bytes are the 68000 exception/interrupt vector table (no header there)"
+  ],
   "variables": {
     "currentOffset": 0,
     "domesticTitle": "",
@@ -261,17 +348,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "BlastEm",
+    "Genesis Plus GX",
+    "RetroArch",
+    "Gens/GS"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".md",
-      ".bin",
-      ".gen"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_SMS",
+      "relation": "predecessor",
+      "note": "Master System (SMS) is the predecessor platform; some GEN hardware can run SMS ROMs"
+    }
+  ],
+  "useCases": [
+    "Sega Genesis/Mega Drive game preservation",
+    "ROM hacking, translation, and checksum recalculation",
+    "Emulation accuracy testing with BlastEm",
+    "Homebrew development for the 68000-based hardware"
+  ],
+  "technicalDetails": "Mega Drive ROM header is at 0x100–0x1FF. Bytes 0x00–0xFF are the 68000 exception vector table. Checksum at 0x18E is computed as the 16-bit sum of all words from 0x200 to ROM end. SRAM presence is signalled by 'RA' at 0x1B0; SRAM range follows at 0x1B4–0x1BB.",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -289,11 +385,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 19,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -304,22 +400,15 @@
     "readUInt32LE": "Read executable header"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Sega Genesis / Mega Drive ROM cartridge format",
-    "suggestedInspections": [
-      "Validate Sega Genesis/Mega Drive ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "Incorrect checksum at 0x18E is the most common indicator of a modified or pirated ROM",
+      "SMD format (interleaved banks) uses a different file layout and must be deinterleaved before parsing",
+      "Country codes and domestic/overseas names may differ between region variants of the same game"
     ]
   },
   "diff": {
-    "keyFields": [
-      "console_name"
-    ],
+    "keyFields": ["console_name", "domestic_name", "overseas_name", "serial", "checksum"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for ROM_GEN. Compare key structural fields; ignore volatile metadata."
   },

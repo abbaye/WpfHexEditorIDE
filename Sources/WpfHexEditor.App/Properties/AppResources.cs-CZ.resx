@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Ulo&#382;it rozlo&#382;en&#237;</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Na&#269;&#237;st rozlo&#382;en&#237;</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Obnovit rozlo&#382;en&#237;</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>Obnovit výchozí rozložení? Otevřené dokumenty budou zachovány.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Vymazat cestovní data…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Vymazat cestovní data</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Tím se odstraní uložená nastavení, rozložení a data relace. Nainstalovaná rozšíření nebudou ovlivněna. Pokračovat?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Cestovní data byla vymazána. Pro použití změn se doporučuje restart. Restartovat nyní?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>Byla zjištěna poškozená data roamingu ({0}). Zálohujte a resetujte pro opravu nebo ignorujte a pokračujte.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>Zálohovat &amp; resetovat</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>Ignorovat</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>Obnovit ze zálohy…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>Obnovit data roamingu ze zálohy '{0}'? Aktuální soubory budou přepsány.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>Žádná záloha nenalezena. Pro vytvoření zálohy použijte alespoň jednou možnost 'Vymazat data roamingu'.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>Záloha byla úspěšně obnovena. Restartovat nyní pro použití změn?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>P&#345;epnout _z&#225;mek rozlo&#382;en&#237;</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_N&#225;stroje</value></data>
@@ -496,6 +508,89 @@
   <data name="APP_WikiButton" xml:space="preserve"><value>Wiki</value></data>
   <data name="APP_ReportIssueButton" xml:space="preserve"><value>Nahlásit problém</value></data>
   <data name="APP_FullChangelogButton" xml:space="preserve"><value>Celý changelog</value></data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>START</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>PŘIPNUTO</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Funkce</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Oprava</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Výkon</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Připnout</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Odepnout</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Odebrat z posledních</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Hledat v posledních…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analyzovat PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filtr:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Importy</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exporty</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sekce</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Hlavičky</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Není PE soubor — nejprve otevřete spustitelný soubor nebo DLL.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Dekódovat</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Kopírovat</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Režim:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Klíč (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Posun:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Použít výběr</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bajty:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>Zavřít</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Zobrazit v:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>Neuložené změny</value></data>
@@ -788,4 +883,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Kopírovat umístění ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Otevřít u deklarace</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Kopírovat název symbolu</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Spustit</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Min. délka:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filtrovat…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Délka</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Kódování</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Hodnota</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Bajty</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Kontext</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Bajtový offset řetězce v souboru (hexadecimálně)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Počet surových bajtů obsazených tímto řetězcem</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Zjištěné kódování: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC nebo TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Surové hexadecimální bajty odpovídající oblasti</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Dekódovaná hodnota řetězce</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Počet řetězců se stejnou dekódovanou hodnotou (oranžová = nalezeny duplikáty)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 bajty před (šedá) + odpovídající bajty (barevně dle kódování) + 4 bajty po (šedá)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Filtr regulárních výrazů — je-li aktivní, vyhledávací pole je zpracováno jako regulární výraz</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Soubor se od posledního skenování změnil — stiskněte F5 pro opětovné skenování</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Synchronizovat kurzor HexEditoru s mřížkou</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Zvýraznit viditelné výsledky</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Vymazat zvýraznění</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Exportovat…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Načíst soubor TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Spustit (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Odebrat TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Připnout/Odepnout (přežije filtr)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Minimální délka řetězce</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Minimální počet různých znaků v řetězci</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filtrovat od offsetu (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filtrovat do offsetu (hex, 0 = bez omezení)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Skrýt výsledky v blocích s vysokou entropií</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Soubor ke skenování</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Živý filtr (F3 = další, Shift+F3 = předchozí)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> ZASTARALÉ</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Vyl. vysokou entropii</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Soubor:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Kódování:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

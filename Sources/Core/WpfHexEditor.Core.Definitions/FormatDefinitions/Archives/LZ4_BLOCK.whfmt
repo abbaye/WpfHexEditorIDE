@@ -1,0 +1,93 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "LZ4 Block Format",
+  "formatId": "LZ4_BLOCK",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "LZ4 block format is the raw, low-level compression primitive of LZ4 without any framing. A standalone .lz4b file may be a raw LZ4 block or wrapped in the LZ4 frame format. The LZ4 frame magic 0x04224D18 identifies a framed LZ4 file; raw blocks have no magic bytes.",
+  "extensions": [".lz4b"],
+  "category": "Archive",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "04224D18",
+      "offset": 0,
+      "label": "LZ4 frame format magic (may indicate LZ4 frame wrapper around block data)",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "lz4_frame_magic", "type": "uint32le", "description": "LZ4 frame magic 0x184D2204 (little-endian); present only if wrapped in LZ4 frame format", "storeAs": "uint32" },
+      { "offset": 4, "size": 1, "name": "flg_byte", "type": "uint8", "description": "LZ4 frame descriptor FLG byte: version(2b), B.Indep(1b), B.Checksum(1b), C.Size(1b), C.Checksum(1b), reserved(1b), DictID(1b)", "storeAs": "uint8" },
+      { "offset": 5, "size": 1, "name": "bd_byte", "type": "uint8", "description": "LZ4 frame descriptor BD byte: reserved(4b), block_maxsize(3b), reserved(1b)", "storeAs": "uint8" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["lz4_frame_magic", "flg_byte", "bd_byte"],
+    "valueMaps": {
+      "bd_byte": {
+        "64": "Block max size: 64KB",
+        "80": "Block max size: 256KB",
+        "96": "Block max size: 1MB",
+        "112": "Block max size: 4MB"
+      }
+    },
+    "tooltips": {
+      "lz4_frame_magic": "Little-endian magic 0x184D2204 (stored as 04 22 4D 18); confirms LZ4 frame wrapping",
+      "flg_byte": "Frame descriptor flags; bits 7-6 must be 01 (version); B.Indep=independent blocks",
+      "bd_byte": "Block maximum size selector; bits 6-4 determine maximum block size"
+    }
+  },
+  "assertions": [
+    { "id": "LZ4B_001", "field": "lz4_frame_magic", "operator": "equals", "value": 407708164, "description": "LZ4 frame magic must be 0x184D2204 (407708164 decimal) when frame-wrapped" },
+    { "id": "LZ4B_002", "field": "flg_byte", "operator": "bitwiseAnd", "value": 64, "description": "FLG byte version bits (7-6) must be 01 (value 64 after masking)" },
+    { "id": "LZ4B_003", "field": "bd_byte", "operator": "in", "value": [64, 80, 96, 112], "description": "BD byte block max size field must be a valid value (64, 80, 96, or 112)" }
+  ],
+  "navigation": [
+    { "offset": 0, "label": "LZ4 Frame Magic (0x04224D18 LE)", "color": "#FF6B35" },
+    { "offset": 4, "label": "FLG Descriptor Byte", "color": "#4ECDC4" },
+    { "offset": 5, "label": "BD Block Descriptor Byte", "color": "#45B7D1" },
+    { "offset": 6, "label": "Optional Content Size (8 bytes if C.Size=1)", "color": "#96CEB4" }
+  ],
+  "exportTemplates": [
+    { "name": "Frame Header", "fields": ["lz4_frame_magic", "flg_byte", "bd_byte"], "format": "text" },
+    { "name": "Magic and Flags Hex", "fields": ["lz4_frame_magic", "flg_byte", "bd_byte"], "format": "hex" }
+  ],
+  "aiHints": [
+    "LZ4 block format (raw) has zero magic bytes; a raw LZ4 block starts with a 4-byte token indicating literal length and match length for each sequence",
+    "LZ4 frame format (0x184D2204) wraps one or more LZ4 blocks with a descriptor and optional checksums; this is what the standard .lz4 extension represents",
+    "LZ4_BLOCK refers to the raw compression block without any framing; it is identified by external metadata (size, dictionary) rather than file magic",
+    "Each LZ4 block sequence: 1-byte token (4b literal_len + 4b match_len), optional extra literal length bytes, literal data, offset (2 bytes LE), optional extra match length bytes",
+    "LZ4 decompression requires knowing the original uncompressed size; this is typically stored in the LZ4 frame content size field or passed externally"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Raw LZ4 blocks without frame headers cannot be verified for integrity without external checksums",
+      "LZ4 is very fast to decompress; a decompression bomb is possible if the content size is not validated before allocation",
+      "The LZ4 frame checksum (XXHash32) provides integrity verification when present; absence of checksum reduces tamper detectability"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "LZ4", "relationship": "variant", "note": "LZ4.whfmt covers the standard LZ4 frame format (.lz4); LZ4_BLOCK is the raw block-only variant" },
+    { "format": "ZSTD", "relationship": "alternative", "note": "Zstandard offers better compression ratios than LZ4 while remaining very fast; LZ4 prioritizes speed above all" },
+    { "format": "SNAPPY", "relationship": "alternative", "note": "Snappy (Google) is similar to LZ4 in targeting fast compression over high ratios" }
+  ],
+  "software": [
+    { "name": "lz4 CLI (lz4.org)", "role": "Reference command-line tool for LZ4 frame format compression and decompression" },
+    { "name": "liblz4", "role": "Reference C library exposing both LZ4 block API and LZ4 frame API" },
+    { "name": "ClickHouse / Apache Kafka", "role": "Database and messaging systems using LZ4 block compression internally for data storage" },
+    { "name": "Linux kernel", "role": "Uses LZ4 for fast decompression of compressed kernel images and initrd" }
+  ],
+  "useCases": [
+    "Database internal storage compression requiring maximum decompression throughput (ClickHouse, RocksDB)",
+    "Network packet compression in low-latency protocols where CPU overhead must be minimized",
+    "Operating system kernel and initrd compression for fast boot on embedded systems"
+  ],
+  "technicalDetails": "LZ4 block format is a pure compression algorithm without framing. A compressed block is a sequence of sequences, each consisting of: a 1-byte token (high nibble = literal length 0-14, low nibble = match length offset 0-14; value 15 indicates additional length bytes follow), literal data bytes (literal_length bytes), a 2-byte little-endian match offset, and optional extra match length bytes if match nibble was 15. The decompressor copies literal bytes directly, then copies match_length+4 bytes from the position (current_output_pos - match_offset). The minimum match length is 4. Maximum match distance is 65535. LZ4 frame format wraps blocks with magic (0x184D2204), FLG/BD descriptors, optional content size and dictionary ID, block size-prefixed blocks, and optional checksums using XXHash32.",
+  "completenessScore": 80
+}

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "LDAP Data Interchange Format",
+  "formatId": "LDIF",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "LDAP Data Interchange Format (LDIF) — a plain-text format for representing LDAP directory entries and change records defined in RFC 2849. An LDIF file begins with an optional 'version: 1' line followed by one or more records. Each record begins with a 'dn:' (Distinguished Name) attribute and continues with attribute-value pairs separated by colons. Records are separated by blank lines. LDIF supports base64-encoded values (double colon '::') for binary or non-ASCII data. Change records use changeType (add/modify/delete/modrdn) directives. LDIF is the primary format for exporting, importing, and migrating directory service data (Active Directory, OpenLDAP, Novell eDirectory).",
+  "extensions": [".ldif"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "76657273696F6E3A",
+      "offset": 0,
+      "label": "LDIF version header 'version:'",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "Version Header",
+        "type": "ascii",
+        "description": "Optional first line 'version: 1' per RFC 2849. Some LDIF files omit this and start directly with a 'dn:' line.",
+        "storeAs": "versionHeader"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Distinguished Name",
+        "type": "ascii",
+        "description": "The 'dn: CN=...' line identifying the directory entry. The DN follows X.500 naming conventions with comma-separated relative distinguished names.",
+        "storeAs": "distinguishedName"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Attribute-Value Pairs",
+        "type": "ascii",
+        "description": "Attribute entries of the form 'attributeType: value'. Values with non-ASCII content or leading/trailing spaces are base64-encoded with double colon '::' separator.",
+        "storeAs": "attributes"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["versionHeader", "distinguishedName", "attributes"],
+    "valueMaps": {},
+    "tooltips": {
+      "versionHeader": "Optional RFC 2849 version declaration ('version: 1')",
+      "distinguishedName": "Entry DN — fully qualified directory path",
+      "attributes": "LDAP attribute-value pairs defining the entry properties"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "versionHeader",
+      "operator": "regex",
+      "value": "^version: 1$",
+      "severity": "warning",
+      "description": "LDIF version header if present must be 'version: 1' per RFC 2849"
+    },
+    {
+      "id": "A2",
+      "field": "distinguishedName",
+      "operator": "regex",
+      "value": "^dn:",
+      "severity": "error",
+      "description": "LDIF records must begin with a 'dn:' Distinguished Name attribute"
+    },
+    {
+      "id": "A3",
+      "field": "attributes",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "LDIF record must contain at least one attribute-value pair after the DN line"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Header", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First DN Entry", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "First Attribute Block", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "LDIF Entry (JSON)",
+      "format": "json",
+      "fields": ["distinguishedName", "attributes"]
+    },
+    {
+      "name": "LDIF Attribute Summary",
+      "format": "text",
+      "description": "Extract all attribute type names found across all LDIF records"
+    }
+  ],
+  "aiHints": [
+    "LDIF records are separated by blank lines; each record starts with 'dn:' and contains attribute-value pairs",
+    "Double colon '::' before a value means the value is base64-encoded (required for binary data or non-ASCII characters)",
+    "LDIF change records use 'changetype: add/modify/delete/modrdn' to describe directory modifications",
+    "Active Directory LDAP exports use LDIF for bulk user/group import and schema replication",
+    "Line folding: LDIF lines longer than 76 characters are continued on the next line starting with a single space",
+    "RFC 2849 defines the format; LDIF files exported from different LDAP implementations may have vendor-specific extensions"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "LDIF files contain directory service data including user accounts, passwords (hashed), group memberships, and organizational structure",
+      "An LDIF export from Active Directory may contain sensitive security-relevant attributes (userAccountControl, memberOf, sAMAccountName)",
+      "LDIF files are frequently exfiltrated in directory service breaches — treat as high-sensitivity artifacts",
+      "Password attributes (userPassword, unicodePwd) may appear in LDIF as base64-encoded hashes",
+      "LDIF import can be weaponized to add unauthorized privileged accounts or modify ACLs"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "PROPERTIES",
+      "relationship": "sibling",
+      "note": "Both are text key-value formats; LDIF is structured for directory entries while PROPERTIES is for application configuration"
+    }
+  ],
+  "software": [
+    "OpenLDAP (ldapadd/ldapmodify)",
+    "Microsoft Active Directory (ldifde.exe)",
+    "Apache Directory Studio",
+    "Novell eDirectory (ldif import/export)",
+    "Oracle Directory Server",
+    "IBM Tivoli Directory Server"
+  ],
+  "useCases": [
+    "LDAP directory server bulk import and export (user migration, AD consolidation)",
+    "Directory schema replication and backup",
+    "Identity and Access Management (IAM) provisioning workflows"
+  ],
+  "technicalDetails": "LDIF (RFC 2849) encodes LDAP directory entries as UTF-8 plain text. Each record starts with 'dn:' followed by attribute-value pairs, one per line. Records are separated by blank lines. Values with binary content or non-ASCII characters are base64-encoded after '::'. Long lines are folded at 76 characters with continuation lines starting with a single space. Change records add 'changetype:' directives. Comment lines start with '#'.",
+  "completenessScore": 82
+}

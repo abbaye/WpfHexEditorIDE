@@ -1,64 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-    GNU Affero General Public License v3.0  2026
-    Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.6
-    Project     : WpfHexEditor.Editor.DiffViewer
-    File        : DiffViewerResources.fr-CA.resx
-    Description : French (Canada) localized strings for the DiffViewer editor.
--->
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-
-  <data name="DiffViewer_Comparing" xml:space="preserve"><value>Comparare în curs…</value></data>
-  <data name="Common_ColOffset" xml:space="preserve"><value>Decalaj</value></data>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DiffViewer_Comparing" xml:space="preserve">
+    <value>Comparare în curs…</value>
+  </data>
+  <data name="Common_ColOffset" xml:space="preserve">
+    <value>Decalaj</value>
+  </data>
+  <data name="DiffViewer_TabHex" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="DiffViewer_TabText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="DiffViewer_ExportPatch" xml:space="preserve">
+    <value>Export .patch</value>
+  </data>
+  <data name="DiffViewer_ExportPatchTooltip" xml:space="preserve">
+    <value>Export as unified diff patch file (.patch)</value>
+  </data>
+  <data name="DiffViewer_TextModeOnly" xml:space="preserve">
+    <value>Available in Text mode only</value>
+  </data>
+  <data name="DiffViewer_ColLine" xml:space="preserve">
+    <value>Line</value>
+  </data>
+  <data name="DiffViewer_LineEqual" xml:space="preserve">
+    <value>Equal</value>
+  </data>
+  <data name="DiffViewer_LineModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="DiffViewer_LineDeleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="DiffViewer_LineInserted" xml:space="preserve">
+    <value>Inserted</value>
+  </data>
+  <data name="DiffViewer_NotTextFile" xml:space="preserve">
+    <value>File does not appear to be text or is too large for text diff.</value>
+  </data>
+  <data name="DiffViewer_PatchSaved" xml:space="preserve">
+    <value>Patch saved: {0}</value>
+  </data>
+  <data name="DiffViewer_TabMerge" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="DiffViewer_MergeConflicts" xml:space="preserve">
+    <value>Conflicts: {0}</value>
+  </data>
+  <data name="DiffViewer_MergeNoConflicts" xml:space="preserve">
+    <value>No conflicts — merge is clean.</value>
+  </data>
+  <data name="DiffViewer_MergeAcceptOurs" xml:space="preserve">
+    <value>Accept Ours</value>
+  </data>
+  <data name="DiffViewer_MergeAcceptTheirs" xml:space="preserve">
+    <value>Accept Theirs</value>
+  </data>
+  <data name="DiffViewer_MergeAcceptBoth" xml:space="preserve">
+    <value>Accept Both</value>
+  </data>
+  <data name="DiffViewer_MergeNextConflict" xml:space="preserve">
+    <value>Next conflict (F9)</value>
+  </data>
+  <data name="DiffViewer_MergePrevConflict" xml:space="preserve">
+    <value>Previous conflict (Shift+F9)</value>
+  </data>
+  <data name="DiffViewer_MergeSave" xml:space="preserve">
+    <value>Save Merged…</value>
+  </data>
+  <data name="DiffViewer_MergeSaveTooltip" xml:space="preserve">
+    <value>Save the merged output to a file</value>
+  </data>
+  <data name="DiffViewer_MergeSaved" xml:space="preserve">
+    <value>Merged file saved: {0}</value>
+  </data>
+  <data name="DiffViewer_MergeUnresolvedWarning" xml:space="preserve">
+    <value>There are {0} unresolved conflict(s). Save anyway?</value>
+  </data>
+  <data name="DiffViewer_MergeBaseLabel" xml:space="preserve">
+    <value>— (base)</value>
+  </data>
+  <data name="DiffViewer_MergeOpenBase" xml:space="preserve">
+    <value>Open Base File…</value>
+  </data>
+  <data name="DiffViewer_MergeOpenBaseTooltip" xml:space="preserve">
+    <value>Open a base (ancestor) file to enable 3-way merge</value>
+  </data>
+  <data name="DiffViewer_MergeNotReady" xml:space="preserve">
+    <value>Open two files and a base file to start a 3-way merge.</value>
+  </data>
 </root>

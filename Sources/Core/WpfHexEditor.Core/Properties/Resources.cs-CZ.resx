@@ -1,51 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexTyp>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexTyp>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexTyp>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexTyp>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexTyp>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexTyp>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexTyp>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexTyp>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexTyp>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexTyp>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexTyp>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexTyp>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexTyp>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexTyp>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexTyp>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexTyp>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexTyp>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexTyp>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexTyp>
+          </xs:element>
+        </xs:choice>
+      </xs:complexTyp>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -58,8 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
-  <!-- French (Canada) -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
     <value>Dosahli jste konce souboru. Chcete přidat bajt? Tuto operaci nelze vrátit, pokud budete pokračovat.</value>
   </data>
@@ -699,8 +697,6 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Invertovat všechny bity každého bajtu (XOR s 0xFF)</value>
   </data>
-
-  <!-- TBL Editor Localizations -->
   <data name="TblEditor_Title" xml:space="preserve">
     <value>Editor tabulky znaků TBL</value>
     <comment>TBL Editor - Title</comment>
@@ -833,262 +829,246 @@
     <value>● MBdifié</value>
     <comment>TBL Editor - MBdified</comment>
   </data>
-
-<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Zobrazit čísla řádků (dočasné)</value>
   </data>
-<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
     <value>Tato funkce není zatím dostupná ve V2</value>
   </data>
-<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
     <value>Zobrazit bublinu pro bajt</value>
   </data>
-
-
-
-<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
     <value>Povolit vkládání kdekoliv</value>
   </data>
-<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
     <value>Povolit mazání bajtu</value>
   </data>
-<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
     <value>Povolit rozšíření souboru</value>
   </data>
-<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
     <value>Přidání vyžaduje potvrzení</value>
   </data>
-
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+  <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
     <value>Nahradit</value>
   </data>
-
-
-
-
-
-
-
-
-
-<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Povolit přetažení souboru</value>
   </data>
-<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
     <value>Potvrzení přetažení souboru</value>
   </data>
-<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Povolit přetažení textu</value>
   </data>
-
-<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
     <value>Automatický výběr stejného bajtu (dvojklik)</value>
   </data>
-<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+  <data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
     <value>Povolit navigaci kliknutím na značku</value>
   </data>
-<data name="HexSettings_Highlight_Color" xml:space="preserve">
+  <data name="HexSettings_Highlight_Color" xml:space="preserve">
     <value>Barva automatického zvýraznění:</value>
   </data>
-<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+  <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
     <value>Povolit paralelní hledání</value>
   </data>
-<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+  <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
     <value>Použít hledání se zástupnými znaky (??)</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+  <data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
     <value>Zvýraznit všechny výsledky</value>
   </data>
-
-<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
     <value>Povolit počítání bajtů</value>
   </data>
-<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Posun bajtu doleva:</value>
   </data>
-
-
-<data name="HexSettings_Title" xml:space="preserve">
+  <data name="HexSettings_Title" xml:space="preserve">
     <value>NASTAVENÍ HEX EDITORU</value>
   </data>
-<data name="HexSettings_Display_Title" xml:space="preserve">
+  <data name="HexSettings_Display_Title" xml:space="preserve">
     <value>📺 Možnosti zobrazení</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
     <value>Zobrazit čísla řádků (zástupný)</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
     <value>Tato funkce není zatím dostupná ve V2</value>
   </data>
-<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
     <value>Zobrazit bublinu pro bajt</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+  <data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
     <value>Bajty na řádek:</value>
   </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+  <data name="HexSettings_Display_ZoomScale" xml:space="preserve">
     <value>Měřítko přiblížení:</value>
   </data>
-<data name="HexSettings_Editing_Title" xml:space="preserve">
+  <data name="HexSettings_Editing_Title" xml:space="preserve">
     <value>✏️ Možnosti úprav</value>
   </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+  <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
     <value>Režim pouze pro čtení</value>
   </data>
-<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
     <value>Povolit vkládání kdekoliv</value>
   </data>
-<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
     <value>Povolit mazání bajtu</value>
   </data>
-<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
     <value>Povolit rozšíření souboru</value>
   </data>
-<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
     <value>Přidání vyžaduje potvrzení</value>
   </data>
-<data name="HexSettings_Editing_EditMBde" xml:space="preserve">
+  <data name="HexSettings_Editing_EditMBde" xml:space="preserve">
     <value>Režim úprav:</value>
   </data>
-
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
+  <data name="HexSettings_Editing_Insert" xml:space="preserve">
     <value>Vložit</value>
   </data>
-<data name="HexSettings_Editing_CaretMBde" xml:space="preserve">
+  <data name="HexSettings_Editing_CaretMBde" xml:space="preserve">
     <value>Režim kurzoru:</value>
   </data>
-<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+  <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 Možnosti schránky</value>
   </data>
-<data name="HexSettings_Clipboard_DefaultCopyMBde" xml:space="preserve">
+  <data name="HexSettings_Clipboard_DefaultCopyMBde" xml:space="preserve">
     <value>Výchozí režim kopírování:</value>
   </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+  <data name="HexSettings_Clipboard_HexString" xml:space="preserve">
     <value>Hexadecimální řetězec</value>
   </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+  <data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
     <value>Pole bajtů</value>
   </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
     <value>Kód C#</value>
   </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
     <value>Kód VB</value>
   </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CCode" xml:space="preserve">
     <value>Kód C</value>
   </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
     <value>Kód Java</value>
   </data>
-<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+  <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 Možnosti přetahování</value>
   </data>
-<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
     <value>Povolit přetažení souboru</value>
   </data>
-<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
     <value>Potvrzení přetažení souboru</value>
   </data>
-<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
     <value>Povolit přetažení textu</value>
   </data>
-<data name="HexSettings_Highlight_Title" xml:space="preserve">
+  <data name="HexSettings_Highlight_Title" xml:space="preserve">
     <value>🎨 Zvýraznění a výběr</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
     <value>Automaticky zvýraznit vybraný bajt</value>
   </data>
-<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
     <value>Automaticky vybrat stejný bajt (dvojklik)</value>
   </data>
-<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
     <value>Povolit navigaci kliknutím na značku</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
     <value>Barva automatického zvýraznění:</value>
   </data>
-<data name="HexSettings_Search_Title" xml:space="preserve">
+  <data name="HexSettings_Search_Title" xml:space="preserve">
     <value>🔍 Možnosti hledání</value>
   </data>
-<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+  <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
     <value>Povolit paralelní hledání</value>
   </data>
-<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+  <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>Použít hledání se zástupnými znaky (??)</value>
   </data>
-
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+  <data name="HexSettings_Search_ResultLimit" xml:space="preserve">
     <value>Limit výsledků hledání:</value>
   </data>
-<data name="HexSettings_Statistics_Title" xml:space="preserve">
+  <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 Statistiky</value>
   </data>
-<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
     <value>Povolit počítání bajtů</value>
   </data>
-<data name="HexSettings_Advanced_Title" xml:space="preserve">
+  <data name="HexSettings_Advanced_Title" xml:space="preserve">
     <value>⚙️ Pokročilé možnosti</value>
   </data>
-<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Posun bajtu doleva:</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+  <data name="HexSettings_Advanced_SaveState" xml:space="preserve">
     <value>Uložit aktuální stav</value>
   </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+  <data name="HexSettings_Advanced_LoadState" xml:space="preserve">
     <value>Načíst uložený stav</value>
   </data>
-<data name="HexSettings_ResetButton" xml:space="preserve">
+  <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 Obnovit vše na výchozí hodnoty</value>
   </data>
-<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+  <data name="HexSettings_StatusBar_Title" xml:space="preserve">
     <value>Stavový řádek</value>
   </data>
-<data name="HexSettings_Colors_Title" xml:space="preserve">
+  <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>Barvy</value>
   </data>
-<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+  <data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
     <value>Značky posuvníku</value>
     <comment>Hex editor settings - Scroll Markers category header</comment>
   </data>
-<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
     <value>Zobrazit značky záložek</value>
     <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowMBdifiedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowMBdifiedMarkers" xml:space="preserve">
     <value>Zobrazit značky upravených bajtů</value>
     <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
     <value>Zobrazit značky vložených bajtů</value>
     <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
     <value>Zobrazit značky odstraněných bajtů</value>
     <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
     <value>Zobrazit značky výsledků hledání</value>
     <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
   </data>
-<data name="HexSettings_Behavior_Title" xml:space="preserve">
+  <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>Chování</value>
   </data>
-<data name="HexSettings_Data_Title" xml:space="preserve">
+  <data name="HexSettings_Data_Title" xml:space="preserve">
     <value>Data</value>
   </data>
-<data name="HexSettings_Visual_Title" xml:space="preserve">
+  <data name="HexSettings_Visual_Title" xml:space="preserve">
     <value>Vizuální</value>
   </data>
-<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+  <data name="HexSettings_Keyboard_Title" xml:space="preserve">
     <value>Klávesnice</value>
   </data>
-<data name="HexSettings_TBL_Title" xml:space="preserve">
+  <data name="HexSettings_TBL_Title" xml:space="preserve">
     <value>Tabulka znaků</value>
   </data>
-<data name="HexSettings_SaveButton" xml:space="preserve"><value>Uložit stav</value></data>
-<data name="HexSettings_LoadButton" xml:space="preserve"><value>Načíst stav</value></data>
+  <data name="HexSettings_SaveButton" xml:space="preserve">
+    <value>Uložit stav</value>
+  </data>
+  <data name="HexSettings_LoadButton" xml:space="preserve">
+    <value>Načíst stav</value>
+  </data>
   <data name="HexSettings_BarChart_Title" xml:space="preserve">
     <value>📈 Bar Chart</value>
     <comment>Hex editor settings - Bar Chart category header</comment>
@@ -1125,35 +1105,75 @@
     <value>Zobrazit statistiky</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
-
-  <!-- ByteValueTooltip labels -->
-  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Žádná data</value></data>
-  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Se znaménkem</value></data>
-  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binární</value></data>
-  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
-  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(netisknutelný)</value></data>
-  <data name="ByteTooltip_Osmičkové" xml:space="preserve"><value>Osmičkové</value></data>
-
-  <!-- HexEditor status messages -->
-  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operace zrušena</value></data>
-  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Soubor již existuje</value></data>
-  <data name="StatusText_Ready" xml:space="preserve"><value>Připraven</value></data>
-  <data name="StatusText_FileSaved" xml:space="preserve"><value>Soubor uložen</value></data>
-  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Značky hledání vymazány.</value></data>
-  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Všechny změny vymazány</value></data>
-  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL zavřen, používá se ASCII</value></data>
-  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Žádný výběr k otočení</value></data>
-  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Výběr je prázdný</value></data>
-  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Žádný výběr k otočení bit à bit</value></data>
-  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Žádný výběr k hledání</value></data>
-  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Žádný výsledek nenalezen.</value></data>
-  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Velikost: -</value></data>
-  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Žádný výběr</value></data>
-  <data name="StatusBar_PoziceZero" xml:space="preserve"><value>Pozice : 0</value></data>
-  <data name="StatusBar_MBdeOverwrite" xml:space="preserve"><value>Režim: Přepis</value></data>
-  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Bajty/Řádek: 16</value></data>
-
-  <!-- Search MBdule -->
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Žádná data</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>Se znaménkem</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>Binární</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(netisknutelný)</value>
+  </data>
+  <data name="ByteTooltip_Osmičkové" xml:space="preserve">
+    <value>Osmičkové</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>Operace zrušena</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Soubor již existuje</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Připraven</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>Soubor uložen</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Značky hledání vymazány.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Všechny změny vymazány</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL zavřen, používá se ASCII</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Žádný výběr k otočení</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>Výběr je prázdný</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Žádný výběr k otočení bit à bit</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Žádný výběr k hledání</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Žádný výsledek nenalezen.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Velikost: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Žádný výběr</value>
+  </data>
+  <data name="StatusBar_PoziceZero" xml:space="preserve">
+    <value>Pozice : 0</value>
+  </data>
+  <data name="StatusBar_MBdeOverwrite" xml:space="preserve">
+    <value>Režim: Přepis</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Bajty/Řádek: 16</value>
+  </data>
   <data name="Search_NoMatches" xml:space="preserve">
     <value>Žádný výsledek</value>
   </data>
@@ -1211,7 +1231,6 @@
   <data name="Search_CloseTBL_Title" xml:space="preserve">
     <value>Zavřít TBL</value>
   </data>
-  <!-- IPS Patcher -->
   <data name="IPS_Error_NoFileOpen" xml:space="preserve">
     <value>Nejprve otevřete soubor ROM před aplikací záplaty.</value>
   </data>
@@ -1257,7 +1276,6 @@
   <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
     <value>Záplata vytvořena</value>
   </data>
-  <!-- Undo/Redo history popup -->
   <data name="UndoHistory_Undo" xml:space="preserve">
     <value>Zrušit</value>
   </data>
@@ -1270,7 +1288,6 @@
   <data name="UndoHistory_Akce" xml:space="preserve">
     <value>akces</value>
   </data>
-
   <data name="DynSettings_Title" xml:space="preserve">
     <value>Nastavení hex editoru</value>
   </data>
@@ -1792,17 +1809,39 @@ Poznámka: Plná integrace s HexEditorem vyžaduje připojení k hlavnímu model
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>Kopírovat (auto)</value>
   </data>
-  <data name="WrapAroundString" xml:space="preserve"><value>Opakovat hledání</value></data>
-  <data name="EncodingLabel" xml:space="preserve"><value>Kódování:</value></data>
-  <data name="HexadecimalString" xml:space="preserve"><value>Hexadecimální</value></data>
-  <data name="DecimalString" xml:space="preserve"><value>Desítkové</value></data>
-  <data name="GoToPoziceTitle" xml:space="preserve"><value>Přejít na pozici</value></data>
-  <data name="GoToPoziceHeader" xml:space="preserve"><value>Pozice</value></data>
-  <data name="GoToPozicePlaceholder" xml:space="preserve"><value>0x00000000 nebo desítkové</value></data>
-  <data name="WildcardCheckbox" xml:space="preserve"><value>Zástupný znak (??)</value></data>
-  <data name="TruncateNahraditmentString" xml:space="preserve"><value>Zkrátit nahrazení na délku hledání</value></data>
-  <data name="FindDalšíButtonLabel" xml:space="preserve"><value>Další</value></data>
-  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Předchozí</value></data>
+  <data name="WrapAroundString" xml:space="preserve">
+    <value>Opakovat hledání</value>
+  </data>
+  <data name="EncodingLabel" xml:space="preserve">
+    <value>Kódování:</value>
+  </data>
+  <data name="HexadecimalString" xml:space="preserve">
+    <value>Hexadecimální</value>
+  </data>
+  <data name="DecimalString" xml:space="preserve">
+    <value>Desítkové</value>
+  </data>
+  <data name="GoToPoziceTitle" xml:space="preserve">
+    <value>Přejít na pozici</value>
+  </data>
+  <data name="GoToPoziceHeader" xml:space="preserve">
+    <value>Pozice</value>
+  </data>
+  <data name="GoToPozicePlaceholder" xml:space="preserve">
+    <value>0x00000000 nebo desítkové</value>
+  </data>
+  <data name="WildcardCheckbox" xml:space="preserve">
+    <value>Zástupný znak (??)</value>
+  </data>
+  <data name="TruncateNahraditmentString" xml:space="preserve">
+    <value>Zkrátit nahrazení na délku hledání</value>
+  </data>
+  <data name="FindDalšíButtonLabel" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
   <data name="HE_SearchDialogTitle" xml:space="preserve">
     <value>Najít / Nahradit</value>
   </data>
@@ -1932,26 +1971,64 @@ Poznámka: Plná integrace s HexEditorem vyžaduje připojení k hlavnímu model
   <data name="HE_MBveBarTooltip" xml:space="preserve">
     <value>Přesunout panel hledání</value>
   </data>
-  <data name="HE_CompareFileWith" xml:space="preserve"><value>Porovnat soubor s…</value></data>
-  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Porovnat výběr vlevo…</value></data>
-  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Žádný soubor TBL není načten</value></data>
-  <data name="HE_SearchTypText" xml:space="preserve"><value>TEXT</value></data>
-  <data name="HE_SearchTypHex" xml:space="preserve"><value>HEX</value></data>
-  <data name="HE_SearchTypWildcard" xml:space="preserve"><value>ZÁSTUPNÝ</value></data>
-  <data name="HE_SearchTypTbl" xml:space="preserve"><value>TEXT TBL</value></data>
-  <data name="HE_SearchTypRelative" xml:space="preserve"><value>RELATIVNÍ</value></data>
-  <data name="HE_Toolbar_DetectedFormát" xml:space="preserve"><value>Zjištěný formát souboru</value></data>
-  <data name="HE_Toolbar_ConfidenceSkóre" xml:space="preserve"><value>Skóre de confiance de détection</value></data>
-  <data name="HE_Toolbar_ConfidenceFormát" xml:space="preserve"><value>Spolehlivost detekce: {0}</value></data>
-  <data name="HE_Toolbar_ChangeFormát" xml:space="preserve"><value>Formát</value></data>
-  <data name="HE_Toolbar_ChangeFormátTooltip" xml:space="preserve"><value>Změnit zjištěný formát</value></data>
-  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Hledá všechny výskyty s překryvem průběhu</value></data>
-  <data name="HE_ColOffset"               xml:space="preserve"><value>Posun</value></data>
+  <data name="HE_CompareFileWith" xml:space="preserve">
+    <value>Porovnat soubor s…</value>
+  </data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve">
+    <value>Porovnat výběr vlevo…</value>
+  </data>
+  <data name="HE_ToggleEntropyHeatmap" xml:space="preserve">
+    <value>Entropy Heatmap</value>
+  </data>
+  <data name="HE_NoTblLoaded" xml:space="preserve">
+    <value>Žádný soubor TBL není načten</value>
+  </data>
+  <data name="HE_SearchTypText" xml:space="preserve">
+    <value>TEXT</value>
+  </data>
+  <data name="HE_SearchTypHex" xml:space="preserve">
+    <value>HEX</value>
+  </data>
+  <data name="HE_SearchTypWildcard" xml:space="preserve">
+    <value>ZÁSTUPNÝ</value>
+  </data>
+  <data name="HE_SearchTypTbl" xml:space="preserve">
+    <value>TEXT TBL</value>
+  </data>
+  <data name="HE_SearchTypRelative" xml:space="preserve">
+    <value>RELATIVNÍ</value>
+  </data>
+  <data name="HE_Toolbar_DetectedFormát" xml:space="preserve">
+    <value>Zjištěný formát souboru</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceSkóre" xml:space="preserve">
+    <value>Skóre de confiance de détection</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceFormát" xml:space="preserve">
+    <value>Spolehlivost detekce: {0}</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormát" xml:space="preserve">
+    <value>Formát</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormátTooltip" xml:space="preserve">
+    <value>Změnit zjištěný formát</value>
+  </data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve">
+    <value>Hledá všechny výskyty s překryvem průběhu</value>
+  </data>
+  <data name="HE_ColOffset" xml:space="preserve">
+    <value>Posun</value>
+  </data>
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Výsledky</value>
   </data>
-  <!-- HexEditor split view -->
-  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Rozdělit</value></data>
-  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Otevřít nebo zavřít synchronizovaný druhý hex panel</value></data>
-  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Zavřít rozdělení</value></data>
+  <data name="HexEditor_SplitView_Toggle" xml:space="preserve">
+    <value>Rozdělit</value>
+  </data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve">
+    <value>Otevřít nebo zavřít synchronizovaný druhý hex panel</value>
+  </data>
+  <data name="HexEditor_SplitView_Close" xml:space="preserve">
+    <value>Zavřít rozdělení</value>
+  </data>
 </root>

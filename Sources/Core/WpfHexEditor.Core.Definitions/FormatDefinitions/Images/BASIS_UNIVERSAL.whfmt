@@ -1,0 +1,95 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Basis Universal GPU Texture",
+  "formatId": "BASIS_UNIVERSAL",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Basis Universal is a GPU texture compression format that can be transcoded to multiple native GPU formats (BCn, ETC, PVRTC, ASTC) at runtime. Developed by Binomial LLC and used extensively in game engines and WebGL applications.",
+  "extensions": [".basis"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "73657373",
+      "offset": 0,
+      "label": "Basis Universal file magic ('sess')",
+      "weight": 0.9,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "magic", "type": "uint32le", "description": "File magic identifier (0x73657373 little-endian)", "storeAs": "uint32" },
+      { "offset": 4, "size": 2, "name": "header_version", "type": "uint16le", "description": "File format version number", "storeAs": "uint16" },
+      { "offset": 6, "size": 2, "name": "header_size", "type": "uint16le", "description": "Size of the file header in bytes", "storeAs": "uint16" },
+      { "offset": 8, "size": 4, "name": "header_crc16", "type": "uint32le", "description": "CRC16 checksum of header data", "storeAs": "uint32" },
+      { "offset": 12, "size": 4, "name": "data_size", "type": "uint32le", "description": "Total size of compressed data section", "storeAs": "uint32" },
+      { "offset": 16, "size": 4, "name": "data_crc16", "type": "uint32le", "description": "CRC16 checksum of data section", "storeAs": "uint32" },
+      { "offset": 20, "size": 4, "name": "total_slices", "type": "uint32le", "description": "Total number of texture slices in the file", "storeAs": "uint32" },
+      { "offset": 24, "size": 4, "name": "total_images", "type": "uint32le", "description": "Total number of images (textures) in the file", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "header_version", "total_images", "total_slices", "data_size"],
+    "valueMaps": {},
+    "tooltips": {
+      "magic": "Basis Universal file identifier; must be 0x73657373",
+      "header_version": "Format version; current is 0x0013 (v0.19)",
+      "total_slices": "Number of ETC1S or UASTC slices across all mip levels and images",
+      "total_images": "Number of separate texture images packed in the file",
+      "data_size": "Compressed payload size following the header block"
+    }
+  },
+  "assertions": [
+    { "id": "BASIS_001", "field": "magic", "operator": "equals", "value": 1936289651, "description": "Magic must be 0x73657373 (1936289651 decimal)" },
+    { "id": "BASIS_002", "field": "total_images", "operator": "greaterThan", "value": 0, "description": "File must contain at least one image" },
+    { "id": "BASIS_003", "field": "header_size", "operator": "greaterThanOrEqual", "value": 77, "description": "Header size must be at least 77 bytes for the standard Basis Universal header" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "File Magic", "color": "#FF6B35" },
+      { "offset": 4, "label": "Header Version", "color": "#4ECDC4" },
+      { "offset": 20, "label": "Slice Count", "color": "#45B7D1" },
+      { "offset": 24, "label": "Image Count", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Texture Summary", "fields": ["magic", "header_version", "total_images", "total_slices", "data_size"], "format": "text" },
+    { "name": "Header Hex Dump", "fields": ["magic", "header_version", "header_size", "data_size"], "format": "hex" }
+  ],
+  "aiHints": [
+    "Basis Universal supports two internal formats: ETC1S (high compression, lower quality) and UASTC (near-lossless, higher quality but larger); check the tex_format field in the header",
+    "The .basis file is a transcoder input; at runtime it is decoded to native GPU formats (BC1/BC3/BC4/BC5/BC7 on desktop, ETC1/ETC2 on mobile, PVRTC on iOS, ASTC on modern hardware)",
+    "KTX2 has become the preferred container for Basis Universal data in modern workflows (using BasisU compression internally in .ktx2 files)",
+    "The file can contain texture arrays, cubemaps, and mipmap chains; total_images and total_slices reflect the full mip pyramid",
+    "The format was open-sourced by Binomial and is widely adopted in WebGL through the KHR_texture_basisu extension"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "CRC16 checksums on both header and data allow integrity verification; mismatches indicate tampering or corruption",
+      "Basis files with total_images > expected may contain hidden additional texture atlases",
+      "The format is binary-only with no human-readable structure; inspection requires specialized tools"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "KTX2", "relationship": "alternative", "note": "KTX2 is now the preferred container for BasisU-compressed textures in modern pipelines" },
+    { "format": "DDS", "relationship": "alternative", "note": "DDS is the traditional DirectX GPU texture container; Basis Universal is a universal transcoding alternative" },
+    { "format": "ASTC", "relationship": "transcodesTo", "note": "Basis Universal can be transcoded to ASTC format at runtime on supported hardware" }
+  ],
+  "software": [
+    { "name": "Binomial basisu encoder", "role": "Reference encoder/decoder tool (basisu.exe) for creating and transcoding .basis files" },
+    { "name": "Unity Engine", "role": "Uses Basis Universal via KTX2 for texture streaming and compression" },
+    { "name": "Unreal Engine", "role": "Supports Basis Universal textures for cross-platform GPU texture delivery" },
+    { "name": "Babylon.js / Three.js", "role": "WebGL frameworks with KHR_texture_basisu support for .basis and .ktx2 textures" }
+  ],
+  "useCases": [
+    "Game engine asset pipelines requiring a single compressed texture that transcodes to any GPU format",
+    "WebGL / WebGPU texture delivery where bandwidth and GPU memory must be minimized",
+    "Cross-platform texture atlases for mobile, desktop, and console targets from a single source asset"
+  ],
+  "technicalDetails": "Basis Universal (.basis) is a universal GPU texture container defined by Binomial LLC (open-sourced 2019). The file header contains magic (4 bytes), version (2), header size (2), header CRC16 (4), data size (4), data CRC16 (4), total images, total slices, image width/height, mip levels, tex_format (ETC1S=0, UASTC=1), and flags. ETC1S uses an endpoint/selector codebook shared across slices for high compression. UASTC stores blocks that can be losslessly transcoded to ASTC 4x4 or compressed to BC7. The transcoder (basis_transcoder.cpp) reads the file and outputs native GPU block-compressed data for the target platform.",
+  "completenessScore": 81
+}

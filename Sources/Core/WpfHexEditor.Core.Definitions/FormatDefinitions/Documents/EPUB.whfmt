@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "EPUB eBook",
   "formatId": "EPUB",
@@ -407,8 +408,18 @@
     "SupportsReflowable": true
   },
   "diff": {
-    "keyFields": ["zipSignature", "zipCompressionMethod", "zipCrc32", "mimetypeContent"],
-    "ignoreFields": ["zipLastModTime", "zipLastModDate", "compressionRatio", "totalHeaderSize"],
+    "keyFields": [
+      "zipSignature",
+      "zipCompressionMethod",
+      "zipCrc32",
+      "mimetypeContent"
+    ],
+    "ignoreFields": [
+      "zipLastModTime",
+      "zipLastModDate",
+      "compressionRatio",
+      "totalHeaderSize"
+    ],
     "groupBy": "ZIP Local File Header",
     "note": "Signature, CRC, and mimetype content confirm valid EPUB container; compression method on the first entry must be 0. Timestamps are unstable across round-trips."
   },
@@ -442,11 +453,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "zipSignature",          "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test EPUB reader rejection of invalid ZIP containers" },
-      { "field": "zipCompressionMethod",  "mutation": "boundary_values",   "weight": 2, "description": "Set non-zero compression on mimetype to test OCF validation rejection" },
-      { "field": "zipUncompressedSize",   "mutation": "overflow",          "weight": 2, "description": "Overflow uncompressed size to stress EPUB reader memory allocation" },
-      { "field": "zipGeneralFlags",       "mutation": "random_bytes",      "weight": 1, "description": "Randomize flags to surface unexpected branches in EPUB parsers" },
-      { "field": "zipCrc32",              "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC corruption to verify integrity checking in EPUB loaders" }
+      {
+        "field": "zipSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt PK magic to test EPUB reader rejection of invalid ZIP containers"
+      },
+      {
+        "field": "zipCompressionMethod",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Set non-zero compression on mimetype to test OCF validation rejection"
+      },
+      {
+        "field": "zipUncompressedSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow uncompressed size to stress EPUB reader memory allocation"
+      },
+      {
+        "field": "zipGeneralFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize flags to surface unexpected branches in EPUB parsers"
+      },
+      {
+        "field": "zipCrc32",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Single-bit CRC corruption to verify integrity checking in EPUB loaders"
+      }
     ]
   },
   "migration": [
@@ -455,21 +492,185 @@
       "to": "EPUB-3.2",
       "description": "EPUB 2 to 3.2 upgrade: container structure is backward compatible; OPF namespace changes but ZIP header is identical",
       "changes": [
-        { "field": "zipCompressionMethod", "changeType": "set_value", "value": "0000", "description": "Ensure mimetype entry remains uncompressed (Stored) per both EPUB 2 and EPUB 3 OCF spec" }
+        {
+          "field": "zipCompressionMethod",
+          "changeType": "set_value",
+          "value": "0000",
+          "description": "Ensure mimetype entry remains uncompressed (Stored) per both EPUB 2 and EPUB 3 OCF spec"
+        }
       ]
     }
   ],
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "EPUB (Electronic Publication) is the most widely supported open eBook standard, defined by the IDPF (now par...",
-    "suggestedInspections": [
-      "Validate EPUB eBook file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
-  }
+  },
+  "aiHints": [
+    "EPUB (Electronic Publication) is the most widely supported open eBook standard, defined by the IDPF (now par...",
+    "Validate EPUB eBook file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "The 'mimetype' entry must be the first file in the ZIP and stored uncompressed (method=0).",
+    "META-INF/container.xml rootfile path locates the OPF package document.",
+    "OPF manifest dc:identifier typically contains the book's ISBN or UUID.",
+    "EPUB3 supports JavaScript in scripted content documents — a potential execution risk.",
+    "DRM-protected EPUBs have encrypted content keys in META-INF/encryption.xml.",
+    "Check for external resource references (src= attributes) that load on reader open."
+  ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "EPUB signature",
+      "weight": 100,
+      "strength": "strong"
+    },
+    {
+      "value": "6170706C69636174696F6E2F657075622B7A6970",
+      "offset": 38,
+      "label": "EPUB mimetype string",
+      "weight": 80,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "MimetypeEntry",
+        "offset": 0,
+        "size": 20,
+        "type": "string",
+        "description": "Uncompressed 'mimetype' entry: application/epub+zip"
+      },
+      {
+        "name": "Container",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "META-INF/container.xml pointing to OPF root file"
+      },
+      {
+        "name": "OPFPackage",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "Package OPF document listing manifest and spine"
+      },
+      {
+        "name": "NavDocument",
+        "offset": -1,
+        "size": -1,
+        "type": "xhtml",
+        "description": "Navigation document (EPUB3 nav.xhtml or NCX)"
+      },
+      {
+        "name": "ContentDocuments",
+        "offset": -1,
+        "size": -1,
+        "type": "xhtml",
+        "description": "XHTML content documents listed in spine"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "mobi",
+      "relation": "related",
+      "note": "MOBI/AZW is Amazon's proprietary ebook format"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "alternative",
+      "note": "PDF is a common alternative ebook distribution format"
+    },
+    {
+      "formatId": "html",
+      "relation": "derived",
+      "note": "EPUB3 content documents are HTML5 files"
+    }
+  ],
+  "software": [
+    "Calibre",
+    "Adobe Digital Editions",
+    "Apple Books",
+    "Google Play Books",
+    "Kobo",
+    "Sigil"
+  ],
+  "useCases": [
+    "Ebooks",
+    "Digital publishing",
+    "Reading apps",
+    "Academic publications",
+    "Self-publishing"
+  ],
+  "technicalDetails": "EPUB 3 (IDPF/W3C) is a ZIP container with an uncompressed 'mimetype' entry 'application/epub+zip' at offset 0. META-INF/container.xml specifies the OPF root file path. The OPF manifest lists all resources; spine defines reading order. EPUB3 uses HTML5+CSS3 content documents.",
+  "completenessScore": 88
 }

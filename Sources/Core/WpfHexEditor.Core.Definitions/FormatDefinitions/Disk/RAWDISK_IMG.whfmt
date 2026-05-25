@@ -1,0 +1,111 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Raw Sector-by-Sector Disk Image",
+  "formatId": "RAWDISK_IMG",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Raw sector-by-sector disk image created by dd, dcfldd, or similar tools. Contains a verbatim byte-for-byte copy of a storage device including MBR, partition table, and filesystem data.",
+  "extensions": [".img", ".raw", ".dd", ".iso"],
+  "category": "Disk",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "55AA",
+      "offset": 510,
+      "label": "MBR boot signature at offset 510",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 512,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 446, "name": "mbr_bootstrap", "type": "bytes", "description": "MBR bootstrap code (first 446 bytes of sector 0)", "storeAs": "hex" },
+      { "offset": 446, "size": 64, "name": "partition_table", "type": "bytes", "description": "Four 16-byte partition table entries describing primary partitions", "storeAs": "hex" },
+      { "offset": 510, "size": 2, "name": "signature", "type": "uint16le", "description": "MBR boot signature: must be 0xAA55 (stored as LE: 55 AA)", "storeAs": "hex" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["mbr_bootstrap", "partition_table", "signature"],
+    "valueMaps": {
+      "partition_type": {
+        "00": "Empty",
+        "05": "Extended CHS",
+        "07": "NTFS / exFAT",
+        "0B": "FAT32 CHS",
+        "0C": "FAT32 LBA",
+        "0E": "FAT16 LBA",
+        "0F": "Extended LBA",
+        "82": "Linux swap",
+        "83": "Linux native",
+        "8E": "Linux LVM",
+        "A8": "macOS HFS+",
+        "AB": "macOS Recovery",
+        "EE": "GPT Protective MBR",
+        "EF": "EFI System Partition"
+      }
+    },
+    "tooltips": {
+      "mbr_bootstrap": "Executes during BIOS boot; malicious bootloaders (bootkits) replace this code",
+      "partition_table": "Four 16-byte entries: status(1) + CHS_start(3) + type(1) + CHS_end(3) + LBA_start(4) + sectors(4)",
+      "signature": "0x55AA marks a bootable MBR; 0x0000 indicates non-bootable sector"
+    }
+  },
+  "assertions": [
+    { "id": "RAW_MBR_SIGNATURE", "field": "signature", "operator": "equals", "value": "55AA", "description": "MBR boot signature at offset 510-511 must be 0x55AA" },
+    { "id": "RAW_PART_TABLE_OFFSET", "field": "partition_table", "operator": "minLength", "value": "64", "description": "Partition table must be 64 bytes (4 entries × 16 bytes)" },
+    { "id": "RAW_BOOTSTRAP_PRESENT", "field": "mbr_bootstrap", "operator": "minLength", "value": "446", "description": "Bootstrap code region must be 446 bytes" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "MBR Bootstrap Code", "color": "#3498DB" },
+      { "offset": 446, "label": "Partition Table", "color": "#E74C3C" },
+      { "offset": 510, "label": "MBR Boot Signature", "color": "#2ECC71" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Raw Disk MBR Summary",
+      "fields": ["mbr_bootstrap", "partition_table", "signature"],
+      "format": "text"
+    },
+    {
+      "name": "Raw Disk CSV",
+      "fields": ["signature"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "Raw disk images are verbatim copies; file size should be an exact multiple of the sector size (typically 512 or 4096 bytes)",
+    "GPT disks have partition type 0xEE in the MBR (Protective MBR) followed by a GPT header at LBA 1 (offset 512)",
+    "dd command: 'dd if=/dev/sda of=disk.img bs=4096' creates a raw image; 'dd if=disk.img of=/dev/sdb' restores it",
+    "MBR bootkit malware replaces the bootstrap code at offset 0-445; compare against known-good MBR for detection",
+    "Sector 0 signature 0x55AA does not guarantee a bootable OS — it indicates MBR structure presence only"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "Raw disk images contain the complete storage medium including unallocated space with deleted file artifacts",
+      "Bootkit malware may be present in the MBR bootstrap code (offset 0-445) or hidden sectors",
+      "Hash verification (MD5/SHA-256) of the raw image is essential to maintain forensic chain of custody"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "EWF_E01", "relationship": "alternative", "note": "EWF/E01 is the forensically preferred format; raw .img provides no metadata or hash verification" },
+    { "format": "VMDK", "relationship": "related", "note": "Raw images can be directly used as flat VMDK disks or converted via qemu-img" },
+    { "format": "ISO", "relationship": "subset", "note": "ISO 9660 optical disk images follow the same raw sector format but with ISO filesystem at sector 16" }
+  ],
+  "software": [
+    { "name": "dd / dcfldd", "role": "Unix tools for creating raw sector-by-sector disk images" },
+    { "name": "Autopsy / Sleuth Kit", "role": "Forensic analysis toolkit with full raw disk image support" },
+    { "name": "FTK Imager", "role": "Windows forensic imaging tool supporting raw .img format creation and analysis" }
+  ],
+  "useCases": [
+    "Forensic acquisition of storage media for incident response analysis",
+    "Virtual machine provisioning using raw disk images as backing storage",
+    "Bootkit and MBR rootkit detection by comparing bootstrap code against known-good reference"
+  ],
+  "technicalDetails": "Raw disk images are byte-for-byte copies of storage devices with no added metadata. For MBR-partitioned disks, sector 0 (bytes 0-511) contains bootstrap code (446 bytes), four 16-byte partition entries, and the 2-byte 0xAA55 signature. Each partition entry: status(1), CHS_start(3), type(1), CHS_end(3), LBA_start(4, LE), size_sectors(4, LE). GPT adds a GPT header at LBA 1 (offset 512) with a 128-entry partition array at LBA 2 (offset 1024), each entry 128 bytes.",
+  "completenessScore": 83
+}

@@ -1,13 +1,14 @@
 <!--
     Project: WpfHexEditor.Plugins.ScreenRecorder
     File: Views/PropertiesPanel.xaml
-    Description: Collapsible right panel: capture region picker, output scale slider,
-                 GIF loop count, repeat-last-frame delay, and timer interval spinners.
+    Description: Collapsible right panel — redesigned with section cards,
+                 visual region preview, scale radio buttons, and +/- spinners.
 -->
 <UserControl x:Class="WpfHexEditor.Plugins.ScreenRecorder.Views.PropertiesPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svc="clr-namespace:WpfHexEditor.Plugins.ScreenRecorder.Services"
+             xmlns:conv="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              Background="{DynamicResource DockMenuBackgroundBrush}">
 
     <UserControl.Resources>
@@ -16,27 +17,49 @@
                 <svc:ScreenRecorderLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="PropLabelStyle" TargetType="TextBlock">
-                <Setter Property="FontSize"           Value="11"/>
-                <Setter Property="Foreground"         Value="{DynamicResource DockMenuForegroundBrush}"/>
-                <Setter Property="VerticalAlignment"  Value="Center"/>
+            <!-- Section card -->
+            <Style x:Key="SectionCard" TargetType="Border">
+                <Setter Property="Background"       Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush"      Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness"  Value="1"/>
+                <Setter Property="CornerRadius"     Value="4"/>
+                <Setter Property="Padding"          Value="8,6"/>
+                <Setter Property="Margin"           Value="0,0,0,6"/>
             </Style>
 
-            <Style x:Key="PropValueStyle" TargetType="TextBlock">
-                <Setter Property="FontSize"           Value="11"/>
-                <Setter Property="FontWeight"         Value="SemiBold"/>
-                <Setter Property="Foreground"         Value="{DynamicResource DockMenuForegroundBrush}"/>
-                <Setter Property="VerticalAlignment"  Value="Center"/>
+            <!-- Section title -->
+            <Style x:Key="SectionTitle" TargetType="TextBlock">
+                <Setter Property="FontSize"     Value="10"/>
+                <Setter Property="FontWeight"   Value="SemiBold"/>
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Opacity"      Value="0.7"/>
+                <Setter Property="Margin"       Value="0,0,0,6"/>
             </Style>
 
-            <Style x:Key="SpinBoxStyle" TargetType="TextBox">
+            <!-- Row label -->
+            <Style x:Key="RowLabel" TargetType="TextBlock">
+                <Setter Property="FontSize"          Value="11"/>
+                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Unit label -->
+            <Style x:Key="UnitLabel" TargetType="TextBlock">
+                <Setter Property="FontSize"          Value="10"/>
+                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Opacity"           Value="0.55"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin"            Value="3,0,0,0"/>
+            </Style>
+
+            <!-- Value TextBox -->
+            <Style x:Key="ValueBox" TargetType="TextBox">
                 <Setter Property="FontSize"                 Value="11"/>
                 <Setter Property="Padding"                  Value="4,2"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="TextAlignment"            Value="Right"/>
-                <Setter Property="MinWidth"                 Value="56"/>
-                <Setter Property="MaxWidth"                 Value="72"/>
-                <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="Width"                    Value="54"/>
+                <Setter Property="Background"               Value="{DynamicResource DockMenuBackgroundBrush}"/>
                 <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
                 <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
                 <Setter Property="BorderThickness"          Value="1"/>
@@ -49,12 +72,60 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="UnitLabelStyle" TargetType="TextBlock">
-                <Setter Property="FontSize"          Value="10"/>
-                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
-                <Setter Property="Opacity"           Value="0.65"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin"            Value="3,0,0,0"/>
+            <!-- Stepper button (+/-) -->
+            <Style x:Key="StepBtn" TargetType="RepeatButton">
+                <Setter Property="Width"           Value="18"/>
+                <Setter Property="Height"          Value="18"/>
+                <Setter Property="FontSize"        Value="12"/>
+                <Setter Property="Padding"         Value="0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="Background"      Value="{DynamicResource DockMenuBackgroundBrush}"/>
+                <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Focusable"       Value="False"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Opacity" Value="0.7"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Scale radio button -->
+            <Style x:Key="ScaleRadio" TargetType="RadioButton">
+                <Setter Property="FontSize"        Value="10"/>
+                <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Background"      Value="{DynamicResource DockMenuBackgroundBrush}"/>
+                <Setter Property="Padding"         Value="6,2"/>
+                <Setter Property="Margin"          Value="0,0,2,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="3"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource DockTabActiveBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource DockTabActiveBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -62,97 +133,153 @@
     <Expander Header="{StaticResource ScreenRecorder_Properties}"
               IsExpanded="True"
               Foreground="{DynamicResource DockMenuForegroundBrush}">
-        <StackPanel Margin="8,6,8,8">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="8,6,8,8">
 
-            <!-- ── Capture Region ──────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource ScreenRecorder_CaptureRegion}"
-                       Style="{StaticResource PropLabelStyle}"
-                       FontWeight="SemiBold"
-                       Margin="0,0,0,4"/>
+                <!-- ── Capture Region ─────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={StaticResource ScreenRecorder_CaptureRegion}, Converter={x:Static conv:StringCaseConverter.Upper}}"
+                                   Style="{StaticResource SectionTitle}"/>
 
-            <!-- Summary chip -->
-            <Border Background="{DynamicResource DockBorderBrush}"
-                    CornerRadius="3"
-                    Padding="6,3"
-                    Margin="0,0,0,4">
-                <TextBlock Text="{Binding RegionSummary, Mode=OneWay}"
-                           Style="{StaticResource PropValueStyle}"
-                           FontFamily="Consolas"
-                           FontSize="10"/>
-            </Border>
+                        <!-- Region summary chip -->
+                        <Border Background="{DynamicResource DockMenuBackgroundBrush}"
+                                BorderBrush="{DynamicResource DockTabActiveBrush}"
+                                BorderThickness="1" CornerRadius="3"
+                                Padding="6,4" Margin="0,0,0,6">
+                            <TextBlock Text="{Binding RegionSummary, Mode=OneWay}"
+                                       FontFamily="Consolas" FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
 
-            <!-- Region action buttons -->
-            <UniformGrid Rows="1" Columns="2" Margin="0,0,0,4">
-                <Button Content="{StaticResource ScreenRecorder_SelectRegion}"
-                        Command="{Binding SelectRegionCommand}"
-                        Style="{DynamicResource PM_ActionButtonStyle}"
-                        FontSize="10" Padding="4,3" Margin="0,0,2,0"/>
-                <Button Content="{StaticResource ScreenRecorder_FullScreen}"
-                        Command="{Binding ResetRegionCommand}"
-                        Style="{DynamicResource PM_ActionButtonStyle}"
-                        FontSize="10" Padding="4,3" Margin="2,0,0,0"/>
-            </UniformGrid>
+                        <!-- Region buttons -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    Content="{StaticResource ScreenRecorder_SelectRegion}"
+                                    Command="{Binding SelectRegionCommand}"
+                                    Style="{DynamicResource PM_ActionButtonStyle}"
+                                    FontSize="10" Padding="4,4"/>
+                            <Button Grid.Column="2"
+                                    Content="{StaticResource ScreenRecorder_FullScreen}"
+                                    Command="{Binding ResetRegionCommand}"
+                                    Style="{DynamicResource PM_ActionButtonStyle}"
+                                    FontSize="10" Padding="4,4"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
-            <Separator Margin="0,6"/>
+                <!-- ── Output Scale ───────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,6">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="{Binding Source={StaticResource ScreenRecorder_OutputScale}, Converter={x:Static conv:StringCaseConverter.Upper}}"
+                                       Style="{StaticResource SectionTitle}"
+                                       Margin="0"/>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="{Binding OutputScale, StringFormat={}{0:P0}}"
+                                       FontSize="11" FontWeight="SemiBold" FontFamily="Consolas"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        </DockPanel>
 
-            <!-- ── Output Scale ────────────────────────────────────────── -->
-            <DockPanel Margin="0,0,0,2">
-                <TextBlock DockPanel.Dock="Left"
-                           Text="{StaticResource ScreenRecorder_OutputScale}"
-                           Style="{StaticResource PropLabelStyle}"/>
-                <TextBlock DockPanel.Dock="Right"
-                           Style="{StaticResource PropValueStyle}"
-                           FontFamily="Consolas" FontSize="10"
-                           Text="{Binding OutputScale, Mode=OneWay, StringFormat={}{0:P0}}"
-                           MinWidth="34" TextAlignment="Right"/>
-            </DockPanel>
-            <Slider Minimum="0.25" Maximum="1.0"
-                    SmallChange="0.05" LargeChange="0.25"
-                    TickFrequency="0.25" TickPlacement="BottomRight"
-                    IsSnapToTickEnabled="False"
-                    Value="{Binding OutputScale}"
-                    Margin="0,0,0,6"/>
+                        <!-- Scale presets -->
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="25%"  Style="{StaticResource ScaleRadio}"
+                                         IsChecked="{Binding OutputScale, Converter={x:Static svc:ScaleToRadioConverter.Instance}, ConverterParameter=0.25}"/>
+                            <RadioButton Content="50%"  Style="{StaticResource ScaleRadio}"
+                                         IsChecked="{Binding OutputScale, Converter={x:Static svc:ScaleToRadioConverter.Instance}, ConverterParameter=0.5}"/>
+                            <RadioButton Content="75%"  Style="{StaticResource ScaleRadio}"
+                                         IsChecked="{Binding OutputScale, Converter={x:Static svc:ScaleToRadioConverter.Instance}, ConverterParameter=0.75}"/>
+                            <RadioButton Content="100%" Style="{StaticResource ScaleRadio}"
+                                         IsChecked="{Binding OutputScale, Converter={x:Static svc:ScaleToRadioConverter.Instance}, ConverterParameter=1.0}"/>
+                        </StackPanel>
 
-            <Separator Margin="0,0,0,6"/>
+                        <!-- Fine slider -->
+                        <Slider Minimum="0.10" Maximum="1.0"
+                                SmallChange="0.05" LargeChange="0.25"
+                                TickFrequency="0.25" TickPlacement="BottomRight"
+                                Value="{Binding OutputScale}"
+                                Margin="0,6,0,0"/>
+                    </StackPanel>
+                </Border>
 
-            <!-- ── Loop Count ──────────────────────────────────────────── -->
-            <DockPanel Margin="0,0,0,5">
-                <TextBlock DockPanel.Dock="Left"
-                           Text="{StaticResource ScreenRecorder_LoopCount}"
-                           Style="{StaticResource PropLabelStyle}"/>
-                <TextBox DockPanel.Dock="Right"
-                         Style="{StaticResource SpinBoxStyle}"
-                         Text="{Binding LoopCount, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="0 = infinite loop"/>
-            </DockPanel>
+                <!-- ── GIF Export ─────────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={StaticResource ScreenRecorder_Options_Export}, Converter={x:Static conv:StringCaseConverter.Upper}}"
+                                   Style="{StaticResource SectionTitle}"/>
 
-            <!-- ── Repeat Last Frame ───────────────────────────────────── -->
-            <DockPanel Margin="0,0,0,5">
-                <TextBlock DockPanel.Dock="Left"
-                           Text="{StaticResource ScreenRecorder_RepeatLastFrame}"
-                           Style="{StaticResource PropLabelStyle}"/>
-                <TextBlock DockPanel.Dock="Right"
-                           Text="ms"
-                           Style="{StaticResource UnitLabelStyle}"/>
-                <TextBox DockPanel.Dock="Right"
-                         Style="{StaticResource SpinBoxStyle}"
-                         Text="{Binding RepeatLastFrameDelay, UpdateSourceTrigger=PropertyChanged}"/>
-            </DockPanel>
+                        <!-- Loop Count -->
+                        <DockPanel Margin="0,0,0,5">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="{StaticResource ScreenRecorder_LoopCount}"
+                                       Style="{StaticResource RowLabel}"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <RepeatButton Content="-" Style="{StaticResource StepBtn}"
+                                              Click="OnLoopDecrement"/>
+                                <TextBox Style="{StaticResource ValueBox}"
+                                         Text="{Binding LoopCount, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="0 = infinite loop"
+                                         Margin="1,0"/>
+                                <RepeatButton Content="+" Style="{StaticResource StepBtn}"
+                                              Click="OnLoopIncrement"/>
+                            </StackPanel>
+                        </DockPanel>
 
-            <!-- ── Timer Interval ─────────────────────────────────────── -->
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Left"
-                           Text="{StaticResource ScreenRecorder_Interval}"
-                           Style="{StaticResource PropLabelStyle}"/>
-                <TextBlock DockPanel.Dock="Right"
-                           Text="ms"
-                           Style="{StaticResource UnitLabelStyle}"/>
-                <TextBox DockPanel.Dock="Right"
-                         Style="{StaticResource SpinBoxStyle}"
-                         Text="{Binding TimerInterval, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Min 80 ms"/>
-            </DockPanel>
+                        <!-- Repeat Last Frame -->
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="{StaticResource ScreenRecorder_RepeatLastFrame}"
+                                       Style="{StaticResource RowLabel}"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <RepeatButton Content="-" Style="{StaticResource StepBtn}"
+                                              Click="OnRepeatDecrement"/>
+                                <TextBox Style="{StaticResource ValueBox}"
+                                         Text="{Binding RepeatLastFrameDelay, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="1,0"/>
+                                <RepeatButton Content="+" Style="{StaticResource StepBtn}"
+                                              Click="OnRepeatIncrement"/>
+                                <TextBlock Text="ms" Style="{StaticResource UnitLabel}"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
 
-        </StackPanel>
+                <!-- ── Capture ────────────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={StaticResource ScreenRecorder_Options_Capture}, Converter={x:Static conv:StringCaseConverter.Upper}}"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <!-- Interval -->
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="{StaticResource ScreenRecorder_Interval}"
+                                       Style="{StaticResource RowLabel}"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <RepeatButton Content="-" Style="{StaticResource StepBtn}"
+                                              Click="OnIntervalDecrement"/>
+                                <TextBox Style="{StaticResource ValueBox}"
+                                         Text="{Binding TimerInterval, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Min 80 ms"
+                                         Margin="1,0"/>
+                                <RepeatButton Content="+" Style="{StaticResource StepBtn}"
+                                              Click="OnIntervalIncrement"/>
+                                <TextBlock Text="ms" Style="{StaticResource UnitLabel}"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
     </Expander>
 </UserControl>

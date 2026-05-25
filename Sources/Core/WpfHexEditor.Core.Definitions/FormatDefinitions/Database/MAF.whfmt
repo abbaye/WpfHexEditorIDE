@@ -1,37 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Microsoft Access Form",
   "formatId": "MAF",
-  "version": "1.14",
-  "extensions": [
-    ".maf"
-  ],
-  "description": "Microsoft Access form module file",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".maf"],
+  "description": "Microsoft Access 2007 front-end file (.maf). The MAF format is a companion file to an Access database, containing form and module definitions. It is based on OLE2 Compound File Binary (CFB) format, sharing the magic bytes D0CF11E0A1B11AE1 with other Microsoft Office formats.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "Microsoft Access Form Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MAF"
-    ]
+    "specifications": ["Microsoft Access Form Format", "OLE2 Compound File Binary Format (MS-CFB)"],
+    "WebLinks": ["https://en.wikipedia.org/wiki/MAF", "https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/"]
   },
+  "maxSignatureOffset": 1024,
+  "signatures": [
+    {
+      "value": "D0CF11E0A1B11AE1",
+      "offset": 0,
+      "label": "OLE2 CFB magic — Microsoft Access MAF form file",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
   "detection": {
     "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "MAF magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 1, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "00", "offset": 0, "label": "MAF magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Weak"
@@ -43,92 +39,97 @@
     "tableCount": 0,
     "version": 0
   },
+  "structure": {
+    "fields": [
+      { "name": "cfb_magic", "offset": 0, "size": 8, "type": "bytes", "description": "OLE2 CFB magic: D0 CF 11 E0 A1 B1 1A E1" },
+      { "name": "clsid", "offset": 8, "size": 16, "type": "bytes", "description": "Reserved CLSID (typically all zeros)" },
+      { "name": "minor_version", "offset": 24, "size": 2, "type": "uint16le", "description": "CFB minor version" },
+      { "name": "major_version", "offset": 26, "size": 2, "type": "uint16le", "description": "CFB major version: 3 or 4" }
+    ]
+  },
   "blocks": [
+    { "type": "header", "name": "MAF Header", "offset": 0, "length": 128, "color": "#A8DADC", "opacity": 0.4, "description": "Access form file header" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["major_version", "minor_version"],
+    "valueMaps": {
+      "major_version": { "3": "CFB v3 (512-byte sectors)", "4": "CFB v4 (4096-byte sectors)" }
+    },
+    "tooltips": {
+      "major_version": "OLE2 CFB major version — 3 uses 512-byte sectors, 4 uses 4096-byte sectors",
+      "minor_version": "OLE2 CFB minor version — typically 0x003E"
+    }
+  },
+  "assertions": [
+    { "name": "OLE2 magic present", "expression": "cfb_magic == 'D0CF11E0A1B11AE1'", "severity": "error", "message": "MAF file must start with OLE2 CFB magic D0CF11E0A1B11AE1" },
+    { "name": "CFB major version valid", "expression": "major_version == 3 || major_version == 4", "severity": "warning", "message": "CFB major version should be 3 or 4" },
+    { "name": "File not truncated", "expression": "fileSize >= 512", "severity": "error", "message": "MAF/CFB file must be at least 512 bytes" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "OLE2 CFB Header", "color": "#A8DADC" },
+      { "offset": 512, "label": "First CFB Sector", "color": "#4ECDC4" },
+      { "offset": 1024, "label": "Access Form Data", "color": "#95E1D3" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "MAF Header",
-      "offset": 0,
-      "length": 128,
-      "color": "#A8DADC",
-      "opacity": 0.4,
-      "description": "Access form file header"
+      "name": "MAF Header Summary",
+      "format": "text",
+      "template": "Microsoft Access Form (MAF)\nCFB Version: {major_version}.{minor_version}\nPage Size  : {pageSize}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "MAF Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMajorVersion,{major_version}\nMinorVersion,{minor_version}\nPageSize,{pageSize}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "MAF is an OLE2 Compound File Binary (CFB) container — the same as .doc and .xls files",
+    "The Access-specific stream inside the CFB contains the form definitions",
+    "Detection requires both the OLE2 magic and the .maf extension",
+    "CFB sectors are 512 bytes for version 3 and 4096 bytes for version 4",
+    "Access MAF files cannot be opened without Microsoft Access 2007 or later"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".maf"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
-  ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft Access form module file",
-    "suggestedInspections": [
-      "Verify Microsoft Access Form file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "MAF files may contain VBA macros — examine for malicious code",
+      "OLE2 CFB structure hides actual content behind stream allocation tables",
+      "Form definitions may reference ACCDB/MDB tables — check for database references"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "ACCDB", "relation": "companion", "note": "MAF is the front-end form file that links to an ACCDB backend database" },
+    { "format": "MDB", "relation": "companion", "note": "MAF can also link to older MDB format backends" }
+  ],
+  "software": ["Microsoft Access 2007+", "Microsoft Office Access Runtime", "LibreOffice Base (partial)", "OLE2 tools (7-Zip, compound-binary)"],
+  "useCases": [
+    "Microsoft Access split-database forms and UI definitions",
+    "Separate front-end/back-end Access application deployment",
+    "Form-only distribution without exposing backend data",
+    "Legacy Access application forensics"
+  ],
+  "technicalDetails": {
+    "ContainerFormat": "OLE2 Compound File Binary (CFB)",
+    "CFBMagic": "D0CF11E0A1B11AE1",
+    "SectorSizes": { "3": 512, "4": 4096 }
+  },
+  "completenessScore": 82,
+  "MimeTypes": ["application/octet-stream"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "ContainerFormat": "OLE2 CFB", "CFBMagic": "D0CF11E0A1B11AE1" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

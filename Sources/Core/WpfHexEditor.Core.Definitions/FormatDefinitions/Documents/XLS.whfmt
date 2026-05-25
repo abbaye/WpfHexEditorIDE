@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Excel Workbook (Legacy)",
   "formatId": "XLS",
@@ -29,7 +30,10 @@
     "offset": 0,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.0
+    },
     "validation": {
       "minFileSize": 512,
       "note": "OLE2/CFB magic. Disambiguate as .xls by: (1) root entry CLSID {00020820-...} or (2) 'Workbook'/'Book' stream in directory. First BIFF8 record in Workbook stream is BOF (type=0x0809, subtype 0x0500=workbook, 0x0010=worksheet, 0x0020=chart)."
@@ -64,7 +68,7 @@
       "offset": 24,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB minor version (LE uint16). Must be 0x003E (62) for all valid OLE2/CFB files.",
       "storeAs": "minorVersion",
       "valueType": "uint16",
@@ -79,7 +83,7 @@
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB major version (LE uint16). 3 = 512-byte sectors (Office 97-2003), 4 = 4096-byte sectors.",
       "storeAs": "majorVersion",
       "valueType": "uint16",
@@ -138,7 +142,7 @@
       "offset": 48,
       "length": 4,
       "color": "#FFA07A",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Sector index of the first directory stream sector. Byte offset = (firstDirSector+1) × sectorSize.",
       "storeAs": "firstDirSector",
       "valueType": "uint32",
@@ -150,7 +154,7 @@
       "offset": 56,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Streams smaller than this size (default 4096 bytes) use the mini FAT stream. Standard is 0x1000.",
       "storeAs": "miniStreamCutoff",
       "valueType": "uint32",
@@ -207,14 +211,19 @@
       {
         "name": "CFB Header",
         "offset": 0,
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Directory Stream",
         "offsetVar": "firstDirSector",
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
+      },
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
       }
     ]
   },
@@ -225,31 +234,62 @@
     "groups": [
       {
         "title": "CFB Container",
-        "icon": "\uE9D9",
-        "fields": ["ole2Signature", "majorVersion", "minorVersion", "byteOrder"]
+        "icon": "",
+        "fields": [
+          "ole2Signature",
+          "majorVersion",
+          "minorVersion",
+          "byteOrder"
+        ]
       },
       {
         "title": "Sector Layout",
-        "icon": "\uE8A5",
-        "fields": ["sectorSizeExp", "fatSectorCount", "firstDirSector", "miniStreamCutoff"]
+        "icon": "",
+        "fields": [
+          "sectorSizeExp",
+          "fatSectorCount",
+          "firstDirSector",
+          "miniStreamCutoff"
+        ]
       },
       {
         "title": "Excel Format",
-        "icon": "\uE8B7",
-        "fields": ["isXLS97"]
+        "icon": "",
+        "fields": [
+          "isXLS97"
+        ]
       }
-    ]
+    ],
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
   },
   "exportTemplates": [
     {
       "name": "OLE2 Header (JSON)",
       "format": "json",
-      "fields": ["majorVersion", "minorVersion", "byteOrder", "sectorSizeExp", "fatSectorCount", "firstDirSector", "isXLS97"]
+      "fields": [
+        "majorVersion",
+        "minorVersion",
+        "byteOrder",
+        "sectorSizeExp",
+        "fatSectorCount",
+        "firstDirSector",
+        "isXLS97"
+      ]
     },
     {
       "name": "Python OLE2 check",
       "format": "python-bytes",
-      "fields": ["ole2Signature", "majorVersion", "minorVersion"]
+      "fields": [
+        "ole2Signature",
+        "majorVersion",
+        "minorVersion"
+      ]
     }
   ],
   "forensic": {
@@ -275,24 +315,28 @@
       "XLM macro (Excel 4.0 macros) in 'Macro' sheet — commonly abused in modern malware (2020-2022) to evade VBA detection",
       "DDEAUTO formula in cells triggering system command execution",
       "CVE-2018-0802: Equation Editor OLE object in Excel cells"
-    ]
-  },
-  "aiHints": {
-    "analysisContext": "Legacy .xls = OLE2 CFB container. Excel data in 'Workbook' (Excel 97+) or 'Book' (Excel 5/95) stream. BIFF8 record format: type uint16 LE (2B) + length uint16 LE (2B) + data (length bytes). First record must be BOF type 0x0809: version bytes at BOF+4 LE uint16 — 0x0600=BIFF8 (Excel 97-2003), 0x0500=BIFF5 (Excel 5/95). Stream offset = (firstDirSector+1) × 512. Macros in 'VBA' stream (inside storage named 'Macros' or '_VBA_PROJECT_CUR'). XLM/Excel 4.0 macros in dedicated 'Macro' sheets in Workbook stream BoundSheet records with hidden=2. Tools: oletools, xlrd, python-xlrd.",
-    "knownVulnerabilities": [
-      "CVE-2017-8570: OLE packager .sct scriptlet in .xls — file write + execute chain",
-      "XLM (Excel 4.0) macros: EXEC(), CALL() functions execute arbitrary code — not blocked by VBA macro warnings in older Office",
-      "CVE-2018-0802: Equation Editor OLE object heap overflow"
     ],
-    "suggestedInspections": [
-      "Confirm OLE2 magic D0 CF 11 E0 A1 B1 1A E1",
-      "Find 'Workbook' stream in CFB directory; first 4B = BOF record (type=0x0809, length follows)",
-      "Check BOF version at Workbook+4: 0x0600 = BIFF8 (Excel 97-2003)",
-      "Scan for 'VBA'/'_VBA_PROJECT_CUR' storage in CFB directory (macro indicator)",
-      "Search BoundSheet8 records (type=0x0085) — hidden=2 in bit 1-4 of grbit field indicates hidden macro sheet",
-      "Look for DDEAUTO formula patterns in FORMULA/LABELSST records (formula starting with '=')"
+    "notes": [
+      "OLE2 compound binary; contains multiple streams that may embed macros.",
+      "VBA macro streams (VBA/ directory) are a common malware vector.",
+      "Summary information streams expose author, company, and revision metadata."
     ]
   },
+  "aiHints": [
+    "Legacy .xls = OLE2 CFB container. Excel data in 'Workbook' (Excel 97+) or 'Book' (Excel 5/95) stream. BIFF8 record format: type uint16 LE (2B) + length uint16 LE (2B) + data (length bytes). First record must be BOF type 0x0809: version bytes at BOF+4 LE uint16 — 0x0600=BIFF8 (Excel 97-2003), 0x0500=BIFF5 (Excel 5/95). Stream offset = (firstDirSector+1) × 512. Macros in 'VBA' stream (inside storage named 'Macros' or '_VBA_PROJECT_CUR'). XLM/Excel 4.0 macros in dedicated 'Macro' sheets in Workbook stream BoundSheet records with hidden=2. Tools: oletools, xlrd, python-xlrd.",
+    "Confirm OLE2 magic D0 CF 11 E0 A1 B1 1A E1",
+    "Find 'Workbook' stream in CFB directory; first 4B = BOF record (type=0x0809, length follows)",
+    "Check BOF version at Workbook+4: 0x0600 = BIFF8 (Excel 97-2003)",
+    "Scan for 'VBA'/'_VBA_PROJECT_CUR' storage in CFB directory (macro indicator)",
+    "Search BoundSheet8 records (type=0x0085) — hidden=2 in bit 1-4 of grbit field indicates hidden macro sheet",
+    "Look for DDEAUTO formula patterns in FORMULA/LABELSST records (formula starting with '=')",
+    "The Workbook stream contains sequential BIFF8 records — each record starts with type(2)+len(2)+data.",
+    "XLM macro sheets (BIFF Macro type records) are a common malware vector predating VBA.",
+    "VBA macros in the vbaProject storage are also a high-risk vector.",
+    "EXTERNNAME records reference external named ranges used in DDE injection attacks.",
+    "MULRK records efficiently encode multiple numeric cells in a compressed format.",
+    "Shared formula records (SHRFMLA) optimize repeated formula storage across rows."
+  ],
   "software": [
     "Microsoft Excel 97-2003",
     "LibreOffice Calc",
@@ -300,12 +344,43 @@
     "Google Sheets (import)",
     "oletools (forensic)"
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [".xls", ".xlt", ".xlm"],
-    "relatedFormats": ["XLSX", "DOC", "PPT"],
-    "note": "Excel 97-2003 BIFF8 format. Replaced by OOXML .xlsx from Office 2007. Shares OLE2/CFB container with .doc and .ppt. XLM (Excel 4.0) macro sheets are still parseable in modern Excel — a security concern."
-  },
+  "formatRelationships": [
+    {
+      "formatId": "category",
+      "relation": "Documents",
+      "note": ""
+    },
+    {
+      "formatId": "extensions",
+      "relation": "['.xls', '.xlt', '.xlm']",
+      "note": ""
+    },
+    {
+      "formatId": "relatedFormats",
+      "relation": "['XLSX', 'DOC', 'PPT']",
+      "note": ""
+    },
+    {
+      "formatId": "note",
+      "relation": "Excel 97-2003 BIFF8 format. Replaced by OOXML .xlsx from Office 2007. Shares OLE2/CFB container with .doc and .ppt. XLM (Excel 4.0) macro sheets are still parseable in modern Excel — a security concern.",
+      "note": ""
+    },
+    {
+      "formatId": "xlsx",
+      "relation": "successor",
+      "note": "XLSX is the modern OOXML spreadsheet format"
+    },
+    {
+      "formatId": "ods",
+      "relation": "equivalent",
+      "note": "ODS is the open standard equivalent"
+    },
+    {
+      "formatId": "csv",
+      "relation": "export",
+      "note": "CSV is the flat-text export format"
+    }
+  ],
   "MimeTypes": [
     "application/vnd.ms-excel",
     "application/msexcel"
@@ -382,5 +457,56 @@
       }
     ],
     "note": "Inferred fuzz strategies for XLS. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "D0CF11E0A1B11AE1",
+      "offset": 0,
+      "label": "XLS signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      {
+        "name": "FileHeader",
+        "offset": 0,
+        "size": 4,
+        "type": "bytes",
+        "description": "Format magic bytes / file signature"
+      },
+      {
+        "name": "Metadata",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "Format-specific metadata block"
+      },
+      {
+        "name": "Content",
+        "offset": -1,
+        "size": -1,
+        "type": "blob",
+        "description": "Primary content payload"
+      },
+      {
+        "name": "Footer",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "End-of-file marker or checksum"
+      }
+    ]
+  },
+  "useCases": [
+    "Legacy spreadsheet compatibility",
+    "Corporate archival (pre-2007 Office)",
+    "Forensic malware analysis (common malware delivery vector)",
+    "Financial data archiving"
+  ],
+  "technicalDetails": "XLS (BIFF8, Binary Interchange File Format 8) is an OLE2 Compound File Binary. The Workbook stream contains BIFF8 records: BOF (beginning of file), SHEET, ROW, and MULRK records encode cell data. Each record has a 2-byte type, 2-byte length, and variable data. Formulas use RPN (Reverse Polish Notation) token arrays.",
+  "completenessScore": 82
 }

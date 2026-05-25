@@ -1,0 +1,125 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "mzML Mass Spectrometry Data",
+  "formatId": "MZML",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "mzML is the HUPO-PSI standard XML format for mass spectrometry data (.mzML). It stores raw and processed spectra, chromatograms, instrument configurations, and sample metadata. mzML succeeded the older mzXML and mzData formats and is maintained by the Proteomics Standards Initiative. Binary spectral data is base64-encoded within the XML.",
+  "extensions": [".mzML", ".mzml"],
+  "category": "Medical",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "3C3F786D6C",
+      "offset": 0,
+      "label": "XML declaration '<?xml'",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 5,
+  "structure": {
+    "fields": [
+      { "offset": 0,   "size": 5,  "name": "xml_declaration",   "type": "ascii", "description": "XML processing instruction '<?xml' or direct '<mzML' root element", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "mzml_version",      "type": "ascii", "description": "mzML schema version attribute (e.g., '1.1.0' or '1.1.2')", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "xmlns",             "type": "ascii", "description": "XML namespace URI for mzML schema", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "spectrum_count",    "type": "ascii", "description": "spectrumList count attribute: total number of spectra in the file", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "instrument_model",  "type": "ascii", "description": "PSI-MS CV term for instrument model (e.g., MS:1000557 for LTQ Orbitrap)", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["xml_declaration", "mzml_version", "xmlns", "spectrum_count", "instrument_model"],
+    "valueMaps": {
+      "mzml_version": {
+        "1.1.0": "mzML 1.1.0 (2009, widely adopted)",
+        "1.1.2": "mzML 1.1.2 (2012, current HUPO-PSI standard)"
+      }
+    },
+    "tooltips": {
+      "xml_declaration":  "mzML files are always UTF-8 encoded XML; the XML declaration is strongly recommended",
+      "mzml_version":     "Schema version determines available CV terms and data encoding options",
+      "xmlns":            "mzML 1.1 namespace: http://psi.hupo.org/ms/mzml",
+      "spectrum_count":   "Total spectrum count in the spectrumList; useful for progress reporting during parsing",
+      "instrument_model": "PSI-MS controlled vocabulary term identifying the mass spectrometer hardware"
+    }
+  },
+  "assertions": [
+    {
+      "id": "MZML_001",
+      "field": "xml_declaration",
+      "operator": "startsWith",
+      "value": "3C",
+      "description": "File must begin with '<' indicating XML content"
+    },
+    {
+      "id": "MZML_002",
+      "field": "mzml_version",
+      "operator": "in",
+      "value": ["1.1.0", "1.1.2"],
+      "description": "mzML version must be a recognized HUPO-PSI standard version"
+    },
+    {
+      "id": "MZML_003",
+      "field": "xmlns",
+      "operator": "contains",
+      "value": "psi.hupo.org/ms/mzml",
+      "description": "XML namespace must reference the HUPO-PSI mzML schema URI"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,   "label": "XML Header",               "color": "#4A90D9" },
+      { "offset": 100, "label": "mzML Root Element",         "color": "#7ED321" },
+      { "offset": 500, "label": "First Spectrum",            "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "mzML File Metadata",
+      "fields": ["mzml_version", "xmlns", "spectrum_count", "instrument_model"],
+      "format": "json"
+    },
+    {
+      "name": "Mass Spec Audit Report",
+      "fields": ["mzml_version", "spectrum_count", "instrument_model"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "mzML spectrum data (m/z values and intensities) is stored as base64-encoded arrays inside <binary> elements; arrays use zlib compression (MS:1000574) and 64-bit or 32-bit float encoding (MS:1000514/MS:1000515).",
+    "The PSI-MS controlled vocabulary (CV) is central to mzML: every parameter is described by a CV term (e.g., MS:1000040 = 'm/z', MS:1000042 = 'peak intensity'); the CV accession numbers make mzML machine-readable without schema knowledge.",
+    "mzML files can include an indexList at the end of the file (mzML with index) providing byte-offset lookup for each spectrum — enabling random access to specific spectra without parsing the entire file.",
+    "Large mzML files (DDA proteomics LC-MS/MS runs) can exceed several gigabytes; tools like msConvert (ProteoWizard) handle format conversion while the pymzml Python library enables streaming spectrum-by-spectrum parsing.",
+    "mzML distinguishes MS1 (survey) and MS2+ (fragmentation) spectra via the ms level CV term (MS:1000511); tandem spectra include precursorList elements linking to parent ions.",
+    "mzML is used for both proteomics (peptide/protein identification) and metabolomics (small molecule profiling); the same format encodes both application domains."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "mzML files from clinical mass spectrometry instruments may contain embedded patient sample identifiers in the fileDescription or run elements.",
+      "Instrument serial numbers and acquisition timestamps in mzML metadata enable precise attribution of spectra to specific laboratory instruments and acquisition sessions.",
+      "mzML files from pharmaceutical quality control may contain proprietary compound profiles that constitute trade secrets.",
+      "The acquisition date/time in the run startTimeStamp attribute provides precise laboratory activity timestamps."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MZXML",    "relationship": "successor",  "note": "mzML replaced the older mzXML (ISB) format as the HUPO-PSI community standard" },
+    { "format": "MZDATA",   "relationship": "successor",  "note": "mzML also replaced the competing mzData format, unifying the mass spectrometry community" },
+    { "format": "GEOJSON",  "relationship": "unrelated",  "note": "Both are XML/JSON-based scientific data formats but serve entirely different domains" }
+  ],
+  "software": [
+    { "name": "ProteoWizard (msConvert)", "role": "Primary tool for converting vendor mass spec formats to mzML; supports 100+ instrument formats" },
+    { "name": "pymzml",                   "role": "Python library for streaming mzML parsing with spectrum-level random access" },
+    { "name": "OpenMS",                   "role": "C++ mass spectrometry analysis framework using mzML as its native interchange format" },
+    { "name": "MaxQuant",                 "role": "Proteomics quantification software that accepts mzML as input alongside Thermo .raw files" }
+  ],
+  "useCases": [
+    "Storing raw mass spectrometry data from proteomics, metabolomics, and lipidomics experiments in a vendor-neutral format",
+    "Archiving LC-MS/MS datasets for proteomics research with complete instrument metadata for reproducibility",
+    "Sharing mass spectrometry data in public repositories (PRIDE, MetaboLights) for open science initiatives",
+    "Converting proprietary instrument vendor formats (Thermo .raw, Waters .raw, Bruker .d) to open mzML for cross-platform analysis"
+  ],
+  "technicalDetails": "mzML 1.1 is defined by the HUPO-PSI and published at http://www.psidev.info/mzML. The XML schema is at https://raw.githubusercontent.com/HUPO-PSI/mzML/master/schema/mzML1.1.2.xsd. The root element is <mzML> with attributes id, version, and xmlns. Core elements: <fileDescription> (contact/source file), <referenceableParamGroupList> (reusable CV param groups), <instrumentConfigurationList> (hardware), <dataProcessingList> (software transformations), <run> (the actual data). The <run> element contains <spectrumList> and <chromatogramList>. Each <spectrum> has <cvParam> elements from PSI-MS CV and <binaryDataArrayList> containing m/z and intensity arrays. Binary data is base64-encoded, optionally zlib-compressed, stored as 32 or 64-bit IEEE 754 floats. The indexed mzML variant appends an <indexList> and <indexListOffset> to enable O(1) spectrum lookup by byte offset.",
+  "completenessScore": 81
+}

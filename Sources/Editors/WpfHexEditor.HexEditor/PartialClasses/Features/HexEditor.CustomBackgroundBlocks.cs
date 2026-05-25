@@ -121,7 +121,15 @@ namespace WpfHexEditor.HexEditor
         {
             if (block == null) return;
             _customBackgroundService.AddBlock(block);
-            // Event handling triggers viewport update automatically
+        }
+
+        /// <summary>
+        /// Add multiple custom background blocks in one batch (single viewport invalidation).
+        /// </summary>
+        public void AddCustomBackgroundBlockRange(IEnumerable<Core.CustomBackgroundBlock> blocks)
+        {
+            if (blocks == null) return;
+            _customBackgroundService.AddBlocks(blocks);
         }
 
         /// <summary>

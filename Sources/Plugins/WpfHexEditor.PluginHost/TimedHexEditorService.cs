@@ -21,6 +21,7 @@
 //
 // ==========================================================
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.PluginHost.Monitoring;
@@ -96,6 +97,7 @@ internal sealed class TimedHexEditorService : IHexEditorService
     public void                ConnectParsedFieldsPanel(IParsedFieldsPanel panel) => _inner.ConnectParsedFieldsPanel(panel);
     public void                DisconnectParsedFieldsPanel()           => _inner.DisconnectParsedFieldsPanel();
     public void                AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) => _inner.AddCustomBackgroundBlock(block);
+    public void                AddCustomBackgroundBlockRange(IEnumerable<WpfHexEditor.Core.CustomBackgroundBlock> blocks) => _inner.AddCustomBackgroundBlockRange(blocks);
     public void                ClearCustomBackgroundBlockByTag(string tag) => _inner.ClearCustomBackgroundBlockByTag(tag);
 
     // ── Events (timed interception) ───────────────────────────────────────────

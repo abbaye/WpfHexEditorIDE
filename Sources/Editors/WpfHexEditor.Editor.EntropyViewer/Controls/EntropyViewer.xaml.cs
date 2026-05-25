@@ -11,10 +11,14 @@
 //     (EntropyBarCanvas / ByteFreqCanvas).  Analysis runs on Task.Run.
 //////////////////////////////////////////////
 
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Microsoft.Win32;
 using WpfHexEditor.Core.BinaryAnalysis.Services;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.EntropyViewer.Properties;
@@ -37,6 +41,7 @@ public sealed partial class EntropyViewer : UserControl, IDocumentEditor, IOpena
     private double[]? _blockEntropy;
     private long[]?   _byteFrequency;
 
+    // Zoom state for the entropy bar
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public EntropyViewer()
@@ -96,6 +101,14 @@ public sealed partial class EntropyViewer : UserControl, IDocumentEditor, IOpena
     /// The host IDE should sync the HexEditor to this offset.
     /// </summary>
     public event EventHandler<long>? NavigateToOffsetRequested;
+
+    /// <summary>
+    /// Overlays named section markers on the entropy chart.
+    /// Call after PE/ELF section parsing completes.
+    /// </summary>
+    public void SetSectionLabels(
+        IReadOnlyList<(long Offset, long Length, string Name)> labels)
+        => EntropyCanvas.SetSectionLabels(labels);
 
     // ── IDocumentEditor — Methods ─────────────────────────────────────────────
 
@@ -170,10 +183,11 @@ public sealed partial class EntropyViewer : UserControl, IDocumentEditor, IOpena
         {
             // Per-block entropy
             var blocks = new List<double>();
+            var freq   = new long[256]; // reused across blocks — cleared each iteration
             for (int offset = 0; offset < data.Length; offset += windowSize)
             {
-                int   len  = Math.Min(windowSize, data.Length - offset);
-                var   freq = new long[256];
+                int len = Math.Min(windowSize, data.Length - offset);
+                Array.Clear(freq);
                 for (int i = offset; i < offset + len; i++) freq[data[i]]++;
                 blocks.Add(Shannon(freq, len));
             }
@@ -254,6 +268,41 @@ public sealed partial class EntropyViewer : UserControl, IDocumentEditor, IOpena
 
     private void OnEntropyOffsetRequested(object? sender, long offset)
         => NavigateToOffsetRequested?.Invoke(this, offset);
+
+    private void OnEntropyPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+        e.Handled = true;
+
+        var delta = e.Delta > 0 ? 0.25 : -0.25;
+        EntropyCanvas.SetZoom(EntropyCanvas.Zoom + delta);
+    }
+
+    private void OnExportPng(object sender, RoutedEventArgs e)
+    {
+        var dlg = new SaveFileDialog
+        {
+            Title      = "Export Entropy Chart",
+            Filter     = "PNG Image|*.png",
+            DefaultExt = ".png",
+            FileName   = Path.GetFileNameWithoutExtension(_filePath) + "_entropy.png",
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var target = new RenderTargetBitmap(
+            (int)Math.Max(1, EntropyCanvas.ActualWidth),
+            (int)Math.Max(1, EntropyCanvas.ActualHeight),
+            96, 96, PixelFormats.Pbgra32);
+        target.Render(EntropyCanvas);
+
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(target));
+
+        using var stream = File.OpenWrite(dlg.FileName);
+        encoder.Save(stream);
+
+        StatusMessage?.Invoke(this, $"Exported: {dlg.FileName}");
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

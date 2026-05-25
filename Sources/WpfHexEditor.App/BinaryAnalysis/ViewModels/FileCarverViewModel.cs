@@ -68,19 +68,56 @@ public sealed class FileCarverViewModel : ViewModelBase
 
     public void Cancel() => _cts?.Cancel();
 
+    public void JumpTo(CarvedEntry entry)
+    {
+        if (_context?.HexEditor is { IsActive: true } hex)
+            hex.NavigateTo(entry.Offset);
+    }
+
     public async Task ExtractAsync(CarvedEntry entry, IIDEHostContext context)
     {
         if (!context.HexEditor.IsActive) return;
 
         using var stream = new HexEditorStream(context.HexEditor);
+        long maxBytes = entry.EstSize > 0
+            ? Math.Min(entry.EstSize, stream.Length - entry.Offset)
+            : Math.Min(4 * 1024 * 1024, stream.Length - entry.Offset);
+
         var tempPath = Path.Combine(Path.GetTempPath(),
             $"carved_{entry.Offset:X8}_{entry.FormatName.Replace(" ", "_")}.bin");
 
         stream.Position = entry.Offset;
-        var bytes = new byte[Math.Min(4 * 1024 * 1024, stream.Length - entry.Offset)];
+        var bytes = new byte[maxBytes];
         int read = await stream.ReadAsync(bytes);
         await File.WriteAllBytesAsync(tempPath, bytes.AsSpan(0, read).ToArray());
 
         context.DocumentHost.OpenDocument(tempPath);
+    }
+
+    public async Task ExtractAllAsync(string outputFolder, IIDEHostContext context)
+    {
+        if (!context.HexEditor.IsActive || Results.Count == 0) return;
+
+        Directory.CreateDirectory(outputFolder);
+        int saved = 0;
+
+        using var stream = new HexEditorStream(context.HexEditor);
+        foreach (var entry in Results)
+        {
+            long maxBytes = entry.EstSize > 0
+                ? Math.Min(entry.EstSize, stream.Length - entry.Offset)
+                : Math.Min(4 * 1024 * 1024, stream.Length - entry.Offset);
+
+            string name = $"{entry.Offset:X8}_{entry.FormatName.Replace(" ", "_")}.bin";
+            string path = Path.Combine(outputFolder, name);
+
+            stream.Position = entry.Offset;
+            var bytes = new byte[maxBytes];
+            int read = await stream.ReadAsync(bytes);
+            await File.WriteAllBytesAsync(path, bytes.AsSpan(0, read).ToArray());
+            saved++;
+        }
+
+        StatusText = $"Exported {saved} file(s) to {outputFolder}";
     }
 }

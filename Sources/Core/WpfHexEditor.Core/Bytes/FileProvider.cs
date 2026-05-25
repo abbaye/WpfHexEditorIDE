@@ -223,16 +223,19 @@ namespace WpfHexEditor.Core.Bytes
                         // Partially in cache
                         Array.Copy(_cache, cacheOffset, result, 0, availableInCache);
 
-                        // Read remainder directly from stream
+                        // Read remainder directly from stream with retry loop
                         _stream.Position = physicalPosition + availableInCache;
-                        int remaining = count - availableInCache;
-                        int bytesRead = _stream.Read(result, availableInCache, remaining);
+                        int remaining  = count - availableInCache;
+                        int bytesRead  = 0;
+                        while (bytesRead < remaining)
+                        {
+                            int n = _stream.Read(result, availableInCache + bytesRead, remaining - bytesRead);
+                            if (n == 0) break;
+                            bytesRead += n;
+                        }
 
                         if (bytesRead < remaining)
-                        {
-                            // Resize if couldn't read all bytes
                             Array.Resize(ref result, availableInCache + bytesRead);
-                        }
 
                         // Update cache with new data
                         FillCache(physicalPosition + availableInCache);
@@ -240,9 +243,15 @@ namespace WpfHexEditor.Core.Bytes
                     }
                 }
 
-                // Not in cache - read directly
+                // Not in cache - read directly with retry loop (Stream.Read may return partial data)
                 _stream.Position = physicalPosition;
-                int totalRead = _stream.Read(result, 0, count);
+                int totalRead = 0;
+                while (totalRead < count)
+                {
+                    int n = _stream.Read(result, totalRead, count - totalRead);
+                    if (n == 0) break;
+                    totalRead += n;
+                }
 
                 if (totalRead < count)
                     Array.Resize(ref result, totalRead);

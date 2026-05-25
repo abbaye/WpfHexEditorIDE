@@ -83,13 +83,9 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         RegisterCommands(context);
         context.CapabilityRegistry.RegisterWorkspacePersistable(Id, this);
 
-        // Reopen the document tab if it was open at last shutdown.
-        // The dock layout restores the ContentId as a ghost (CreatePluginDocumentGhostContent)
-        // which closes the stale entry; we recreate the real tab at ApplicationIdle priority.
-        if (Options.ScreenRecorderOptions.Instance.DocumentTabOpen)
-            Application.Current.Dispatcher.InvokeAsync(
-                OpenOrFocusDocument,
-                System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        // Tab restoration is handled exclusively by RestoreWorkspaceStateAsync (IWorkspacePersistable).
+        // The DocumentTabOpen fallback path is intentionally removed to prevent duplicate tabs
+        // when both the dock layout ghost-close and workspace restore fire on startup.
 
         return Task.CompletedTask;
     }
@@ -121,7 +117,9 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         {
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.TryGetProperty("isOpen", out var prop) && prop.GetBoolean())
-                Application.Current.Dispatcher.BeginInvoke(OpenOrFocusDocument);
+                Application.Current.Dispatcher.InvokeAsync(
+                    OpenOrFocusDocument,
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
         catch (JsonException) { }
         return Task.CompletedTask;

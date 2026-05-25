@@ -26,6 +26,7 @@ public sealed partial class StructurePopToolbar : UserControl
     public event EventHandler? DuplicateRequested;
     public event EventHandler? ToggleCodeViewRequested;
     public event EventHandler? ImportRequested;
+    public event EventHandler? MergeRequested;
     public event EventHandler<TemplateExportRequestedEventArgs>? ExportRequested;
 
     // ── Block operations visibility ──────────────────────────────────────────
@@ -56,6 +57,7 @@ public sealed partial class StructurePopToolbar : UserControl
     private void OnDuplicateClicked(object s, RoutedEventArgs e)      => DuplicateRequested?.Invoke(this, EventArgs.Empty);
     private void OnToggleCodeViewClicked(object s, RoutedEventArgs e) => ToggleCodeViewRequested?.Invoke(this, EventArgs.Empty);
     private void OnImportClicked(object s, RoutedEventArgs e)         => ImportRequested?.Invoke(this, EventArgs.Empty);
+    private void OnMergeClicked(object s, RoutedEventArgs e)          => MergeRequested?.Invoke(this, EventArgs.Empty);
 
     private void OnExportClicked(object s, RoutedEventArgs e)
     {

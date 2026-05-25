@@ -34,7 +34,7 @@ public sealed class HexEditorDefaultSettings
     public ByteSpacerGroup ByteGrouping { get; set; } = ByteSpacerGroup.FourByte;
 
     /// <summary>Position of byte spacers relative to the data columns.</summary>
-    public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.Both;
+    public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.HexBytePanel;
 
     // -- Editing ----------------------------------------------------------
 
@@ -171,4 +171,15 @@ public sealed class HexEditorDefaultSettings
 
     /// <summary>Font size for breadcrumb text. Default: 11.5.</summary>
     public double BreadcrumbFontSize { get; set; } = 11.5;
+
+    // -- Entropy Heatmap --------------------------------------------------
+
+    /// <summary>Show the Shannon entropy heatmap overlay on the active HexEditor viewport.</summary>
+    public bool ShowEntropyHeatmap { get; set; } = false;
+
+    /// <summary>Sliding-window block size in bytes used when computing entropy samples (128, 256, or 512).</summary>
+    public int EntropyWindowSizeBytes { get; set; } = 256;
+
+    /// <summary>Color theme index for the entropy heatmap overlay (0=BlueRed, 1=Greyscale, 2=TrafficLight).</summary>
+    public int EntropyColorTheme { get; set; } = 0;
 }

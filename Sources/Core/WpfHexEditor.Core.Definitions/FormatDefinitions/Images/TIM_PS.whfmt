@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
   "formatName": "PlayStation TIM Image",
   "formatId": "TIM_PS",
   "version": "1.0",

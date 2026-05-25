@@ -362,6 +362,9 @@ namespace WpfHexEditor.HexEditor
             if (fillItem != null) fillItem.IsEnabled = !ReadOnlyMode && SelectionLength > 0;
             if (replaceItem != null) replaceItem.IsEnabled = !ReadOnlyMode && SelectionLength > 0;
 
+            if (LogicalTreeHelper.FindLogicalNode(contextMenu, "EntropyHeatmapMenuItem") is MenuItem entropyItem)
+                entropyItem.IsChecked = IsEntropyHeatmapEnabled;
+
             // Show context menu
             contextMenu.Visibility = Visibility.Visible;
             contextMenu.IsOpen = true;
@@ -843,6 +846,9 @@ namespace WpfHexEditor.HexEditor
 
             CompareSelectionRequested?.Invoke(this, new CompareFileRequestedEventArgs(tmp) { IsTempFile = true });
         }
+
+        private void EntropyHeatmapMenuItem_Click(object sender, RoutedEventArgs e)
+            => EntropyHeatmapToggleRequested?.Invoke(this, EventArgs.Empty);
 
         #endregion
 

@@ -1,15 +1,46 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "MP3 Audio",
   "formatId": "MP3",
   "version": "2.02",
-  "extensions": [
-    ".mp3"
-  ],
+  "extensions": [".mp3"],
   "description": "MPEG-1/2 Audio Layer III - A lossy audio compression format. Most MP3 files begin with an ID3v2 tag containing metadata, followed by a sequence of MPEG audio frames. Each frame has a 4-byte header encoding the MPEG version, layer, bitrate, sample rate, channel mode, and other parameters.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "audio-viewer",
+  "signatures": [
+    {
+      "value": "494433",
+      "offset": 0,
+      "label": "ID3v2 tag header 'ID3'",
+      "weight": 0.9,
+      "strength": "Strong"
+    },
+    {
+      "value": "FFFB",
+      "offset": 0,
+      "label": "MPEG-1 Layer 3 CBR sync word",
+      "weight": 0.8,
+      "strength": "Strong"
+    },
+    {
+      "value": "FFF3",
+      "offset": 0,
+      "label": "MPEG-2 Layer 3 sync word",
+      "weight": 0.7,
+      "strength": "Moderate"
+    },
+    {
+      "value": "FFF2",
+      "offset": 0,
+      "label": "MPEG-2 Layer 3 sync word (variant)",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "references": {
     "specifications": [
       "ISO/IEC 11172-3 - MPEG-1 Audio Layer III",
@@ -64,10 +95,10 @@
   },
   "functions": {
     "parseMP3Header": "Scan the file to locate the first valid MP3 frame sync (0xFFE0 mask) after any ID3v2 tag",
-    "parseMP3FrameHeader": "Parse the 4-byte frame header to extract MPEG version, layer, bitrate, sample rate, channel mode, and emphasis",
-    "calculateMP3Duration": "Estimate total playback duration by scanning frame headers or using VBR/Xing header if present",
-    "formatDuration(var:mp3Duration)": "Format computed duration as human-readable HH:MM:SS string",
-    "formatFileSize(var:id3Size)": "Format ID3 tag size as human-readable string with units"
+    "parseMP3FrameHeader": "Parse the 4-byte frame header to extract MPEG version, layer, bitrate, sample rate, channel mode",
+    "calculateMP3Duration": "Estimate total playback duration by scanning frame headers or using VBR/Xing header",
+    "formatDuration(var:mp3Duration)": "Format duration as HH:MM:SS",
+    "formatFileSize(var:id3Size)": "Format ID3 tag size as human-readable string"
   },
   "blocks": [
     {
@@ -77,360 +108,165 @@
       "length": 3,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "ID3v2 tag header identifier (ASCII 'ID3' = 0x494433). Indicates the file starts with an ID3v2 metadata container.",
+      "description": "ID3v2 tag header identifier (ASCII 'ID3' = 0x494433).",
       "storeAs": "id3Signature",
       "valueType": "ascii",
-      "validation": {
-        "expectedValue": "ID3"
-      }
+      "validation": { "expectedValue": "ID3" }
     },
     {
-      "type": "field",
-      "name": "ID3v2 Major Version",
-      "offset": 3,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "ID3v2 major version number (e.g. 3 for ID3v2.3, 4 for ID3v2.4). Determines the tag structure and supported frames.",
-      "storeAs": "id3MajorVersion",
-      "valueType": "uint8",
-      "valueMap": {
-        "2": "ID3v2.2 (obsolete, 3-char frame IDs)",
-        "3": "ID3v2.3 (most common, 4-char frame IDs)",
-        "4": "ID3v2.4 (latest, UTF-8 native support)"
-      }
+      "type": "field", "name": "ID3v2 Major Version", "offset": 3, "length": 1, "color": "#4ECDC4", "opacity": 0.3,
+      "description": "ID3v2 major version number (3=ID3v2.3, 4=ID3v2.4).", "storeAs": "id3MajorVersion", "valueType": "uint8",
+      "valueMap": { "2": "ID3v2.2 (obsolete)", "3": "ID3v2.3 (most common)", "4": "ID3v2.4 (latest)" }
     },
     {
-      "type": "field",
-      "name": "ID3v2 Minor Version",
-      "offset": 4,
-      "length": 1,
-      "color": "#45B7D1",
-      "opacity": 0.3,
-      "description": "ID3v2 revision number (typically 0). Non-zero values indicate a revision of the major version spec.",
-      "storeAs": "id3MinorVersion",
-      "valueType": "uint8"
+      "type": "field", "name": "ID3v2 Minor Version", "offset": 4, "length": 1, "color": "#45B7D1", "opacity": 0.3,
+      "description": "ID3v2 revision number.", "storeAs": "id3MinorVersion", "valueType": "uint8"
     },
     {
-      "type": "field",
-      "name": "ID3v2 Flags",
-      "offset": 5,
-      "length": 1,
-      "color": "#96CEB4",
-      "opacity": 0.3,
-      "description": "ID3v2 tag flags byte controlling optional features of the tag structure",
-      "storeAs": "id3Flags",
-      "valueType": "uint8",
+      "type": "field", "name": "ID3v2 Flags", "offset": 5, "length": 1, "color": "#96CEB4", "opacity": 0.3,
+      "description": "ID3v2 tag flags.", "storeAs": "id3Flags", "valueType": "uint8",
       "bitfields": [
-        {
-          "bit": 7,
-          "name": "Unsynchronisation",
-          "description": "If set, all frames are unsynchronised to avoid false MPEG sync patterns",
-          "valueMap": {
-            "0": "No unsynchronisation",
-            "1": "Unsynchronisation applied"
-          }
-        },
-        {
-          "bit": 6,
-          "name": "Extended Header",
-          "description": "If set, an extended header follows this 10-byte header",
-          "valueMap": {
-            "0": "No extended header",
-            "1": "Extended header present"
-          }
-        },
-        {
-          "bit": 5,
-          "name": "Experimental",
-          "description": "If set, the tag is in an experimental stage",
-          "valueMap": {
-            "0": "Not experimental",
-            "1": "Experimental tag"
-          }
-        },
-        {
-          "bit": 4,
-          "name": "Footer Present (v2.4+)",
-          "description": "If set, a 10-byte footer is appended to the tag (ID3v2.4 only)",
-          "valueMap": {
-            "0": "No footer",
-            "1": "Footer present"
-          }
-        }
+        { "bit": 7, "name": "Unsynchronisation", "valueMap": { "0": "No unsynchronisation", "1": "Unsynchronisation applied" } },
+        { "bit": 6, "name": "Extended Header", "valueMap": { "0": "No extended header", "1": "Extended header present" } },
+        { "bit": 5, "name": "Experimental", "valueMap": { "0": "Not experimental", "1": "Experimental tag" } },
+        { "bit": 4, "name": "Footer Present (v2.4+)", "valueMap": { "0": "No footer", "1": "Footer present" } }
       ]
     },
     {
-      "type": "field",
-      "name": "ID3v2 Tag Size",
-      "offset": 6,
-      "length": 4,
-      "color": "#FFEAA7",
-      "opacity": 0.3,
-      "description": "Total size of the ID3v2 tag body in bytes, encoded as a synchsafe integer (each byte uses only 7 bits, MSB always 0). Does not include the 10-byte header.",
-      "storeAs": "id3Size",
-      "valueType": "uint32"
+      "type": "field", "name": "ID3v2 Tag Size", "offset": 6, "length": 4, "color": "#FFEAA7", "opacity": 0.3,
+      "description": "Total size of ID3v2 tag body as synchsafe integer.", "storeAs": "id3Size", "valueType": "uint32"
     },
     {
-      "type": "field",
-      "name": "MP3 Frame Header",
-      "offset": -1,
-      "length": 4,
-      "color": "#FF8C69",
-      "opacity": 0.4,
-      "description": "First MPEG audio frame header (4 bytes). Located after the ID3v2 tag. Contains frame sync, MPEG version, layer, and all encoding parameters packed as bitfields.",
-      "storeAs": "frameHeaderWord",
-      "valueType": "uint32",
-      "note": "Offset is dynamic - set by parseMP3Header function after scanning past ID3v2 tag"
+      "type": "field", "name": "MP3 Frame Header", "offset": -1, "length": 4, "color": "#FF8C69", "opacity": 0.4,
+      "description": "First MPEG audio frame header (4 bytes) after the ID3v2 tag.", "storeAs": "frameHeaderWord", "valueType": "uint32"
     },
     {
-      "type": "field",
-      "name": "Frame Sync + MPEG Version + Layer",
-      "offset": -1,
-      "length": 2,
-      "color": "#DDA0DD",
-      "opacity": 0.3,
-      "description": "First 2 bytes of the frame header containing: frame sync (11 bits, all 1s), MPEG version (2 bits), layer (2 bits), and protection bit",
-      "storeAs": "frameSync",
-      "valueType": "uint16",
+      "type": "field", "name": "Frame Sync + MPEG Version + Layer", "offset": -1, "length": 2, "color": "#DDA0DD", "opacity": 0.3,
+      "description": "Frame sync (11 bits), MPEG version (2 bits), layer (2 bits), protection bit.", "storeAs": "frameSync", "valueType": "uint16",
       "bitfields": [
-        {
-          "bits": "15-5",
-          "name": "Frame Sync",
-          "description": "11 sync bits, all must be 1 (0x7FF). Identifies the start of an MPEG audio frame."
-        },
-        {
-          "bits": "4-3",
-          "name": "MPEG Version",
-          "description": "MPEG audio version ID",
-          "valueMap": {
-            "0": "MPEG Version 2.5 (unofficial extension)",
-            "1": "Reserved",
-            "2": "MPEG Version 2 (ISO/IEC 13818-3)",
-            "3": "MPEG Version 1 (ISO/IEC 11172-3)"
-          }
-        },
-        {
-          "bits": "2-1",
-          "name": "Layer",
-          "description": "MPEG audio layer",
-          "valueMap": {
-            "0": "Reserved",
-            "1": "Layer III (MP3)",
-            "2": "Layer II",
-            "3": "Layer I"
-          }
-        },
-        {
-          "bit": 0,
-          "name": "Protection",
-          "description": "Error protection",
-          "valueMap": {
-            "0": "Protected by 16-bit CRC after header",
-            "1": "Not protected"
-          }
-        }
+        { "bits": "15-5", "name": "Frame Sync", "description": "11 sync bits, all must be 1 (0x7FF)" },
+        { "bits": "4-3", "name": "MPEG Version", "valueMap": { "0": "MPEG 2.5", "2": "MPEG 2", "3": "MPEG 1" } },
+        { "bits": "2-1", "name": "Layer", "valueMap": { "1": "Layer III (MP3)", "2": "Layer II", "3": "Layer I" } },
+        { "bit": 0, "name": "Protection", "valueMap": { "0": "CRC present", "1": "No CRC" } }
       ]
     },
     {
-      "type": "field",
-      "name": "Bitrate + Sample Rate + Flags",
-      "offset": -1,
-      "length": 2,
-      "color": "#87CEEB",
-      "opacity": 0.3,
-      "description": "Second 2 bytes of the frame header containing: bitrate index (4 bits), sample rate index (2 bits), padding (1 bit), private (1 bit), channel mode (2 bits), mode extension (2 bits), copyright (1 bit), original (1 bit), emphasis (2 bits)",
-      "storeAs": "bitrateBits",
-      "valueType": "uint16",
+      "type": "field", "name": "Bitrate + Sample Rate + Flags", "offset": -1, "length": 2, "color": "#87CEEB", "opacity": 0.3,
+      "description": "Bitrate index, sample rate index, padding, channel mode, emphasis.", "storeAs": "bitrateBits", "valueType": "uint16",
       "bitfields": [
-        {
-          "bits": "15-12",
-          "name": "Bitrate Index",
-          "description": "Index into bitrate table (MPEG1 Layer III: 0=free, 1=32, 2=40, 3=48, 4=56, 5=64, 6=80, 7=96, 8=112, 9=128, 10=160, 11=192, 12=224, 13=256, 14=320 kbps, 15=bad)"
-        },
-        {
-          "bits": "11-10",
-          "name": "Sample Rate Index",
-          "description": "Sampling frequency index",
-          "valueMap": {
-            "0": "44100 Hz (MPEG1) / 22050 Hz (MPEG2) / 11025 Hz (MPEG2.5)",
-            "1": "48000 Hz (MPEG1) / 24000 Hz (MPEG2) / 12000 Hz (MPEG2.5)",
-            "2": "32000 Hz (MPEG1) / 16000 Hz (MPEG2) / 8000 Hz (MPEG2.5)",
-            "3": "Reserved"
-          }
-        },
-        {
-          "bit": 9,
-          "name": "Padding",
-          "description": "If set, frame is padded with one extra slot to exactly fit the bitrate",
-          "valueMap": {
-            "0": "Frame is not padded",
-            "1": "Frame is padded"
-          }
-        },
-        {
-          "bit": 8,
-          "name": "Private",
-          "description": "Application-specific private bit, freely usable"
-        },
-        {
-          "bits": "7-6",
-          "name": "Channel Mode",
-          "description": "Audio channel configuration",
-          "valueMap": {
-            "0": "Stereo",
-            "1": "Joint Stereo (intensity and/or mid-side)",
-            "2": "Dual Channel (two independent mono channels)",
-            "3": "Single Channel (Mono)"
-          }
-        },
-        {
-          "bits": "5-4",
-          "name": "Mode Extension",
-          "description": "Used only in Joint Stereo mode. For Layer III: bit 5 = Mid/Side stereo, bit 4 = Intensity stereo",
-          "valueMap": {
-            "0": "Intensity off, Mid/Side off",
-            "1": "Intensity on, Mid/Side off",
-            "2": "Intensity off, Mid/Side on",
-            "3": "Intensity on, Mid/Side on"
-          }
-        },
-        {
-          "bit": 3,
-          "name": "Copyright",
-          "description": "Copyright status of the audio content",
-          "valueMap": {
-            "0": "Not copyrighted",
-            "1": "Copyrighted"
-          }
-        },
-        {
-          "bit": 2,
-          "name": "Original",
-          "description": "Whether this is the original media or a copy",
-          "valueMap": {
-            "0": "Copy of original media",
-            "1": "Original media"
-          }
-        },
-        {
-          "bits": "1-0",
-          "name": "Emphasis",
-          "description": "Audio de-emphasis mode used during encoding (rarely used in modern files)",
-          "valueMap": {
-            "0": "None",
-            "1": "50/15 ms (used in early CDs)",
-            "2": "Reserved",
-            "3": "CCITT J.17"
-          }
-        }
+        { "bits": "15-12", "name": "Bitrate Index", "description": "MPEG1 Layer III: 0=free, 1=32, ..., 14=320 kbps, 15=bad" },
+        { "bits": "11-10", "name": "Sample Rate Index", "valueMap": { "0": "44100/22050/11025 Hz", "1": "48000/24000/12000 Hz", "2": "32000/16000/8000 Hz" } },
+        { "bit": 9, "name": "Padding", "valueMap": { "0": "Not padded", "1": "Padded" } },
+        { "bit": 8, "name": "Private" },
+        { "bits": "7-6", "name": "Channel Mode", "valueMap": { "0": "Stereo", "1": "Joint Stereo", "2": "Dual Channel", "3": "Mono" } },
+        { "bits": "5-4", "name": "Mode Extension", "valueMap": { "0": "Off/Off", "1": "Intensity on", "2": "Mid/Side on", "3": "Both on" } },
+        { "bit": 3, "name": "Copyright", "valueMap": { "0": "Not copyrighted", "1": "Copyrighted" } },
+        { "bit": 2, "name": "Original", "valueMap": { "0": "Copy", "1": "Original" } },
+        { "bits": "1-0", "name": "Emphasis", "valueMap": { "0": "None", "1": "50/15 ms", "2": "Reserved", "3": "CCITT J.17" } }
       ]
     },
     {
       "type": "computeFromVariables",
       "name": "Estimated Duration",
       "expression": "bitrate > 0 ? (id3Size > 0 ? ((fileSize - id3Size - 10) * 8 / (bitrate * 1000)) : (fileSize * 8 / (bitrate * 1000))) : 0",
-      "storeAs": "mp3Duration",
-      "description": "Estimated playback duration in seconds calculated from file size minus ID3 tag overhead divided by bitrate. Approximate for VBR files."
+      "storeAs": "mp3Duration"
+    },
+    { "type": "conditional", "name": "ID3v2 Version Check", "condition": "id3MajorVersion == 3", "trueLabel": "ID3v2.3 tag (most compatible)", "falseLabel": "ID3v2.2 or 2.4 tag" },
+    { "type": "conditional", "name": "CRC Protection Check", "condition": "protectionBit == 0", "trueLabel": "CRC protected", "falseLabel": "No CRC protection" },
+    { "type": "metadata", "name": "MPEG Version", "variable": "mp3Version" },
+    { "type": "metadata", "name": "Audio Layer", "variable": "mp3Layer" },
+    { "type": "metadata", "name": "Bitrate (kbps)", "variable": "bitrate" },
+    { "type": "metadata", "name": "Sample Rate (Hz)", "variable": "sampleRate" },
+    { "type": "metadata", "name": "Channel Mode", "variable": "channelMode" },
+    { "type": "metadata", "name": "Duration", "variable": "formattedDuration" },
+    { "type": "metadata", "name": "Frame Start Offset", "variable": "frameOffset" }
+  ],
+  "inspector": {
+    "badge": "mp3Version",
+    "primaryField": "bitrate",
+    "showQualityScore": true,
+    "groups": [
+      { "title": "ID3v2 Tag", "icon": "", "fields": ["id3Signature", "id3MajorVersion", "id3MinorVersion", "id3Size"] },
+      { "title": "Audio Parameters", "icon": "", "fields": ["mp3Version", "mp3Layer", "bitrate", "sampleRate", "channelMode", "formattedDuration"] },
+      { "title": "Frame", "icon": "", "fields": ["frameOffset", "protectionBit"] }
+    ]
+  },
+  "assertions": [
+    {
+      "name": "ID3 or frame sync at offset 0",
+      "expression": "id3Signature == 'ID3' || (frameHeaderWord & 0xFFE00000) == 0xFFE00000",
+      "severity": "error",
+      "message": "MP3 file must start with 'ID3' tag or MPEG frame sync (0xFFE)"
     },
     {
-      "type": "conditional",
-      "name": "ID3v2 Version Check",
-      "condition": "id3MajorVersion == 3",
-      "trueLabel": "ID3v2.3 tag (most widely supported version)",
-      "falseLabel": "ID3v2.2 or ID3v2.4 tag (check compatibility)",
-      "description": "Checks whether the ID3v2 tag uses version 2.3, which has the broadest software support"
+      "name": "ID3 major version valid",
+      "expression": "id3MajorVersion >= 2 && id3MajorVersion <= 4",
+      "severity": "warning",
+      "message": "ID3v2 major version should be 2, 3, or 4"
     },
     {
-      "type": "conditional",
-      "name": "CRC Protection Check",
-      "condition": "protectionBit == 0",
-      "trueLabel": "Frame is CRC-protected (16-bit CRC follows header)",
-      "falseLabel": "Frame has no CRC protection",
-      "description": "Determines whether a 16-bit CRC checksum follows the frame header for error detection"
+      "name": "Bitrate is not free or bad",
+      "expression": "bitrate > 0 && bitrate <= 320",
+      "severity": "warning",
+      "message": "MP3 bitrate index 0 (free) or 15 (bad) detected"
     },
     {
-      "type": "metadata",
-      "name": "MPEG Version",
-      "variable": "mp3Version",
-      "description": "MPEG audio version (MPEG 1, MPEG 2, or MPEG 2.5)"
-    },
-    {
-      "type": "metadata",
-      "name": "Audio Layer",
-      "variable": "mp3Layer",
-      "description": "MPEG audio layer (Layer I, Layer II, or Layer III for MP3)"
-    },
-    {
-      "type": "metadata",
-      "name": "Bitrate (kbps)",
-      "variable": "bitrate",
-      "description": "Audio bitrate in kilobits per second (CBR value or first-frame VBR estimate)"
-    },
-    {
-      "type": "metadata",
-      "name": "Sample Rate (Hz)",
-      "variable": "sampleRate",
-      "description": "Audio sample rate in Hertz (44100, 48000, 32000, etc.)"
-    },
-    {
-      "type": "metadata",
-      "name": "Channel Mode",
-      "variable": "channelMode",
-      "description": "Stereo, Joint Stereo, Dual Channel, or Mono"
-    },
-    {
-      "type": "metadata",
-      "name": "Duration",
-      "variable": "formattedDuration",
-      "description": "Estimated playback duration formatted as HH:MM:SS"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Start Offset",
-      "variable": "frameOffset",
-      "description": "Byte offset where the first valid MPEG audio frame was found (after ID3v2 tag)"
+      "name": "Layer is Layer III",
+      "expression": "layerBits == 1",
+      "severity": "info",
+      "message": "Frame layer is not Layer III (MP3); may be Layer I or II"
     }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ID3v2 Header", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First MPEG Frame", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Frame Header Bitfields", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MP3 Header (JSON)",
+      "format": "json",
+      "fields": ["id3Signature", "id3MajorVersion", "id3Size", "mp3Version", "mp3Layer", "bitrate", "sampleRate", "channelMode", "frameOffset"]
+    },
+    {
+      "name": "MP3_FRAME_HEADER (C struct)",
+      "format": "c-struct",
+      "structName": "mp3_frame_header",
+      "fields": ["frameSync", "mpegVersionBits", "layerBits", "protectionBit", "bitrateBits", "sampleRateBits", "paddingBit", "channelModeBits"]
+    }
+  ],
+  "aiHints": [
+    "Most MP3 files start with ID3v2 tag ('ID3' = 0x494433); raw MP3 starts with MPEG frame sync 0xFFE0",
+    "MPEG frame sync: 0xFFE0 mask on first 11 bits; FFFB = MPEG1 Layer3 CBR, FFF3 = MPEG2 Layer3",
+    "ID3 tag size at offset 6 is a synchsafe integer (each byte uses only 7 bits, MSB=0)",
+    "VBR files contain an Xing or Info frame as the first audio frame with total frame count and seek table",
+    "Estimated duration = (fileSize - ID3size) * 8 / (bitrate * 1000) seconds for CBR files",
+    "ID3v2.3 (major version 3) is the most widely supported version for metadata tags"
   ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
+    "notes": ["MP3 files are ubiquitous audio containers with standard metadata in ID3v2 tags"],
     "suspiciousPatterns": []
   },
-  "aiHints": {
-    "analysisContext": "MPEG-1/2 Audio Layer III - A lossy audio compression format. Most MP3 files begin with an ID3v2 tag containi...",
-    "suggestedInspections": [
-      "Validate MP3 Audio header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
-    ]
-  },
-  "MimeTypes": [
-    "audio/mpeg",
-    "audio/mp3"
+  "MimeTypes": ["audio/mpeg", "audio/mp3"],
+  "Software": ["iTunes", "VLC", "Windows Media Player", "Spotify", "Audacity", "ffmpeg", "LAME Encoder"],
+  "UseCases": ["Music playback", "Podcasts", "Audiobooks", "Streaming", "Portable audio"],
+  "software": ["iTunes", "VLC media player", "Audacity", "FFmpeg", "LAME encoder", "foobar2000"],
+  "useCases": ["Music streaming and download", "Podcast distribution", "Portable audio playback"],
+  "formatRelationships": [
+    { "formatId": "AAC", "relationship": "predecessor", "note": "MP3 (MPEG-1 Layer 3) was superseded by AAC for efficiency; MP3 remains the most widely deployed audio format" }
   ],
-  "Software": [
-    "iTunes",
-    "VLC",
-    "Windows Media Player",
-    "Spotify",
-    "Audacity",
-    "ffmpeg",
-    "LAME Encoder"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Podcasts",
-    "Audiobooks",
-    "Streaming",
-    "Portable audio"
-  ],
+  "technicalDetails": "MPEG-1/2 Audio Layer III (MP3) stores audio in variable or constant bitrate frames. Each frame has a 4-byte header: 11-bit sync (0x7FF), 2-bit MPEG version, 2-bit layer, 1-bit CRC flag, 4-bit bitrate index, 2-bit sample rate index, padding, channel mode, mode extension, copyright, original, emphasis. Files typically begin with an ID3v2 tag (version 2.3 or 2.4) storing title, artist, album, cover art.",
+  "completenessScore": 88,
   "QualityMetrics": {
     "CompletenessScore": 88,
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 18,
-    "ValidationRules": 2,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 4,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -443,51 +279,32 @@
     "ID3v2HeaderSize": 10,
     "SynchsafeIntegers": true
   },
-
   "diff": {
-    "keyFields": ["mpeg_version", "layer", "bitrate", "sample_rate", "channel_mode", "id3_title", "id3_artist", "id3_album", "frame_count"],
+    "keyFields": ["mpeg_version", "layer", "bitrate", "sample_rate", "channel_mode"],
     "ignoreFields": ["id3_encoding_time", "id3_tagging_time", "padding_bytes"],
-    "groupBy": "frame_index",
-    "note": "Compare audio parameters and ID3 metadata. Ignore encoding/tagging timestamps."
+    "groupBy": "frame_index"
   },
-
   "repair": [
-    {
-      "name": "FixID3Size",
-      "trigger": "ID3SizeMismatch",
-      "action": "set_value",
-      "target": "id3_size_offset",
-      "description": "Rewrite ID3v2 synchsafe integer tag size to match actual tag content."
-    },
-    {
-      "name": "StripTruncatedFrame",
-      "trigger": "TruncatedFrame",
-      "action": "truncate",
-      "target": "last_valid_frame_end",
-      "description": "Truncate file at end of last complete MPEG frame to remove partial trailing frame."
-    }
+    { "name": "FixID3Size", "trigger": "ID3SizeMismatch", "action": "set_value", "target": "id3_size_offset" },
+    { "name": "StripTruncatedFrame", "trigger": "TruncatedFrame", "action": "truncate", "target": "last_valid_frame_end" }
   ],
-
   "fuzz": {
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "frame_sync",     "mutation": "corrupt_signature", "description": "Corrupt 0xFFE0 frame sync bits." },
-      { "field": "bitrate_index",  "mutation": "enum_sweep",        "description": "Sweep all bitrate indices including free (0) and bad (15)." },
-      { "field": "sample_rate_idx","mutation": "enum_sweep",        "description": "Sweep reserved sample rate index (3) — should be rejected." },
-      { "field": "id3_size",       "mutation": "overflow",          "description": "ID3 size larger than file — seeks past EOF." },
-      { "field": "frame_data",     "mutation": "bit_flip", "rate": 0.001, "description": "Bit flips in audio frame data for decoder coverage." }
+      { "field": "frame_sync", "mutation": "corrupt_signature" },
+      { "field": "bitrate_index", "mutation": "enum_sweep" },
+      { "field": "sample_rate_idx", "mutation": "enum_sweep" },
+      { "field": "id3_size", "mutation": "overflow" },
+      { "field": "frame_data", "mutation": "bit_flip", "rate": 0.001 }
     ]
   },
-
   "migration": [
     {
-      "from": "id3v1",
-      "to": "id3v2.3",
-      "description": "Upgrade ID3v1 (128-byte trailer) to ID3v2.3 header tag.",
+      "from": "id3v1", "to": "id3v2.3",
       "changes": [
-        { "field": "id3v2_header", "changeType": "insert", "length": 10, "atOffset": "file_start", "description": "Prepend ID3v2.3 header at start of file." },
-        { "field": "id3v1_trailer","changeType": "delete",              "description": "Remove 128-byte ID3v1 tag from file end." }
+        { "field": "id3v2_header", "changeType": "insert", "length": 10, "atOffset": "file_start" },
+        { "field": "id3v1_trailer", "changeType": "delete" }
       ]
     }
   ]

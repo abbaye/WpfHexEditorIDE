@@ -226,11 +226,8 @@ namespace WpfHexEditor.Core.Bytes
         /// </summary>
         public (long? physicalPosition, bool isInsertedByte) VirtualToPhysical(long virtualPosition, long physicalFileLength)
         {
-            // DIAGNOSTIC TRACING: Disabled for production performance
-            // To enable: change false to condition like (virtualPosition >= 100 && virtualPosition <= 105)
+            // Diagnostic tracing — set to true only during debugging (perf impact).
             bool enableTrace = false;
-            if (enableTrace)
-                System.Diagnostics.Debug.WriteLine($"[V→P TRACE] START: Virtual={virtualPosition}, PhysicalLen={physicalFileLength}");
 
             if (virtualPosition < 0)
                 return (null, false);
@@ -238,26 +235,22 @@ namespace WpfHexEditor.Core.Bytes
             // Try cache first (now enhanced to store isInserted flag)
             if (_cacheValid && _virtualToPhysicalCache.TryGetValue(virtualPosition, out var cached))
             {
-                // CRITICAL DEFENSIVE CHECK: Verify cached physical position is still valid
-                // Cache might be stale if invalidation was missed
+                // Verify cached physical position is still valid — cache may be stale after edits.
                 if (!cached.isInserted && _editsManager.IsDeleted(cached.physicalPos))
                 {
-                    // Cache is STALE! This physical position is now deleted
-                    // This indicates a cache invalidation bug
-                    // ALWAYS log this, even when tracing is disabled - it's a critical diagnostic
-                    System.Diagnostics.Debug.WriteLine($"[V→P TRACE] STALE CACHE DETECTED! Virtual={virtualPosition}, CachedPhysical={cached.physicalPos} is DELETED!");
+                    System.Diagnostics.Debug.WriteLine($"[V→P] Stale cache: virtual={virtualPosition}, physical={cached.physicalPos} is deleted — rebuilding.");
 
-                    // Force cache rebuild by invalidating and recomputing
+                    // Evict the whole cache and segment map. Do NOT recurse here — fall through
+                    // to the segment-map computation path below. Recursing when the segment map
+                    // is also stale causes infinite re-entry (the stale-cache check fires again
+                    // on the rebuilt cache entry for the same position).
                     InvalidateCache();
-                    _cacheValid = true; // Re-enable cache for subsequent operations
-
-                    // Recursively call to recompute (will miss cache this time)
-                    return VirtualToPhysical(virtualPosition, physicalFileLength);
+                    // _cacheValid is now false — skip the return and fall through to segment-map ↓
                 }
-
-                if (enableTrace)
-                    System.Diagnostics.Debug.WriteLine($"[V→P TRACE] CACHE HIT: Physical={cached.physicalPos}, IsInserted={cached.isInserted}");
-                return (cached.physicalPos, cached.isInserted);
+                else
+                {
+                    return (cached.physicalPos, cached.isInserted);
+                }
             }
 
             if (enableTrace)

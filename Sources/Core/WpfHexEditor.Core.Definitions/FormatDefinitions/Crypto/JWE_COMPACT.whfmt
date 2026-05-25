@@ -1,0 +1,106 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "JSON Web Encryption Compact Serialization",
+  "formatId": "JWE_COMPACT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "JSON Web Encryption (JWE) compact serialization as defined by RFC 7516. Encodes encrypted content as five base64url-encoded parts separated by dots: header, encrypted key, IV, ciphertext, and authentication tag.",
+  "extensions": [".jwe"],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "6579",
+      "offset": 0,
+      "label": "Base64url-encoded JSON header prefix 'ey'",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "ey_prefix", "type": "bytes", "description": "Base64url 'ey' prefix (0x65 0x79) from JSON '{' encoded as base64url", "storeAs": "ascii" },
+      { "offset": 0, "size": 64, "name": "protected_header", "type": "bytes", "description": "Base64url-encoded JWE Protected Header containing alg, enc fields", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["ey_prefix", "protected_header"],
+    "valueMaps": {
+      "alg_common": {
+        "RSA-OAEP": "RSA OAEP key wrapping",
+        "RSA-OAEP-256": "RSA OAEP-256 key wrapping",
+        "A128KW": "AES-128 key wrap",
+        "A256KW": "AES-256 key wrap",
+        "ECDH-ES": "ECDH Ephemeral Static direct key agreement",
+        "dir": "Direct symmetric key agreement"
+      },
+      "enc_common": {
+        "A128GCM": "AES-128-GCM authenticated encryption",
+        "A256GCM": "AES-256-GCM authenticated encryption",
+        "A128CBC-HS256": "AES-128-CBC + HMAC-SHA-256",
+        "A256CBC-HS512": "AES-256-CBC + HMAC-SHA-512"
+      }
+    },
+    "tooltips": {
+      "ey_prefix": "All JWE compact tokens begin with 'eyJ' (base64url of '{\"')",
+      "protected_header": "First segment before first dot; decode base64url to get JSON with alg and enc fields"
+    }
+  },
+  "assertions": [
+    { "id": "JWE_EY_PREFIX", "field": "ey_prefix", "operator": "equals", "value": "6579", "description": "JWE compact tokens must begin with base64url 'ey' (0x65 0x79)" },
+    { "id": "JWE_FIVE_PARTS", "field": "protected_header", "operator": "contains", "value": "2E", "description": "Compact serialization must contain dot separators (0x2E = '.') between 5 segments" },
+    { "id": "JWE_NOT_EMPTY", "field": "protected_header", "operator": "minLength", "value": "20", "description": "Protected header segment must be at least 20 characters" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Protected Header (base64url)", "color": "#3498DB" },
+      { "offset": 0, "label": "Encrypted Key (segment 2)", "color": "#9B59B6" },
+      { "offset": 0, "label": "IV + Ciphertext (segments 3-4)", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "JWE Compact Summary",
+      "fields": ["ey_prefix", "protected_header"],
+      "format": "text"
+    },
+    {
+      "name": "JWE CSV Export",
+      "fields": ["ey_prefix"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "JWE compact serialization has exactly 5 dot-separated segments: header.encryptedKey.iv.ciphertext.tag",
+    "Protected header (segment 1) is base64url-encoded JSON; must contain 'alg' (key encryption) and 'enc' (content encryption)",
+    "For 'dir' algorithm the encrypted key segment (segment 2) is empty string between two dots",
+    "ECDH-ES uses an ephemeral public key in the 'epk' header field; no wrapped key in segment 2",
+    "Authentication tag (segment 5) authenticates the header, IV, and ciphertext; truncation or modification is detectable"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "JWE ciphertext is opaque without the private key or shared secret for decryption",
+      "Protected header reveals encryption algorithms which may indicate security policy compliance issues",
+      "Weak algorithms (RSA-PKCS1, A128CBC without proper IV) in the header indicate security debt"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "JWK_JSON", "relationship": "related", "note": "JWK provides the key material for JWE key wrapping and key agreement" },
+    { "format": "JWS_COMPACT", "relationship": "sibling", "note": "JWS provides integrity via signatures while JWE provides confidentiality via encryption" }
+  ],
+  "software": [
+    { "name": "jose / jose4j", "role": "Java JOSE library with full JWE compact serialization support" },
+    { "name": "python-jose", "role": "Python library supporting JWE encryption and decryption" },
+    { "name": "jwt.io", "role": "Online debugger for inspecting JWE header segments (ciphertext not decryptable)" }
+  ],
+  "useCases": [
+    "Encrypted payload delivery in OpenID Connect ID tokens and OAuth2 token introspection",
+    "End-to-end encrypted API request/response bodies in JOSE-based APIs",
+    "Forensic identification of encrypted token material in application logs or captured traffic"
+  ],
+  "technicalDetails": "JWE (RFC 7516) compact serialization encodes five components as BASE64URL(JWE Protected Header) || '.' || BASE64URL(JWE Encrypted Key) || '.' || BASE64URL(JWE Initialization Vector) || '.' || BASE64URL(JWE Ciphertext) || '.' || BASE64URL(JWE Authentication Tag). The header contains 'alg' for key management and 'enc' for content encryption. All five segments are mandatory in compact form.",
+  "completenessScore": 81
+}

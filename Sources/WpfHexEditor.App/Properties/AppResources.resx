@@ -305,6 +305,42 @@
   <data name="App_Menu_ResetLayout" xml:space="preserve">
     <value>_Reset Layout</value>
   </data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve">
+    <value>Reset the layout to default? Open documents will be preserved.</value>
+  </data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve">
+    <value>Clear Roaming Data…</value>
+  </data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve">
+    <value>Clear Roaming Data</value>
+  </data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve">
+    <value>This will delete saved settings, layout, and session data. Installed extensions will not be affected. Continue?</value>
+  </data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve">
+    <value>Roaming data cleared. A restart is recommended to apply the changes. Restart now?</value>
+  </data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve">
+    <value>Corrupt roaming data detected ({0}). Backup and reset to fix, or ignore to continue.</value>
+  </data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve">
+    <value>Backup &amp; Reset</value>
+  </data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve">
+    <value>Restore from Backup…</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve">
+    <value>Restore roaming data from backup '{0}'? Current files will be overwritten.</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve">
+    <value>No backup found. Use 'Clear Roaming Data' at least once to create a backup.</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve">
+    <value>Backup restored successfully. Restart now to apply the changes?</value>
+  </data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve">
     <value>Toggle _Locked Layout</value>
   </data>
@@ -802,6 +838,7 @@
   <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex Editor</value></data>
   <data name="App_Editor_Encodings" xml:space="preserve"><value>Encodings</value></data>
   <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Project Tables</value></data>
+  <data name="App_Editor_ExternalTables" xml:space="preserve"><value>External Tables</value></data>
   <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Built-in Tables</value></data>
   <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Default (ASCII)</value></data>
   <data name="App_Editor_FileNotFound" xml:space="preserve"><value>File not found:{0}{1}</value></data>
@@ -1014,6 +1051,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>START</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>PINNED</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Feature</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Fix</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Perf</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Pin</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Unpin</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Remove from recent</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Search recent…</value>
+  </data>
+
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analyse PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exports</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sections</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Headers</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Not a PE file — open a Windows executable or DLL first.</value>
+  </data>
+
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Decode</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Key (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Shift:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Use selection</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
   <data name="APP_SolutionPropertiesTitle" xml:space="preserve">
     <value>Solution Property Pages</value>
   </data>
@@ -1471,6 +1591,70 @@
   <data name="StringExtract_ColLength"                xml:space="preserve"><value>Length</value></data>
   <data name="StringExtract_ColEncoding"              xml:space="preserve"><value>Encoding</value></data>
   <data name="StringExtract_ColValue"                 xml:space="preserve"><value>Value</value></data>
+  <data name="StringExtract_ColBytes"                 xml:space="preserve"><value>Bytes</value></data>
+  <data name="StringExtract_ColDup"                   xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext"               xml:space="preserve"><value>Context</value></data>
+  <data name="StringExtract_ColScore"                 xml:space="preserve"><value>Score</value></data>
+  <data name="StringExtract_TtOffset"                 xml:space="preserve"><value>Byte offset of the string in the file (hexadecimal)</value></data>
+  <data name="StringExtract_TtLength"                 xml:space="preserve"><value>Number of raw bytes occupied by this string</value></data>
+  <data name="StringExtract_TtEncoding"               xml:space="preserve"><value>Detected encoding: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC, or TBL</value></data>
+  <data name="StringExtract_TtBytes"                  xml:space="preserve"><value>Raw hex bytes of the matched region</value></data>
+  <data name="StringExtract_TtValue"                  xml:space="preserve"><value>Decoded string value</value></data>
+  <data name="StringExtract_TtDup"                    xml:space="preserve"><value>Number of strings with the same decoded value (orange = duplicates found)</value></data>
+  <data name="StringExtract_TtContext"                xml:space="preserve"><value>4 bytes before (grey) + matched bytes (colored by encoding) + 4 bytes after (grey)</value></data>
+  <data name="StringExtract_TtRegex"                  xml:space="preserve"><value>Regex filter — when ON, the search box is treated as a regular expression</value></data>
+  <data name="StringExtract_TtOutdated"               xml:space="preserve"><value>File has changed since last scan — press F5 to rescan</value></data>
+  <data name="StringExtract_TtSyncCaret"              xml:space="preserve"><value>Sync HexEditor caret to grid</value></data>
+  <data name="StringExtract_TtHighlight"              xml:space="preserve"><value>Highlight visible runs</value></data>
+  <data name="StringExtract_TtClearHighlight"         xml:space="preserve"><value>Clear highlights</value></data>
+  <data name="StringExtract_TtExport"                 xml:space="preserve"><value>Export…</value></data>
+  <data name="StringExtract_TtLoadTbl"                xml:space="preserve"><value>Load TBL file…</value></data>
+  <data name="StringExtract_TtRun"                    xml:space="preserve"><value>Run (F5)</value></data>
+  <data name="StringExtract_TtCancel"                 xml:space="preserve"><value>Cancel</value></data>
+  <data name="StringExtract_TtRemoveTbl"              xml:space="preserve"><value>Remove TBL</value></data>
+  <data name="StringExtract_TtPin"                    xml:space="preserve"><value>Pin/Unpin (survives filter)</value></data>
+  <data name="StringExtract_TtMinLength"              xml:space="preserve"><value>Min string length</value></data>
+  <data name="StringExtract_TtMinUniq"                xml:space="preserve"><value>Minimum distinct characters in the string</value></data>
+  <data name="StringExtract_TtOffsetFrom"             xml:space="preserve"><value>Filter from offset (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo"               xml:space="preserve"><value>Filter to offset (hex, 0 = no limit)</value></data>
+  <data name="StringExtract_TtExclEntropy"            xml:space="preserve"><value>Hide runs in high-entropy blocks</value></data>
+  <data name="StringExtract_TtFile"                   xml:space="preserve"><value>File to scan</value></data>
+  <data name="StringExtract_TtSearch"                 xml:space="preserve"><value>Live filter (F3 = next, Shift+F3 = prev)</value></data>
+  <data name="StringExtract_TtOutdatedBadge"          xml:space="preserve"><value> OUTDATED</value></data>
+  <data name="StringExtract_ExclHighEntropy"          xml:space="preserve"><value>Excl. high entropy</value></data>
+  <data name="StringExtract_LabelFile"                xml:space="preserve"><value>File:</value></data>
+  <data name="StringExtract_LabelEncodings"           xml:space="preserve"><value>Encodings:</value></data>
+  <data name="StringExtract_LabelMin"                 xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl"                 xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq"                xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset"              xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_LabelReadability"         xml:space="preserve"><value>Score≥</value></data>
+  <data name="StringExtract_PrintableOnly"            xml:space="preserve"><value>Printable only</value></data>
+  <data name="StringExtract_TtWordWrap"               xml:space="preserve"><value>Toggle word-wrap on the Value column</value></data>
+  <data name="StringExtract_TtGroupByEncoding"        xml:space="preserve"><value>Group results by encoding</value></data>
+  <data name="StringExtract_TtAutoRescan"             xml:space="preserve"><value>Auto-rescan when file changes on disk (2s debounce)</value></data>
+  <data name="StringExtract_TtCluster"               xml:space="preserve"><value>Cluster similar strings by Levenshtein distance ≤ 2 (strings ≥ 6 chars)</value></data>
+  <data name="StringExtract_TtShowClusters"          xml:space="preserve"><value>Show only strings that belong to a similarity cluster</value></data>
+  <data name="StringExtract_ColCluster"              xml:space="preserve"><value>Clust</value></data>
+  <data name="StringExtract_TtPrintableOnly"          xml:space="preserve"><value>Hide strings containing control characters (below 0x20, except tab/LF/CR)</value></data>
+  <data name="StringExtract_TtScore"                  xml:space="preserve"><value>Readability score 0–1 (letter ratio + bigram ratio + length bonus). Right-click column header to show/hide.</value></data>
+  <data name="StringExtract_RegexLabel"               xml:space="preserve"><value>.*</value></data>
+  <data name="StringExtract_ColKind"                  xml:space="preserve"><value>Kind</value></data>
+  <data name="StringExtract_TtKind"                   xml:space="preserve"><value>Detected pattern kind: Email, URL, Path, GUID, IP, Version, Hash, etc.</value></data>
+  <data name="StringExtract_TtKindFilter"             xml:space="preserve"><value>Filter by detected pattern kind (empty = show all)</value></data>
+  <data name="StringExtract_TtSnapshot"               xml:space="preserve"><value>Take a snapshot of the current scan results</value></data>
+  <data name="StringExtract_TtLoadSnapshot"           xml:space="preserve"><value>Restore a previous scan snapshot</value></data>
+  <data name="StringExtract_TtDiff"                   xml:space="preserve"><value>Compare two snapshots side by side</value></data>
+  <data name="StringExtract_DiffAdded"                xml:space="preserve"><value>Added</value></data>
+  <data name="StringExtract_DiffRemoved"              xml:space="preserve"><value>Removed</value></data>
+  <data name="StringExtract_DiffModified"             xml:space="preserve"><value>Modified</value></data>
+  <data name="StringExtract_DiffUnchanged"            xml:space="preserve"><value>Unchanged</value></data>
+  <data name="StringExtract_TabResults"               xml:space="preserve"><value>Results</value></data>
+  <data name="StringExtract_TabTimeline"              xml:space="preserve"><value>Timeline</value></data>
+  <data name="StringExtract_TabDiff"                  xml:space="preserve"><value>Diff</value></data>
+  <data name="StringExtract_TtTimeline"               xml:space="preserve"><value>String distribution along the file offset axis</value></data>
+  <data name="StringExtract_NoSnapshots"              xml:space="preserve"><value>(no snapshots)</value></data>
+  <data name="StringExtract_SnapshotLabel"            xml:space="preserve"><value>Snapshots:</value></data>
 
   <data name="HashInspector_HashFile"                 xml:space="preserve"><value>Hash File</value></data>
   <data name="HashInspector_HashSelection"            xml:space="preserve"><value>Hash Selection</value></data>

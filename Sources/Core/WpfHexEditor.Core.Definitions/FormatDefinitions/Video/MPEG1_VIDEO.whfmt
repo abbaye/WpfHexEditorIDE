@@ -1,0 +1,98 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "MPEG-1 Video Elementary Stream",
+  "formatId": "MPEG1_VIDEO",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "MPEG-1 Video Elementary Stream is the raw compressed video bitstream defined in ISO/IEC 11172-2. The bitstream starts with a Sequence Header containing a start code, resolution, and quantization tables. Commonly used in VCD (Video CD) at 352x240 or 352x288.",
+  "extensions": [".mpg", ".mpeg", ".m1v"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "000001B3",
+      "offset": 0,
+      "label": "MPEG-1 Sequence Header start code",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "sequence_start_code", "type": "uint32be", "description": "Sequence header start code (0x000001B3)", "storeAs": "uint32" },
+      { "offset": 4, "size": 2, "name": "horizontal_size", "type": "uint12be", "description": "Horizontal size value (12 bits, upper part of bytes 4-5)", "storeAs": "uint16" },
+      { "offset": 5, "size": 2, "name": "vertical_size", "type": "uint12be", "description": "Vertical size value (12 bits, crossing bytes 5-6)", "storeAs": "uint16" },
+      { "offset": 7, "size": 1, "name": "aspect_ratio_frame_rate", "type": "uint8", "description": "Aspect ratio information (4 bits) + frame rate code (4 bits)", "storeAs": "uint8" },
+      { "offset": 8, "size": 3, "name": "bit_rate", "type": "uint24be", "description": "Bit rate in units of 400 bits/sec (18 bits, upper part)", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["sequence_start_code", "horizontal_size", "vertical_size", "aspect_ratio_frame_rate"],
+    "valueMaps": {
+      "aspect_ratio_frame_rate": {
+        "33": "Aspect 1:1 / 23.976 fps",
+        "34": "Aspect 1:1 / 24 fps",
+        "35": "Aspect 1:1 / 25 fps (PAL)",
+        "50": "Aspect 4:3 / 29.97 fps (NTSC)"
+      }
+    },
+    "tooltips": {
+      "sequence_start_code": "Must be 0x000001B3; the MPEG-1 sequence header start code",
+      "horizontal_size": "Image width in pixels; packed as 12 bits at bit offset 32",
+      "vertical_size": "Image height in pixels; packed as 12 bits at bit offset 44",
+      "aspect_ratio_frame_rate": "Upper 4 bits: aspect ratio; lower 4 bits: frame rate index"
+    }
+  },
+  "assertions": [
+    { "id": "MPEG1V_001", "field": "sequence_start_code", "operator": "equals", "value": 435, "description": "Start code must be 0x000001B3 for MPEG-1 Sequence Header" },
+    { "id": "MPEG1V_002", "field": "horizontal_size", "operator": "greaterThan", "value": 0, "description": "Horizontal size must be greater than zero" },
+    { "id": "MPEG1V_003", "field": "vertical_size", "operator": "greaterThan", "value": 0, "description": "Vertical size must be greater than zero" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Sequence Header Start Code (0x000001B3)", "color": "#FF6B35" },
+      { "offset": 4, "label": "Resolution (H/V packed bits)", "color": "#4ECDC4" },
+      { "offset": 7, "label": "Aspect Ratio + Frame Rate", "color": "#45B7D1" },
+      { "offset": 8, "label": "Bit Rate", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Sequence Header", "fields": ["sequence_start_code", "horizontal_size", "vertical_size", "aspect_ratio_frame_rate"], "format": "text" },
+    { "name": "Raw Sequence Header Hex", "fields": ["sequence_start_code", "horizontal_size", "bit_rate"], "format": "hex" }
+  ],
+  "aiHints": [
+    "MPEG-1 uses start codes (0x000001xx) to delimit syntax elements: B3=sequence, B8=sequence extension (MPEG-2), B5=extension, 00=picture, B2=user data, B7=sequence end, B4=sequence error",
+    "The sequence header (0x000001B3) is followed optionally by an extension header; if the next start code is 0x000001B5 it is MPEG-2, not pure MPEG-1",
+    "Frame types: I-frame (intra, keyframe), P-frame (predicted from previous), B-frame (bidirectional) — indicated in the picture header",
+    "VCD standard requires 352x240 (NTSC) or 352x288 (PAL) at ~1.15 Mbps; out-of-spec resolutions indicate non-standard encoding",
+    "MPEG-1 video is often embedded in MPEG-1 Program Stream (.mpg) with audio; look for 0x000001BA (pack start code) at offset 0 in that case"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "User data start codes (0x000001B2) can carry arbitrary payloads including steganographic or watermark data",
+      "Spliced or edited MPEG-1 streams may have multiple sequence headers; each represents a new segment",
+      "Continuity errors in sequence or GOP structure may indicate frame removal for content alteration"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MPEG", "relationship": "component", "note": "MPEG-1 video elementary streams are packaged in MPEG-1 Program Streams (.mpg) together with audio" },
+    { "format": "H264", "relationship": "successor", "note": "H.264/AVC replaced MPEG-1/2 video codecs offering far better compression efficiency" },
+    { "format": "MP4", "relationship": "container", "note": "MPEG-1 video can be re-muxed into MP4 container although this is uncommon" }
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Decodes and encodes MPEG-1 video elementary streams and Program Streams" },
+    { "name": "VLC Media Player", "role": "Plays MPEG-1 video files including VCD-format .mpg files" },
+    { "name": "TMPGEnc", "role": "Classic MPEG-1/2 encoder historically used for VCD and SVCD authoring" },
+    { "name": "MediaInfo", "role": "Analyzes MPEG-1 bitstream structure, reports resolution, frame rate, and bitrate" }
+  ],
+  "useCases": [
+    "VCD (Video CD) video storage at 352x240 NTSC or 352x288 PAL resolution",
+    "Legacy multimedia archives from the 1990s and early 2000s requiring format identification",
+    "Educational use for studying the foundations of modern video codec design (DCT, motion estimation)"
+  ],
+  "technicalDetails": "MPEG-1 Video (ISO/IEC 11172-2) uses DCT-based lossy compression with intra (I), predictive (P), and bidirectional (B) frame types. The bitstream is byte-aligned and start-code delimited. Sequence Header (0x000001B3) contains image size (12+12 bits), aspect ratio (4b), frame rate (4b), bit_rate (18b), vbv_buffer_size (10b), constrained_parameters_flag (1b), and optional quantization matrices (64 bytes each for intra and non-intra). GOP (Group of Pictures) headers (0x000001B8) delimit closed and open groups. Picture headers (0x00000100) follow with temporal reference and frame type. Macroblocks are 16x16 luma + 8x8 chroma blocks in 4:2:0 format.",
+  "completenessScore": 82
+}

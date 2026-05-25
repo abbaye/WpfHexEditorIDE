@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
   "formatName": "Windows Cursor",
   "formatId": "CUR",
   "version": "1.0",

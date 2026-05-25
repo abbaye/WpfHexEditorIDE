@@ -2,42 +2,80 @@
     Project: WpfHexEditor.Plugins.ScreenRecorder
     File: Overlay/RegionSelectorWindow.xaml
     Description: Full-screen transparent window for rubber-band region selection.
-                 User drags to define the capture rectangle.
+                 Shows dim overlay outside selection, live size label, and corner handles.
 -->
 <Window x:Class="WpfHexEditor.Plugins.ScreenRecorder.Overlay.RegionSelectorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="#44000000"
+        Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
         WindowStartupLocation="Manual"
-        Cursor="Cross">
+        Cursor="Cross"
+        MouseLeftButtonDown="OnMouseDown"
+        MouseLeftButtonUp="OnMouseUp"
+        MouseMove="OnMouseMove"
+        KeyDown="OnKeyDown">
+
     <Canvas x:Name="RootCanvas"
-            MouseLeftButtonDown="OnMouseDown"
-            MouseLeftButtonUp="OnMouseUp"
-            MouseMove="OnMouseMove"
-            KeyDown="OnKeyDown"
+            Background="#01000000"
             Focusable="True">
+
+        <!-- Full-screen dim overlay (4 rectangles around the selection) -->
+        <Rectangle x:Name="DimTop"    Fill="#88000000"/>
+        <Rectangle x:Name="DimBottom" Fill="#88000000"/>
+        <Rectangle x:Name="DimLeft"   Fill="#88000000"/>
+        <Rectangle x:Name="DimRight"  Fill="#88000000"/>
 
         <!-- Rubber-band selection rectangle -->
         <Rectangle x:Name="SelectionRect"
                    Stroke="#FF2196F3"
                    StrokeThickness="2"
-                   Fill="#332196F3"
-                   Visibility="Collapsed" />
+                   Fill="Transparent"
+                   Visibility="Collapsed"/>
 
-        <!-- Instruction label -->
-        <TextBlock x:Name="InstructionText"
-                   Canvas.Left="0" Canvas.Top="0"
-                   Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
-                   Text="Drag to select capture region — ESC to cancel"
-                   Foreground="White"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   Margin="0,20,0,0" />
+        <!-- Corner handles -->
+        <Rectangle x:Name="HandleTL" Width="8" Height="8" Fill="#FF2196F3" Visibility="Collapsed"/>
+        <Rectangle x:Name="HandleTR" Width="8" Height="8" Fill="#FF2196F3" Visibility="Collapsed"/>
+        <Rectangle x:Name="HandleBL" Width="8" Height="8" Fill="#FF2196F3" Visibility="Collapsed"/>
+        <Rectangle x:Name="HandleBR" Width="8" Height="8" Fill="#FF2196F3" Visibility="Collapsed"/>
+
+        <!-- Size label shown during drag -->
+        <Border x:Name="SizeLabel"
+                Background="#CC1A1A1A"
+                BorderBrush="#442196F3"
+                BorderThickness="1"
+                CornerRadius="3"
+                Padding="6,3"
+                Visibility="Collapsed">
+            <TextBlock x:Name="SizeText"
+                       Foreground="White"
+                       FontSize="11"
+                       FontFamily="Consolas"
+                       FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- Instruction label (shown before drag starts) -->
+        <Border x:Name="InstructionBorder"
+                Background="#CC1A1A1A"
+                CornerRadius="6"
+                Padding="16,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE7C5;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="16"
+                           Foreground="#FF2196F3"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+                <TextBlock Text="Drag to select capture region  —  ESC to cancel"
+                           Foreground="White"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
     </Canvas>
 </Window>

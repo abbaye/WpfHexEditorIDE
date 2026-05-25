@@ -1,0 +1,75 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Raw Planar YUV Video",
+  "formatId": "RAWVIDEO_YUV",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Raw planar YUV video stores uncompressed video frames without any container, codec header, or magic bytes. Common formats include YUV 4:2:0 (I420, YV12), YUV 4:2:2 (UYVY, YUY2), and YUV 4:4:4. Detection relies solely on file extension and contextual metadata (resolution, frame rate, pixel format).",
+  "extensions": [".yuv", ".raw", ".y4m"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "y_plane_start", "type": "bytes", "description": "Start of Y (luma) plane data; no header precedes this in raw YUV; frame size = width * height * bytes_per_pixel_factor", "storeAs": "bytes" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["y_plane_start"],
+    "valueMaps": {},
+    "tooltips": {
+      "y_plane_start": "Raw YUV has no header; this is the first luma byte. Frame dimensions must be known externally to parse the file."
+    }
+  },
+  "assertions": [
+    { "id": "YUV_001", "field": "y_plane_start", "operator": "notNull", "value": true, "description": "File must contain at least some data (non-empty)" },
+    { "id": "YUV_002", "field": "y_plane_start", "operator": "sizeGreaterThan", "value": 0, "description": "File size must be greater than zero bytes" },
+    { "id": "YUV_003", "field": "y_plane_start", "operator": "divisibleByFrameSize", "value": 1, "description": "File size should be divisible by expected frame size (width * height * pixel_factor) for complete frame count" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Frame 1 Y-Plane Start (luma)", "color": "#FF6B35" },
+      { "offset": 0, "label": "I420: Y-plane = width*height bytes", "color": "#4ECDC4" },
+      { "offset": 0, "label": "I420: Cb-plane follows at offset W*H", "color": "#45B7D1" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Format Note", "fields": ["y_plane_start"], "format": "text" },
+    { "name": "First 16 Bytes Hex", "fields": ["y_plane_start"], "format": "hex" }
+  ],
+  "aiHints": [
+    "Raw YUV has zero magic bytes; file size modulo expected frame size is the only way to verify correctness without external metadata",
+    "I420 (4:2:0 planar) frame layout: Y-plane (W*H bytes), then Cb-plane (W/2*H/2 bytes), then Cr-plane (W/2*H/2 bytes) — total = W*H*1.5",
+    "Y4M (.y4m) adds a text header ('YUV4MPEG2 W<width> H<height> F<fps> Ip A0:0') before each frame with 'FRAME' marker, making it self-describing unlike raw .yuv",
+    "UYVY and YUY2 are packed 4:2:2 formats with 2 bytes per pixel; NV12/NV21 are semi-planar with interleaved Cb/Cr plane",
+    "FFmpeg can generate raw YUV with: ffmpeg -i input.mp4 -pix_fmt yuv420p output.yuv and play it with: ffplay -f rawvideo -pixel_format yuv420p -video_size WxH output.yuv"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "No container structure means any binary data could be misidentified as raw YUV; always verify file size against expected frame dimensions",
+      "Raw YUV dumps from security cameras or video capture devices may contain unencrypted, unredacted video content",
+      "Y4M files are self-describing; raw .yuv files require side-channel knowledge of resolution and pixel format"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "Y4M", "relationship": "variant", "note": "YUV4MPEG2 (.y4m) adds a self-describing text header to raw YUV data" },
+    { "format": "AVI", "relationship": "container", "note": "Uncompressed YUV can be stored in AVI container with appropriate FourCC (I420, UYVY, etc.)" },
+    { "format": "MP4", "relationship": "container", "note": "Uncompressed video frames can be wrapped in MP4 using appropriate codec tags" }
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Read/write raw YUV with -f rawvideo; the primary tool for generating and converting raw YUV" },
+    { "name": "ffplay", "role": "Preview raw YUV files with -f rawvideo -pixel_format -video_size flags" },
+    { "name": "YUVtoolkit", "role": "Specialized viewer and analyzer for raw YUV files with pixel inspection" },
+    { "name": "Rawplayer / VirtualDub", "role": "Windows tools for raw video playback and processing" }
+  ],
+  "useCases": [
+    "Video codec development and testing using uncompressed reference frames for PSNR/SSIM measurement",
+    "Video capture pipeline intermediate format between hardware capture and software encoding",
+    "Academic and research use for lossless video quality analysis and perceptual metric computation"
+  ],
+  "technicalDetails": "Raw planar YUV is not a file format per se — it is unstructured binary video data without any container or header. The data layout depends entirely on the pixel format: I420/YV12 (4:2:0 planar, 12 bits/pixel), UYVY/YUY2 (4:2:2 packed, 16 bits/pixel), NV12/NV21 (4:2:0 semi-planar, 12 bits/pixel). Frame size in bytes = width * height * bits_per_pixel / 8. For I420: Y-plane (width*height), Cb-plane (width/2 * height/2), Cr-plane (width/2 * height/2). Multiple frames are concatenated with no separator. Y4M (.y4m) format adds 'YUV4MPEG2' text header and per-frame 'FRAME' markers, making it self-describing. Without external metadata, raw .yuv files cannot be reliably parsed.",
+  "completenessScore": 80
+}

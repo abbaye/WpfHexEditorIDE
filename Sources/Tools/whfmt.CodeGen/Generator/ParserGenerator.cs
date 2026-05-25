@@ -31,6 +31,12 @@ internal static class ParserGenerator
         bool generateAsync,
         OutputLanguage language = OutputLanguage.CSharp)
     {
+        var trimmed = json.AsSpan().TrimStart();
+        if (trimmed.IsEmpty || trimmed[0] != '{')
+            throw new InvalidOperationException(
+                $"Expected a JSON object but the content starts with '{(trimmed.IsEmpty ? "<empty>" : trimmed[0].ToString())}'. " +
+                "Ensure the resolved resource is a valid .whfmt file and not a .grammar (Synalysis XML) or other non-JSON resource.");
+
         using var doc = JsonDocument.Parse(json, _jsonc);
         var root = doc.RootElement;
 
@@ -218,7 +224,10 @@ internal static class ParserGenerator
         sb.AppendLine("//   Do not edit — regenerate with: whfmt-codegen generate");
         sb.AppendLine("// </auto-generated>");
         sb.AppendLine();
+        sb.AppendLine("#nullable enable");
+        sb.AppendLine();
         sb.AppendLine("using System;");
+        sb.AppendLine("using System.CodeDom.Compiler;");
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine("using System.IO;");
         sb.AppendLine("using System.Threading;");
@@ -290,6 +299,7 @@ internal static class ParserGenerator
         bool includeValidation, bool generateAsync)
     {
         sb.AppendLine($"/// <summary>Strongly-typed parser for {formatName} files (generated from .whfmt definition).</summary>");
+        sb.AppendLine($"[GeneratedCode(\"whfmt.SourceGenerator\", \"1.0.0\")]");
         sb.AppendLine($"public sealed class {className}");
         sb.AppendLine("{");
 

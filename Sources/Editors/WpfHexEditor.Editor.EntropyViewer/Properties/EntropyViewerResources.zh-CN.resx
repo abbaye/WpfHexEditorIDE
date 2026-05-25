@@ -7,4 +7,13 @@
   <data name="EntropyViewer_Analysing" xml:space="preserve">
     <value>正在分析…</value>
   </data>
+  <data name="EntropyViewer_ExportPng" xml:space="preserve">
+    <value>Export PNG</value>
+  </data>
+  <data name="EntropyViewer_SectionLabels" xml:space="preserve">
+    <value>Section labels</value>
+  </data>
+  <data name="EntropyViewer_ZoomHint" xml:space="preserve">
+    <value>Ctrl+Scroll to zoom</value>
+  </data>
 </root>

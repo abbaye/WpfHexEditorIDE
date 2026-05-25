@@ -930,7 +930,7 @@
                     Panel.ZIndex="10"
                     Background="#CC1E1E1E"
                     CornerRadius="6"
-                    Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}}">
+                    Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="32"
                                Foreground="#60A5FA" HorizontalAlignment="Center" Margin="0,0,0,8"/>

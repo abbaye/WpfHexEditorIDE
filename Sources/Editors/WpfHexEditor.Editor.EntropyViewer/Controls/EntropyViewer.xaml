@@ -50,6 +50,10 @@
                       Foreground="{DynamicResource TE_LineNumberForeground}"
                       Checked="OnShowThresholdChanged" Unchecked="OnShowThresholdChanged"/>
             <Separator/>
+            <Button x:Name="ExportPngBtn"
+                    Content="{StaticResource EntropyViewer_ExportPng}"
+                    Padding="8,2" Click="OnExportPng"/>
+            <Separator/>
             <TextBlock x:Name="EntropyText" Text="—" VerticalAlignment="Center" Padding="4,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
         </ToolBar>
@@ -67,10 +71,15 @@
                            FontSize="11"/>
                 <Border Margin="8,0,8,0" BorderThickness="1"
                         BorderBrush="{DynamicResource TE_LineNumberBackground}">
-                    <ev:EntropyBarCanvas x:Name="EntropyCanvas" Height="100"
-                                         Cursor="Hand"
-                                         HoverChanged="OnEntropyHoverChanged"
-                                         OffsetRequested="OnEntropyOffsetRequested"/>
+                    <ScrollViewer x:Name="EntropyScrollViewer"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Hidden"
+                                  PreviewMouseWheel="OnEntropyPreviewMouseWheel">
+                        <ev:EntropyBarCanvas x:Name="EntropyCanvas" Height="100"
+                                             Cursor="Hand"
+                                             HoverChanged="OnEntropyHoverChanged"
+                                             OffsetRequested="OnEntropyOffsetRequested"/>
+                    </ScrollViewer>
                 </Border>
 
                 <!-- Byte distribution header -->

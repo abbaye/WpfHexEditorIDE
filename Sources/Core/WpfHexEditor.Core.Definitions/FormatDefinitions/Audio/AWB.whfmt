@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "AMR-WB Audio",
   "formatId": "AWB",
@@ -6,6 +7,24 @@
   "extensions": [
     ".awb"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "52494646",
+      "offset": 0,
+      "label": "RIFF container header for AWB variant",
+      "weight": 0.6,
+      "strength": "Moderate"
+    },
+    {
+      "value": "41574220",
+      "offset": 8,
+      "label": "RIFF AWB type identifier 'AWB '",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
   "description": "AMR-WB (Adaptive Multi-Rate Wideband) — a wideband speech codec standardized by 3GPP (TS 26.171) for 3G/4G mobile networks, also known as G.722.2. The .awb file format starts with the 9-byte header '#!AMR-WB\\n' (0x2321414D522D57420A). Frames follow: each has a 1-byte TOC (Table of Contents) header where bits 7-4 encode the mode (0-8 for 6.6-23.85 kbps), bit 3 = quality flag (1=good), bits 2-0 = padding zeros. AMR-WB uses 16000 Hz sample rate (wideband vs AMR-NB at 8000 Hz), with 20ms frames of 320 samples. AMR-WB is used for HD Voice (VoLTE) in 4G/LTE networks. Note: .awb files are identical in structure to AMR-WB files (.amr with AMR-WB content).",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

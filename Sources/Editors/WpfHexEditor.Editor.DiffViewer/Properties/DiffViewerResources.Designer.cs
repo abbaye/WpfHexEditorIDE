@@ -248,5 +248,117 @@ namespace WpfHexEditor.Editor.DiffViewer.Properties {
                 return ResourceManager.GetString("DiffViewer_ShowHideDiffList", resourceCulture);
             }
         }
+
+        internal static string DiffViewer_TabHex {
+            get { return ResourceManager.GetString("DiffViewer_TabHex", resourceCulture); }
+        }
+
+        internal static string DiffViewer_TabText {
+            get { return ResourceManager.GetString("DiffViewer_TabText", resourceCulture); }
+        }
+
+        internal static string DiffViewer_ExportPatch {
+            get { return ResourceManager.GetString("DiffViewer_ExportPatch", resourceCulture); }
+        }
+
+        internal static string DiffViewer_ExportPatchTooltip {
+            get { return ResourceManager.GetString("DiffViewer_ExportPatchTooltip", resourceCulture); }
+        }
+
+        internal static string DiffViewer_TextModeOnly {
+            get { return ResourceManager.GetString("DiffViewer_TextModeOnly", resourceCulture); }
+        }
+
+        internal static string DiffViewer_ColLine {
+            get { return ResourceManager.GetString("DiffViewer_ColLine", resourceCulture); }
+        }
+
+        internal static string DiffViewer_LineEqual {
+            get { return ResourceManager.GetString("DiffViewer_LineEqual", resourceCulture); }
+        }
+
+        internal static string DiffViewer_LineModified {
+            get { return ResourceManager.GetString("DiffViewer_LineModified", resourceCulture); }
+        }
+
+        internal static string DiffViewer_LineDeleted {
+            get { return ResourceManager.GetString("DiffViewer_LineDeleted", resourceCulture); }
+        }
+
+        internal static string DiffViewer_LineInserted {
+            get { return ResourceManager.GetString("DiffViewer_LineInserted", resourceCulture); }
+        }
+
+        internal static string DiffViewer_NotTextFile {
+            get { return ResourceManager.GetString("DiffViewer_NotTextFile", resourceCulture); }
+        }
+
+        internal static string DiffViewer_PatchSaved {
+            get { return ResourceManager.GetString("DiffViewer_PatchSaved", resourceCulture); }
+        }
+
+        internal static string DiffViewer_TabMerge {
+            get { return ResourceManager.GetString("DiffViewer_TabMerge", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeConflicts {
+            get { return ResourceManager.GetString("DiffViewer_MergeConflicts", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeNoConflicts {
+            get { return ResourceManager.GetString("DiffViewer_MergeNoConflicts", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeAcceptOurs {
+            get { return ResourceManager.GetString("DiffViewer_MergeAcceptOurs", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeAcceptTheirs {
+            get { return ResourceManager.GetString("DiffViewer_MergeAcceptTheirs", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeAcceptBoth {
+            get { return ResourceManager.GetString("DiffViewer_MergeAcceptBoth", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeNextConflict {
+            get { return ResourceManager.GetString("DiffViewer_MergeNextConflict", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergePrevConflict {
+            get { return ResourceManager.GetString("DiffViewer_MergePrevConflict", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeSave {
+            get { return ResourceManager.GetString("DiffViewer_MergeSave", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeSaveTooltip {
+            get { return ResourceManager.GetString("DiffViewer_MergeSaveTooltip", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeSaved {
+            get { return ResourceManager.GetString("DiffViewer_MergeSaved", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeUnresolvedWarning {
+            get { return ResourceManager.GetString("DiffViewer_MergeUnresolvedWarning", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeBaseLabel {
+            get { return ResourceManager.GetString("DiffViewer_MergeBaseLabel", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeOpenBase {
+            get { return ResourceManager.GetString("DiffViewer_MergeOpenBase", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeOpenBaseTooltip {
+            get { return ResourceManager.GetString("DiffViewer_MergeOpenBaseTooltip", resourceCulture); }
+        }
+
+        internal static string DiffViewer_MergeNotReady {
+            get { return ResourceManager.GetString("DiffViewer_MergeNotReady", resourceCulture); }
+        }
     }
 }

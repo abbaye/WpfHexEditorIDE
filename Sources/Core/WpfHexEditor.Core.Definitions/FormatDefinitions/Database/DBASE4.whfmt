@@ -1,41 +1,143 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "dBASE IV Database",
   "formatId": "DBASE4",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".dbf"
   ],
   "description": "dBASE IV database table format with memo support",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "dBASE IV Database Format"
+      "dBASE IV DBF File Format Specification",
+      "Xbase File Format — dbflib / libdbf documentation",
+      "DBF IV with SQL and multi-user networking extensions"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DBF"
+      "https://en.wikipedia.org/wiki/DBF",
+      "https://www.dbf2002.com/dbf-file-format.html",
+      "https://www.dbase.com/Knowledgebase/INT/db7_file_fmt.htm"
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "04",
+      "offset": 0,
+      "label": "dBASE IV version byte 0x04 at offset 0 — no memo file",
+      "weight": 0.7,
+      "strength": "Medium"
     },
-    "signatures": [
-      {
-        "value": "04",
-        "offset": 0,
-        "label": "DBASE4 magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "8B",
+      "offset": 0,
+      "label": "dBASE IV version byte 0x8B at offset 0 — with memo (.dbt)",
+      "weight": 0.7,
+      "strength": "Medium"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "version",         "type": "uint8",    "offset": "0x00", "length": 1,  "description": "Version flag: 0x04 = dBASE IV no memo, 0x8B = dBASE IV with memo (.dbt)" },
+      { "name": "last_update",     "type": "bytes",    "offset": "0x01", "length": 3,  "description": "Date of last update: YY (offset from 1900), MM, DD" },
+      { "name": "record_count",    "type": "uint32le", "offset": "0x04", "length": 4,  "description": "Number of records in the table (uint32 LE)" },
+      { "name": "header_bytes",    "type": "uint16le", "offset": "0x08", "length": 2,  "description": "Number of bytes in the header (uint16 LE)" },
+      { "name": "record_size",     "type": "uint16le", "offset": "0x0A", "length": 2,  "description": "Number of bytes in each record (uint16 LE)" },
+      { "name": "reserved",        "type": "bytes",    "offset": "0x0C", "length": 16, "description": "Reserved bytes — should be zero" },
+      { "name": "mdx_flag",        "type": "uint8",    "offset": "0x1C", "length": 1,  "description": "MDX production index flag: 1 = .mdx file exists" },
+      { "name": "language_id",     "type": "uint8",    "offset": "0x1D", "length": 1,  "description": "Language driver ID (code page) for the table" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["version", "record_count", "header_bytes", "record_size", "mdx_flag"],
+    "valueMaps": {
+      "version": {
+        "0x03": "dBASE III — no memo",
+        "0x04": "dBASE IV — no memo",
+        "0x8B": "dBASE IV — with memo (.dbt)",
+        "0x43": "dBASE IV SQL table, no memo",
+        "0x63": "dBASE IV SQL system file, no memo",
+        "0x30": "Visual FoxPro",
+        "0xF5": "FoxPro 2.x — with memo (.fpt)"
+      },
+      "mdx_flag": {
+        "0x00": "No production MDX index",
+        "0x01": "Production MDX index file (.mdx) exists"
+      },
+      "language_id": {
+        "0x01": "Code Page 437 — DOS USA",
+        "0x02": "Code Page 850 — DOS Multilingual",
+        "0x03": "Code Page 1252 — Windows ANSI",
+        "0x64": "Code Page 852 — DOS EE",
+        "0x6A": "Code Page 866 — DOS Russian"
+      }
+    },
+    "tooltips": {
+      "version": "dBASE IV uses 0x04 (no memo) or 0x8B (with .dbt memo); SQL variants use 0x43/0x63",
+      "record_count": "uint32 LE at offset 4; includes logically deleted records (marked 0x2A); use PACK to physically remove",
+      "mdx_flag": "MDX production index is automatically maintained; 0x01 means a .mdx compound index file must accompany the .dbf",
+      "language_id": "Code page identifier for character field encoding; 0x00 = no code page declared"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Version byte is dBASE IV",
+      "expression": "version == 0x04 || version == 0x8B || version == 0x43 || version == 0x63",
+      "severity": "warning",
+      "message": "Version byte is not a recognized dBASE IV value — may be dBASE III (0x03/0x83) or FoxPro variant"
+    },
+    {
+      "name": "Header size is consistent",
+      "expression": "header_bytes >= 32",
+      "severity": "error",
+      "message": "Header size must be at least 32 bytes — file is truncated or not a valid DBF"
+    },
+    {
+      "name": "Record size is non-zero",
+      "expression": "record_size > 0",
+      "severity": "error",
+      "message": "Record size must be greater than 0 — a table with no fields is invalid"
+    },
+    {
+      "name": "MDX companion file expected",
+      "expression": "mdx_flag == 0 || mdx_flag == 1",
+      "severity": "info",
+      "message": "MDX flag 0x01 indicates a production index (.mdx) file is required alongside this .dbf"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "DBF Header",        "offset": 0,  "icon": "", "color": "#3D5A80" },
+      { "name": "Record Count",      "offset": 4,  "icon": "", "color": "#3D5A80" },
+      { "name": "MDX / Language",    "offset": 28, "icon": "", "color": "#3D5A80" },
+      { "name": "Field Descriptors", "offset": 32, "icon": "", "color": "#3D5A80" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "dBASE IV Header (JSON)",
+      "format": "json",
+      "fields": ["version", "last_update", "record_count", "header_bytes", "record_size", "mdx_flag", "language_id"]
+    },
+    {
+      "name": "dBASE IV Header (C struct)",
+      "format": "c-struct",
+      "structName": "DBASE4_HEADER",
+      "fields": ["version", "last_update", "record_count", "header_bytes", "record_size", "mdx_flag", "language_id"]
+    }
+  ],
+  "aiHints": [
+    "dBASE IV adds MDX compound index support (byte 0x1C), language driver ID (byte 0x1D), and SQL access over the dBASE III header layout",
+    "Version 0x04 = no memo; 0x8B = memo file (.dbt) exists; SQL table variants use 0x43 or 0x63 at offset 0",
+    "dBASE IV memo files (.dbt) store variable-length text in 512-byte blocks; memo fields in the .dbf contain a 10-digit ASCII block number pointer",
+    "MDX compound index (.mdx) stores multiple indexes in one file; if mdx_flag = 0x01 and .mdx is missing, record access may fail",
+    "Field descriptor array starts at offset 32; each descriptor is 32 bytes; 0x0D terminator precedes data records at header_bytes offset"
+  ],
   "variables": {
     "currentOffset": 0,
     "pageSize": 0,
@@ -51,7 +153,7 @@
       "length": 32,
       "color": "#3D5A80",
       "opacity": 0.4,
-      "description": "dBASE IV file header"
+      "description": "dBASE IV file header (32 bytes fixed)"
     },
     {
       "type": "metadata",
@@ -79,56 +181,67 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "dBASE IV (original application)",
+    "FoxPro / Visual FoxPro",
+    "LibreOffice Base (DBF import/export)",
+    "DBeaver (xBase DBF support)"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".dbf"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "DBASE3",
+      "relation": "successor",
+      "note": "dBASE IV extends dBASE III with MDX compound indexes, language driver ID, SQL access, and multi-user networking"
+    }
+  ],
+  "useCases": [
+    "Legacy dBASE IV enterprise database inspection and data extraction",
+    "dBASE IV SQL table forensic analysis",
+    "Migration of dBASE IV data to modern relational databases",
+    "Recovery of deleted records from legacy accounting and inventory systems"
+  ],
+  "technicalDetails": "dBASE IV DBF format extends dBASE III: the 32-byte header gains MDX production index flag (offset 0x1C) and language driver ID (offset 0x1D). Memo fields reference 512-byte blocks in the companion .dbt file by a 10-digit ASCII block number. The MDX compound index file (.mdx) can hold up to 47 tag indexes in a single file. SQL access variants set version byte 0x43 (SQL table) or 0x63 (SQL system file). Record layout is identical to dBASE III: 1-byte deletion flag + field data.",
+  "completenessScore": 82,
   "MimeTypes": [
+    "application/dbase",
+    "application/x-dbf",
     "application/octet-stream"
   ],
   "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
+    "dBASE IV",
+    "FoxPro",
+    "LibreOffice Base",
     "DBeaver"
   ],
   "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
+    "Legacy database inspection",
+    "SQL table forensics",
+    "Data migration",
+    "Record recovery"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 4,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "VersionByte": "0x04 (no memo) / 0x8B (with .dbt memo) / 0x43 (SQL table)",
+    "MemoBlockSize": "512 bytes per .dbt block",
+    "MDXSupport": "Compound index (.mdx) up to 47 tag indexes"
+  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
   },
   "forensic": {
-    "category": "database",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "dBASE IV database table format with memo support",
-    "suggestedInspections": [
-      "Verify dBASE IV Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "riskLevel": "low",
+    "notes": [
+      "Deleted dBASE IV records (0x2A deletion flag) remain physically present until PACK is run — forensic tools can recover deleted data",
+      "dBASE IV SQL system files (version 0x63) may expose table schema and query metadata",
+      "Companion .dbt memo files may contain unredacted text data; missing .dbt causes memo field read failures"
     ]
   }
 }

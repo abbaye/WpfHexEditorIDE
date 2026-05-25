@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>حفظ التخطيط</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>تحميل التخطيط</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>إعادة تعيين التخطيط</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>هل تريد إعادة تعيين التخطيط إلى الإعداد الافتراضي؟ ستُحفظ المستندات المفتوحة.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>مسح بيانات التجوال…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>مسح بيانات التجوال</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>سيؤدي هذا إلى حذف الإعدادات المحفوظة والتخطيط وبيانات الجلسة. لن تتأثر الإضافات المثبتة. هل تريد المتابعة؟</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>تم مسح بيانات التجوال. يُنصح بإعادة التشغيل لتطبيق التغييرات. هل تريد إعادة التشغيل الآن؟</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>تم اكتشاف بيانات تجوال تالفة ({0}). قم بالنسخ الاحتياطي وإعادة الضبط للإصلاح، أو تجاهل للمتابعة.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>نسخ احتياطي &amp; إعادة ضبط</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>تجاهل</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>استعادة من النسخ الاحتياطي…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>هل تريد استعادة بيانات التجوال من النسخة الاحتياطية '{0}'؟ ستتم الكتابة فوق الملفات الحالية.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>لم يتم العثور على نسخة احتياطية. استخدم 'مسح بيانات التجوال' مرة واحدة على الأقل لإنشاء نسخة احتياطية.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>تمت استعادة النسخة الاحتياطية بنجاح. هل تريد إعادة التشغيل الآن لتطبيق التغييرات؟</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>تبديل التخطيط المقفل</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>أدوات</value></data>
@@ -840,6 +852,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>ابدأ</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>مثبّت</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>الكل</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>ميزة</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>إصلاح</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>أداء</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>تثبيت</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>إلغاء التثبيت</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>إزالة من الأخيرة</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>بحث في الأخيرة…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>تحليل PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>تصفية:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>الاستيرادات</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>الصادرات</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>الرؤوس</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>ليس ملف PE — افتح ملفاً تنفيذياً أو DLL أولاً.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>فك التشفير</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>الوضع:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>المفتاح (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>الإزاحة:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>استخدام التحديد</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>بايت:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>رفض</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>عرض في:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>تغييرات غير محفوظة</value></data>
@@ -1132,4 +1227,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>نسخ المواقع ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>فتح عند الإعلان</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>نسخ اسم الرمز</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>الطول الأدنى:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>تصفية…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>الإزاحة</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>الطول</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>الترميز</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>القيمة</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>بايتات</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>تكرار</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>السياق</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>إزاحة البايت للسلسلة في الملف (ست عشري)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>عدد البايتات الخام التي تشغلها هذه السلسلة</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>الترميز المكتشف: ASCII أو UTF-16 LE/BE أو UTF-8 أو Latin-1 أو EBCDIC أو TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>البايتات الست عشرية الخام للمنطقة المطابقة</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>قيمة السلسلة المفككة</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>عدد السلاسل بنفس القيمة المفككة (برتقالي = تم إيجاد تكرارات)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 بايتات قبل (رمادي) + بايتات مطابقة (ملونة حسب الترميز) + 4 بايتات بعد (رمادي)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>مرشح Regex — عند التفعيل يُعامَل حقل البحث كتعبير نمطي</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>تغير الملف منذ آخر مسح — اضغط F5 لإعادة المسح</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>مزامنة مؤشر HexEditor مع الشبكة</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>تمييز النتائج المرئية</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>مسح التمييزات</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>تصدير…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>تحميل ملف TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>تشغيل (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>إزالة TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>تثبيت/إلغاء التثبيت (يبقى عند التصفية)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>الحد الأدنى لطول السلسلة</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>الحد الأدنى للأحرف المميزة في السلسلة</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>تصفية من الإزاحة (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>تصفية إلى الإزاحة (hex, 0 = بلا حدود)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>إخفاء النتائج في الكتل عالية الإنتروبيا</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>الملف للمسح</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>مرشح مباشر (F3 = التالي، Shift+F3 = السابق)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> قديم</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>استبعاد الإنتروبيا العالية</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>ملف:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>الترميزات:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>أدنى:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>الإزاحة:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

@@ -1,8 +1,28 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Microsoft Access Compiled (Legacy)",
   "formatId": "MDE",
-  "version": "1.14",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 82,
+  "maxSignatureOffset": 13,
+  "signatures": [
+    {
+      "value": "5374616E6461726420204A6574",
+      "offset": 0,
+      "label": "Jet DB compiled magic 'Standard  Jet' (two spaces)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "mde_magic", "offset": 0, "size": 13, "type": "ascii", "description": "MDE signature 'Standard  Jet' (two spaces between Standard and Jet)" },
+      { "name": "version_byte", "offset": 20, "size": 1, "type": "uint8", "description": "Jet engine version" },
+      { "name": "page_size", "offset": 22, "size": 2, "type": "uint16le", "description": "Page size in bytes" }
+    ]
+  },
   "extensions": [
     ".mde"
   ],
@@ -112,7 +132,7 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -134,6 +154,40 @@
       "Inspect record format, schema tables, and journal state"
     ]
   },
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "OLE2 CFB Header", "color": "#E74C3C" },
+      { "offset": 512, "label": "First Sector", "color": "#3498DB" },
+      { "offset": 1024, "label": "Access Compiled Data Pages", "color": "#27AE60" }
+    ]
+  },
+  "aiHints": [
+    "MDE is a compiled, locked version of an MDB — VBA source code is removed, only compiled bytecode remains",
+    "The signature differs slightly from MDB: 'Standard  Jet' (two spaces) vs MDB's 'Standard Jet DB'",
+    "MDE files cannot be modified to change forms or queries — design view is disabled",
+    "Data tables in MDE are still readable and editable — only design objects are locked",
+    "MDE files use the same page structure as MDB (2KB or 4KB pages depending on Jet version)"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "MDE locks VBA source code but data remains fully accessible",
+      "Converting MDE back to MDB source is non-trivial but possible with specialized tools",
+      "Data recovery and forensic extraction proceed the same as with MDB files"
+    ],
+    "suspiciousPatterns": []
+  },
+  "useCases": [
+    "Distributing locked Access applications without exposing source code",
+    "Legacy compiled business application databases (Access 97–2003)",
+    "Forensic data extraction from compiled Access applications",
+    "Migration source to ACCDE or SQL Server"
+  ],
+  "technicalDetails": {
+    "LockType": "VBA bytecode only — data tables remain editable",
+    "JetVersion": "Jet 3.x or 4.x",
+    "DifferentFromMDB": "Two spaces in signature string vs MDB one space"
+  },
   "inspector": {
     "badge": "mdeSignature",
     "primaryField": "mdeSignature",
@@ -152,9 +206,12 @@
     {
       "name": "Microsoft Access Compiled (Legacy) Header (JSON)",
       "format": "json",
-      "fields": [
-        "mdeSignature"
-      ]
+      "fields": ["mdeSignature"]
+    },
+    {
+      "name": "MDE Header Summary",
+      "format": "text",
+      "template": "Microsoft Access MDE\nSignature: {mdeSignature}\nPage Size: {pageSize}\nVersion  : {version}"
     }
   ],
   "assertions": [
@@ -163,6 +220,18 @@
       "expression": "mdeSignature != 0",
       "severity": "warning",
       "message": "MDE magic field is zero — possible detection failure"
+    },
+    {
+      "name": "File size reasonable",
+      "expression": "fileSize >= 2048",
+      "severity": "error",
+      "message": "MDE file must be at least one Jet page (2048 bytes)"
+    },
+    {
+      "name": "Version byte known",
+      "expression": "version_byte == 0 || version_byte == 1",
+      "severity": "info",
+      "message": "Jet version byte at offset 20 should be 0 (Jet 3) or 1 (Jet 4)"
     }
   ],
   "diff": {

@@ -1,12 +1,13 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Ext4 Filesystem",
   "formatId": "EXT4",
-  "version": "1.14",
-  "extensions": [
-    ".ext4"
-  ],
-  "description": "Fourth Extended Filesystem for Linux",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "extensions": [".ext4"],
+  "description": "Fourth Extended Filesystem for Linux. The ext4 superblock is at byte offset 1024 (1 KiB). The magic number 0xEF53 (little-endian: 53 EF) is at offset 1080 (0x438) within the filesystem image. Block size is stored at offset 1048 (superblock+24): 2^(10+log2BlockSize).",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -19,115 +20,136 @@
     "WebLinks": [
       "https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout",
       "https://opensource.com/article/17/5/introduction-ext4-filesystem",
-      "https://wiki.osdev.org/Ext4",
-      "https://metebalci.com/blog/a-minimum-complete-tutorial-of-linux-ext4-file-system/"
+      "https://wiki.osdev.org/Ext4"
     ]
   },
+  "maxSignatureOffset": 1082,
+  "signatures": [
+    {
+      "value": "53EF",
+      "offset": 1080,
+      "label": "Ext4 superblock magic 0xEF53 at offset 0x438 (little-endian: 53 EF)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "53EF",
-        "offset": 1080,
-        "label": "EXT4 magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 2, "maxSignatureOffset": 1082 },
+    "signatures": [{ "value": "53EF", "offset": 1080, "label": "EXT4 magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
-    "Strength": "Medium"
+    "Strength": "Strong"
   },
   "variables": {
     "currentOffset": 0,
     "fileSize": 0,
     "version": 0,
     "format": "",
-    "formattedSize": ""
+    "formattedSize": "",
+    "inodeCount": 0,
+    "blockCount": 0,
+    "blockSize": 0,
+    "magic": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "inode_count", "offset": 1024, "size": 4, "type": "uint32le", "description": "Total number of inodes in the filesystem" },
+      { "name": "block_count_lo", "offset": 1028, "size": 4, "type": "uint32le", "description": "Total number of blocks (low 32 bits)" },
+      { "name": "log_block_size", "offset": 1048, "size": 4, "type": "uint32le", "description": "Block size = 2^(10+value): 0=1KB, 1=2KB, 2=4KB" },
+      { "name": "magic", "offset": 1080, "size": 2, "type": "uint16le", "description": "Ext4 magic number: 0xEF53" },
+      { "name": "state", "offset": 1082, "size": 2, "type": "uint16le", "description": "Filesystem state: 1=clean, 2=errors detected, 4=orphan inodes" },
+      { "name": "rev_level", "offset": 1092, "size": 4, "type": "uint32le", "description": "Revision level: 0=original, 1=v2 with dynamic inode sizes" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "Ext4 Superblock", "offset": 1024, "length": 1024, "color": "#FCC624", "opacity": 0.4, "description": "Ext4 superblock structure" },
+    { "type": "metadata", "name": "File Size", "variable": "fileSize", "description": "File Size" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" },
+    { "type": "metadata", "name": "Formatted Size", "variable": "formattedSize", "description": "Human-readable file size" }
+  ],
+  "inspector": {
+    "displayFields": ["magic", "state", "inodeCount", "blockCount", "blockSize"],
+    "valueMaps": {
+      "state": { "1": "Clean", "2": "Errors detected", "4": "Orphan inodes recovering" },
+      "log_block_size": { "0": "1024 bytes", "1": "2048 bytes", "2": "4096 bytes", "3": "8192 bytes" }
+    },
+    "tooltips": {
+      "magic": "Ext4 magic 0xEF53 at offset 1080 (0x438) — primary identifier",
+      "state": "Filesystem clean/dirty state — 1=clean on unmount, 2=dirty (crash or forced unmount)",
+      "log_block_size": "Block size exponent: actual size = 2^(10 + log_block_size)"
+    }
+  },
+  "assertions": [
+    { "name": "Ext4 magic present", "expression": "magic == 0xEF53", "severity": "error", "message": "Ext4 magic 0xEF53 must be at offset 1080 (0x438)" },
+    { "name": "Filesystem state valid", "expression": "state == 1 || state == 2 || state == 4", "severity": "warning", "message": "Filesystem state should be 1 (clean), 2 (errors), or 4 (orphan recovery)" },
+    { "name": "Inode count positive", "expression": "inodeCount > 0", "severity": "error", "message": "Ext4 inode count must be positive" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 1024, "label": "Ext4 Superblock (offset 0x400)", "color": "#FCC624" },
+      { "offset": 1080, "label": "Magic 0xEF53 (offset 0x438)", "color": "#E9C46A" },
+      { "offset": 2048, "label": "Block Group Descriptor Table", "color": "#2A9D8F" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "Ext4 Superblock",
-      "offset": 1024,
-      "length": 1024,
-      "color": "#FCC624",
-      "opacity": 0.4,
-      "description": "Ext4 superblock structure"
+      "name": "Ext4 Superblock Summary",
+      "format": "text",
+      "template": "Ext4 Filesystem\nMagic     : 0x{magic:X4}\nState     : {state}\nInodes    : {inodeCount}\nBlocks    : {blockCount}"
     },
     {
-      "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Ext4 Superblock CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{magic}\nState,{state}\nInodeCount,{inodeCount}\nBlockCount,{blockCount}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "Ext4 magic 0xEF53 is at offset 1080 (0x438) — the superblock starts at offset 1024 (0x400)",
+    "Block size = 2^(10 + log_block_size): value 2 at offset 1048 means 4096-byte blocks (most common)",
+    "Filesystem state 1=clean, 2=errors detected — dirty state indicates crash or forced unmount",
+    "Backup superblock copies exist at block group boundaries (block 32768, 98304, etc. for 4KB blocks)",
+    "Journal is stored as a regular inode (inode 8 by default) — can be parsed separately"
   ],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [
-      ".ext4"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "DiskInternals",
-    "R-Studio",
-    "HxD",
-    "FTK Imager",
-    "Autopsy"
-  ],
-  "UseCases": [
-    "Disk imaging",
-    "Forensics",
-    "Data recovery",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
   "forensic": {
-    "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Fourth Extended Filesystem for Linux",
-    "suggestedInspections": [
-      "Verify Ext4 Filesystem superblock/boot sector signature and version",
-      "Check partition/volume layout and allocation bitmap",
-      "Inspect filesystem journal and metadata consistency"
+    "notes": [
+      "Ext4 journals may preserve deleted file data until the journal is overwritten",
+      "Unallocated inodes may still contain file metadata after deletion",
+      "Backup superblocks allow recovery when the primary superblock is corrupt"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "BTRFS", "relation": "sibling", "note": "Both are Linux filesystems; ext4 is stable and widely used, Btrfs is newer with CoW" },
+    { "format": "XFS", "relation": "sibling", "note": "Both are Linux journaling filesystems; XFS is preferred for large files" }
+  ],
+  "software": ["e2fsprogs", "Linux kernel 2.6.28+", "R-Studio", "DiskInternals Linux Recovery", "Autopsy", "TestDisk"],
+  "useCases": [
+    "Linux root and data partitions",
+    "Virtual machine disk images (QCOW2, VHD with ext4 content)",
+    "Forensic imaging and recovery of Linux systems",
+    "Docker container layer storage (overlay2 on ext4)"
+  ],
+  "technicalDetails": {
+    "SuperblockOffset": "0x400 (1024 bytes)",
+    "MagicOffset": "0x438 (1080 bytes)",
+    "MagicValue": "0xEF53",
+    "BlockSizes": [1024, 2048, 4096, 8192],
+    "MaxFilesystemSize": "1 EiB (theoretical)",
+    "JournalInode": 8
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "Software": ["DiskInternals", "R-Studio", "HxD", "FTK Imager", "Autopsy"],
+  "UseCases": ["Disk imaging", "Forensics", "Data recovery", "Analysis"],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "SuperblockOffset": "0x400", "MagicOffset": "0x438", "MagicValue": "0xEF53" },
+  "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }

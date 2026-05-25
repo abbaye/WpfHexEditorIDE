@@ -19,6 +19,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -58,6 +59,11 @@ public sealed class EntropyBarCanvas : FrameworkElement
     private static readonly Brush _regionHighBrush;
     private static readonly Brush _regionLowBrush;
     private static readonly Brush _hoverBrush;
+    private static readonly Brush _labelBrush;
+    private static readonly Pen   _labelBorderPen;
+    private static readonly Typeface _labelTypeface = new(
+        new FontFamily("Consolas, Segoe UI"),
+        FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
     static EntropyBarCanvas()
     {
@@ -73,6 +79,11 @@ public sealed class EntropyBarCanvas : FrameworkElement
         _regionLowBrush.Freeze();
         _hoverBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
         _hoverBrush.Freeze();
+
+        _labelBrush = new SolidColorBrush(Color.FromArgb(220, 220, 220, 100));
+        _labelBrush.Freeze();
+        _labelBorderPen = new Pen(new SolidColorBrush(Color.FromArgb(160, 200, 200, 80)), 0.5);
+        _labelBorderPen.Freeze();
     }
 
     // ── State ─────────────────────────────────────────────────────────────────
@@ -80,6 +91,13 @@ public sealed class EntropyBarCanvas : FrameworkElement
     private double[]? _blockEntropy;
     private int       _windowSize   = 1024;
     private int       _hoverIndex   = -1;
+
+    // Section labels: (offset, length, name)
+    private IReadOnlyList<(long Offset, long Length, string Name)> _sectionLabels
+        = Array.Empty<(long, long, string)>();
+
+    // Zoom: 1.0 = default, valid range [0.5, 8.0]
+    private double _zoom = 1.0;
 
     // ── Dependency Properties ─────────────────────────────────────────────────
 
@@ -132,14 +150,39 @@ public sealed class EntropyBarCanvas : FrameworkElement
         _blockEntropy = blockEntropy;
         _windowSize   = windowSize > 0 ? windowSize : 1024;
         _hoverIndex   = -1;
+        UpdateMinWidth();
         InvalidateVisual();
+    }
+
+    /// <summary>Overlay PE/ELF section names on the entropy chart.</summary>
+    public void SetSectionLabels(IReadOnlyList<(long Offset, long Length, string Name)> labels)
+    {
+        _sectionLabels = labels ?? Array.Empty<(long, long, string)>();
+        InvalidateVisual();
+    }
+
+    /// <summary>Current zoom factor [0.5, 8.0].</summary>
+    public double Zoom => _zoom;
+
+    /// <summary>Sets the zoom factor [0.5, 8.0] and updates MinWidth for the parent ScrollViewer.</summary>
+    public void SetZoom(double zoom)
+    {
+        _zoom = Math.Clamp(zoom, 0.5, 8.0);
+        UpdateMinWidth();
+        InvalidateVisual();
+    }
+
+    private void UpdateMinWidth()
+    {
+        if (_blockEntropy is null || _blockEntropy.Length == 0) { MinWidth = 0; return; }
+        MinWidth = _blockEntropy.Length * _zoom;
     }
 
     // ── Rendering ─────────────────────────────────────────────────────────────
 
     protected override void OnRender(DrawingContext dc)
     {
-        double w = ActualWidth;
+        double w = Math.Max(ActualWidth, MinWidth);
         double h = ActualHeight;
         if (w <= 0 || h <= 0 || _blockEntropy is null || _blockEntropy.Length == 0) return;
 
@@ -153,31 +196,50 @@ public sealed class EntropyBarCanvas : FrameworkElement
             double normT = Math.Clamp(ent / 8.0, 0, 1);
             double barH  = normT * (h - 4);
 
-            // Region tint behind the bar
             if (ShowRegions)
             {
                 var tint = ent >= threshold ? _regionHighBrush : _regionLowBrush;
                 dc.DrawRectangle(tint, null, new Rect(i * barW, 0, barW, h));
             }
 
-            // Bar itself
             int    palIdx = (int)(normT * 255);
             Brush  fill   = _palette[Math.Clamp(palIdx, 0, 255)];
             double bx     = i * barW;
             double by     = h - barH - 2;
             dc.DrawRectangle(fill, null, new Rect(bx, by, Math.Max(1, barW - 0.5), Math.Max(1, barH)));
 
-            // Hover highlight
             if (i == _hoverIndex)
                 dc.DrawRectangle(_hoverBrush, null, new Rect(i * barW, 0, barW, h));
         }
 
-        // Threshold line
         if (ShowThresholdLine && threshold >= 0 && threshold <= 8)
         {
             double lineY = h - (threshold / 8.0) * (h - 4) - 2;
             lineY = Math.Clamp(lineY, 0, h);
             dc.DrawLine(_threshPen, new Point(0, lineY), new Point(w, lineY));
+        }
+
+        // Section label overlays
+        if (_sectionLabels.Count > 0 && count > 0)
+        {
+            long   totalBytes   = (long)count * _windowSize;
+            double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            foreach (var (offset, length, name) in _sectionLabels)
+            {
+                if (totalBytes <= 0 || string.IsNullOrEmpty(name)) continue;
+                double xStart = (offset / (double)totalBytes) * w;
+                double xEnd   = ((offset + length) / (double)totalBytes) * w;
+                double lw     = Math.Max(1, xEnd - xStart);
+
+                dc.DrawRectangle(_labelBrush, _labelBorderPen, new Rect(xStart, 0, lw, 14));
+
+                var ft = new FormattedText(name, System.Globalization.CultureInfo.CurrentUICulture,
+                    FlowDirection.LeftToRight, _labelTypeface, 9, Brushes.Black,
+                    pixelsPerDip);
+                ft.MaxTextWidth  = Math.Max(1, lw - 2);
+                ft.Trimming      = TextTrimming.CharacterEllipsis;
+                dc.DrawText(ft, new Point(xStart + 1, 2));
+            }
         }
     }
 
@@ -235,8 +297,10 @@ public sealed class EntropyBarCanvas : FrameworkElement
 
     private int BlockIndexAt(double x)
     {
-        if (_blockEntropy is null || _blockEntropy.Length == 0 || ActualWidth <= 0) return -1;
-        double barW = ActualWidth / _blockEntropy.Length;
+        if (_blockEntropy is null || _blockEntropy.Length == 0) return -1;
+        double w    = Math.Max(ActualWidth, MinWidth);
+        if (w <= 0) return -1;
+        double barW = w / _blockEntropy.Length;
         int    idx  = (int)(x / barW);
         return Math.Clamp(idx, 0, _blockEntropy.Length - 1);
     }

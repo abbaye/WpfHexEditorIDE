@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ASN.1 DER Encoding",
   "formatId": "ASN1_DER",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".der",
     ".cer"
@@ -10,33 +11,115 @@
   "description": "Abstract Syntax Notation One Distinguished Encoding Rules",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ASN.1 DER Encoding Format"
+      "ASN.1 DER Encoding Format",
+      "ITU-T X.690 — ASN.1 encoding rules",
+      "RFC 5280 — Internet X.509 Certificate Profile"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DER"
+      "https://en.wikipedia.org/wiki/DER",
+      "https://luca.ntop.org/Teaching/Appunti/asn1.html",
+      "https://www.itu.int/rec/T-REC-X.690/"
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "30",
+      "offset": 0,
+      "label": "ASN.1 SEQUENCE tag (most DER files start with a SEQUENCE)",
+      "weight": 0.7,
+      "strength": "Weak"
     },
-    "signatures": [
-      {
-        "value": "30",
-        "offset": 0,
-        "label": "ASN1_DER magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "30 82",
+      "offset": 0,
+      "label": "ASN.1 SEQUENCE with 2-byte length (typical X.509 cert pattern)",
+      "weight": 0.9,
+      "strength": "Medium"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "name": "root_tag",    "type": "uint8",  "offset": "0x00", "length": 1, "description": "ASN.1 tag byte: class (bits 7-6) + primitive/constructed (bit 5) + tag number (bits 4-0)" },
+      { "name": "root_length", "type": "bytes",  "offset": "0x01", "length": 4, "description": "DER length encoding: short-form if < 0x80, long-form with byte count at MSB" },
+      { "name": "root_value",  "type": "bytes",  "offset": "0x05", "length": 16,"description": "First bytes of the root TLV value; interpreted per tag type" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["root_tag", "root_length"],
+    "valueMaps": {
+      "root_tag": {
+        "0x02": "INTEGER",
+        "0x03": "BIT STRING",
+        "0x04": "OCTET STRING",
+        "0x05": "NULL",
+        "0x06": "OBJECT IDENTIFIER (OID)",
+        "0x0C": "UTF8String",
+        "0x13": "PrintableString",
+        "0x16": "IA5String",
+        "0x17": "UTCTime",
+        "0x18": "GeneralizedTime",
+        "0x30": "SEQUENCE (constructed)",
+        "0x31": "SET (constructed)",
+        "0xA0": "CONTEXT [0] (explicit)",
+        "0xA3": "CONTEXT [3] (explicit — Extensions in X.509)"
+      }
+    },
+    "tooltips": {
+      "root_tag": "Byte class: 0x00=Universal, 0x40=Application, 0x80=Context, 0xC0=Private; bit 5: 0=primitive, 1=constructed",
+      "root_length": "Short form: 1 byte if < 128; Long form: first byte = 0x80 | n, followed by n bytes of big-endian length"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Valid root tag class",
+      "expression": "(root_tag & 0x1F) <= 30",
+      "severity": "warning",
+      "message": "Root tag number > 30 requires multi-byte tag encoding (rare in DER)"
+    },
+    {
+      "name": "DER length encoding is minimal",
+      "expression": "root_length is minimal (no unnecessary leading zero bytes)",
+      "severity": "error",
+      "message": "DER requires minimal length encoding; non-minimal lengths are invalid per ITU-T X.690"
+    },
+    {
+      "name": "File starts with known tag",
+      "expression": "root_tag == 0x30 || root_tag == 0x02 || root_tag == 0x04 || root_tag == 0x06",
+      "severity": "info",
+      "message": "Root tag is not a commonly expected DER tag; verify this is the correct root TLV"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Root TLV Tag",    "offset": 0, "icon": "", "color": "#6C757D" },
+      { "name": "Root TLV Length", "offset": 1, "icon": "", "color": "#6C757D" },
+      { "name": "Root TLV Value",  "offset": 4, "icon": "", "color": "#6C757D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ASN.1 DER Root (JSON)",
+      "format": "json",
+      "fields": ["root_tag", "root_length"]
+    },
+    {
+      "name": "ASN.1 DER Hex Dump",
+      "format": "hex-dump",
+      "fields": ["root_tag", "root_length", "root_value"]
+    }
+  ],
+  "aiHints": [
+    "DER tag byte encodes class (bits 7-6), P/C flag (bit 5), and tag number (bits 4-0); SEQUENCE=0x30, SET=0x31",
+    "DER length is always minimal: values < 128 use 1-byte form; larger values use 0x80+n followed by n big-endian bytes",
+    "X.509 certificates always start with 0x30 (SEQUENCE); the outer SEQUENCE contains tbsCertificate, signatureAlgorithm, signatureValue",
+    "PKCS#8 private keys start with 0x30 (SEQUENCE) containing version INTEGER, algorithm OID, and OCTET STRING key data",
+    "OID encoding: first byte = 40*arc1 + arc2; subsequent arcs use base-128 big-endian with high bit set on continuation bytes"
+  ],
   "variables": {
     "currentOffset": 0,
     "version": 0,
@@ -74,18 +157,30 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "OpenSSL (asn1parse, x509, pkcs8 commands)",
+    "BouncyCastle ASN.1 library",
+    "Keystore Explorer",
+    "dumpasn1 tool"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".der",
-      ".cer"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ACCDB",
+      "relation": "unrelated",
+      "note": "DER certificates are embedded inside TLS handshakes, PKCS#12 keystores, and S/MIME messages"
+    }
+  ],
+  "useCases": [
+    "X.509 certificate inspection (TLS/HTTPS, code signing, email)",
+    "PKCS#8/PKCS#1 private key analysis",
+    "CRL (Certificate Revocation List) structure examination",
+    "ASN.1 OID and extension parsing for forensic certificate auditing"
+  ],
+  "technicalDetails": "DER is a subset of BER (Basic Encoding Rules) that requires exactly one valid encoding per value. Every value is encoded as a TLV (Tag-Length-Value) triplet. Tags > 30 use multi-byte encoding. Lengths >= 128 use the long form. DER is used for X.509 certificates, CRLs, OCSP responses, PKCS standards, and cryptographic key formats.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/pkix-cert",
+    "application/x-x509-ca-cert"
   ],
   "Software": [
     "Hex Editor",
@@ -98,25 +193,31 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Encoding": "Binary TLV (Tag-Length-Value)",
+    "Standard": "ITU-T X.690"
+  },
   "functions": {
     "readUInt32BE": "Read certificate",
     "extractASCIIString": "Read subject"
   },
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "notes": [
+      "DER files containing X.509 certificates may expose private key material if .der contains a PKCS#12 bundle",
+      "Expired or self-signed certificates warrant additional scrutiny in security forensics",
+      "Non-minimal length encodings violate DER spec and may indicate hand-crafted or malformed data"
+    ]
   },
-  "aiHints": {
+  "aiHints_legacy": {
     "analysisContext": "Abstract Syntax Notation One Distinguished Encoding Rules",
     "suggestedInspections": [
       "Validate ASN.1 DER Encoding schema header and encoding markers",

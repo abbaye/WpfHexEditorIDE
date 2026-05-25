@@ -1,0 +1,93 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "GoPro CineForm RAW",
+  "formatId": "CINEFORM_RAW",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "GoPro CineForm (formerly CineForm) is a wavelet-based intermediate codec designed for high-quality post-production editing. CineForm RAW files use an AVI or QuickTime/MOV container with RIFF structure. The RIFF magic 'RIFF' at offset 0 with FourCC 'cfhd' or 'CFHD' in the codec section identifies CineForm content.",
+  "extensions": [".cfhd", ".cfr"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "52494646",
+      "offset": 0,
+      "label": "'RIFF' AVI container magic (CineForm uses AVI RIFF wrapper)",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "riff_magic", "type": "ascii", "description": "RIFF container magic identifier 'RIFF'", "storeAs": "string" },
+      { "offset": 4, "size": 4, "name": "file_size", "type": "uint32le", "description": "Total file size minus 8 bytes (RIFF convention, little-endian)", "storeAs": "uint32" },
+      { "offset": 8, "size": 4, "name": "form_type", "type": "ascii", "description": "RIFF form type; 'AVI ' for AVI container or 'AVIX' for extended AVI", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["riff_magic", "form_type", "file_size"],
+    "valueMaps": {
+      "form_type": {
+        "AVI ": "Standard AVI container (RIFF AVI)",
+        "AVIX": "Extended AVI container for files > 2GB"
+      }
+    },
+    "tooltips": {
+      "riff_magic": "Must be 'RIFF' (0x52494646); standard RIFF container header",
+      "file_size": "File size minus 8 bytes stored as little-endian uint32",
+      "form_type": "AVI form type; CineForm content is identified by 'cfhd'/'CFHD' FourCC inside the AVI strf chunk"
+    }
+  },
+  "assertions": [
+    { "id": "CFHD_001", "field": "riff_magic", "operator": "equals", "value": "RIFF", "description": "First 4 bytes must be 'RIFF'" },
+    { "id": "CFHD_002", "field": "form_type", "operator": "in", "value": ["AVI ", "AVIX"], "description": "RIFF form type must be 'AVI ' or 'AVIX' for CineForm AVI wrapper" },
+    { "id": "CFHD_003", "field": "file_size", "operator": "greaterThan", "value": 48, "description": "CineForm RIFF payload must be larger than minimal AVI header" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "RIFF Magic", "color": "#FF6B35" },
+      { "offset": 4, "label": "RIFF Payload Size", "color": "#4ECDC4" },
+      { "offset": 8, "label": "Form Type (AVI )", "color": "#45B7D1" },
+      { "offset": 12, "label": "LIST hdrl chunk (AVI header list)", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Container Header", "fields": ["riff_magic", "form_type", "file_size"], "format": "text" },
+    { "name": "RIFF Header Hex", "fields": ["riff_magic", "file_size", "form_type"], "format": "hex" }
+  ],
+  "aiHints": [
+    "CineForm in AVI containers uses the FourCC 'cfhd' (or 'CFHD') in the AVI stream format chunk (strf); look for this FourCC inside the 'hdrl' LIST chunk",
+    "CineForm codec is an open-source wavelet-based intermediate codec; the reference implementation is the GoPro CineForm SDK on GitHub",
+    "CineForm supports 2K to 8K resolution, 8-bit to 16-bit per channel, 4:2:2 to 4:4:4 chroma, and raw Bayer modes for camera originals",
+    "QuickTime .mov containers use the FourCC 'CFHD' in the video sample description atom to identify CineForm-compressed tracks",
+    "CineForm uses a 3D wavelet transform (2D spatial + 1D temporal) across GOP frames for efficient intra/inter compression balance"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "CineForm AVI files may be very large (several GB for 4K RAW); RIFF size field wraps at 4GB requiring AVIX extension chunks",
+      "The wavelet-based compression preserves high dynamic range and fine detail compared to DCT codecs; forensic reconstruction of original content is easier",
+      "GoPro metadata (GPMF telemetry: GPS, accelerometer, gyroscope) is often embedded as an additional AVI stream alongside CineForm video"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "AVI", "relationship": "container", "note": "CineForm RAW uses AVI (RIFF) as its primary container with 'cfhd' FourCC for the video stream" },
+    { "format": "MOV", "relationship": "container", "note": "CineForm can also use QuickTime MOV container with 'CFHD' sample description FourCC" },
+    { "format": "CINEFORM", "relationship": "variant", "note": "CINEFORM.whfmt covers the general CineForm format; CINEFORM_RAW focuses on raw Bayer and high-bit-depth modes" }
+  ],
+  "software": [
+    { "name": "GoPro Studio / GoPro Player", "role": "Consumer tools for CineForm playback and basic editing from GoPro cameras" },
+    { "name": "DaVinci Resolve", "role": "Professional color grading with native CineForm decode for cinema workflows" },
+    { "name": "Adobe Premiere Pro", "role": "Native CineForm import/export for professional post-production editing" },
+    { "name": "GoPro CineForm SDK (open-source)", "role": "Reference C/C++ SDK for encoding and decoding CineForm streams (github.com/gopro/cineform-sdk)" }
+  ],
+  "useCases": [
+    "GoPro HERO camera RAW footage post-processing and color grading pipeline",
+    "High-resolution intermediate codec for editing 4K and 6K footage on conventional workstations",
+    "Cross-platform professional video interchange requiring high quality and broad NLE compatibility"
+  ],
+  "technicalDetails": "GoPro CineForm uses a 3D wavelet transform derived from the Wavelet Scalar Quantization (WSQ) scheme. The codec applies a 2D spatial wavelet transform (multiple levels) followed by quantization and entropy coding. The 'RAW' variant supports undemosaiced Bayer pattern data for camera-native processing. CineForm quality levels: 1 (Film Scan 1) through 5 (Film Scan 3) with corresponding bitrate increases. The codec is open-source (Apache 2.0) at github.com/gopro/cineform-sdk. AVI container wrapping follows standard RIFF structure with 'cfhd' FourCC in the strf chunk. Temporal group-of-pictures (GOP) structure allows wavelet subbands to be shared across consecutive frames, reducing bitrate while maintaining quality.",
+  "completenessScore": 81
+}

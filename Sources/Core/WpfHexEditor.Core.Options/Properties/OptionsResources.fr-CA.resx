@@ -1,212 +1,549 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>APPARENCE</value></data>
-  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Thème de couleur :</value></data>
-  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>L'aperçu est appliqué immédiatement.</value></data>
-  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>LANGUE</value></data>
-  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Langue de l'IDE :</value></data>
-  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Un redémarrage est requis pour appliquer complètement la nouvelle langue.</value></data>
-  <!-- MARKETPLACE OPTIONS PAGE -->
-  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
-  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value></data>
-  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value></data>
-  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATIC UPDATES</value></data>
-  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Check for plugin updates automatically at startup</value></data>
-  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Update check interval (hours):</value></data>
-  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimum interval: 1 hour.</value></data>
-  <!-- OUTPUT OPTIONS PAGE -->
-  <data name="Output_Section" xml:space="preserve"><value>LOG-LEVEL COLOURS</value></data>
-  <data name="Output_Note" xml:space="preserve"><value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value></data>
-  <data name="Output_WarnLabel" xml:space="preserve"><value>Warning (WARN):</value></data>
-  <data name="Output_ErrorLabel" xml:space="preserve"><value>Error (ERROR):</value></data>
-  <data name="Output_DebugLabel" xml:space="preserve"><value>Debug (DEBUG):</value></data>
-  <data name="Output_SuccessLabel" xml:space="preserve"><value>Success (OK):</value></data>
-  <data name="Output_ResetColors" xml:space="preserve"><value>Reset to Default Colours</value></data>
-  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
-  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
-  <data name="PluginDev_Enable" xml:space="preserve"><value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value></data>
-  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
-  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Delay before triggering hot-reload after a file change (ms):</value></data>
-  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (default: 500)</value></data>
-  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>WATCHED FOLDERS</value></data>
-  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value></data>
-  <data name="PluginDev_Browse" xml:space="preserve"><value>Browse…</value></data>
-  <data name="PluginDev_Example" xml:space="preserve"><value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
-  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
-  <data name="Plugin_GeneralSection" xml:space="preserve"><value>GENERAL</value></data>
-  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Automatically load all discovered plugins at startup</value></data>
-  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):</value></data>
-  <data name="Plugin_Browse" xml:space="preserve"><value>Browse…</value></data>
-  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
-  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Enable plugin watchdog (monitors call timeouts)</value></data>
-  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Watchdog timeout (seconds):</value></data>
-  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTICS &amp; SAMPLING</value></data>
-  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Diagnostic sampling interval (seconds):</value></data>
-  <data name="Plugin_DiagNote" xml:space="preserve"><value>Drives the Plugin Monitor CPU/Memory chart refresh rate.</value></data>
-  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>SLOW-PLUGIN DETECTION</value></data>
-  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Monitoring interval (seconds):</value></data>
-  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Response time threshold (ms):</value></data>
-  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>CPU threshold (%):</value></data>
-  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>MEMORY ALERT THRESHOLDS</value></data>
-  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Enable memory usage alerts and badges</value></data>
-  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Show color gradation in monitors (green/yellow/orange/red)</value></data>
-  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Warning threshold (yellow):</value></data>
-  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 High threshold (orange):</value></data>
-  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Critical threshold (red):</value></data>
-  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
-  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical).</value></data>
-  <data name="Plugin_MemColorSection" xml:space="preserve"><value>MEMORY ALERT COLORS</value></data>
-  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Customize badge colors for each memory threshold level.</value></data>
-  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normal threshold:</value></data>
-  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Warning threshold:</value></data>
-  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 High threshold:</value></data>
-  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Critical threshold:</value></data>
-  <data name="Plugin_ResetColors" xml:space="preserve"><value>Reset to Default Colors</value></data>
-  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
-  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGATION</value></data>
-  <data name="SolExp_TrackActive" xml:space="preserve"><value>Automatically highlight active document in tree</value></data>
-  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Remember expanded / collapsed state between sessions</value></data>
-  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>NOTIFICATIONS</value></data>
-  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Show contextual notifications (external changes, paste conflicts…)</value></data>
-  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>DEFAULTS WHEN OPENING A SOLUTION</value></data>
-  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Default sort:</value></data>
-  <data name="SolExp_SortNone" xml:space="preserve"><value>None</value></data>
-  <data name="SolExp_SortName" xml:space="preserve"><value>Name</value></data>
-  <data name="SolExp_SortType" xml:space="preserve"><value>Type</value></data>
-  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Date Modified</value></data>
-  <data name="SolExp_SortSize" xml:space="preserve"><value>Size</value></data>
-  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Default filter:</value></data>
-  <data name="SolExp_FilterAll" xml:space="preserve"><value>All</value></data>
-  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binary</value></data>
-  <data name="SolExp_FilterText" xml:space="preserve"><value>Text</value></data>
-  <data name="SolExp_FilterImage" xml:space="preserve"><value>Image</value></data>
-  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Language</value></data>
-  <!-- TAB GROUPS OPTIONS PAGE -->
-  <data name="TabGroups_SplitSection" xml:space="preserve"><value>SPLIT BEHAVIOR</value></data>
-  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Enforce equal pane size on split (50 / 50)</value></data>
-  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Minimum pane width (px):</value></data>
-  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Minimum pane height (px):</value></data>
-  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VISUAL</value></data>
-  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Show 'Group N' badge on tab bar when multiple groups are open</value></data>
-  <data name="TabGroups_PersistSection" xml:space="preserve"><value>PERSISTENCE</value></data>
-  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Include tab group layout in workspace saves</value></data>
-  <!-- TEXT EDITOR OPTIONS PAGE -->
-  <data name="TextOpt_FontSection" xml:space="preserve"><value>FONT</value></data>
-  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Font family:</value></data>
-  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Font size (pt):</value></data>
-  <data name="TextOpt_IndentSection" xml:space="preserve"><value>INDENTATION</value></data>
-  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Indent size:</value></data>
-  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Insert spaces instead of tab characters</value></data>
-  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FEATURES</value></data>
-  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Show line numbers</value></data>
-  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Show refresh rate in status bar (render frame time)</value></data>
-  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Word Wrap (Alt+Z)</value></data>
-  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Enable Ctrl+Click to open web links (http/https)</value></data>
-  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Enable Ctrl+Click to compose email</value></data>
-  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Default zoom (%):</value></data>
-  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Mouse wheel speed:</value></data>
-  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>CHANGESET (.WHCHG)</value></data>
-  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Track edits in .whchg companion file (requires Tracked save mode)</value></data>
-  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SYNTAX COLOUR OVERRIDES</value></data>
-  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Enable a colour to override the active theme’s default.</value></data>
-  <data name="TextOpt_Background" xml:space="preserve"><value>Background:</value></data>
-  <data name="TextOpt_Foreground" xml:space="preserve"><value>Foreground:</value></data>
-  <data name="TextOpt_Keyword" xml:space="preserve"><value>Keyword:</value></data>
-  <data name="TextOpt_String" xml:space="preserve"><value>String:</value></data>
-  <data name="TextOpt_Comment" xml:space="preserve"><value>Comment:</value></data>
-  <data name="TextOpt_Number" xml:space="preserve"><value>Number:</value></data>
-  <data name="TextOpt_Type" xml:space="preserve"><value>Type:</value></data>
-  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
-  <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
-  <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
-
-  <!-- Options categories -->
-  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Environnement</value></data>
-  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Éditeur hexadécimal</value></data>
-  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Explorateur de solution</value></data>
-  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Éditeur de code</value></data>
-  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Éditeur de texte</value></data>
-  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Système de plugins</value></data>
-  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Générer et exécuter</value></data>
-  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Débogueur</value></data>
-  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Extensions</value></data>
-  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Éditeur de format (.whfmt)</value></data>
-  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Outils</value></data>
-
-  <!-- Options page names -->
-  <data name="Opt_Page_General"              xml:space="preserve"><value>Général</value></data>
-  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Enregistrement</value></data>
-  <data name="Opt_Page_Output"               xml:space="preserve"><value>Sortie</value></data>
-  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Groupes d'onglets</value></data>
-  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Raccourcis clavier</value></data>
-  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Documents</value></data>
-  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Espace de travail</value></data>
-  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Onglets</value></data>
-  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Disposition</value></data>
-  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Ancrage</value></data>
-  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Menu Affichage</value></data>
-  <data name="Opt_Page_Display"              xml:space="preserve"><value>Affichage</value></data>
-  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Édition</value></data>
-  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Barre d'état</value></data>
-  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Comportement</value></data>
-  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Apparence et couleurs</value></data>
-  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Conseils intégrés</value></data>
-  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Navigation</value></data>
-  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Mise en forme</value></data>
-  <data name="Opt_Page_Features"             xml:space="preserve"><value>Fonctionnalités</value></data>
-  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Serveurs de langage</value></data>
-  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
-  <data name="Opt_Page_Development"          xml:space="preserve"><value>Développement</value></data>
-  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Migration</value></data>
-  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Bus d'événements</value></data>
-  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Compilateur</value></data>
-  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Points d'arrêt</value></data>
-  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
-  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Explorateur de formats</value></data>
-  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Comparer des fichiers</value></data>
-    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Liste d'erreurs</value></data>
-  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Palette de commandes</value></data>
-
-  <!-- Plugin System Options Page — folder picker dialog -->
-  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Sélectionner le répertoire d'extensions supplémentaires</value></data>
-
-  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
-  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Sélectionner le répertoire de sortie de l'extension</value></data>
-
-  <!-- Whfmt Explorer Options Page — view mode combo -->
-  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Arborescence</value></data>
-  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Plat</value></data>
-
-  <!-- Structure Editor Options Page — panel position combo -->
-  <data name="Opt_Position_Right"            xml:space="preserve"><value>Droite</value></data>
-  <data name="Opt_Position_Left"             xml:space="preserve"><value>Gauche</value></data>
-  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Bas</value></data>
-  <data name="Opt_Position_Top"              xml:space="preserve"><value>Haut</value></data>
-
-  <!-- Structure Editor Options Page — endianness combo -->
-  <data name="Opt_Endian_Little"             xml:space="preserve"><value>petit-boutiste</value></data>
-  <data name="Opt_Endian_Big"                xml:space="preserve"><value>grand-boutiste</value></data>
-
-  <!-- Code Editor Formatting Page — indentation levels combo -->
-  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 niveau (4 espaces à la racine)</value></data>
-  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 niveaux (8 espaces à la racine) — par défaut VS</value></data>
-<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Langage</value></data>
-  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Réinitialiser les remplacements</value></data>
-  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Réinitialiser tous les remplacements</value></data>
-  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Ces paramètres remplacent les valeurs par défaut du langage .whfmt.
-Laissez les cases dans leur état indéterminé (—) pour hériter des règles du langage.</value></data>
-  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 niveaux (12 espaces à la racine)</value></data>
-
-  <!-- Markdown Editor Options Page — layout combo -->
-  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Aperçu à droite</value></data>
-  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Aperçu en bas</value></data>
-  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Éditeur seulement</value></data>
-  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Aper&#231;u seulement</value></data>
-  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Aper&#231;u</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve">
+    <value>APPARENCE</value>
+  </data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve">
+    <value>Thème de couleur :</value>
+  </data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve">
+    <value>L'aperçu est appliqué immédiatement.</value>
+  </data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve">
+    <value>LANGUE</value>
+  </data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve">
+    <value>Langue de l'IDE :</value>
+  </data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve">
+    <value>Un redémarrage est requis pour appliquer complètement la nouvelle langue.</value>
+  </data>
+  <data name="Mkt_GitHubSection" xml:space="preserve">
+    <value>GITHUB API</value>
+  </data>
+  <data name="Mkt_PatDescription" xml:space="preserve">
+    <value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value>
+  </data>
+  <data name="Mkt_PatWarning" xml:space="preserve">
+    <value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value>
+  </data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve">
+    <value>AUTOMATIC UPDATES</value>
+  </data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve">
+    <value>Check for plugin updates automatically at startup</value>
+  </data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve">
+    <value>Update check interval (hours):</value>
+  </data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve">
+    <value>Minimum interval: 1 hour.</value>
+  </data>
+  <data name="Output_Section" xml:space="preserve">
+    <value>LOG-LEVEL COLOURS</value>
+  </data>
+  <data name="Output_Note" xml:space="preserve">
+    <value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value>
+  </data>
+  <data name="Output_WarnLabel" xml:space="preserve">
+    <value>Warning (WARN):</value>
+  </data>
+  <data name="Output_ErrorLabel" xml:space="preserve">
+    <value>Error (ERROR):</value>
+  </data>
+  <data name="Output_DebugLabel" xml:space="preserve">
+    <value>Debug (DEBUG):</value>
+  </data>
+  <data name="Output_SuccessLabel" xml:space="preserve">
+    <value>Success (OK):</value>
+  </data>
+  <data name="Output_ResetColors" xml:space="preserve">
+    <value>Reset to Default Colours</value>
+  </data>
+  <data name="PluginDev_Section" xml:space="preserve">
+    <value>PLUGIN DEV LOADER</value>
+  </data>
+  <data name="PluginDev_Enable" xml:space="preserve">
+    <value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value>
+  </data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve">
+    <value>DEBOUNCE</value>
+  </data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve">
+    <value>Delay before triggering hot-reload after a file change (ms):</value>
+  </data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve">
+    <value>ms  (default: 500)</value>
+  </data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve">
+    <value>WATCHED FOLDERS</value>
+  </data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve">
+    <value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="PluginDev_Example" xml:space="preserve">
+    <value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value>
+  </data>
+  <data name="Plugin_GeneralSection" xml:space="preserve">
+    <value>GENERAL</value>
+  </data>
+  <data name="Plugin_AutoLoad" xml:space="preserve">
+    <value>Automatically load all discovered plugins at startup</value>
+  </data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve">
+    <value>Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):</value>
+  </data>
+  <data name="Plugin_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve">
+    <value>WATCHDOG</value>
+  </data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve">
+    <value>Enable plugin watchdog (monitors call timeouts)</value>
+  </data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve">
+    <value>Watchdog timeout (seconds):</value>
+  </data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve">
+    <value>DIAGNOSTICS &amp; SAMPLING</value>
+  </data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve">
+    <value>Diagnostic sampling interval (seconds):</value>
+  </data>
+  <data name="Plugin_DiagNote" xml:space="preserve">
+    <value>Drives the Plugin Monitor CPU/Memory chart refresh rate.</value>
+  </data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve">
+    <value>SLOW-PLUGIN DETECTION</value>
+  </data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve">
+    <value>Monitoring interval (seconds):</value>
+  </data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve">
+    <value>Response time threshold (ms):</value>
+  </data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve">
+    <value>CPU threshold (%):</value>
+  </data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve">
+    <value>MEMORY ALERT THRESHOLDS</value>
+  </data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve">
+    <value>Enable memory usage alerts and badges</value>
+  </data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve">
+    <value>Show color gradation in monitors (green/yellow/orange/red)</value>
+  </data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve">
+    <value>⚠️ Warning threshold (yellow):</value>
+  </data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve">
+    <value>🟠 High threshold (orange):</value>
+  </data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve">
+    <value>🔴 Critical threshold (red):</value>
+  </data>
+  <data name="Plugin_MB" xml:space="preserve">
+    <value> MB</value>
+  </data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve">
+    <value>Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical).</value>
+  </data>
+  <data name="Plugin_MemColorSection" xml:space="preserve">
+    <value>MEMORY ALERT COLORS</value>
+  </data>
+  <data name="Plugin_MemColorNote" xml:space="preserve">
+    <value>Customize badge colors for each memory threshold level.</value>
+  </data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve">
+    <value>🟢 Normal threshold:</value>
+  </data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve">
+    <value>🟡 Warning threshold:</value>
+  </data>
+  <data name="Plugin_MemHighColor" xml:space="preserve">
+    <value>🟠 High threshold:</value>
+  </data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve">
+    <value>🔴 Critical threshold:</value>
+  </data>
+  <data name="Plugin_ResetColors" xml:space="preserve">
+    <value>Reset to Default Colors</value>
+  </data>
+  <data name="SolExp_NavigationSection" xml:space="preserve">
+    <value>NAVIGATION</value>
+  </data>
+  <data name="SolExp_TrackActive" xml:space="preserve">
+    <value>Automatically highlight active document in tree</value>
+  </data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve">
+    <value>Remember expanded / collapsed state between sessions</value>
+  </data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve">
+    <value>NOTIFICATIONS</value>
+  </data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve">
+    <value>Show contextual notifications (external changes, paste conflicts…)</value>
+  </data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve">
+    <value>DEFAULTS WHEN OPENING A SOLUTION</value>
+  </data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve">
+    <value>Default sort:</value>
+  </data>
+  <data name="SolExp_SortNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="SolExp_SortName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SolExp_SortType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SolExp_SortDateModified" xml:space="preserve">
+    <value>Date Modified</value>
+  </data>
+  <data name="SolExp_SortSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve">
+    <value>Default filter:</value>
+  </data>
+  <data name="SolExp_FilterAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="SolExp_FilterBinary" xml:space="preserve">
+    <value>Binary</value>
+  </data>
+  <data name="SolExp_FilterText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="SolExp_FilterImage" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="TabGroups_SplitSection" xml:space="preserve">
+    <value>SPLIT BEHAVIOR</value>
+  </data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve">
+    <value>Enforce equal pane size on split (50 / 50)</value>
+  </data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve">
+    <value>Minimum pane width (px):</value>
+  </data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve">
+    <value>Minimum pane height (px):</value>
+  </data>
+  <data name="TabGroups_VisualSection" xml:space="preserve">
+    <value>VISUAL</value>
+  </data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve">
+    <value>Show 'Group N' badge on tab bar when multiple groups are open</value>
+  </data>
+  <data name="TabGroups_PersistSection" xml:space="preserve">
+    <value>PERSISTENCE</value>
+  </data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve">
+    <value>Include tab group layout in workspace saves</value>
+  </data>
+  <data name="TextOpt_FontSection" xml:space="preserve">
+    <value>FONT</value>
+  </data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Font family:</value>
+  </data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve">
+    <value>Font size (pt):</value>
+  </data>
+  <data name="TextOpt_IndentSection" xml:space="preserve">
+    <value>INDENTATION</value>
+  </data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Indent size:</value>
+  </data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve">
+    <value>Insert spaces instead of tab characters</value>
+  </data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve">
+    <value>FEATURES</value>
+  </data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Show line numbers</value>
+  </data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve">
+    <value>Show refresh rate in status bar (render frame time)</value>
+  </data>
+  <data name="TextOpt_WordWrap" xml:space="preserve">
+    <value>Word Wrap (Alt+Z)</value>
+  </data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve">
+    <value>Enable Ctrl+Click to open web links (http/https)</value>
+  </data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve">
+    <value>Enable Ctrl+Click to compose email</value>
+  </data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Default zoom (%):</value>
+  </data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Mouse wheel speed:</value>
+  </data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve">
+    <value>CHANGESET (.WHCHG)</value>
+  </data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve">
+    <value>Track edits in .whchg companion file (requires Tracked save mode)</value>
+  </data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve">
+    <value>SYNTAX COLOUR OVERRIDES</value>
+  </data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve">
+    <value>Enable a colour to override the active theme’s default.</value>
+  </data>
+  <data name="TextOpt_Background" xml:space="preserve">
+    <value>Background:</value>
+  </data>
+  <data name="TextOpt_Foreground" xml:space="preserve">
+    <value>Foreground:</value>
+  </data>
+  <data name="TextOpt_Keyword" xml:space="preserve">
+    <value>Keyword:</value>
+  </data>
+  <data name="TextOpt_String" xml:space="preserve">
+    <value>String:</value>
+  </data>
+  <data name="TextOpt_Comment" xml:space="preserve">
+    <value>Comment:</value>
+  </data>
+  <data name="TextOpt_Number" xml:space="preserve">
+    <value>Number:</value>
+  </data>
+  <data name="TextOpt_Type" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve">
+    <value>Preprocessor:</value>
+  </data>
+  <data name="TextOpt_Operator" xml:space="preserve">
+    <value>Operator:</value>
+  </data>
+  <data name="TextOpt_Identifier" xml:space="preserve">
+    <value>Identifier:</value>
+  </data>
+  <data name="Opt_Category_Environment" xml:space="preserve">
+    <value>Environnement</value>
+  </data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve">
+    <value>Éditeur hexadécimal</value>
+  </data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve">
+    <value>Explorateur de solution</value>
+  </data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve">
+    <value>Éditeur de code</value>
+  </data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve">
+    <value>Éditeur de texte</value>
+  </data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve">
+    <value>Système de plugins</value>
+  </data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve">
+    <value>Générer et exécuter</value>
+  </data>
+  <data name="Opt_Category_Debugger" xml:space="preserve">
+    <value>Débogueur</value>
+  </data>
+  <data name="Opt_Category_Extensions" xml:space="preserve">
+    <value>Extensions</value>
+  </data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve">
+    <value>Éditeur de format (.whfmt)</value>
+  </data>
+  <data name="Opt_Category_Tools" xml:space="preserve">
+    <value>Outils</value>
+  </data>
+  <data name="Opt_Page_General" xml:space="preserve">
+    <value>Général</value>
+  </data>
+  <data name="Opt_Page_Save" xml:space="preserve">
+    <value>Enregistrement</value>
+  </data>
+  <data name="Opt_Page_Output" xml:space="preserve">
+    <value>Sortie</value>
+  </data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve">
+    <value>Groupes d'onglets</value>
+  </data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve">
+    <value>Raccourcis clavier</value>
+  </data>
+  <data name="Opt_Page_Documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="Opt_Page_Workspace" xml:space="preserve">
+    <value>Espace de travail</value>
+  </data>
+  <data name="Opt_Page_Tabs" xml:space="preserve">
+    <value>Onglets</value>
+  </data>
+  <data name="Opt_Page_Layout" xml:space="preserve">
+    <value>Disposition</value>
+  </data>
+  <data name="Opt_Page_Docking" xml:space="preserve">
+    <value>Ancrage</value>
+  </data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve">
+    <value>Menu Affichage</value>
+  </data>
+  <data name="Opt_Page_Display" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="Opt_Page_Editing" xml:space="preserve">
+    <value>Édition</value>
+  </data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve">
+    <value>Barre d'état</value>
+  </data>
+  <data name="Opt_Page_Behavior" xml:space="preserve">
+    <value>Comportement</value>
+  </data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve">
+    <value>Apparence et couleurs</value>
+  </data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve">
+    <value>Conseils intégrés</value>
+  </data>
+  <data name="Opt_Page_Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="Opt_Page_Formatting" xml:space="preserve">
+    <value>Mise en forme</value>
+  </data>
+  <data name="Opt_Page_Features" xml:space="preserve">
+    <value>Fonctionnalités</value>
+  </data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve">
+    <value>Serveurs de langage</value>
+  </data>
+  <data name="Opt_Page_Markdown" xml:space="preserve">
+    <value>Markdown</value>
+  </data>
+  <data name="Opt_Page_Development" xml:space="preserve">
+    <value>Développement</value>
+  </data>
+  <data name="Opt_Page_Migration" xml:space="preserve">
+    <value>Migration</value>
+  </data>
+  <data name="Opt_Page_EventBus" xml:space="preserve">
+    <value>Bus d'événements</value>
+  </data>
+  <data name="Opt_Page_Compiler" xml:space="preserve">
+    <value>Compilateur</value>
+  </data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve">
+    <value>Points d'arrêt</value>
+  </data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
+  </data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve">
+    <value>Explorateur de formats</value>
+  </data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve">
+    <value>Comparer des fichiers</value>
+  </data>
+  <data name="Opt_Page_ErrorList" xml:space="preserve">
+    <value>Liste d'erreurs</value>
+  </data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve">
+    <value>Palette de commandes</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>Sélectionner le répertoire d'extensions supplémentaires</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Sélectionner le répertoire de sortie de l'extension</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Arborescence</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Plat</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Droite</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Gauche</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Bas</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Haut</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>petit-boutiste</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>grand-boutiste</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>1 niveau (4 espaces à la racine)</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>2 niveaux (8 espaces à la racine) — par défaut VS</value>
+  </data>
+  <data name="Opt_Fmt_Language" xml:space="preserve">
+    <value>Langage</value>
+  </data>
+  <data name="Opt_Fmt_ResetOverrides" xml:space="preserve">
+    <value>Réinitialiser les remplacements</value>
+  </data>
+  <data name="Opt_Fmt_ResetAllOverrides" xml:space="preserve">
+    <value>Réinitialiser tous les remplacements</value>
+  </data>
+  <data name="Opt_Fmt_Subtitle" xml:space="preserve">
+    <value>Ces paramètres remplacent les valeurs par défaut du langage .whfmt.
+Laissez les cases dans leur état indéterminé (—) pour hériter des règles du langage.</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>3 niveaux (12 espaces à la racine)</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Aperçu à droite</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Aperçu en bas</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Éditeur seulement</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Aperçu seulement</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Aperçu</value>
+  </data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>VALEURS PAR DÉFAUT C# / .NET</value>
   </data>
@@ -639,39 +976,109 @@ Laissez les cases dans leur état indéterminé (—) pour hériter des règles 
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Afficher le taux de rafraîchissement</value>
   </data>
-
-  <!-- ═══════════════════════════════════════════════════════════════
-       DOCUMENT EDITOR — catégorie + page d'options
-       ═══════════════════════════════════════════════════════════════ -->
-  <data name="Opt_Category_DocumentEditor"             xml:space="preserve"><value>Éditeur de documents</value></data>
-  <data name="DocOpt_AppearanceSection"                xml:space="preserve"><value>Apparence</value></data>
-  <data name="DocOpt_SyncSection"                      xml:space="preserve"><value>Synchronisation</value></data>
-  <data name="DocOpt_HoverSection"                     xml:space="preserve"><value>Survol</value></data>
-  <data name="DocOpt_AutoSaveSection"                  xml:space="preserve"><value>Sauvegarde automatique</value></data>
-  <data name="DocOpt_EditingSection"                   xml:space="preserve"><value>Édition</value></data>
-  <data name="DocOpt_ColorsSection"                    xml:space="preserve"><value>Couleurs de surbrillance hex</value></data>
-  <data name="DocOpt_FontSizeLabel"                    xml:space="preserve"><value>Taille de police par défaut (pt)</value></data>
-  <data name="DocOpt_ViewModeLabel"                    xml:space="preserve"><value>Mode d'affichage par défaut</value></data>
-  <data name="DocOpt_RenderModeLabel"                  xml:space="preserve"><value>Mode de rendu par défaut</value></data>
-  <data name="DocOpt_ShowScrollMarkers"                xml:space="preserve"><value>Afficher les marqueurs de défilement</value></data>
-  <data name="DocOpt_ShowMiniMap"                      xml:space="preserve"><value>Afficher la mini-carte</value></data>
-  <data name="DocOpt_ShowForensicGutter"               xml:space="preserve"><value>Afficher la gouttière forensique</value></data>
-  <data name="DocOpt_ViewMode_TextOnly"                xml:space="preserve"><value>Texte seulement</value></data>
-  <data name="DocOpt_ViewMode_Structure"               xml:space="preserve"><value>Structure</value></data>
-  <data name="DocOpt_ViewMode_Focus"                   xml:space="preserve"><value>Focus</value></data>
-  <data name="DocOpt_RenderMode_Page"                  xml:space="preserve"><value>Page (paginé)</value></data>
-  <data name="DocOpt_RenderMode_Draft"                 xml:space="preserve"><value>Brouillon (défilement continu)</value></data>
-  <data name="DocOpt_RenderMode_Outline"               xml:space="preserve"><value>Plan</value></data>
-  <data name="DocOpt_SyncThrottleLabel"                xml:space="preserve"><value>Délai de synchronisation (ms)</value></data>
-  <data name="DocOpt_SyncTextToHex"                    xml:space="preserve"><value>Sync. sélection texte → volet hex</value></data>
-  <data name="DocOpt_SyncHexToText"                    xml:space="preserve"><value>Sync. sélection hex → volet texte</value></data>
-  <data name="DocOpt_ShowBlockHoverTooltip"            xml:space="preserve"><value>Afficher l'info-bulle de bloc au survol</value></data>
-  <data name="DocOpt_HoverDelayLabel"                  xml:space="preserve"><value>Délai de survol (ms)</value></data>
-  <data name="DocOpt_AutoSaveEnabled"                  xml:space="preserve"><value>Activer la sauvegarde automatique</value></data>
-  <data name="DocOpt_AutoSaveIntervalLabel"            xml:space="preserve"><value>Intervalle de sauvegarde automatique (secondes)</value></data>
-  <data name="DocOpt_IndentWidthLabel"                 xml:space="preserve"><value>Largeur d'indentation (espaces)</value></data>
-  <data name="DocOpt_BlockHighlightColor"              xml:space="preserve"><value>Survol de bloc</value></data>
-  <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Bloc sélectionné</value></data>
-  <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Superposition d'alerte forensique</value></data>
-  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Afficher le bouton de division</value></data>
+  <data name="Opt_Category_DocumentEditor" xml:space="preserve">
+    <value>Éditeur de documents</value>
+  </data>
+  <data name="DocOpt_AppearanceSection" xml:space="preserve">
+    <value>Apparence</value>
+  </data>
+  <data name="DocOpt_SyncSection" xml:space="preserve">
+    <value>Synchronisation</value>
+  </data>
+  <data name="DocOpt_HoverSection" xml:space="preserve">
+    <value>Survol</value>
+  </data>
+  <data name="DocOpt_AutoSaveSection" xml:space="preserve">
+    <value>Sauvegarde automatique</value>
+  </data>
+  <data name="DocOpt_EditingSection" xml:space="preserve">
+    <value>Édition</value>
+  </data>
+  <data name="DocOpt_ColorsSection" xml:space="preserve">
+    <value>Couleurs de surbrillance hex</value>
+  </data>
+  <data name="DocOpt_FontSizeLabel" xml:space="preserve">
+    <value>Taille de police par défaut (pt)</value>
+  </data>
+  <data name="DocOpt_ViewModeLabel" xml:space="preserve">
+    <value>Mode d'affichage par défaut</value>
+  </data>
+  <data name="DocOpt_RenderModeLabel" xml:space="preserve">
+    <value>Mode de rendu par défaut</value>
+  </data>
+  <data name="DocOpt_ShowScrollMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs de défilement</value>
+  </data>
+  <data name="DocOpt_ShowMiniMap" xml:space="preserve">
+    <value>Afficher la mini-carte</value>
+  </data>
+  <data name="DocOpt_ShowForensicGutter" xml:space="preserve">
+    <value>Afficher la gouttière forensique</value>
+  </data>
+  <data name="DocOpt_ViewMode_TextOnly" xml:space="preserve">
+    <value>Texte seulement</value>
+  </data>
+  <data name="DocOpt_ViewMode_Structure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="DocOpt_ViewMode_Focus" xml:space="preserve">
+    <value>Focus</value>
+  </data>
+  <data name="DocOpt_RenderMode_Page" xml:space="preserve">
+    <value>Page (paginé)</value>
+  </data>
+  <data name="DocOpt_RenderMode_Draft" xml:space="preserve">
+    <value>Brouillon (défilement continu)</value>
+  </data>
+  <data name="DocOpt_RenderMode_Outline" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="DocOpt_SyncThrottleLabel" xml:space="preserve">
+    <value>Délai de synchronisation (ms)</value>
+  </data>
+  <data name="DocOpt_SyncTextToHex" xml:space="preserve">
+    <value>Sync. sélection texte → volet hex</value>
+  </data>
+  <data name="DocOpt_SyncHexToText" xml:space="preserve">
+    <value>Sync. sélection hex → volet texte</value>
+  </data>
+  <data name="DocOpt_ShowBlockHoverTooltip" xml:space="preserve">
+    <value>Afficher l'info-bulle de bloc au survol</value>
+  </data>
+  <data name="DocOpt_HoverDelayLabel" xml:space="preserve">
+    <value>Délai de survol (ms)</value>
+  </data>
+  <data name="DocOpt_AutoSaveEnabled" xml:space="preserve">
+    <value>Activer la sauvegarde automatique</value>
+  </data>
+  <data name="DocOpt_AutoSaveIntervalLabel" xml:space="preserve">
+    <value>Intervalle de sauvegarde automatique (secondes)</value>
+  </data>
+  <data name="DocOpt_IndentWidthLabel" xml:space="preserve">
+    <value>Largeur d'indentation (espaces)</value>
+  </data>
+  <data name="DocOpt_BlockHighlightColor" xml:space="preserve">
+    <value>Survol de bloc</value>
+  </data>
+  <data name="DocOpt_SelectedBlockColor" xml:space="preserve">
+    <value>Bloc sélectionné</value>
+  </data>
+  <data name="DocOpt_ForensicAlertColor" xml:space="preserve">
+    <value>Superposition d'alerte forensique</value>
+  </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve">
+    <value>Afficher le bouton de division</value>
+  </data>
+  <data name="HexDisplay_EntropySection" xml:space="preserve">
+    <value>ENTROPY HEATMAP</value>
+  </data>
+  <data name="HexDisplay_ShowEntropyHeatmap" xml:space="preserve">
+    <value>Show entropy heatmap overlay</value>
+  </data>
+  <data name="HexDisplay_EntropyWindowSize" xml:space="preserve">
+    <value>Window size</value>
+  </data>
+  <data name="HexDisplay_EntropyColorTheme" xml:space="preserve">
+    <value>Color theme</value>
+  </data>
 </root>

@@ -1,0 +1,12 @@
+{
+  "formatName": "SimpleE2E",
+  "formatId": "SIMPLE_E2E",
+  "version": "1.0",
+  "category": "Test",
+  "description": "Minimal E2E fixture — validates that the Source Generator produces a compilable type.",
+  "blocks": [
+    { "name": "Magic",    "offset": 0, "length": 4, "type": "uint32" },
+    { "name": "Version",  "offset": 4, "length": 2, "type": "uint16" },
+    { "name": "DataSize", "offset": 6, "length": 4, "type": "uint32" }
+  ]
+}

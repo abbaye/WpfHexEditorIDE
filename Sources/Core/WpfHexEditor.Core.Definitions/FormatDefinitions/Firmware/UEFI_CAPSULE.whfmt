@@ -1,0 +1,129 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "UEFI Update Capsule",
+  "formatId": "UEFI_CAPSULE",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "UEFI Firmware Update Capsule format (.cap) as defined by UEFI Specification section 23. A capsule is a binary payload delivered to the UEFI firmware update mechanism (UpdateCapsule() runtime service). It begins with an EFI_CAPSULE_HEADER containing a vendor-specific GUID, followed by the firmware payload. Windows Update capsules use the Windows UEFI Firmware Update Platform GUID.",
+  "extensions": [".cap", ".bin"],
+  "category": "Firmware",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "BD086708B4E23D4A",
+      "offset": 0,
+      "label": "Windows UEFI Capsule GUID (first 8 bytes)",
+      "weight": 0.8,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 16, "name": "capsule_guid",         "type": "bytes",    "description": "EFI_GUID identifying the capsule type and target firmware component", "storeAs": "hex" },
+      { "offset": 16, "size": 4,  "name": "header_size",          "type": "uint32le", "description": "Size of the EFI_CAPSULE_HEADER structure in bytes (typically 28)", "storeAs": "uint32" },
+      { "offset": 20, "size": 4,  "name": "flags",                "type": "uint32le", "description": "Capsule flags: bit 16=persist across reset, bit 17=populate system table, bit 18=initiate reset", "storeAs": "uint32" },
+      { "offset": 24, "size": 4,  "name": "capsule_image_size",   "type": "uint32le", "description": "Total size of capsule image including header and payload in bytes", "storeAs": "uint32" },
+      { "offset": 28, "size": 4,  "name": "sequence_number",      "type": "uint32le", "description": "For split capsules: scatter-gather sequence number; 0 for single capsules", "storeAs": "uint32" },
+      { "offset": 32, "size": 16, "name": "instance_id",          "type": "bytes",    "description": "EFI_GUID uniquely identifying this capsule instance (may be all zeros)", "storeAs": "hex" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["capsule_guid", "header_size", "flags", "capsule_image_size", "sequence_number"],
+    "valueMaps": {
+      "flags": {
+        "65536":  "Persist Across Reset",
+        "131072": "Populate System Table",
+        "196608": "Persist + Populate",
+        "262144": "Initiate Reset"
+      }
+    },
+    "tooltips": {
+      "capsule_guid":       "Vendor GUID determines how firmware interprets the payload; Windows capsule GUID: {6dcbd5ed-e82d-4c44-bda1-7194199ad92a}",
+      "header_size":        "Offset to the start of the payload; standard EFI_CAPSULE_HEADER is 28 bytes",
+      "flags":              "Bit 16 (0x10000): CAPSULE_FLAGS_PERSIST_ACROSS_RESET — required for most firmware updates",
+      "capsule_image_size": "Must match the actual file size; mismatch indicates corruption or truncation",
+      "sequence_number":    "Non-zero for split/scatter-gather capsules delivered across multiple calls"
+    }
+  },
+  "assertions": [
+    {
+      "id": "UEFI_CAP_001",
+      "field": "header_size",
+      "operator": "greaterOrEqual",
+      "value": 28,
+      "description": "EFI_CAPSULE_HEADER must be at least 28 bytes (standard UEFI spec size)"
+    },
+    {
+      "id": "UEFI_CAP_002",
+      "field": "capsule_image_size",
+      "operator": "greaterThan",
+      "value": 28,
+      "description": "Capsule image size must exceed the header size, indicating non-empty payload"
+    },
+    {
+      "id": "UEFI_CAP_003",
+      "field": "flags",
+      "operator": "bitwiseAnd",
+      "value": 65536,
+      "description": "CAPSULE_FLAGS_PERSIST_ACROSS_RESET (bit 16) should be set for firmware update capsules"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "Capsule GUID",         "color": "#4A90D9" },
+      { "offset": 16, "label": "Header Size + Flags",  "color": "#D0021B" },
+      { "offset": 24, "label": "Capsule Image Size",   "color": "#F5A623" },
+      { "offset": 48, "label": "Payload Start",        "color": "#7ED321" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "UEFI Capsule Header",
+      "fields": ["capsule_guid", "header_size", "flags", "capsule_image_size", "sequence_number", "instance_id"],
+      "format": "json"
+    },
+    {
+      "name": "Firmware Update Audit",
+      "fields": ["capsule_guid", "flags", "capsule_image_size"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "UEFI capsules are delivered to firmware via two mechanisms: (1) runtime UpdateCapsule() call before OS shutdown, or (2) by writing to the EFI System Partition and triggering update via UEFI variable CapsuleUpdateData.",
+    "Windows Firmware Update Platform capsules (ESRT-based) use the GUID {6dcbd5ed-e82d-4c44-bda1-7194199ad92a} and contain a Windows Firmware Update Payload (WFUP) with a signed binary payload.",
+    "Capsule payloads are typically signed using Authenticode or PKCS#7 signatures embedded within the payload section; the signing key must be enrolled in the UEFI Secure Boot db variable.",
+    "The EDK2 open-source UEFI firmware implements capsule processing in MdeModulePkg/Library/DxeCapsuleLibFmp; studying this source illuminates the binary layout expected after the capsule header.",
+    "Firmware capsule tampering is a known supply-chain attack vector; forensic analysis should verify the Authenticode signature and cross-reference the capsule GUID against the ESRT (EFI System Resource Table)."
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "UEFI capsules execute with Ring-0 / firmware-level trust; a malicious or tampered capsule can persist below the OS and survive OS reinstallation.",
+      "Without Secure Boot enforcement, unsigned capsules can be delivered and processed, enabling persistent firmware-level rootkits (LoJax, MosaicRegressor).",
+      "Capsule payloads may contain PE/COFF EFI executables that are written directly to SPI flash; extracting and disassembling these is critical for security audits.",
+      "The CAPSULE_FLAGS_INITIATE_RESET flag (bit 18) causes an immediate system reset when UpdateCapsule() is called — can be used as a denial-of-service vector.",
+      "Always verify the capsule GUID against the vendor's published ESRT GUID list before allowing capsule processing in controlled environments."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "UEFI_FV",  "relationship": "contains",   "note": "Capsule payloads often contain one or more UEFI Firmware Volumes (_FVH_)" },
+    { "format": "PE_COFF",  "relationship": "contains",   "note": "EFI applications and drivers inside the capsule are PE/COFF executables" },
+    { "format": "UEFI",     "relationship": "sibling",    "note": "UEFI_FV and UEFI capsules both operate within the UEFI firmware environment" }
+  ],
+  "software": [
+    { "name": "fwupd / LVFS",     "role": "Linux Vendor Firmware Service; distributes and applies UEFI capsules on Linux systems" },
+    { "name": "UEFITool",         "role": "Open-source UEFI firmware parser; can extract and inspect capsule contents" },
+    { "name": "Windows Update",   "role": "Distributes driver and firmware capsules via Windows Update infrastructure" },
+    { "name": "EDK2 (TianoCore)", "role": "UEFI reference implementation providing CapsuleApp.efi for manual capsule delivery" }
+  ],
+  "useCases": [
+    "Delivering BIOS/UEFI firmware updates to production systems via OS-coordinated or pre-boot mechanisms",
+    "Forensic analysis of firmware update packages to detect supply-chain tampering or rootkit persistence",
+    "Security auditing of Secure Boot capsule signature chains and ESRT GUID registrations",
+    "Extracting embedded UEFI Firmware Volumes from capsule payloads for driver and module analysis"
+  ],
+  "technicalDetails": "The UEFI Capsule format is defined in UEFI Specification Chapter 23 (Firmware Update and Reporting). The EFI_CAPSULE_HEADER structure (28 bytes) precedes the payload. For Windows-managed firmware updates, the capsule body contains an EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER followed by one or more EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER structures, each referencing a signed firmware image payload. The signing envelope is a WIN_CERTIFICATE structure using Authenticode (PKCS#7 SignedData). The ESRT (EFI System Resource Table) in firmware maps each updatable component GUID to its current and lowest supported firmware version, enabling rollback protection. Capsule flags in the UEFI spec: PERSIST_ACROSS_RESET=0x00010000, POPULATE_SYSTEM_TABLE=0x00020000, INITIATE_RESET=0x00040000.",
+  "completenessScore": 83
+}

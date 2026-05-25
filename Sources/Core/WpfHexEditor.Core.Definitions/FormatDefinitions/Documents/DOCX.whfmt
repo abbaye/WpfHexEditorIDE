@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Word Document (OOXML family)",
   "formatId": "DOCX",
@@ -284,16 +285,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft Word Open XML document stored as a ZIP container. The file begins with a ZIP Local File Header con...",
-    "suggestedInspections": [
-      "Validate Word Document file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Microsoft Word Open XML document stored as a ZIP container. The file begins with a ZIP Local File Header con...",
+    "Validate Word Document file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Examine word/settings.xml for linked template path which may expose network paths.",
+    "word/vbaProject.bin contains VBA macros; flag as high risk if present.",
+    "Core properties (docProps/core.xml) record original author and last-saved timestamps.",
+    "Revision tracking in word/document.xml <w:ins>/<w:del> elements reveals edit history.",
+    "Embedded OLE objects appear as word/embeddings/ entries and may contain executable content.",
+    "word/webSettings.xml may reference external URLs fetched on document open."
+  ],
   "MimeTypes": [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.ms-word.document.macroEnabled.12",
@@ -329,8 +339,16 @@
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   },
   "diff": {
-    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
-    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "keyFields": [
+      "zipSignature",
+      "compressionMethod",
+      "crc32"
+    ],
+    "ignoreFields": [
+      "lastModTime",
+      "lastModDate",
+      "compressionRatio"
+    ],
     "groupBy": "ZIP Local File Header",
     "note": "Signature and CRC identify content integrity; compression method affects reproducibility. Timestamps are noise for structural diffs."
   },
@@ -364,11 +382,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the PK magic to test parser rejection logic" },
-      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge values (0, 14, 0xFFFF) for compression method handling" },
-      { "field": "compressedSize",      "mutation": "overflow",          "weight": 2, "description": "Overflow compressed size to stress ZIP64 path and allocation guards" },
-      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Randomize flag bits to surface unexpected parser code paths" },
-      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC corruption to verify integrity validation" }
+      {
+        "field": "zipSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt the PK magic to test parser rejection logic"
+      },
+      {
+        "field": "compressionMethod",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test edge values (0, 14, 0xFFFF) for compression method handling"
+      },
+      {
+        "field": "compressedSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow compressed size to stress ZIP64 path and allocation guards"
+      },
+      {
+        "field": "generalPurposeFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize flag bits to surface unexpected parser code paths"
+      },
+      {
+        "field": "crc32",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Single-bit CRC corruption to verify integrity validation"
+      }
     ]
   },
   "migration": [
@@ -377,7 +421,12 @@
       "to": "OOXML-2016",
       "description": "Office Open XML transitional to strict conformance; versionNeeded may increase from 20 to 45 for ZIP64 support",
       "changes": [
-        { "field": "versionNeeded", "changeType": "set_value", "value": "2D00", "description": "Raise version needed to 4.5 (0x002D) for ZIP64-capable containers" }
+        {
+          "field": "versionNeeded",
+          "changeType": "set_value",
+          "value": "2D00",
+          "description": "Raise version needed to 4.5 (0x002D) for ZIP64-capable containers"
+        }
       ]
     },
     {
@@ -385,8 +434,18 @@
       "to": "ZIP64",
       "description": "Upgrade large DOCX packages exceeding 4 GB to ZIP64 format",
       "changes": [
-        { "field": "compressedSize",   "changeType": "set_value", "value": "FFFFFFFF", "description": "Set compressed size sentinel for ZIP64 extension" },
-        { "field": "uncompressedSize", "changeType": "set_value", "value": "FFFFFFFF", "description": "Set uncompressed size sentinel for ZIP64 extension" }
+        {
+          "field": "compressedSize",
+          "changeType": "set_value",
+          "value": "FFFFFFFF",
+          "description": "Set compressed size sentinel for ZIP64 extension"
+        },
+        {
+          "field": "uncompressedSize",
+          "changeType": "set_value",
+          "value": "FFFFFFFF",
+          "description": "Set uncompressed size sentinel for ZIP64 extension"
+        }
       ]
     }
   ],
@@ -397,59 +456,333 @@
     "namespacePrefix": "w",
     "blockMappings": [
       {
-        "xmlElement": "w:p", "blockKind": "paragraph", "textSource": "w:r/w:t",
+        "xmlElement": "w:p",
+        "blockKind": "paragraph",
+        "textSource": "w:r/w:t",
         "childMappings": [
-          { "xmlElement": "w:r",         "blockKind": "run",       "textSource": "w:t" },
-          { "xmlElement": "w:hyperlink", "blockKind": "hyperlink", "textSource": "w:r/w:t" }
+          {
+            "xmlElement": "w:r",
+            "blockKind": "run",
+            "textSource": "w:t"
+          },
+          {
+            "xmlElement": "w:hyperlink",
+            "blockKind": "hyperlink",
+            "textSource": "w:r/w:t"
+          }
         ],
         "attributeMappings": [
-          { "xmlPath": "w:pPr/w:pStyle/@w:val",      "attribute": "style" },
-          { "xmlPath": "w:pPr/w:jc/@w:val",          "attribute": "align" },
-          { "xmlPath": "w:pPr/w:ind/@w:left",        "attribute": "indent",          "transform": "twipsToPoints" },
-          { "xmlPath": "w:pPr/w:ind/@w:right",       "attribute": "indentRight",     "transform": "twipsToPoints" },
-          { "xmlPath": "w:pPr/w:ind/@w:firstLine",   "attribute": "indentFirstLine", "transform": "twipsToPoints" }
+          {
+            "xmlPath": "w:pPr/w:pStyle/@w:val",
+            "attribute": "style"
+          },
+          {
+            "xmlPath": "w:pPr/w:jc/@w:val",
+            "attribute": "align"
+          },
+          {
+            "xmlPath": "w:pPr/w:ind/@w:left",
+            "attribute": "indent",
+            "transform": "twipsToPoints"
+          },
+          {
+            "xmlPath": "w:pPr/w:ind/@w:right",
+            "attribute": "indentRight",
+            "transform": "twipsToPoints"
+          },
+          {
+            "xmlPath": "w:pPr/w:ind/@w:firstLine",
+            "attribute": "indentFirstLine",
+            "transform": "twipsToPoints"
+          }
         ]
       },
       {
-        "xmlElement": "w:r", "blockKind": "run", "textSource": "w:t",
+        "xmlElement": "w:r",
+        "blockKind": "run",
+        "textSource": "w:t",
         "attributeMappings": [
-          { "xmlPath": "w:rPr/w:b",            "attribute": "bold",          "presence": true },
-          { "xmlPath": "w:rPr/w:i",            "attribute": "italic",        "presence": true },
-          { "xmlPath": "w:rPr/w:u",            "attribute": "underline",     "presence": true },
-          { "xmlPath": "w:rPr/w:strike",       "attribute": "strikethrough", "presence": true },
-          { "xmlPath": "w:rPr/w:sz/@w:val",    "attribute": "fontSize",      "transform": "halfPointsToPoints" },
-          { "xmlPath": "w:rPr/w:color/@w:val", "attribute": "color" }
+          {
+            "xmlPath": "w:rPr/w:b",
+            "attribute": "bold",
+            "presence": true
+          },
+          {
+            "xmlPath": "w:rPr/w:i",
+            "attribute": "italic",
+            "presence": true
+          },
+          {
+            "xmlPath": "w:rPr/w:u",
+            "attribute": "underline",
+            "presence": true
+          },
+          {
+            "xmlPath": "w:rPr/w:strike",
+            "attribute": "strikethrough",
+            "presence": true
+          },
+          {
+            "xmlPath": "w:rPr/w:sz/@w:val",
+            "attribute": "fontSize",
+            "transform": "halfPointsToPoints"
+          },
+          {
+            "xmlPath": "w:rPr/w:color/@w:val",
+            "attribute": "color"
+          }
         ]
       },
       {
-        "xmlElement": "w:tbl", "blockKind": "table",
+        "xmlElement": "w:tbl",
+        "blockKind": "table",
         "childMappings": [
-          { "xmlElement": "w:tr", "blockKind": "table-row",
-            "childMappings": [ { "xmlElement": "w:tc", "blockKind": "table-cell" } ] }
+          {
+            "xmlElement": "w:tr",
+            "blockKind": "table-row",
+            "childMappings": [
+              {
+                "xmlElement": "w:tc",
+                "blockKind": "table-cell"
+              }
+            ]
+          }
         ]
       },
-      { "xmlElement": "w:sectPr",  "blockKind": "section" },
-      { "xmlElement": "w:drawing", "blockKind": "image", "imageEntryPath": "word/media/{r:embed}" }
+      {
+        "xmlElement": "w:sectPr",
+        "blockKind": "section"
+      },
+      {
+        "xmlElement": "w:drawing",
+        "blockKind": "image",
+        "imageEntryPath": "word/media/{r:embed}"
+      }
     ],
     "serializationRules": {
-      "paragraph":  { "xmlElement": "w:p", "wrapChildren": true },
-      "run":        { "xmlElement": "w:r", "textElement": "w:t" },
-      "heading":    { "xmlElement": "w:p", "pStyle": "Heading{level}", "wrapChildren": true },
-      "table":      { "xmlElement": "w:tbl" },
-      "table-row":  { "xmlElement": "w:tr" },
-      "table-cell": { "xmlElement": "w:tc", "textElement": "w:p/w:r/w:t" },
-      "section":    { "xmlElement": "w:sectPr" }
+      "paragraph": {
+        "xmlElement": "w:p",
+        "wrapChildren": true
+      },
+      "run": {
+        "xmlElement": "w:r",
+        "textElement": "w:t"
+      },
+      "heading": {
+        "xmlElement": "w:p",
+        "pStyle": "Heading{level}",
+        "wrapChildren": true
+      },
+      "table": {
+        "xmlElement": "w:tbl"
+      },
+      "table-row": {
+        "xmlElement": "w:tr"
+      },
+      "table-cell": {
+        "xmlElement": "w:tc",
+        "textElement": "w:p/w:r/w:t"
+      },
+      "section": {
+        "xmlElement": "w:sectPr"
+      }
     },
     "attributeSerializationRules": {
-      "bold":          { "parent": "w:rPr", "xmlElement": "w:b" },
-      "italic":        { "parent": "w:rPr", "xmlElement": "w:i" },
-      "underline":     { "parent": "w:rPr", "xmlElement": "w:u", "attrs": { "w:val": "single" } },
-      "strikethrough": { "parent": "w:rPr", "xmlElement": "w:strike" },
-      "fontSize":      { "parent": "w:rPr", "xmlElement": "w:sz", "attr": "w:val", "transform": "pointsToHalfPoints" },
-      "align":           { "parent": "w:pPr", "xmlElement": "w:jc",  "attr": "w:val" },
-      "indent":          { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:left",      "transform": "pointsToTwips" },
-      "indentRight":     { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:right",     "transform": "pointsToTwips" },
-      "indentFirstLine": { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:firstLine", "transform": "pointsToTwips" }
+      "bold": {
+        "parent": "w:rPr",
+        "xmlElement": "w:b"
+      },
+      "italic": {
+        "parent": "w:rPr",
+        "xmlElement": "w:i"
+      },
+      "underline": {
+        "parent": "w:rPr",
+        "xmlElement": "w:u",
+        "attrs": {
+          "w:val": "single"
+        }
+      },
+      "strikethrough": {
+        "parent": "w:rPr",
+        "xmlElement": "w:strike"
+      },
+      "fontSize": {
+        "parent": "w:rPr",
+        "xmlElement": "w:sz",
+        "attr": "w:val",
+        "transform": "pointsToHalfPoints"
+      },
+      "align": {
+        "parent": "w:pPr",
+        "xmlElement": "w:jc",
+        "attr": "w:val"
+      },
+      "indent": {
+        "parent": "w:pPr",
+        "xmlElement": "w:ind",
+        "attr": "w:left",
+        "transform": "pointsToTwips"
+      },
+      "indentRight": {
+        "parent": "w:pPr",
+        "xmlElement": "w:ind",
+        "attr": "w:right",
+        "transform": "pointsToTwips"
+      },
+      "indentFirstLine": {
+        "parent": "w:pPr",
+        "xmlElement": "w:ind",
+        "attr": "w:firstLine",
+        "transform": "pointsToTwips"
+      }
     }
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "DOCX signature",
+      "weight": 100,
+      "strength": "strong"
+    },
+    {
+      "value": "776F72642F646F63756D656E742E786D6C",
+      "offset": -1,
+      "label": "word/document.xml entry",
+      "weight": 50,
+      "strength": "moderate"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header (PK\\x03\\x04)"
+      },
+      {
+        "name": "ContentTypes",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "[Content_Types].xml listing MIME types of all parts"
+      },
+      {
+        "name": "Relationships",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "_rels/.rels root relationship file"
+      },
+      {
+        "name": "DocumentXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "word/document.xml main body content"
+      },
+      {
+        "name": "StylesXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "word/styles.xml named paragraph and character styles"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "doc",
+      "relation": "predecessor",
+      "note": "DOC is the binary OLE2 predecessor to DOCX"
+    },
+    {
+      "formatId": "odt",
+      "relation": "equivalent",
+      "note": "ODT is the ODF equivalent open standard"
+    },
+    {
+      "formatId": "rtf",
+      "relation": "related",
+      "note": "RTF is a text-based legacy Word format"
+    }
+  ],
+  "software": [
+    "Microsoft Word",
+    "LibreOffice Writer",
+    "Google Docs",
+    "Apple Pages"
+  ],
+  "useCases": [
+    "Word processing",
+    "Reports and proposals",
+    "Resumes and CVs",
+    "Letters and correspondence"
+  ],
+  "technicalDetails": "DOCX (ECMA-376 / ISO 29500) is a ZIP container holding XML parts. The document body is in word/document.xml using WordprocessingML. Styles, numbering, footnotes, headers/footers, and embedded media are separate parts linked via relationships.",
+  "completenessScore": 88
 }

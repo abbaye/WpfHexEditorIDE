@@ -38,6 +38,8 @@ public sealed class TemplateSemanticValidator
         foreach (var block in def.Blocks ?? [])
             ValidateBlock(block, declared, items);
 
+        CheckDuplicateBlockNames(def.Blocks ?? [], items);
+
         return items;
     }
 
@@ -51,6 +53,7 @@ public sealed class TemplateSemanticValidator
         CheckBitfields(b, items);
         CheckUnion(b, items);
         CheckValidationRules(b, items);
+        CheckLiteralCondition(b, items);
 
         foreach (var child in EnumerateChildren(b))
             ValidateBlock(child, declared, items);
@@ -192,6 +195,61 @@ public sealed class TemplateSemanticValidator
                 return double.TryParse(o.ToString(),
                     System.Globalization.NumberStyles.Float,
                     System.Globalization.CultureInfo.InvariantCulture, out d);
+        }
+    }
+
+    private static void CheckLiteralCondition(BlockDefinition b, List<ValidationSummaryItem> items)
+    {
+        if (!string.Equals(b.Type, "conditional", StringComparison.OrdinalIgnoreCase)) return;
+        var cond = b.Condition?.ToString()?.Trim();
+        if (string.IsNullOrEmpty(cond)) return;
+
+        if (string.Equals(cond, "true", StringComparison.OrdinalIgnoreCase))
+            items.Add(new ValidationSummaryItem
+            {
+                Severity         = ValidationSeverity.Warning,
+                Message          = $"Conditional block '{b.Name}' has a literal 'true' condition — Else branch is unreachable.",
+                Layer            = Layer,
+                NavigationTarget = b.Name,
+            });
+        else if (string.Equals(cond, "false", StringComparison.OrdinalIgnoreCase))
+            items.Add(new ValidationSummaryItem
+            {
+                Severity         = ValidationSeverity.Warning,
+                Message          = $"Conditional block '{b.Name}' has a literal 'false' condition — Then branch is unreachable.",
+                Layer            = Layer,
+                NavigationTarget = b.Name,
+            });
+    }
+
+    private static void CheckDuplicateBlockNames(IEnumerable<BlockDefinition> blocks,
+        List<ValidationSummaryItem> items)
+    {
+        var seen   = new HashSet<string>(StringComparer.Ordinal);
+        var dupes  = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var b in FlattenAll(blocks))
+        {
+            if (string.IsNullOrEmpty(b.Name)) continue;
+            if (!seen.Add(b.Name!) && dupes.Add(b.Name!))
+                items.Add(new ValidationSummaryItem
+                {
+                    Severity         = ValidationSeverity.Warning,
+                    Message          = $"Block name '{b.Name}' appears more than once. Duplicate names can cause variable-store collisions.",
+                    Layer            = Layer,
+                    NavigationTarget = b.Name,
+                });
+        }
+    }
+
+    private static IEnumerable<BlockDefinition> FlattenAll(IEnumerable<BlockDefinition> roots)
+    {
+        var stack = new Stack<BlockDefinition>(roots.Where(b => b is not null));
+        while (stack.Count > 0)
+        {
+            var b = stack.Pop();
+            yield return b;
+            foreach (var child in EnumerateChildren(b))
+                if (child is not null) stack.Push(child);
         }
     }
 

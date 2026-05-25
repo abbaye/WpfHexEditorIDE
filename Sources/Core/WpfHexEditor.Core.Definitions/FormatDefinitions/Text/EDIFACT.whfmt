@@ -1,0 +1,141 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "UN/EDIFACT EDI Message",
+  "formatId": "EDIFACT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "UN/EDIFACT (United Nations Electronic Data Interchange for Administration, Commerce and Transport) — an international EDI standard for electronic business document exchange. EDIFACT messages consist of segments separated by a segment terminator (default: single quote '\\'). Each segment begins with a 3-6 character segment tag (e.g., UNB, UNH, BGM, DTM, NAD). An EDIFACT interchange starts optionally with a 'UNA' service string advice (defining delimiter characters) followed by 'UNB' (interchange header). Messages are wrapped in 'UNH'/'UNT' envelopes and groups in 'UNG'/'UNE'. EDIFACT is mandatory for EDI in Europe and used globally for trade, logistics, healthcare (EDIFACT INVOIC, ORDERS, DESADV, CONTRL messages).",
+  "extensions": [".edi", ".edifact"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "554E413A",
+      "offset": 0,
+      "label": "EDIFACT UNA service string 'UNA:'",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": 9,
+        "name": "UNA Service String",
+        "type": "ascii",
+        "description": "Optional 9-character UNA service string defining delimiter characters: 'UNA' + component_separator + element_separator + decimal_notation + release_character + reserved + segment_terminator. Default: 'UNA:+.? \\'' (colon, plus, period, question mark, space, apostrophe). If absent, default delimiters apply.",
+        "storeAs": "unaServiceString"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "UNB Interchange Header",
+        "type": "ascii",
+        "description": "UNB segment: interchange envelope header identifying sender, recipient, date/time, interchange control reference, and EDIFACT version (UNOB/UNOC for byte-character sets).",
+        "storeAs": "unbHeader"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Message Segments",
+        "type": "ascii",
+        "description": "EDIFACT message segments (UNH message header, BGM document type, DTM date/time, NAD name/address, LIN line items, MOA monetary amounts, UNT message trailer, etc.).",
+        "storeAs": "messageSegments"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["unaServiceString", "unbHeader", "messageSegments"],
+    "valueMaps": {},
+    "tooltips": {
+      "unaServiceString": "Service string defining delimiter characters (UNA: 9 chars)",
+      "unbHeader": "Interchange header (UNB) with sender/receiver identification",
+      "messageSegments": "EDIFACT message segments making up the business document"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "unaServiceString",
+      "operator": "regex",
+      "value": "^UNA|^UNB",
+      "severity": "error",
+      "description": "EDIFACT interchange must start with 'UNA' service string or 'UNB' interchange header"
+    },
+    {
+      "id": "A2",
+      "field": "unbHeader",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "EDIFACT interchange must contain a UNB (interchange header) segment"
+    },
+    {
+      "id": "A3",
+      "field": "messageSegments",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "EDIFACT interchange message segments must be present — file may be truncated if absent"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "UNA Service String", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "UNB Interchange Header", "offset": 9, "icon": "", "color": "#4ECDC4" },
+      { "name": "First UNH Message Header", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "EDIFACT Interchange Metadata (JSON)",
+      "format": "json",
+      "fields": ["unaServiceString", "unbHeader"]
+    },
+    {
+      "name": "Segment Tag List",
+      "format": "text",
+      "description": "Extract all segment tags in order with their element counts"
+    }
+  ],
+  "aiHints": [
+    "EDIFACT default delimiters: component ':' element '+' decimal '.' release '?' segment terminator '\\''",
+    "UNA service string (if present) redefines these 6 special characters; always check UNA before parsing",
+    "UNB segment identifies sender (S002), receiver (S003), date/time (S004), and control reference",
+    "Common EDIFACT message types: INVOIC (invoice), ORDERS (purchase order), DESADV (despatch advice), CONTRL (acknowledgment)",
+    "EDIFACT UN directory versions (D96A, D01B, D16A) determine which message types and code lists are valid",
+    "European automotive and retail industries use EDIFACT heavily; US supply chain prefers X12 (ANSI ASC X12)"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "EDIFACT files contain business transaction data including financial amounts, party identifiers, and product codes",
+      "Intercepted EDIFACT files can reveal supplier relationships, pricing, order volumes, and logistics patterns",
+      "EDI message tampering (amount manipulation, address substitution) is a known business email compromise vector",
+      "EDIFACT interchange control references can be used to track transaction sequences and detect missing messages"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "CSV",
+      "relationship": "functional-alternative",
+      "note": "Both represent tabular business data; CSV is simpler and less structured; EDIFACT is a formal international standard"
+    }
+  ],
+  "software": [
+    "SAP EDI (IDOC to EDIFACT mapping)",
+    "Sterling Commerce B2B Integrator",
+    "OpenText Trading Grid",
+    "Peppol (EDIFACT to UBL gateway)",
+    "Axway AMPLIFY B2B",
+    "EDICOM platform"
+  ],
+  "useCases": [
+    "International trade document exchange (invoices, purchase orders, advance ship notices)",
+    "European retail and automotive supply chain EDI",
+    "Healthcare administrative transactions (EDIFACT CLAIMS, REMITT)"
+  ],
+  "technicalDetails": "UN/EDIFACT is an ISO standard (ISO 9735) for electronic business document interchange. Files are ASCII or UNOC (ISO 8859-1) encoded. Segments are terminated by apostrophe '\\'' by default. The UNA service string redefines all 6 special characters. Interchange envelopes (UNB/UNZ) contain functional groups (UNG/UNE) containing messages (UNH/UNT). Message types are defined in the UN/EDIFACT directory (D96A, D01B, etc.).",
+  "completenessScore": 82
+}

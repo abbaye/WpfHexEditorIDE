@@ -751,6 +751,23 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
+                            <MenuItem Header="{StaticResource App_Menu_ClearRoamingData}" Click="OnClearRoamingData">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem x:Name="RestoreRoamingBackupMenuItem"
+                                      Header="{StaticResource App_Menu_RestoreRoamingBackup}"
+                                      Click="OnRestoreRoamingBackup">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE845;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
                             <MenuItem Header="{StaticResource App_Menu_ToggleLockedLayout}" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1902,6 +1919,44 @@
                             FontFamily="Segoe MDL2 Assets" FontSize="10"
                             Margin="8,0,0,0"
                             Click="OnFileChangeInfoBarClose"
+                            Style="{StaticResource InfoBarButtonStyle}"
+                            BorderBrush="Transparent"
+                            ToolTip="{StaticResource App_Toolbar_Dismiss}"/>
+                </Grid>
+            </Border>
+
+            <!-- Roaming Data corruption InfoBar — shown at startup when a roaming file fails deserialization -->
+            <Border x:Name="RoamingDataInfoBar" Grid.Row="0" Visibility="Collapsed"
+                    Background="{DynamicResource PM_BadgeSlowBrush}" Padding="8,5"
+                    Margin="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Segoe MDL2 "Warning" glyph -->
+                    <TextBlock Grid.Column="0" Text="&#xE7BA;"
+                               FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="White" VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock x:Name="RoamingDataInfoBarMessage" Grid.Column="1"
+                               Text="" Foreground="White" FontSize="12"
+                               VerticalAlignment="Center" TextWrapping="NoWrap"/>
+                    <Button x:Name="RoamingDataInfoBarReset" Grid.Column="2"
+                            Content="{StaticResource App_RoamingDataInfoBar_BackupReset}" Margin="8,0,4,0"
+                            Click="OnRoamingDataInfoBarReset"
+                            Style="{StaticResource InfoBarButtonStyle}"/>
+                    <Button x:Name="RoamingDataInfoBarIgnore" Grid.Column="3"
+                            Content="{StaticResource App_RoamingDataInfoBar_Ignore}" Margin="4,0"
+                            Click="OnRoamingDataInfoBarIgnore"
+                            Style="{StaticResource InfoBarButtonStyle}"/>
+                    <Button Grid.Column="4" Content="&#xE711;"
+                            FontFamily="Segoe MDL2 Assets" FontSize="10"
+                            Margin="8,0,0,0"
+                            Click="OnRoamingDataInfoBarDismiss"
                             Style="{StaticResource InfoBarButtonStyle}"
                             BorderBrush="Transparent"
                             ToolTip="{StaticResource App_Toolbar_Dismiss}"/>

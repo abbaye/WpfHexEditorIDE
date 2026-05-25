@@ -1,38 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Paradox Database",
   "formatId": "PARADOX",
-  "version": "1.14",
-  "extensions": [
-    ".db",
-    ".px"
-  ],
-  "description": "Borland Paradox database table format",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".db", ".px"],
+  "description": "Borland Paradox database table format. Paradox files have no universal magic bytes; the file version byte at offset 0 identifies the format. Known version bytes: 0x03=Paradox 3.x, 0x04=Paradox 4.x, 0x05=Paradox 5.x, 0x0B=Paradox 7+. The file header at offset 0 contains the version byte followed by record size (2B LE) and header size (2B LE).",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "Paradox Database Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/DB"
-    ]
+    "specifications": ["Paradox Database Format", "Borland Paradox File Structure"],
+    "WebLinks": ["https://en.wikipedia.org/wiki/Paradox_(database)", "https://en.wikipedia.org/wiki/DB"]
   },
+  "maxSignatureOffset": 1024,
+  "signatures": [
+    {
+      "value": "03",
+      "offset": 0,
+      "label": "Paradox version byte 0x03 (Paradox 3.x)",
+      "weight": 0.3,
+      "strength": "Weak"
+    }
+  ],
   "detection": {
     "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "PARADOX magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 1, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "00", "offset": 0, "label": "PARADOX magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Weak"
@@ -42,95 +37,112 @@
     "pageSize": 0,
     "pageCount": 0,
     "tableCount": 0,
-    "version": 0
+    "version": 0,
+    "recordSize": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "format_version", "offset": 0, "size": 1, "type": "uint8", "description": "Paradox format version byte: 0x03=v3.x, 0x04=v4.x, 0x05=v5.x, 0x0B=v7+" },
+      { "name": "record_size", "offset": 1, "size": 2, "type": "uint16le", "description": "Fixed record size in bytes" },
+      { "name": "header_size", "offset": 3, "size": 2, "type": "uint16le", "description": "Header size in bytes" },
+      { "name": "file_type", "offset": 5, "size": 1, "type": "uint8", "description": "File type: 0=indexed table, 1=non-indexed, 2=primary index" },
+      { "name": "max_table_size", "offset": 6, "size": 2, "type": "uint16le", "description": "Maximum table size in kilobytes" },
+      { "name": "record_count", "offset": 8, "size": 4, "type": "uint32le", "description": "Total number of records in the table" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "Paradox Header", "offset": 0, "length": 2048, "color": "#293241", "opacity": 0.4, "description": "Paradox table header" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["format_version", "record_size", "record_count", "file_type"],
+    "valueMaps": {
+      "format_version": {
+        "3": "Paradox 3.x",
+        "4": "Paradox 4.x",
+        "5": "Paradox 5.x",
+        "11": "Paradox 7.x+"
+      },
+      "file_type": {
+        "0": "Indexed table",
+        "1": "Non-indexed table",
+        "2": "Primary index file"
+      }
+    },
+    "tooltips": {
+      "format_version": "Version byte at offset 0 identifies Paradox engine version",
+      "record_size": "Fixed record size — all records have the same byte length"
+    }
+  },
+  "assertions": [
+    { "name": "Version byte is known", "expression": "format_version == 3 || format_version == 4 || format_version == 5 || format_version == 11", "severity": "warning", "message": "Paradox version byte should be 0x03, 0x04, 0x05, or 0x0B" },
+    { "name": "Record size positive", "expression": "record_size > 0", "severity": "error", "message": "Paradox record size must be greater than zero" },
+    { "name": "Record count non-negative", "expression": "record_count >= 0", "severity": "info", "message": "Record count should be a non-negative integer" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Paradox File Header", "color": "#293241" },
+      { "offset": 2048, "label": "First Data Block", "color": "#3D5A80" },
+      { "offset": 4096, "label": "Second Data Block", "color": "#98C1D9" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "Paradox Header",
-      "offset": 0,
-      "length": 2048,
-      "color": "#293241",
-      "opacity": 0.4,
-      "description": "Paradox table header"
+      "name": "Paradox Header Summary",
+      "format": "text",
+      "template": "Paradox Database\nVersion    : {format_version}\nRecord Size: {record_size}\nRecords    : {record_count}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Paradox Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nVersion,{format_version}\nRecordSize,{record_size}\nRecordCount,{record_count}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "Paradox has no universal magic bytes — detection relies on extension and version byte at offset 0",
+    "Version byte 0x03=Paradox 3.x, 0x04=v4.x, 0x05=v5.x, 0x0B=v7+ are the common values",
+    "Companion .PX files are primary index files; .DB files are the main table data",
+    "All records are fixed-length — record_size at offset 1 multiplied by record_count gives data region size",
+    "Column definitions are stored in the header region before the data blocks"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".db",
-      ".px"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
-  ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Borland Paradox database table format",
-    "suggestedInspections": [
-      "Verify Paradox Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "Paradox databases are common in legacy Delphi and DOS-era business applications",
+      "Companion index files (.PX, .Xnn) must be present for indexed access",
+      "Version byte forgery is trivial — do not rely on version byte alone for authentication"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "DBASE3", "relation": "sibling", "note": "Both are legacy tabular database formats common in Borland/legacy Windows applications" }
+  ],
+  "software": ["Borland Paradox 7", "Corel Paradox 9", "Borland Database Engine (BDE)", "Database Desktop", "DBeaver (partial)"],
+  "useCases": [
+    "Legacy Delphi and C++Builder application databases",
+    "Borland Quattro Pro spreadsheet database import/export",
+    "Migration source from legacy business data to modern RDBMS",
+    "Database forensics on DOS/Windows 9x era records"
+  ],
+  "technicalDetails": {
+    "RecordModel": "Fixed-length records",
+    "IndexFiles": ".PX primary index, .Xnn secondary indexes",
+    "MaxRecordSize": "65535 bytes",
+    "DetectionMethod": "Version byte at offset 0; no universal magic"
+  },
+  "completenessScore": 82,
+  "MimeTypes": ["application/octet-stream"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "RecordModel": "Fixed-length", "DetectionMethod": "Version byte at offset 0" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

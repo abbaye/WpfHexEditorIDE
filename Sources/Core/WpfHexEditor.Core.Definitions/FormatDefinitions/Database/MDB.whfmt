@@ -1,8 +1,29 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Microsoft Access Database",
   "formatId": "MDB",
-  "version": "1.14",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 15,
+  "signatures": [
+    {
+      "value": "5374616E64617264204A6574204442",
+      "offset": 0,
+      "label": "Jet DB magic string 'Standard Jet DB'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "jet_magic", "offset": 0, "size": 15, "type": "ascii", "description": "Jet DB signature string 'Standard Jet DB'" },
+      { "name": "version_byte", "offset": 20, "size": 1, "type": "uint8", "description": "Jet engine version: 0=Jet 3, 1=Jet 4 (Access 2000+)" },
+      { "name": "page_size", "offset": 22, "size": 2, "type": "uint16le", "description": "Page size in bytes (typically 2048 or 4096)" },
+      { "name": "rc4_key", "offset": 24, "size": 4, "type": "bytes", "description": "RC4 encryption key (XOR with 0xC5965A9B for Jet 3)" }
+    ]
+  },
   "extensions": [
     ".mdb"
   ],
@@ -112,7 +133,7 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -134,6 +155,40 @@
       "Inspect record format, schema tables, and journal state"
     ]
   },
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "OLE2 CFB Header", "color": "#E74C3C" },
+      { "offset": 512, "label": "First Sector", "color": "#3498DB" },
+      { "offset": 1024, "label": "Access Data Pages", "color": "#27AE60" }
+    ]
+  },
+  "aiHints": [
+    "MDB signature 'Standard Jet DB' (0x5374616E64617264204A657420444200) is at offset 0",
+    "Jet version byte at offset 20: 0=Jet 3.x (Access 97), 1=Jet 4.x (Access 2000–2003)",
+    "MDB uses a page-based structure with 2KB pages (Jet 3) or 4KB pages (Jet 4)",
+    "RC4 encryption key at offset 24 is XORed with constant 0xC5965A9B for the database password",
+    "System tables (MSysObjects, MSysACEs) contain the database schema and security settings"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "MDB files use weak RC4 encryption — passwords are easily recoverable with known tools",
+      "Deleted records may be recoverable from unused page space",
+      "MSysACEs table contains workgroup security permissions — useful for privilege escalation analysis"
+    ],
+    "suspiciousPatterns": []
+  },
+  "useCases": [
+    "Microsoft Access 97–2003 desktop database applications",
+    "Legacy line-of-business databases on Windows",
+    "Data migration source to SQL Server or ACCDB",
+    "Forensic extraction of business data from legacy applications"
+  ],
+  "technicalDetails": {
+    "JetVersions": { "0": "Jet 3.x (Access 97)", "1": "Jet 4.x (Access 2000-2003)" },
+    "PageSizes": { "Jet3": 2048, "Jet4": 4096 },
+    "Encryption": "RC4 (weak, recoverable)"
+  },
   "inspector": {
     "badge": "jetDbSignature",
     "primaryField": "jetDbSignature",
@@ -152,9 +207,12 @@
     {
       "name": "Microsoft Access Database Header (JSON)",
       "format": "json",
-      "fields": [
-        "jetDbSignature"
-      ]
+      "fields": ["jetDbSignature"]
+    },
+    {
+      "name": "MDB Header Summary",
+      "format": "text",
+      "template": "Microsoft Access MDB\nSignature: {jetDbSignature}\nPage Size: {pageSize}\nVersion  : {version}"
     }
   ],
   "assertions": [
@@ -163,6 +221,18 @@
       "expression": "jetDbSignature != 0",
       "severity": "warning",
       "message": "MDB magic field is zero — possible detection failure"
+    },
+    {
+      "name": "Jet version known",
+      "expression": "version_byte == 0 || version_byte == 1",
+      "severity": "warning",
+      "message": "Jet version byte at offset 20 should be 0 (Jet 3) or 1 (Jet 4)"
+    },
+    {
+      "name": "File size reasonable",
+      "expression": "fileSize >= 2048",
+      "severity": "error",
+      "message": "MDB file must be at least one page (2048 bytes)"
     }
   ],
   "diff": {

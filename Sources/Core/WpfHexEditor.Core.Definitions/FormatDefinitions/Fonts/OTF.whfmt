@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OpenType Font",
   "formatId": "OTF",
@@ -24,6 +25,107 @@
       "https://adobe-type-tools.github.io/font-tech-notes/pdfs/5176.CFF.pdf"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "4F54544F",
+      "offset": 0,
+      "label": "OTTO — OpenType CFF font (PostScript cubic Bezier outlines)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "sfntVersion",
+        "type": "ascii",
+        "offset": 0,
+        "length": 4,
+        "description": "sfnt version / signature: 'OTTO' for CFF OpenType"
+      },
+      {
+        "name": "numTables",
+        "type": "uint16be",
+        "offset": 4,
+        "length": 2,
+        "description": "Number of font tables"
+      },
+      {
+        "name": "searchRange",
+        "type": "uint16be",
+        "offset": 6,
+        "length": 2,
+        "description": "Binary search optimization: (maxPow2 <= numTables) * 16"
+      },
+      {
+        "name": "entrySelector",
+        "type": "uint16be",
+        "offset": 8,
+        "length": 2,
+        "description": "log2(maxPow2 <= numTables)"
+      },
+      {
+        "name": "rangeShift",
+        "type": "uint16be",
+        "offset": 10,
+        "length": 2,
+        "description": "(numTables * 16) - searchRange"
+      },
+      {
+        "name": "tableDirectory",
+        "type": "struct[]",
+        "offset": 12,
+        "length": -1,
+        "description": "Array of numTables 16-byte table records (tag+checksum+offset+length)"
+      }
+    ]
+  },
+  "assertions": [
+    {
+      "name": "sfnt version is OTTO",
+      "expression": "otfSignature == 'OTTO'",
+      "severity": "error",
+      "message": "OpenType CFF font must start with 'OTTO' (0x4F54544F) at offset 0"
+    },
+    {
+      "name": "numTables > 0",
+      "expression": "numberOfTables > 0",
+      "severity": "error",
+      "message": "OpenType font must have at least one table"
+    },
+    {
+      "name": "numTables within range",
+      "expression": "numberOfTables <= 100",
+      "severity": "warning",
+      "message": "OpenType font has an unusually high number of tables (> 100)"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "OTF Header (JSON)",
+      "format": "json",
+      "fields": [
+        "otfSignature",
+        "numberOfTables",
+        "searchRange",
+        "entrySelector",
+        "rangeShift"
+      ]
+    },
+    {
+      "name": "OTF Table Directory (Text)",
+      "format": "text",
+      "fields": [
+        "otfSignature",
+        "numberOfTables",
+        "table1Tag",
+        "table2Tag",
+        "table3Tag"
+      ]
+    }
+  ],
   "detection": {
     "signature": "4F54544F",
     "offset": 0,
@@ -339,7 +441,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 24,
     "ValidationRules": 4,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -348,14 +450,14 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
-    "analysisContext": "OpenType Font format with CFF (Compact Font Format) outlines - a cross-platform font standard jointly develo...",
-    "suggestedInspections": [
-      "Validate OpenType Font offset table and required table tags (head, cmap, glyf)",
-      "Check glyph count, loca table offsets, and encoding records",
-      "Inspect name table entries and OS/2 metrics for consistency"
-    ]
-  },
+  "aiHints": [
+    "OpenType CFF font starts with 'OTTO' (4F54544F) — distinguishes from TrueType (00010000)",
+    "Offset table at byte 0: sfntVersion(4) + numTables(2) + searchRange(2) + entrySelector(2) + rangeShift(2)",
+    "Table directory at byte 12: numTables entries of 16 bytes (tag[4]+checksum[4]+offset[4]+length[4])",
+    "Required CFF tables: CFF (or CFF2), cmap, head, hhea, hmtx, maxp, name, OS/2, post",
+    "GPOS and GSUB tables enable advanced typography: kerning, ligatures, contextual alternates",
+    "head table checksumAdjustment: whole-file CRC must equal 0xB1B0AFBA for valid font"
+  ],
   "navigation": {
     "bookmarks": [
       {
@@ -390,8 +492,16 @@
     "Alignment": "4-byte boundary"
   },
   "diff": {
-    "keyFields": ["otfSignature", "numberOfTables", "table1Tag"],
-    "ignoreFields": ["searchRange", "entrySelector", "rangeShift"],
+    "keyFields": [
+      "otfSignature",
+      "numberOfTables",
+      "table1Tag"
+    ],
+    "ignoreFields": [
+      "searchRange",
+      "entrySelector",
+      "rangeShift"
+    ],
     "groupBy": "numberOfTables",
     "note": "OTTO signature and table count distinguish CFF OpenType from TrueType; binary search fields are computed constants with no diff value"
   },
@@ -417,11 +527,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "otfSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'OTTO' signature to test font engine handling of unrecognized OpenType font flavors" },
-      { "field": "numberOfTables", "mutation": "boundary_values", "weight": 2, "description": "Test table counts of 0, 1, and 100 to probe table directory parsing and allocation limits" },
-      { "field": "table1Offset", "mutation": "overflow", "weight": 2, "description": "Overflow the CFF table offset to trigger out-of-bounds reads in CFF charstring parsers" },
-      { "field": "table1Tag", "mutation": "random_bytes", "weight": 1, "description": "Randomize the first table tag to test unknown table handling in OpenType layout engines" },
-      { "field": "searchRange", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the binary search optimization values to test parser tolerance for inconsistent header fields" }
+      {
+        "field": "otfSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt the 'OTTO' signature to test font engine handling of unrecognized OpenType font flavors"
+      },
+      {
+        "field": "numberOfTables",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test table counts of 0, 1, and 100 to probe table directory parsing and allocation limits"
+      },
+      {
+        "field": "table1Offset",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow the CFF table offset to trigger out-of-bounds reads in CFF charstring parsers"
+      },
+      {
+        "field": "table1Tag",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize the first table tag to test unknown table handling in OpenType layout engines"
+      },
+      {
+        "field": "searchRange",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Bit-flip the binary search optimization values to test parser tolerance for inconsistent header fields"
+      }
     ]
   },
   "migration": [
@@ -430,8 +566,28 @@
       "to": "opentype_cff2",
       "description": "Upgrade OpenType font from CFF (CFF version 1) to CFF2 outline format for variable font support",
       "changes": [
-        { "field": "table1Tag", "changeType": "set_value", "value": "43464632", "description": "Replace 'CFF ' (0x43464620) table tag with 'CFF2' (0x43464632) to declare CFF version 2 outlines" }
+        {
+          "field": "table1Tag",
+          "changeType": "set_value",
+          "value": "43464632",
+          "description": "Replace 'CFF ' (0x43464620) table tag with 'CFF2' (0x43464632) to declare CFF version 2 outlines"
+        }
       ]
     }
-  ]
+  ],
+  "inspector": {
+    "displayFields": [
+      "otfSignature",
+      "numberOfTables",
+      "searchRange",
+      "entrySelector",
+      "rangeShift"
+    ],
+    "valueMaps": {},
+    "tooltips": {
+      "otfSignature": "sfnt version / scaler type identifying font format and outline type",
+      "numberOfTables": "Number of tables in the font file",
+      "searchRange": "Binary search optimization: (maxPow2 <= numTables) * 16"
+    }
+  }
 }

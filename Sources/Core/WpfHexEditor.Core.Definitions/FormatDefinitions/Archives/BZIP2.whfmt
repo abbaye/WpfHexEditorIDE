@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "BZIP2 Compressed File",
   "formatId": "BZIP2",
@@ -24,12 +25,58 @@
       "https://github.com/dsnet/compress/blob/master/doc/bzip2-format.pdf"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "425A68",
+      "offset": 0,
+      "label": "BZh — BZIP2 stream magic ('BZh' + digit indicating block size)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 2,
+        "description": "'BZ' stream identifier"
+      },
+      {
+        "name": "huffman",
+        "type": "ascii",
+        "offset": 2,
+        "length": 1,
+        "description": "'h' indicating Huffman coding variant (not deprecated bzip1 arithmetic)"
+      },
+      {
+        "name": "blockSize",
+        "type": "ascii",
+        "offset": 3,
+        "length": 1,
+        "description": "Block size digit '1'-'9' (multiply by 100 KB for block size)"
+      },
+      {
+        "name": "blockMagic",
+        "type": "hex",
+        "offset": 4,
+        "length": 6,
+        "description": "Block magic: 31 41 59 26 53 59 (pi digits) for each data block"
+      }
+    ]
+  },
   "detection": {
     "signature": "425A68",
     "offset": 0,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 7.5, "max": 8.0 },
+    "EntropyHint": {
+      "min": 7.5,
+      "max": 8.0
+    },
     "validation": {
       "minFileSize": 14,
       "maxSignatureOffset": 0
@@ -188,8 +235,15 @@
     {
       "name": "Block CRC-32 (first block)",
       "algorithm": "crc32",
-      "dataRange": { "fixedOffset": 4, "fixedLength": 6 },
-      "storedAt": { "fixedOffset": 10, "length": 4, "endianness": "big" },
+      "dataRange": {
+        "fixedOffset": 4,
+        "fixedLength": 6
+      },
+      "storedAt": {
+        "fixedOffset": 10,
+        "length": 4,
+        "endianness": "big"
+      },
       "storedType": "uint32",
       "severity": "warning"
     }
@@ -244,17 +298,28 @@
       {
         "title": "Stream Header",
         "icon": "",
-        "fields": ["bzip2Signature", "blockSize", "blockSizeKB"]
+        "fields": [
+          "bzip2Signature",
+          "blockSize",
+          "blockSizeKB"
+        ]
       },
       {
         "title": "First Block",
         "icon": "",
-        "fields": ["blockMagic", "blockCRC", "randomizedBit", "origPtr"]
+        "fields": [
+          "blockMagic",
+          "blockCRC",
+          "randomizedBit",
+          "origPtr"
+        ]
       },
       {
         "title": "Huffman Configuration",
         "icon": "",
-        "fields": ["huffmanTrees"]
+        "fields": [
+          "huffmanTrees"
+        ]
       }
     ]
   },
@@ -262,18 +327,36 @@
     {
       "name": "BZIP2 Stream Header (JSON)",
       "format": "json",
-      "fields": ["bzip2Signature", "blockSize", "blockSizeKB", "blockMagic", "blockCRC", "randomizedBit", "huffmanTrees"]
+      "fields": [
+        "bzip2Signature",
+        "blockSize",
+        "blockSizeKB",
+        "blockMagic",
+        "blockCRC",
+        "randomizedBit",
+        "huffmanTrees"
+      ]
     },
     {
       "name": "BZIP2 Stream Header (C struct)",
       "format": "c-struct",
       "structName": "BZIP2_STREAM_HEADER",
-      "fields": ["bzip2Signature", "blockSize", "blockMagic", "blockCRC", "randomizedBit", "origPtr"]
+      "fields": [
+        "bzip2Signature",
+        "blockSize",
+        "blockMagic",
+        "blockCRC",
+        "randomizedBit",
+        "origPtr"
+      ]
     },
     {
       "name": "Python BZIP2 magic check",
       "format": "python-bytes",
-      "fields": ["bzip2Signature", "blockSize"]
+      "fields": [
+        "bzip2Signature",
+        "blockSize"
+      ]
     }
   ],
   "forensic": {
@@ -300,19 +383,13 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "BZIP2 is a single-file compressor (not an archiver). A .bz2 file contains exactly one compressed data stream. To compress multiple files, BZIP2 is typically combined with tar (.tar.bz2 / .tbz2). Key distinguishing property: extremely high output entropy (near 8.0 bits/byte) due to Huffman entropy coding — useful for distinguishing from encrypted data which looks similar.",
-    "knownVulnerabilities": [
-      "bzip2 1.0.6 CVE-2016-3189: use-after-free during decompression of malformed data",
-      "Decompression bombs: legitimate BZIP2 compression ratios can reach 50:1 for repetitive data"
-    ],
-    "suggestedInspections": [
-      "Verify block size digit is '1'-'9' — invalid values indicate corruption",
-      "Check randomization flag (should be 0 in modern files)",
-      "For security scanning: decompress and inspect content, BZIP2 is often used to bypass AV signature matching",
-      "Compare stream CRC at end-of-stream with decompressed content to verify integrity"
-    ]
-  },
+  "aiHints": [
+    "BZIP2 header: 'BZh' + digit '1'-'9' (block size 100-900 KB) + block magic 31 41 59 26 53 59 (pi digits)",
+    "Each compressed block starts with 48-bit pi magic (0x314159265359) and ends with EOS marker (0x177245385090)",
+    "Block size digit determines compression ratio — '9' gives best compression at 900 KB BWT window",
+    "CRC-32 stored big-endian (unusual) for each block; stream CRC stored at file end",
+    "BZIP2 is slower than DEFLATE/LZ4 but typically achieves 10-15% better compression on text"
+  ],
   "software": [
     "bzip2 (reference implementation)",
     "7-Zip",
@@ -321,8 +398,18 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".bz2", ".bzip2", ".tbz2", ".tbz"],
-    "relatedFormats": ["GZIP", "XZ", "LZMA", "ZSTD"]
+    "extensions": [
+      ".bz2",
+      ".bzip2",
+      ".tbz2",
+      ".tbz"
+    ],
+    "relatedFormats": [
+      "GZIP",
+      "XZ",
+      "LZMA",
+      "ZSTD"
+    ]
   },
   "MimeTypes": [
     "application/x-bzip2",
@@ -339,7 +426,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 12,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -351,8 +438,14 @@
     "TypicalCompressionRatio": "3:1 to 8:1"
   },
   "diff": {
-    "keyFields": ["bzip2Signature", "blockSize", "blockCRC"],
-    "ignoreFields": ["blockSizeKB"],
+    "keyFields": [
+      "bzip2Signature",
+      "blockSize",
+      "blockCRC"
+    ],
+    "ignoreFields": [
+      "blockSizeKB"
+    ],
     "groupBy": "bzip2Stream",
     "note": "Signature and block size digit identify the stream; blockCRC verifies block integrity; blockSizeKB is derived from blockSize and adds no diff value"
   },
@@ -370,11 +463,37 @@
     "preserveChecksums": true,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "bzip2Signature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt BZh magic to test stream identifier rejection" },
-      { "field": "blockSize", "mutation": "boundary_values", "weight": 2, "description": "Set block size to 0x30 or 0x3A (outside '1'-'9' range) to test block size validation" },
-      { "field": "huffmanTrees", "mutation": "overflow", "weight": 2, "description": "Set Huffman tree count above 6 to test decoder rejection of invalid tree counts" },
-      { "field": "blockMagic", "mutation": "random_bytes", "weight": 1, "description": "Corrupt pi-magic bytes to test block boundary detection failure" },
-      { "field": "randomizedBit", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip randomization flag to test BZIP1 compatibility code path" }
+      {
+        "field": "bzip2Signature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt BZh magic to test stream identifier rejection"
+      },
+      {
+        "field": "blockSize",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Set block size to 0x30 or 0x3A (outside '1'-'9' range) to test block size validation"
+      },
+      {
+        "field": "huffmanTrees",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Set Huffman tree count above 6 to test decoder rejection of invalid tree counts"
+      },
+      {
+        "field": "blockMagic",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Corrupt pi-magic bytes to test block boundary detection failure"
+      },
+      {
+        "field": "randomizedBit",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Flip randomization flag to test BZIP1 compatibility code path"
+      }
     ]
   },
   "migration": [
@@ -383,7 +502,12 @@
       "to": "BZIP2",
       "description": "Migrate BZIP1 randomized streams to standard BZIP2 by clearing the randomization flag",
       "changes": [
-        { "field": "randomizedBit", "changeType": "set_value", "value": "0", "description": "Clear randomization flag to produce a standard BZIP2-compatible stream" }
+        {
+          "field": "randomizedBit",
+          "changeType": "set_value",
+          "value": "0",
+          "description": "Clear randomization flag to produce a standard BZIP2-compatible stream"
+        }
       ]
     }
   ]

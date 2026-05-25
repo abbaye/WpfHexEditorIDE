@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>whfmt.SourceGenerator</PackageId>
+    <Version>1.0.1</Version>
+    <AssemblyName>whfmt.SourceGenerator</AssemblyName>
+    <RootNamespace>WhfmtSourceGenerator</RootNamespace>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <!-- RS2008: release-tracking advisory; NU5128: expected for source generators (no lib/ folder) -->
+    <NoWarn>RS2008;NU5128</NoWarn>
+    <!-- Source generators have no lib/ assembly — suppress the corresponding NuGet validation -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <!-- Source generators must not be part of the consumer's build output -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <Authors>abbaye</Authors>
+    <Description>Roslyn Source Generator that turns .whfmt binary format definitions into strongly-typed C# parsers at compile time. Add a .whfmt file as AdditionalFiles and get a typed parser with zero CLI steps.</Description>
+    <PackageTags>whfmt;binary;parser;codegen;roslyn;sourcegenerator</PackageTags>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+  </PropertyGroup>
+
+  <!-- Share Generator source files from whfmt.CodeGen without moving them.
+       Only C# generators are included — F#, Rust and VB targets use the CLI tool.
+       OutputLanguage enum is included so WhfmtIncrementalGenerator can reference CSharp/CSharpSpan. -->
+  <ItemGroup>
+    <Compile Include="..\whfmt.CodeGen\Generator\ParserGenerator.cs" Link="Generator\ParserGenerator.cs" />
+    <Compile Include="..\whfmt.CodeGen\Generator\SpanGenerator.cs"   Link="Generator\SpanGenerator.cs" />
+    <Compile Include="..\whfmt.CodeGen\Generator\OutputLanguage.cs"  Link="Generator\OutputLanguage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Roslyn API — PrivateAssets=all so it doesn't flow to consumers -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+    <!-- netstandard2.0 needs explicit STJ reference -->
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
+  <!-- NuGet packaging: analyzer convention — assembly must live in analyzers/dotnet/cs/ -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\whfmt.CodeGen\icon.png" Pack="true" PackagePath="\" Link="icon.png" />
+    <!-- MSBuild props that expose WhfmtXxx metadata as compiler-visible item metadata.
+         Required so AnalyzerConfigOptionsProvider can read per-file AdditionalFiles metadata. -->
+    <None Include="build\whfmt.SourceGenerator.props" Pack="true" PackagePath="build\" />
+  </ItemGroup>
+
+</Project>

@@ -364,6 +364,20 @@
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
+
+            <Separator/>
+
+            <!-- Entropy Heatmap toggle -->
+            <MenuItem x:Name="EntropyHeatmapMenuItem"
+                      Header="{StaticResource HE_ToggleEntropyHeatmap}"
+                      IsCheckable="True"
+                      Click="EntropyHeatmapMenuItem_Click">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </UserControl.ContextMenu>
 

@@ -322,15 +322,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         get => _activeHexEditor;
         private set
         {
-            // Unsubscribe from the previous editor's file-change event.
+            // Unsubscribe from the previous editor's events.
             if (_activeHexEditor != null)
-                _activeHexEditor.FileExternallyChanged -= OnActiveFileExternallyChanged;
+            {
+                _activeHexEditor.FileExternallyChanged      -= OnActiveFileExternallyChanged;
+                _activeHexEditor.EntropyHeatmapToggleRequested -= OnEntropyHeatmapToggleRequested;
+            }
 
             _activeHexEditor = value;
 
             // Subscribe to the new editor and hide any stale file-change bar.
             if (_activeHexEditor != null)
-                _activeHexEditor.FileExternallyChanged += OnActiveFileExternallyChanged;
+            {
+                _activeHexEditor.FileExternallyChanged      += OnActiveFileExternallyChanged;
+                _activeHexEditor.EntropyHeatmapToggleRequested += OnEntropyHeatmapToggleRequested;
+                SyncEntropyHeatmapCheckmark();
+            }
 
             HideFileChangeInfoBar();
             OnPropertyChanged();
@@ -664,6 +671,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
         LoadSavedLayoutOrDefault();
         InitLayoutCustomization();  // creates service + chord keys (no restore yet)
+
+        // Plan A: silent startup health check — file I/O on thread pool, result marshalled back to UI
+        _ = Task.Run(WpfHexEditor.App.Services.RoamingDataHealthChecker.Check)
+                 .ContinueWith(t =>
+                 {
+                     if (!t.Result.IsHealthy)
+                         ShowRoamingDataInfoBar(t.Result.CorruptFiles);
+                 }, System.Threading.CancellationToken.None,
+                    System.Threading.Tasks.TaskContinuationOptions.OnlyOnRanToCompletion,
+                    System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
         PopulateRecentMenus();
         TryRestoreSession();
         RestoreLayoutPreferences(); // apply saved layout prefs AFTER session restore
@@ -1204,7 +1221,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // if the module was null at layout-load time.
         var asmIds = _layout.GetAllItems()
             .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
-                        || item.ContentId == WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId)
+                        || item.ContentId == WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId
+                        || item.ContentId.StartsWith("panel-ba-")
+                        || item.ContentId.StartsWith(WpfHexEditor.App.HexDiff.HexDiffModule.ContentId)
+                        || item.ContentId.StartsWith(WpfHexEditor.App.Scripting.ScriptingModule.ContentId))
             .Select(item => item.ContentId)
             .ToList();
 
@@ -1855,9 +1875,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_formatBrowserPanel is not null) return _formatBrowserPanel;
 
         _formatBrowserPanel = new WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel();
-        _formatBrowserPanel.OpenFormatRequested   += OnOpenWhfmtFromBrowser;
-        _formatBrowserPanel.ExportFormatRequested += OnExportWhfmtFromBrowser;
-        _formatBrowserPanel.ViewJsonRequested     += OnViewJsonFromBrowser;
+        _formatBrowserPanel.OpenFormatRequested     += OnOpenWhfmtFromBrowser;
+        _formatBrowserPanel.ExportFormatRequested   += OnExportWhfmtFromBrowser;
+        _formatBrowserPanel.ViewJsonRequested       += OnViewJsonFromBrowser;
+        _formatBrowserPanel.GenerateParserRequested += OnGenerateParserFromBrowser;
 
         InitFormatBrowserCatalog();
         return _formatBrowserPanel;
@@ -1984,6 +2005,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
         if (dlg.ShowDialog(this) == true)
             System.IO.File.WriteAllText(dlg.FileName, json);
+    }
+
+    private void OnGenerateParserFromBrowser(object? sender, string keyOrPath)
+    {
+        string? json = null;
+
+        if (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.Query()
+                .Where(e => e.ResourceKey == keyOrPath).Any())
+            json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(keyOrPath);
+        else if (System.IO.File.Exists(keyOrPath))
+            json = System.IO.File.ReadAllText(keyOrPath);
+
+        if (string.IsNullOrEmpty(json)) return;
+
+        var dlg = new WpfHexEditor.App.Dialogs.GenerateParserDialog(
+            whfmtJson:       json,
+            whfmtFilePath:   keyOrPath,
+            solutionManager: _solutionManager,
+            project:         _solutionManager?.CurrentSolution?.Projects.FirstOrDefault());
+
+        dlg.Owner = this;
+        dlg.ShowDialog();
     }
 
     private void OnViewJsonFromBrowser(object? sender, string keyOrPath)
@@ -2823,6 +2866,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Wire breakpoint gutter adapter so project-opened files can render breakpoints.
                 WireBreakpointSourceToEditor(editor);
 
+                WireStructureEditorNavigation(editor);
+
                 ActiveDocumentEditor       = editor;
                 ActiveStatusBarContributor = editor as IStatusBarContributor;
 
@@ -2840,7 +2885,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var hexContent = CreateHexEditorContent(filePath, project: project);
 
-        if (hexContent is HexEditorControl hexEditorCtrl && hexEditorCtrl is IEditorPersistable hexPers)
+        // UnwrapEditor extracts PrimaryEditor from HexEditorSplitHost (which
+        // CreateHexEditorContent always returns) so the IEditorPersistable contract
+        // on the inner HexEditor is reachable.
+        if (UnwrapEditor(hexContent) is IEditorPersistable hexPers)
         {
             // Restore editor state (cursor, bytes/line, encoding …)
             if (configJson != null)
@@ -3070,6 +3118,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             // Wire breakpoint gutter adapter
             WireBreakpointSourceToEditor(editor);
+
+            WireStructureEditorNavigation(editor);
 
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
@@ -3445,6 +3495,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     hex.LoadTBL(tbl, pi.AbsolutePath);
                     _editorProjectTbl[hex] = pi;
                 }
+                break;
+            case TblSelectionKind.ExternalFile when item.ExternalPath is { } ep && File.Exists(ep):
+                hex.LoadTBLFile(ep);
+                _editorProjectTbl[hex] = null;
                 break;
         }
         OutputLogger.Info($"TBL changed to: {item.DisplayName}");
@@ -4871,6 +4925,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ActiveStatusBarContributor = content as IStatusBarContributor ?? _defaultStatusBarContributor;
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
         SyncTblDropdownToActiveEditor();
+        _codeEditorService?.SetActiveEditor(content as WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor);
 
         // Clear the transient refresh-time text whenever the active editor is not a HexEditor,
         // or when there is no active editor at all.  For HexEditor, RefreshDocumentStatus()
@@ -6327,6 +6382,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _editorSettingsService?.Apply(docEditor);
         }
 
+        if (_binaryAnalysisModule is not null)
+        {
+            var enabled = AppSettingsService.Instance.Current.HexEditorDefaults.ShowEntropyHeatmap;
+            _binaryAnalysisModule.SetEntropyHeatmapEnabled(enabled);
+            SyncEntropyHeatmapCheckmark();
+        }
+
         _autoSerializeTimer?.Stop();
         _autoSerializeTimer = null;
         InitAutoSerializeTimer();
@@ -7254,6 +7316,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnResetLayout(object sender, RoutedEventArgs e)
     {
+        var confirm = _dialogService.Show(
+            AppResources.App_ResetLayout_Confirm,
+            AppResources.App_Menu_ResetLayout.Replace("_", string.Empty),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (confirm != MessageBoxResult.Yes) return;
+
         // Snapshot open document items before resetting (exclude the Welcome tab).
         // The _contentCache is intentionally NOT cleared — cached UIElements remain valid
         // and will be returned by ContentFactory when the tabs are re-docked below.
@@ -7274,6 +7344,40 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             DockHost.RebuildVisualTree();
 
         OutputLogger.Debug($"Layout reset to default. {openDocs.Count} document(s) preserved.");
+    }
+
+    // --- Menu: Clear Roaming Data ----------------------------------------
+
+    private void OnClearRoamingData(object sender, RoutedEventArgs e)
+    {
+        var result = _dialogService.Show(
+            AppResources.App_ClearRoamingData_Confirm,
+            AppResources.App_ClearRoamingData_Title,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        var backupPath = WpfHexEditor.App.Services.RoamingDataBackupService.CreateBackup();
+        var (deleted, failed) = WpfHexEditor.App.Services.RoamingDataBackupService.DeleteManagedFiles();
+
+        if (failed.Count > 0)
+            OutputLogger.Error($"[ClearRoamingData] Failed to delete: {string.Join(", ", failed)}");
+
+        if (backupPath is not null)
+            OutputLogger.Info($"[ClearRoamingData] Backup created at: {backupPath}");
+
+        OutputLogger.Info($"[ClearRoamingData] Deleted: {(deleted.Count > 0 ? string.Join(", ", deleted) : "nothing")}");
+
+        // Single dialog: confirm success + offer restart.
+        var restart = _dialogService.Show(
+            AppResources.App_ClearRoamingData_RestartPrompt,
+            AppResources.App_ClearRoamingData_Title,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Information);
+
+        if (restart == MessageBoxResult.Yes)
+            System.Windows.Application.Current.Shutdown();
     }
 
     // --- Menu: other ---------------------------------------------------
@@ -7478,5 +7582,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
         OnActiveDocumentChanged(activeItem);
+    }
+
+    private void WireStructureEditorNavigation(WpfHexEditor.Editor.Core.IDocumentEditor editor)
+    {
+        if (editor is not WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd) return;
+        structEd.HexNavigationRequested += OnStructureEditorHexNavigation;
+    }
+
+    private void OnStructureEditorHexNavigation(object? sender, (long Offset, long Length) nav)
+        => Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
+
+    private void OnEntropyHeatmapToggleRequested(object? sender, EventArgs e)
+    {
+        if (_binaryAnalysisModule is null) return;
+        _binaryAnalysisModule.SetEntropyHeatmapEnabled(!_binaryAnalysisModule.IsEntropyHeatmapEnabled);
+        AppSettingsService.Instance.Save();
+        SyncEntropyHeatmapCheckmark();
+    }
+
+    private void SyncEntropyHeatmapCheckmark()
+    {
+        if (_activeHexEditor is null || _binaryAnalysisModule is null) return;
+        _activeHexEditor.IsEntropyHeatmapEnabled = _binaryAnalysisModule.IsEntropyHeatmapEnabled;
     }
 }

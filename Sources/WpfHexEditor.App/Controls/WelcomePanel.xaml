@@ -1,12 +1,17 @@
-﻿<!--
+<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
 
-    WelcomePanel — VS Start Page-style welcome document.
-    Theme compliance: uses DynamicResource DockBackgroundBrush / DockMenuBackgroundBrush /
-                      DockMenuForegroundBrush / DockTabActiveBrush / DockTabTextBrush /
-                      DockTabHoverBrush / DockBorderBrush (all 8 themes via PanelCommon merge).
+    WelcomePanel — VS Start Page-style welcome document (Redesign #138).
+    Layout:
+        Header  : Logo + version badge
+        Body    : 3-row layout
+                  Row 0 — Quick-start template cards (2-col grid)
+                  Row 1 — Two columns: Recent Files (left) | News Feed (right)
+        Footer  : Links bar
+    Theme:
+        Dock* tokens (existing) + WS_* tokens (new, defined in each theme Colors.xaml).
 -->
 
 <UserControl x:Class="WpfHexEditor.App.Controls.WelcomePanel"
@@ -22,78 +27,261 @@
                 <appSvc:AppLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
 
-        <!-- Section title (QUICK ACTIONS / RECENT / WHAT'S NEW) -->
-        <Style x:Key="WelcomeSectionTitle" TargetType="TextBlock">
-            <Setter Property="Foreground"   Value="{DynamicResource DockTabActiveBrush}" />
-            <Setter Property="FontSize"     Value="11" />
-            <Setter Property="FontWeight"   Value="SemiBold" />
-            <Setter Property="Margin"       Value="0,0,0,8" />
-        </Style>
+            <!-- ── Converters ─────────────────────────────────────────── -->
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <!-- Flat action button for Start section -->
-        <Style x:Key="WelcomeActionButton" TargetType="Button">
-            <Setter Property="Background"           Value="Transparent" />
-            <Setter Property="BorderThickness"      Value="0" />
-            <Setter Property="Foreground"           Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="FontSize"             Value="13" />
-            <Setter Property="HorizontalAlignment"  Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding"              Value="6,7,6,7" />
-            <Setter Property="Cursor"               Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="3"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource DockTabHoverBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource DockTabActiveBrush}" />
-                                <Setter Property="Foreground" Value="White" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <!-- ── Section title ──────────────────────────────────────── -->
+            <Style x:Key="WelcomeSectionTitle" TargetType="TextBlock">
+                <Setter Property="Foreground"  Value="{DynamicResource DockTabActiveBrush}" />
+                <Setter Property="FontSize"    Value="11" />
+                <Setter Property="FontWeight"  Value="SemiBold" />
+                <Setter Property="Margin"      Value="0,0,0,8" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            </Style>
 
-        <!-- Recent file button: smaller, path ellipsis -->
-        <Style x:Key="WelcomeRecentButton" TargetType="Button" BasedOn="{StaticResource WelcomeActionButton}">
-            <Setter Property="FontSize"  Value="12" />
-            <Setter Property="Padding"   Value="6,5,6,5" />
-            <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
-        </Style>
+            <!-- ── Quick-action flat button ───────────────────────────── -->
+            <Style x:Key="WelcomeActionButton" TargetType="Button">
+                <Setter Property="Background"                Value="Transparent" />
+                <Setter Property="BorderThickness"           Value="0" />
+                <Setter Property="Foreground"                Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="FontSize"                  Value="13" />
+                <Setter Property="HorizontalAlignment"       Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding"                   Value="6,7,6,7" />
+                <Setter Property="Cursor"                    Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    BorderThickness="0" CornerRadius="3"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabActiveBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <!-- Changelog version badge -->
-        <Style x:Key="WelcomeVersionBadge" TargetType="Border">
-            <Setter Property="Background"     Value="{DynamicResource DockTabActiveBrush}" />
-            <Setter Property="CornerRadius"   Value="3" />
-            <Setter Property="Padding"        Value="6,2,6,2" />
-            <Setter Property="Margin"         Value="0,0,8,0" />
-        </Style>
+            <!-- ── Template card ──────────────────────────────────────── -->
+            <Style x:Key="WelcomeCardButton" TargetType="Button">
+                <Setter Property="Background"    Value="{DynamicResource WS_CardBackgroundBrush}"/>
+                <Setter Property="BorderBrush"   Value="{DynamicResource WS_CardBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground"    Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Padding"       Value="14,12"/>
+                <Setter Property="Cursor"        Value="Hand"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment"   Value="Top"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="6"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource WS_CardHoverBackgroundBrush}"/>
+                                    <Setter TargetName="Bd" Property="BorderBrush"
+                                            Value="{DynamicResource DockTabActiveBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabHoverBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <!-- Hyperlink style for footer -->
-        <Style x:Key="WelcomeHyperlinkStyle" TargetType="Hyperlink">
-            <Setter Property="Foreground"       Value="{DynamicResource DockTabActiveBrush}" />
-            <Setter Property="TextDecorations"  Value="None" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="TextDecorations" Value="Underline" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+            <!-- ── Recent file row ────────────────────────────────────── -->
+            <Style x:Key="WelcomeRecentRowButton" TargetType="Button">
+                <Setter Property="Background"    Value="{DynamicResource WS_RecentItemBackgroundBrush}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground"    Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="FontSize"      Value="12"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Padding"       Value="8,6"/>
+                <Setter Property="Cursor"        Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource WS_RecentItemHoverBackgroundBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            </ResourceDictionary>
+            <!-- ── Icon-only small button (pin, remove) ───────────────── -->
+            <Style x:Key="WelcomeIconButton" TargetType="Button">
+                <Setter Property="Background"    Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Width"         Value="22"/>
+                <Setter Property="Height"        Value="22"/>
+                <Setter Property="Padding"       Value="0"/>
+                <Setter Property="Cursor"        Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    CornerRadius="3">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabHoverBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ── News category filter pill ──────────────────────────── -->
+            <Style x:Key="WelcomeFilterPill" TargetType="ToggleButton">
+                <Setter Property="Background"    Value="Transparent"/>
+                <Setter Property="BorderBrush"   Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground"    Value="{DynamicResource DockTabTextBrush}"/>
+                <Setter Property="FontSize"      Value="11"/>
+                <Setter Property="Padding"       Value="10,3"/>
+                <Setter Property="Cursor"        Value="Hand"/>
+                <Setter Property="Margin"        Value="0,0,6,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabActiveBrush}"/>
+                                    <Setter TargetName="Bd" Property="BorderBrush"
+                                            Value="{DynamicResource DockTabActiveBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockTabHoverBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ── Search box ─────────────────────────────────────────── -->
+            <Style x:Key="WelcomeSearchBox" TargetType="TextBox">
+                <Setter Property="Background"    Value="{DynamicResource WS_SearchBoxBackgroundBrush}"/>
+                <Setter Property="BorderBrush"   Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground"    Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="FontSize"      Value="12"/>
+                <Setter Property="Padding"       Value="28,5,8,5"/>
+                <Setter Property="Height"        Value="28"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4">
+                                <Grid>
+                                    <!-- Search icon -->
+                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="12" VerticalAlignment="Center"
+                                               Margin="8,0,0,0" IsHitTestVisible="False"
+                                               Foreground="{DynamicResource DockTabTextBrush}"
+                                               Opacity="0.6"/>
+                                    <ScrollViewer x:Name="PART_ContentHost"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    <!-- Placeholder -->
+                                    <TextBlock x:Name="Placeholder"
+                                               Text="{StaticResource APP_SearchRecent}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               Foreground="{DynamicResource DockTabTextBrush}"
+                                               Margin="{TemplateBinding Padding}"
+                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                               IsHitTestVisible="False" Opacity="0.45">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ── Changelog version badge ────────────────────────────── -->
+            <Style x:Key="WelcomeVersionBadge" TargetType="Border">
+                <Setter Property="Background"   Value="{DynamicResource DockTabActiveBrush}"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Padding"      Value="6,2,6,2"/>
+                <Setter Property="Margin"       Value="0,0,8,0"/>
+            </Style>
+
+            <!-- ── Footer hyperlink ───────────────────────────────────── -->
+            <Style x:Key="WelcomeHyperlinkStyle" TargetType="Hyperlink">
+                <Setter Property="Foreground"      Value="{DynamicResource DockTabActiveBrush}"/>
+                <Setter Property="TextDecorations" Value="None"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="TextDecorations" Value="Underline"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -105,212 +293,212 @@
                  ═══════════════════════════════════════════════════════════ -->
             <Border Background="{DynamicResource DockWindowBackgroundBrush}"
                     Padding="48,10,48,10">
-                <!-- Grid auto-sizes to image width so VersionText aligns to image right edge -->
                 <Grid HorizontalAlignment="Left">
-                    <!-- Logo banner — fills header height, respects aspect ratio -->
                     <Image Source="pack://application:,,,/WpfHexEditor.App;component/Images/Logo2026.png"
-                           MaxHeight="200"
-                           Stretch="Uniform"
+                           MaxHeight="200" Stretch="Uniform"
                            HorizontalAlignment="Left"
-                           RenderOptions.BitmapScalingMode="HighQuality" />
-
-                    <!-- Version overlay — bottom-right of image -->
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock x:Name="VersionText"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom"
-                               Margin="0,0,6,14"
-                               FontSize="11"
-                               Foreground="White"
-                               Opacity="0.65" />
+                               HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                               Margin="0,0,6,14" FontSize="11"
+                               Foreground="White" Opacity="0.65"/>
                 </Grid>
             </Border>
 
             <!-- Accent separator -->
-            <Rectangle Height="2" Fill="{DynamicResource DockTabActiveBrush}" />
+            <Rectangle Height="2" Fill="{DynamicResource DockTabActiveBrush}"/>
 
             <!-- ═══════════════════════════════════════════════════════════
-                 BODY  (2 columns)
+                 SECTION 1 — QUICK-START TEMPLATES
                  ═══════════════════════════════════════════════════════════ -->
-            <Grid Margin="48,32,48,24">
+            <Border Padding="48,28,48,0">
+                <StackPanel>
+                    <TextBlock Text="{StaticResource APP_StartTemplatesSection}"
+                               Style="{StaticResource WelcomeSectionTitle}"/>
+
+                    <!-- Template cards: UniformGrid 2 cols, populated in code-behind -->
+                    <UniformGrid x:Name="TemplateCardsGrid" Rows="0" Columns="4" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 BODY — 2 columns: Recent (left) | News (right)
+                 ═══════════════════════════════════════════════════════════ -->
+            <Grid Margin="48,28,48,24">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220" />
-                    <ColumnDefinition Width="32" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ── LEFT COLUMN ─────────────────────────────────────── -->
+                <!-- ── LEFT: QUICK ACTIONS + RECENT ──────────────────── -->
                 <StackPanel Grid.Column="0">
 
-                    <!-- QUICK ACTIONS -->
-                    <TextBlock Text="{StaticResource APP_QuickActionsSection}" Style="{StaticResource WelcomeSectionTitle}" />
+                    <!-- Quick Actions -->
+                    <TextBlock Text="{StaticResource APP_QuickActionsSection}"
+                               Style="{StaticResource WelcomeSectionTitle}"/>
 
-                    <Button x:Name="NewFileButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="NewFileButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8A5;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_NewFileButton}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_NewFileButton}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="OpenFileButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="OpenFileButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8E5;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_OpenFileButton}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_OpenFileButton}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="OpenProjectButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="OpenProjectButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8B7;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_OpenProjectButton}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_OpenProjectButton}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="OptionsButton"
-                            Style="{StaticResource WelcomeActionButton}"
+                    <Button x:Name="OptionsButton" Style="{StaticResource WelcomeActionButton}"
                             Margin="0,0,0,24">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE713;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_OptionsButton}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_OptionsButton}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Divider -->
-                    <Rectangle Height="1"
-                               Fill="{DynamicResource DockBorderBrush}"
-                               Margin="0,0,0,16" />
+                    <Rectangle Height="1" Fill="{DynamicResource DockBorderBrush}" Margin="0,0,0,16"/>
 
-                    <!-- RECENT FILES -->
-                    <TextBlock Text="{StaticResource APP_RecentSection}" Style="{StaticResource WelcomeSectionTitle}" />
+                    <!-- Recent Files header + search -->
+                    <TextBlock Text="{StaticResource APP_RecentSection}"
+                               Style="{StaticResource WelcomeSectionTitle}"/>
 
-                    <StackPanel x:Name="RecentFilesPanel" />
+                    <TextBox x:Name="RecentSearchBox"
+                             Style="{StaticResource WelcomeSearchBox}"
+                             Margin="0,0,0,8"
+                             TextChanged="OnRecentSearchChanged"/>
+
+                    <!-- Pinned files (always on top) -->
+                    <StackPanel x:Name="PinnedFilesPanel"/>
+
+                    <!-- Regular recent files -->
+                    <StackPanel x:Name="RecentFilesPanel"/>
 
                     <TextBlock x:Name="NoRecentText"
                                Text="{StaticResource APP_NoRecentFiles}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
-                               Opacity="0.5"
-                               Margin="6,4,0,0"
-                               Visibility="Collapsed" />
+                               Opacity="0.5" Margin="6,4,0,0"
+                               Visibility="Collapsed"/>
 
-                    <!-- RECENT SOLUTIONS -->
+                    <!-- Recent Solutions -->
                     <TextBlock Text="{StaticResource APP_RecentProjectsSection}"
                                Style="{StaticResource WelcomeSectionTitle}"
-                               Margin="0,20,0,8" />
+                               Margin="0,20,0,8"/>
 
-                    <StackPanel x:Name="RecentSolutionsPanel" />
+                    <StackPanel x:Name="PinnedSolutionsPanel"/>
+                    <StackPanel x:Name="RecentSolutionsPanel"/>
 
                     <TextBlock x:Name="NoRecentSolutionsText"
                                Text="{StaticResource APP_NoRecentProjects}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
-                               Opacity="0.5"
-                               Margin="6,4,0,0"
-                               Visibility="Collapsed" />
+                               Opacity="0.5" Margin="6,4,0,0"
+                               Visibility="Collapsed"/>
 
-                    <!-- Divider -->
-                    <Rectangle Height="1"
-                               Fill="{DynamicResource DockBorderBrush}"
-                               Margin="0,20,0,16" />
+                    <Rectangle Height="1" Fill="{DynamicResource DockBorderBrush}" Margin="0,20,0,16"/>
 
-                    <!-- RESOURCES -->
+                    <!-- Resources -->
                     <TextBlock Text="{StaticResource APP_ResourcesSection}"
-                               Style="{StaticResource WelcomeSectionTitle}" />
+                               Style="{StaticResource WelcomeSectionTitle}"/>
 
-                    <Button x:Name="GitHubButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="GitHubButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE774;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_GitHubLink}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_GitHubLink}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="WikiButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="WikiButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE82D;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xE82D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_WikiLink}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_WikiLink}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="IssueButton"
-                            Style="{StaticResource WelcomeActionButton}">
+                    <Button x:Name="IssueButton" Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xEBE8;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="14"
+                            <TextBlock Text="&#xEBE8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0" />
-                            <TextBlock Text="{StaticResource APP_ReportIssueLink}"
-                                       VerticalAlignment="Center" />
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{StaticResource APP_ReportIssueLink}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                 </StackPanel>
 
-                <!-- ── RIGHT COLUMN: CHANGELOG ─────────────────────────── -->
+                <!-- ── RIGHT: NEWS FEED ───────────────────────────────── -->
                 <StackPanel Grid.Column="2">
 
-                    <TextBlock Text="{StaticResource APP_WhatsNewSection}"
-                               Style="{StaticResource WelcomeSectionTitle}" />
+                    <!-- Header + filter pills -->
+                    <DockPanel Margin="0,0,0,12">
+                        <TextBlock Text="{StaticResource APP_WhatsNewSection}"
+                                   Style="{StaticResource WelcomeSectionTitle}"
+                                   VerticalAlignment="Center"
+                                   DockPanel.Dock="Left"
+                                   Margin="0,0,16,0"/>
 
-                    <!-- Loading placeholder (hidden once data arrives) -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <ToggleButton x:Name="FilterAll"      Style="{StaticResource WelcomeFilterPill}"
+                                          Content="{StaticResource APP_FilterAll}"
+                                          IsChecked="True" Click="OnNewsFilterClicked" Tag="All"/>
+                            <ToggleButton x:Name="FilterFeature"  Style="{StaticResource WelcomeFilterPill}"
+                                          Content="{StaticResource APP_FilterFeature}"
+                                          Click="OnNewsFilterClicked" Tag="Feature"/>
+                            <ToggleButton x:Name="FilterFix"      Style="{StaticResource WelcomeFilterPill}"
+                                          Content="{StaticResource APP_FilterFix}"
+                                          Click="OnNewsFilterClicked" Tag="Fix"/>
+                            <ToggleButton x:Name="FilterPerf"     Style="{StaticResource WelcomeFilterPill}"
+                                          Content="{StaticResource APP_FilterPerf}"
+                                          Click="OnNewsFilterClicked" Tag="Perf"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- Loading indicator -->
                     <TextBlock x:Name="ChangelogLoadingText"
                                Text="{StaticResource APP_LoadingChangelog}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
-                               Opacity="0.55"
-                               Margin="0,0,0,4"
-                               Visibility="Collapsed" />
+                               Opacity="0.55" Margin="0,0,0,4"
+                               Visibility="Collapsed"/>
 
-                    <!-- Changelog entries are populated in code-behind -->
-                    <StackPanel x:Name="ChangelogPanel" />
+                    <!-- News items: virtualised stack for perf -->
+                    <ScrollViewer x:Name="NewsScrollViewer"
+                                  MaxHeight="520"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="NewsPanel"
+                                    VirtualizingStackPanel.IsVirtualizing="True"/>
+                    </ScrollViewer>
 
                     <TextBlock x:Name="NoChangelogText"
                                Text="{StaticResource APP_ChangelogNotAvailable}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Opacity="0.5"
-                               Visibility="Collapsed" />
+                               Visibility="Collapsed"/>
 
                 </StackPanel>
             </Grid>
@@ -322,53 +510,41 @@
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="0,1,0,0"
                     Padding="48,14,48,14">
-                <DockPanel>
+                <StackPanel Orientation="Horizontal">
 
-                    <!-- Links — left -->
-                    <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="12" Foreground="{DynamicResource DockTabTextBrush}">
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                   RequestNavigate="OnHyperlinkNavigate"
+                                   NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
+                            <Run Text="{StaticResource APP_GitHubButton}"/>
+                        </Hyperlink>
+                    </TextBlock>
 
-                        <TextBlock FontSize="12"
-                                   Foreground="{DynamicResource DockTabTextBrush}">
-                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
-                                       RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
-                                <Run Text="{StaticResource APP_GitHubButton}"/>
-                            </Hyperlink>
-                        </TextBlock>
+                    <TextBlock FontSize="12" Foreground="{DynamicResource DockTabTextBrush}" Margin="28,0,0,0">
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                   RequestNavigate="OnHyperlinkNavigate"
+                                   NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/wiki">
+                            <Run Text="{StaticResource APP_WikiButton}"/>
+                        </Hyperlink>
+                    </TextBlock>
 
-                        <TextBlock FontSize="12"
-                                   Foreground="{DynamicResource DockTabTextBrush}"
-                                   Margin="28,0,0,0">
-                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
-                                       RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/wiki">
-                                <Run Text="{StaticResource APP_WikiButton}"/>
-                            </Hyperlink>
-                        </TextBlock>
+                    <TextBlock FontSize="12" Foreground="{DynamicResource DockTabTextBrush}" Margin="28,0,0,0">
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                   RequestNavigate="OnHyperlinkNavigate"
+                                   NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
+                            <Run Text="{StaticResource APP_ReportIssueButton}"/>
+                        </Hyperlink>
+                    </TextBlock>
 
-                        <TextBlock FontSize="12"
-                                   Foreground="{DynamicResource DockTabTextBrush}"
-                                   Margin="28,0,0,0">
-                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
-                                       RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
-                                <Run Text="{StaticResource APP_ReportIssueButton}"/>
-                            </Hyperlink>
-                        </TextBlock>
+                    <TextBlock FontSize="12" Foreground="{DynamicResource DockTabTextBrush}" Margin="28,0,0,0">
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                   RequestNavigate="OnHyperlinkNavigate"
+                                   NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/docs/CHANGELOG.md">
+                            <Run Text="{StaticResource APP_FullChangelogButton}"/>
+                        </Hyperlink>
+                    </TextBlock>
 
-                        <TextBlock FontSize="12"
-                                   Foreground="{DynamicResource DockTabTextBrush}"
-                                   Margin="28,0,0,0">
-                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
-                                       RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/docs/CHANGELOG.md">
-                                <Run Text="{StaticResource APP_FullChangelogButton}"/>
-                            </Hyperlink>
-                        </TextBlock>
-
-                    </StackPanel>
-
-                </DockPanel>
+                </StackPanel>
             </Border>
 
         </StackPanel>

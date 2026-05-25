@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>レイアウトを保存</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>レイアウトを読み込む</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>レイアウトをリセット</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>レイアウトを既定にリセットしますか？ 開いているドキュメントは保持されます。</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>ローミング データのクリア…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>ローミング データのクリア</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>保存された設定、レイアウト、セッション データが削除されます。インストール済みの拡張機能には影響しません。続行しますか？</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>ローミング データをクリアしました。変更を適用するには再起動することをお勧めします。今すぐ再起動しますか？</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>損壊したローミング データが検出されました ({0})。修正するにはバックアップしてリセットするか、続行するには無視してください。</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>バックアップ &amp; リセット</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>無視</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>バックアップから復元…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>バックアップ '{0}' からローミング データを復元しますか? 現在のファイルは上書きされます。</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>バックアップが見つかりません。バックアップを作成するには、「ローミング データを消去」を少なくとも 1 回使用してください。</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>バックアップが正常に復元されました。変更を適用するために今すぐ再起動しますか?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>ロックされたレイアウトを切り替え</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>ツール</value></data>
@@ -840,6 +852,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>スタート</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>ピン留め</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>機能</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>修正</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>パフォーマンス</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>ピン留め</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>ピン留め解除</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>最近から削除</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>最近を検索…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>PE解析</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>フィルター:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>インポート</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>エクスポート</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>セクション</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>ヘッダー</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>PEファイルではありません — まずWindows EXEまたはDLLを開いてください。</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>デコード</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>モード:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>キー (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>シフト:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>選択範囲を使用</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>バイト:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>閉じる</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>表示先:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>未保存の変更</value></data>
@@ -1132,4 +1227,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>場所をコピー ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>宣言で開く</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>シンボル名をコピー</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>実行</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>最小長:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>フィルター…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>オフセット</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>長さ</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>エンコード</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>値</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>バイト</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>重複</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>コンテキスト</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>ファイル内の文字列のバイトオフセット（16進数）</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>この文字列が占有する生のバイト数</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>検出されたエンコード: ASCII、UTF-16 LE/BE、UTF-8、Latin-1、EBCDIC、またはTBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>一致領域の生の16進バイト</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>デコードされた文字列値</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>同じデコード値を持つ文字列の数（オレンジ = 重複が見つかった）</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>前4バイト（灰色）+ 一致バイト（エンコード別に色分け）+ 後4バイト（灰色）</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>正規表現フィルター — 有効な場合、検索ボックスは正規表現として処理されます</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>最後のスキャン以降にファイルが変更されました — F5を押して再スキャンしてください</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>HexEditorカーソルをグリッドと同期</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>表示中の結果をハイライト</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>ハイライトをクリア</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>エクスポート…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>TBLファイルを読み込む…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>実行 (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>TBLを削除</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>固定/固定解除（フィルター後も残る）</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>文字列の最小長</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>文字列内の最小固有文字数</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>オフセットからフィルター（16進数）</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>オフセットまでフィルター（16進数、0 = 無制限）</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>高エントロピーブロックの結果を非表示</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>スキャンするファイル</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>ライブフィルター（F3 = 次、Shift+F3 = 前）</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> 期限切れ</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>高エントロピーを除外</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>ファイル:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>エンコード:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>最小:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>オフセット:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

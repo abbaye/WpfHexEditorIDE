@@ -38,14 +38,16 @@ namespace WpfHexEditor.Plugins.ClassDiagram.Analysis;
 /// </summary>
 public sealed class DiagramLiveSyncService : IDisposable, ILiveSyncCoordinator
 {
-    private readonly IReadOnlyList<string>                 _filePaths;
-    private readonly ClassDiagramOptions                   _options;
-    private readonly List<FileSystemWatcher>               _watchers   = [];
+    private readonly IReadOnlyList<string>                  _filePaths;
+    private readonly HashSet<string>                        _filePathSet;
+    private readonly ClassDiagramOptions                    _options;
+    private readonly List<FileSystemWatcher>                _watchers      = [];
     private readonly ConcurrentDictionary<string, DateTime> _suppressUntil =
         new(StringComparer.OrdinalIgnoreCase);
-    private          DiagramDocument                       _current;
-    private          System.Threading.Timer?               _debounce;
-    private          bool                                  _disposed;
+    private readonly ConcurrentBag<string>                  _pendingChanges = [];
+    private          DiagramDocument                        _current;
+    private          System.Threading.Timer?                _debounce;
+    private          bool                                   _disposed;
 
     private const int DebounceMs        = 800;
     private const int SuppressionMs     = 500;
@@ -62,9 +64,10 @@ public sealed class DiagramLiveSyncService : IDisposable, ILiveSyncCoordinator
         DiagramDocument        initialDocument,
         ClassDiagramOptions    options)
     {
-        _filePaths = filePaths.ToList();
-        _current   = initialDocument;
-        _options   = options;
+        _filePaths   = filePaths.ToList();
+        _filePathSet = new HashSet<string>(_filePaths, StringComparer.OrdinalIgnoreCase);
+        _current     = initialDocument;
+        _options     = options;
 
         StartWatchers();
     }
@@ -128,13 +131,16 @@ public sealed class DiagramLiveSyncService : IDisposable, ILiveSyncCoordinator
 
     private void OnFileEvent(object sender, FileSystemEventArgs e)
     {
-        if (!_filePaths.Contains(e.FullPath, StringComparer.OrdinalIgnoreCase))
+        if (!_filePathSet.Contains(e.FullPath))
             return;
 
         // ADR-021: drop events for files inside their suppression window
         // (writes originated by our own round-trip code, not user edits).
         if (IsSuppressed(e.FullPath))
             return;
+
+        // Accumulate the changed path for incremental analysis.
+        _pendingChanges.Add(e.FullPath);
 
         // Reset the debounce timer on every incoming event.
         _debounce?.Dispose();
@@ -149,12 +155,28 @@ public sealed class DiagramLiveSyncService : IDisposable, ILiveSyncCoordinator
     {
         if (_disposed) return;
 
+        // Drain the pending-change bag before analysis begins.
+        var changed = new List<string>();
+        while (_pendingChanges.TryTake(out var path))
+            changed.Add(path);
+
+        var changedDistinct = changed
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Where(_filePathSet.Contains)
+            .ToList();
+
         DiagramDocument next;
         try
         {
-            next = _filePaths.Count == 1
-                ? RoslynClassDiagramAnalyzer.AnalyzeFile(_filePaths[0], _options)
-                : RoslynClassDiagramAnalyzer.AnalyzeFiles([.. _filePaths], _options);
+            // Incremental path: only the files that actually changed need re-parsing.
+            // Fall back to full analysis when every file is affected or changed set is empty.
+            if (changedDistinct.Count > 0 && changedDistinct.Count < _filePaths.Count)
+                next = RoslynClassDiagramAnalyzer.AnalyzeFilesIncremental(
+                    _current, _filePaths, changedDistinct, _options);
+            else
+                next = _filePaths.Count == 1
+                    ? RoslynClassDiagramAnalyzer.AnalyzeFile(_filePaths[0], _options)
+                    : RoslynClassDiagramAnalyzer.AnalyzeFiles([.. _filePaths], _options);
         }
         catch
         {

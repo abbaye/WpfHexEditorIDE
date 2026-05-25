@@ -1,12 +1,13 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ZFS Filesystem",
   "formatId": "ZFS",
-  "version": "1.14",
-  "extensions": [
-    ".zfs"
-  ],
-  "description": "Zettabyte File System",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 82,
+  "extensions": [".zfs"],
+  "description": "Zettabyte File System (ZFS/OpenZFS). ZFS vdev label magic is 0x0CB1BA00 at offset 0 in each vdev label. The vdev label occupies the first 256KB of each device. The uberblock array is at offset 0x20000 (128KB) within the vdev label. ZFS is a combined volume manager and filesystem with copy-on-write, checksums, and RAID-Z.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -19,115 +20,130 @@
     "WebLinks": [
       "https://en.wikipedia.org/wiki/ZFS",
       "https://openzfs.github.io/openzfs-docs/",
-      "https://github.com/openzfs/zfs/blob/master/module/zfs/vdev_label.c",
-      "https://www.truenas.com/docs/references/zfsprimer/"
+      "https://github.com/openzfs/zfs/blob/master/module/zfs/vdev_label.c"
     ]
   },
+  "maxSignatureOffset": 4,
+  "signatures": [
+    {
+      "value": "0CB1BA00",
+      "offset": 0,
+      "label": "ZFS vdev label magic 0x0CB1BA00 — present in vdev label at start of device",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 12,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00000000000000000CBAD1BA",
-        "offset": 0,
-        "label": "ZFS magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 12, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "00000000000000000CBAD1BA", "offset": 0, "label": "ZFS magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
-    "Strength": "Strong"
+    "Strength": "Moderate"
   },
   "variables": {
     "currentOffset": 0,
     "fileSize": 0,
     "version": 0,
     "format": "",
-    "formattedSize": ""
+    "formattedSize": "",
+    "vdevMagic": 0,
+    "ubVersion": 0,
+    "ubTxg": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "vdev_magic", "offset": 0, "size": 4, "type": "uint32le", "description": "ZFS vdev label magic: 0x0CB1BA00" },
+      { "name": "label_size", "offset": 4, "size": 4, "type": "uint32le", "description": "Reserved for label size" },
+      { "name": "boot_header", "offset": 8192, "size": 8192, "type": "bytes", "description": "Boot header region (8KB)" },
+      { "name": "uberblock_array_start", "offset": 131072, "size": 131072, "type": "bytes", "description": "Uberblock array (128 uberblocks, 1KB each)" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "ZFS Label", "offset": 0, "length": 262144, "color": "#00BFFF", "opacity": 0.4, "description": "ZFS vdev label" },
+    { "type": "metadata", "name": "File Size", "variable": "fileSize", "description": "File Size" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" },
+    { "type": "metadata", "name": "Formatted Size", "variable": "formattedSize", "description": "Human-readable file size" }
+  ],
+  "inspector": {
+    "displayFields": ["vdevMagic", "ubVersion", "ubTxg"],
+    "valueMaps": {},
+    "tooltips": {
+      "vdevMagic": "ZFS vdev label magic 0x0CB1BA00 at offset 0",
+      "ubVersion": "ZFS pool version from the active uberblock",
+      "ubTxg": "Transaction group (TXG) from the active uberblock — highest is the most recent"
+    }
+  },
+  "assertions": [
+    { "name": "ZFS vdev magic present", "expression": "vdevMagic == 0x0CB1BA00", "severity": "error", "message": "ZFS vdev label magic 0x0CB1BA00 must be at offset 0" },
+    { "name": "File has vdev label", "expression": "fileSize >= 262144", "severity": "warning", "message": "ZFS device must be at least 256KB for a complete vdev label" },
+    { "name": "Uberblock TXG positive", "expression": "ubTxg > 0", "severity": "info", "message": "ZFS uberblock transaction group should be positive for a used pool" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "ZFS vdev Label 0 (magic 0x0CB1BA00)", "color": "#00BFFF" },
+      { "offset": 131072, "label": "Uberblock Array (128KB)", "color": "#4ECDC4" },
+      { "offset": 262144, "label": "Pool Data (after label)", "color": "#95E1D3" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "ZFS Label",
-      "offset": 0,
-      "length": 262144,
-      "color": "#00BFFF",
-      "opacity": 0.4,
-      "description": "ZFS vdev label"
+      "name": "ZFS vdev Label Summary",
+      "format": "text",
+      "template": "ZFS Filesystem\nMagic  : 0x{vdevMagic:X8}\nVersion: {ubVersion}\nTXG    : {ubTxg}"
     },
     {
-      "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "ZFS vdev Label CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{vdevMagic}\nVersion,{ubVersion}\nTXG,{ubTxg}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "ZFS vdev label magic 0x0CB1BA00 is at offset 0 of each vdev (physical device or partition)",
+    "ZFS has 4 vdev label copies: label0, label1 at the start, label2, label3 at the end of the device",
+    "The uberblock array is at offset 0x20000 (128KB) — 128 uberblocks of 1KB each; highest valid TXG is active",
+    "ZFS pool metadata is in NV-list format (name=value pairs) in the vdev label at offset 16KB",
+    "OpenZFS supports encryption (AES-256-GCM/CCM) — encrypted pools have additional IV and key metadata"
   ],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [
-      ".zfs"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "DiskInternals",
-    "R-Studio",
-    "HxD",
-    "FTK Imager",
-    "Autopsy"
-  ],
-  "UseCases": [
-    "Disk imaging",
-    "Forensics",
-    "Data recovery",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
   "forensic": {
-    "category": "disk",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Zettabyte File System",
-    "suggestedInspections": [
-      "Verify ZFS Filesystem superblock/boot sector signature and version",
-      "Check partition/volume layout and allocation bitmap",
-      "Inspect filesystem journal and metadata consistency"
+    "riskLevel": "high",
+    "notes": [
+      "ZFS CoW means data blocks persist until all references are freed — forensic recovery is excellent",
+      "4 label copies at start and end of device allow recovery from severe corruption",
+      "ZFS datasets with encryption cannot be read without the correct key material"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "BTRFS", "relation": "sibling", "note": "Both are CoW filesystems combining volume management with the filesystem layer" }
+  ],
+  "software": ["OpenZFS", "ZFS on Linux", "FreeBSD ZFS", "TrueNAS/FreeNAS", "ZFSin (Windows port)", "R-Studio"],
+  "useCases": [
+    "Enterprise NAS and SAN storage with RAID-Z parity",
+    "ZFS pool forensics for data recovery",
+    "Snapshot-based backup and replication",
+    "OpenZFS on Linux (Ubuntu, Debian, Arch) storage"
+  ],
+  "technicalDetails": {
+    "MagicValue": "0x0CB1BA00",
+    "LabelCount": 4,
+    "LabelSize": "256KB each",
+    "UberblockArrayOffset": "0x20000 (128KB within label)",
+    "UberblockCount": 128,
+    "UberblockSize": "1KB",
+    "ChecksumAlgorithms": ["fletcher2", "fletcher4", "SHA256", "edonr", "skein"]
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "Software": ["DiskInternals", "R-Studio", "HxD", "FTK Imager", "Autopsy"],
+  "UseCases": ["Disk imaging", "Forensics", "Data recovery", "Analysis"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "MagicValue": "0x0CB1BA00", "LabelCount": 4, "UberblockArrayOffset": "0x20000" },
+  "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }

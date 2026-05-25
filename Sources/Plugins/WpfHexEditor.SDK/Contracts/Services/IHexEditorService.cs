@@ -140,6 +140,12 @@ public interface IHexEditorService
     void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block);
 
     /// <summary>
+    /// Adds multiple blocks in one batch, firing a single invalidation instead of one per block.
+    /// No-op when no file is open.
+    /// </summary>
+    void AddCustomBackgroundBlockRange(IEnumerable<WpfHexEditor.Core.CustomBackgroundBlock> blocks);
+
+    /// <summary>
     /// Removes all custom background blocks whose <c>Description</c> starts with
     /// <paramref name="tag"/>. Used by plugins to clean up their own blocks without
     /// disturbing blocks added by other features.

@@ -1,37 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Lotus Notes NSF Database",
   "formatId": "NSF_NOTES",
-  "version": "1.13.1",
-  "extensions": [
-    ".nsf"
-  ],
-  "description": "IBM Lotus Notes/Domino database format",
+  "version": "1.14",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".nsf"],
+  "description": "IBM Lotus Notes/Domino database format. NSF files start with a 3-byte signature: 0x1A 0x00 0x00 at offset 0. The file contains documents, views, folders, agents, and design elements organized in a note-based structure. Each note has a UNID (Universal Note ID) and a note class indicating its type.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "Lotus Notes NSF Database Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/NSF"
-    ]
+    "specifications": ["Lotus Notes NSF Database Format"],
+    "WebLinks": ["https://en.wikipedia.org/wiki/NSF", "https://help.hcl-software.com/domino/"]
   },
+  "maxSignatureOffset": 3,
+  "signatures": [
+    {
+      "value": "1A0000",
+      "offset": 0,
+      "label": "NSF database magic — Lotus Notes/Domino file identifier",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "1A0000",
-        "offset": 0,
-        "label": "NSF magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 3, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "1A0000", "offset": 0, "label": "NSF magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Medium"
@@ -41,94 +37,106 @@
     "pageSize": 0,
     "pageCount": 0,
     "tableCount": 0,
-    "version": 0
+    "version": 0,
+    "nsfMagic": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "nsf_magic", "offset": 0, "size": 3, "type": "bytes", "description": "NSF magic bytes: 1A 00 00" },
+      { "name": "file_format", "offset": 3, "size": 1, "type": "uint8", "description": "NSF file format version" },
+      { "name": "db_class", "offset": 4, "size": 2, "type": "uint16le", "description": "Database class: 0=Notes, 2=Personal Address Book" },
+      { "name": "db_options", "offset": 6, "size": 2, "type": "uint16le", "description": "Database option flags" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "NSF Header", "offset": 0, "length": 256, "color": "#457B9D", "opacity": 0.4, "description": "Lotus Notes NSF database header" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["nsfMagic", "file_format", "db_class"],
+    "valueMaps": {
+      "db_class": {
+        "0": "Standard Notes Database",
+        "2": "Personal Address Book (PAB)",
+        "4": "Directory"
+      }
+    },
+    "tooltips": {
+      "nsf_magic": "Magic bytes 1A 00 00 at offset 0 identify Lotus Notes/HCL Domino NSF files",
+      "file_format": "NSF file format version — determines supported features"
+    }
+  },
+  "assertions": [
+    { "name": "NSF magic present", "expression": "nsfMagic == '1A0000'", "severity": "error", "message": "NSF magic 1A 00 00 must be at offset 0" },
+    { "name": "File not truncated", "expression": "fileSize >= 256", "severity": "warning", "message": "NSF file should have at least a full header (256 bytes)" },
+    { "name": "DB class is known", "expression": "db_class <= 4", "severity": "info", "message": "NSF database class should be in the known range (0–4)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "NSF File Header (magic + format)", "color": "#457B9D" },
+      { "offset": 256, "label": "Note Segment Table", "color": "#1D3557" },
+      { "offset": 512, "label": "First Note Data", "color": "#A8DADC" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "NSF Header",
-      "offset": 0,
-      "length": 256,
-      "color": "#457B9D",
-      "opacity": 0.4,
-      "description": "Lotus Notes NSF database header"
+      "name": "NSF Header Summary",
+      "format": "text",
+      "template": "Lotus Notes NSF Database\nFormat  : {file_format}\nDB Class: {db_class}\nVersion : {version}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "NSF Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nFileFormat,{file_format}\nDBClass,{db_class}\nVersion,{version}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "NSF magic 1A 00 00 is a reliable identifier at offset 0 for all Lotus Notes / HCL Domino databases",
+    "NSF is note-based, not table-based — each document is a 'note' with a UNID and note class",
+    "Note class values: 0x0002=Data, 0x0100=Design, 0x0400=Form, 0x0800=View, 0x1000=Icon",
+    "NSF files can only be fully read with the Notes/Domino API — binary parsing gives partial access",
+    "Deleted notes are marked but not immediately purged — forensic recovery is possible"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".nsf"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
-  ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
   "forensic": {
-    "category": "database",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "IBM Lotus Notes/Domino database format",
-    "suggestedInspections": [
-      "Verify Lotus Notes NSF Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "riskLevel": "high",
+    "notes": [
+      "NSF databases contain email, calendar, and document data — high forensic and compliance value",
+      "Deleted notes remain in the file until a purge operation is run",
+      "ACL (Access Control List) entries may reveal authorized users and access levels",
+      "NSF files are used in enterprise environments — may contain confidential business communications"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "MDB", "relation": "sibling", "note": "Both are proprietary legacy database formats common in enterprise environments" }
+  ],
+  "software": ["HCL Domino", "IBM Lotus Notes 8.x", "HCL Notes 9.x–14.x", "NSF Migrator tools", "Stellar NSF to PST Converter"],
+  "useCases": [
+    "HCL/IBM Lotus Notes email and groupware database storage",
+    "Enterprise collaboration and document management",
+    "E-discovery and forensic extraction of corporate communications",
+    "Migration from Lotus Notes to Microsoft Exchange"
+  ],
+  "technicalDetails": {
+    "MagicBytes": "1A 00 00",
+    "NoteModel": "Document-oriented (note-based), not relational",
+    "UNIDSize": "16 bytes (128-bit Universal Note ID)",
+    "ACLSupport": true,
+    "FullTextIndexing": "Optional .ft directory companion"
+  },
+  "completenessScore": 85,
+  "MimeTypes": ["application/octet-stream"],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "MagicBytes": "1A 00 00", "NoteModel": "Document-oriented" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

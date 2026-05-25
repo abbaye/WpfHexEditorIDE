@@ -1,5 +1,6 @@
 {
-  "diffMode": "semantic",
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "diffMode": "text",
   "formatName": "XML Document",
   "formatId": "XML",
   "version": "2.22",
@@ -393,16 +394,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Extensible Markup Language (XML) is a text-based markup language that defines rules for encoding documents i...",
-    "suggestedInspections": [
-      "Validate XML Document file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "XXE injection vulnerabilities allow reading local files or SSRF via entity references.",
+      "XML bombs (billion laughs) can cause denial of service through entity expansion.",
+      "Processing instructions may reference external stylesheets loaded on parse."
     ]
   },
+  "aiHints": [
+    "Extensible Markup Language (XML) is a text-based markup language that defines rules for encoding documents i...",
+    "Validate XML Document file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Look for <?xml version and encoding declaration — absence defaults to UTF-8 in XML 1.0.",
+    "xmlns:xsi and xsi:schemaLocation attributes reference XSD schema validation files.",
+    "XXE (XML External Entity) injection: look for <!DOCTYPE with SYSTEM or PUBLIC entity declarations.",
+    "CDATA sections <![CDATA[...]]> can embed arbitrary text including angle brackets.",
+    "XInclude (xmlns:xi) and XPointer can cause recursive or external document inclusion.",
+    "DTD processing instructions may trigger SSRF or billion-laughs DoS attacks."
+  ],
   "diff": {
     "keyFields": [
       "bom_bytes",
@@ -439,5 +449,159 @@
       }
     ],
     "note": "Inferred fuzz strategies for XML. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "3C3F786D6C",
+      "offset": 0,
+      "label": "XML signature",
+      "weight": 100,
+      "strength": "strong"
+    },
+    {
+      "value": "3C",
+      "offset": 0,
+      "label": "XML start tag (<)",
+      "weight": 30,
+      "strength": "weak"
+    },
+    {
+      "value": "EFBBBF3C3F786D6C",
+      "offset": 0,
+      "label": "UTF-8 BOM + XML declaration",
+      "weight": 80,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 3,
+  "structure": {
+    "fields": [
+      {
+        "name": "XMLDeclaration",
+        "offset": 0,
+        "size": -1,
+        "type": "string",
+        "description": "Optional <?xml version='1.0' encoding='UTF-8'?> processing instruction"
+      },
+      {
+        "name": "RootElement",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "Document root element — determines vocabulary (HTML, SVG, XHTML, etc.)"
+      },
+      {
+        "name": "Namespaces",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "xmlns declarations defining element/attribute name spaces"
+      },
+      {
+        "name": "Content",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "Child elements, text nodes, and attribute data"
+      },
+      {
+        "name": "ProcessingInstructions",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "Optional processing instructions (e.g., <?xml-stylesheet?>)"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 3,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "html",
+      "relation": "related",
+      "note": "HTML and XHTML are XML-derived vocabularies"
+    },
+    {
+      "formatId": "svg",
+      "relation": "subset",
+      "note": "SVG is an XML vocabulary for vector graphics"
+    },
+    {
+      "formatId": "docx",
+      "relation": "container",
+      "note": "DOCX uses XML parts internally"
+    }
+  ],
+  "software": [
+    "Text editors (VS Code, Notepad++, Sublime Text)",
+    "Web browsers (Chrome, Firefox, Edge)",
+    "XML editors (XMLSpy, Oxygen XML)",
+    "All major programming languages and frameworks"
+  ],
+  "useCases": [
+    "Data interchange and serialization",
+    "Configuration files (Maven, Spring, .NET)",
+    "Web services (SOAP, RSS, Atom)",
+    "Document markup (XHTML, DocBook, SVG)"
+  ],
+  "technicalDetails": "XML (Extensible Markup Language, W3C REC-xml) is a text-based hierarchical data format. Documents begin with an optional XML declaration specifying version and encoding. The root element is followed by nested child elements with attributes. Namespaces (xmlns) prevent element name conflicts across vocabularies.",
+  "completenessScore": 88
 }

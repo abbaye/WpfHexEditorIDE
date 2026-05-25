@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "formatName": "HFS+ File System",
   "formatId": "HFS_PLUS",
   "version": "1.0",

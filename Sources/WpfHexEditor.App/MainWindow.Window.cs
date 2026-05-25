@@ -146,6 +146,9 @@ public partial class MainWindow
     {
         if (sender is not MenuItem windowMenu) return;
 
+        RestoreRoamingBackupMenuItem.IsEnabled =
+            WpfHexEditor.App.Services.RoamingDataBackupService.GetLatestBackup() is not null;
+
         // Find the sentinel separator and remove all items after it.
         var sep = windowMenu.Items
             .OfType<FrameworkElement>()

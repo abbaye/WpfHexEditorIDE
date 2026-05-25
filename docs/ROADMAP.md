@@ -5,9 +5,9 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 > **Legend:** 🔧 In Progress · 🔜 Planned · ✅ Done (see CHANGELOG)
 >
-> 📅 *Last revised: 2026-05-17*
+> 📅 *Last revised: 2026-05-20*
 >
-> **Current IDE build:** `0.6.5.95` — ScreenRecorder plugin, ClassDiagram live arrows, Scripting Console, Snippets Phase 2, ByteProvider v1.3.0, Hex Diff/Patch, Binary Analysis.
+> **Current IDE build:** `0.6.5.96` — DiffViewer Phase 2 complete (word-level diff, .patch export, 3-way merge), ClassDiagram incremental Roslyn live-sync, Entropy Heatmap viewport rendering.
 
 ---
 
@@ -23,6 +23,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | #107 | **Document Model** | `IDocumentBuffer` / `DocumentBuffer` (thread-safe, Dispatcher-marshalled); `IBufferAwareEditor` implemented by `CodeEditor`, `TextEditor`, `MarkdownEditorHost`, `CodeEditorSplitHost`, `XamlDesignerSplitHost`, **`HexEditor`** (`HexEditor.BufferAware.cs` partial — `ByteModified` debounce 300ms, `OpenStream(MemoryStream)` reload, 10MB cap); `DocumentManager` buffer lifecycle; `LspBufferBridge` (300 ms debounce → `DidChange`); `LspDocumentBridgeService`; **HexEditor block undo/redo** (ADR-UNDO-01 ✅ — paste/cut/delete as single undo step, `UndoGroup` composite, coalescence, VS-style history dropdown); **HexEditor ↔ CodeEditor shared `UndoEngine`** ✅ v0.6.4.10 (`IUndoAwareEditor`, `HexByteUndoEntry`, `DocumentBuffer` undo wiring). Remaining: multi-editor collaboration. | ~50% |
 | #85–86 | **LSP Engine / SmartComplete** | Full JSON-RPC LSP client (`LspClientImpl`); `ServerCapabilities` parse; 10 LSP providers: completion (LSP-first + local fallback), hover, signature help, code actions (`Ctrl+.`), rename (`F2`), inlay hints, code lens, semantic tokens, breadcrumb bar, workspace symbols (`Ctrl+T`); `LspDocumentSync` (DidOpen/DidChange/DidClose); `LspStatusBarAdapter`; `LspServersOptionsPage`; F# (`fsautocomplete`) + VB.NET server entries ✅ (Roslyn in-process for C#/VB.NET — ADR-ROSLYN-01); 30 new tokens × 18 themes; **call hierarchy** (`LspCallHierarchyProvider` + `CallHierarchyPanel` ✅ Shift+Alt+H); **linked editing** (`LspLinkedEditingProvider` ✅), **incremental document sync** (`IIncrementalSyncClient`, `TextDocumentSyncKind=2` ✅ Phase 3), **pull-diagnostics interface** (`IDiagnosticsModeClient`, `UsesPullDiagnostics` ✅ Phase 3), **LSP inlay hints** (`LspInlayHintsLayer` ✅), **LSP declaration hints** (`LspDeclarationHintsLayer` ✅). Remaining: inline value hints. | ~70% |
 | #172 | **Structure Editor** | Visual `.whfmt` binary template editor — block DataGrid with field types/offsets, drag-drop block reordering, `Ctrl+F` search, validation pipeline, undo/redo, `StructurePopToolbar`, `BlockTypeBadge`, `LiveWhfmtBuffer`, `VariablesTab` redesign, `TestTab` with live binary preview, variable cross-reference validation, expression `SmartComplete`, options page, `SimpleBlockInterpreter`, `ForensicPattern` tolerant converter. Remaining: live binary preview sync, complex type support (arrays, unions, conditionals, bitfields), template validation engine, import/export template packages. | ~30% |
+| #156 | **Class Diagram Plugin** | 🔧 **~85% Done** — DSL v2 + syntax-highlighted pane (`classdiagram.whfmt` + `CodeEditorSplitHost`), 3 layout strategies (Force-Directed / Hierarchical / Swimlane), canvas minimap drag + corner-snap + hide, left-panel TreeView with colored selectable members, collapsible sections + dual metrics badge, hover tooltips (400 ms), context menu (ZoomToRect, clipboard export), scrollbars, session state save/restore; live arrow redraw during drag ✅ v0.6.5.95; round-trip Roslyn sync phases 1A–7 done (ADR-021–036); SVG exporter (`ClassDiagramSvgExporter`) ✅; **PNG export** (`ClassDiagramExportService.ExportPngAsync` ✅); **incremental Roslyn live-sync** (`AnalyzeFilesIncremental` + `_pendingChanges` bag — only changed files re-parsed, positions preserved ✅ v0.6.5.96). Remaining: VB.NET partial class merging in incremental path. | ~85% |
 
 ---
 
@@ -30,27 +31,25 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #36 | **Service Container / DI** | `ServiceContainer` singleton with `FileService`, `EditorService`, `PanelService`, `PluginService`, `EventBus`, `TerminalService`; Singleton/Scoped/Transient lifecycle. |
-| #37 | **Global CommandBus** | All IDE actions (menus, toolbar, terminal, plugins) routed through `CommandBus`; every command has Id, Handler, CanExecute context, and Category. |
-| #38 | **Keyboard Shortcuts & Bindings** | `KeyBindingService`, configurable gestures per command, conflict detection, plugin-extensible, export/import. |
+| #36 | **Service Container / DI** | ✅ **Done** — `IServiceContainer` SDK contract + `ServiceContainerAdapter`; `AppServiceCollection` (MEF → `Microsoft.Extensions.DependencyInjection 8.0`); Singleton/Scoped/Transient lifecycle. |
+| #37 | **Global CommandBus** | ✅ **Done** — `CommandBus` / `ICommandBus`; all IDE actions routed; `CommandRegistry` (~45 commands). |
+| #38 | **Keyboard Shortcuts & Bindings** | ✅ **Done** — `KeyBindingService` / `IKeyBindingService`; configurable gestures; `KeyboardShortcutsPage`; conflict detection; plugin-extensible. |
 | #39 | **User Preferences Persistence** | `ConfigurationManager`, per-section schemas, plugin config API, export/import, cross-session persistence. |
 | #40 | **Centralized Logging & Diagnostics** | `LogService` (Info/Warning/Error/Debug), `DiagnosticService` (perf metrics), `LogSink` abstraction, Output + Error Panel integration. |
 | #77 | **Workspace System & State Serialization** | Plugin lazy loading fully done (ADR-LAZY-01 ✅ v0.6.4.6 — manifest stubs, single-click activation, panel persistence across restarts). Multi-workspace management with project-specific settings — remaining. |
-| #78 | **Command System (Internal IDE Commands)** | Central command registry for all IDE actions accessible via menu, terminal, keyboard shortcuts, and scripts. |
-| #79 | **Scripting / Automation Engine** | Execute `.hxscript` files via terminal to automate IDE workflows, plugin actions, and batch operations. |
-| #82 | **Service Registry & Dependency Injection** | Central DI container exposing all IDE services to plugins uniformly via `IServiceRegistry`. |
+| #78 | **Command System (Internal IDE Commands)** | ✅ **Done** — `WpfHexEditor.Commands` project; central command registry; `KeyBindingService`; `KeyboardShortcutsPage`; TitleBar launcher. |
+| #79 | **Scripting / Automation Engine** | ✅ **Done v0.6.5.95** — Dockable Roslyn scripting console; async execution; output history; `ScriptingModule`; `.hxscript` automation via terminal. |
+| #82 | **Service Registry & Dependency Injection** | ✅ **Done** — `IServiceContainer` SDK + `ServiceContainerAdapter`; central DI container exposing all IDE services to plugins via `IServiceRegistry`. |
 | #83 | **Options Document / IDE Settings** | Unified options panel for editor behavior, themes, plugins, and workspace config with live preview. |
-| #87 | **Workspace Templates** | Pre-configured project templates for common file structures and development workflows. |
-| #100 | **IDE Localization Engine** | Full i18n support for IDE UI (currently English only). HexEditor control already supports 19 languages. EN/FR initial; plugin-provided translations; dynamic switching. |
-| #101 | **`.sln` Parser** | *(In Progress — see above)* Open and parse existing Visual Studio 2019/2022 `.sln` files via `VsSolutionLoaderPlugin`. Remaining: nested solution folders, shared projects, full project graph. |
-| #102 | **C# / VB.NET Project Support** | *(In Progress)* `.csproj` parsing via MSBuild Locator. Remaining: VB.NET, write support, item group editing. |
+| #87 | **Workspace Templates** | ✅ **Done v0.5.2** — `TemplateManager`, `ProjectScaffolder`, 3 built-in JSON templates, `NewProjectDialog`. |
+| #100 | **IDE Localization Engine** | *(In Progress ~78% — see above)* |
+| #101 | **`.sln` Parser** | *(In Progress — see above)* Remaining: nested solution folders, shared projects, full project graph. |
+| #102 | **C# / VB.NET Project Support** | *(In Progress)* `.csproj` parsing via MSBuild Locator. Remaining: VB.NET write support, item group editing. |
 | #103 | **MSBuild API Integration** | *(In Progress — see above)* Build/rebuild/clean done. Parallel project builds ✅. Incremental builds ✅. Remaining: error list navigation with file/line jump. |
 
 ---
 
 ## 🔜 Planned — Ultimate IDE Architecture (VS-Level)
-
-This section presents VS-level concepts for the IDE, focusing only on features **not yet included** in the current roadmap.
 
 | Feature # | Title | Description | Remarque |
 |-----------|-------|-------------|----------|
@@ -63,40 +62,39 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #84 | **Code Editor — VS-Like Advanced** | *(In Progress ~96% — see above)* |
-| #85 | **LSP Engine** | *(In Progress ~93% — see above)* Remaining: inline value hints, LSP 3.18 pull-diagnostics (`textDocument/diagnostic`). Note: Roslyn replaces OmniSharp for C#/VB.NET (ADR-ROSLYN-01). |
-| #179 | **Document Structure Panel** | ✅ **Done v0.6.4.6** — `WpfHexEditor.Plugins.DocumentStructure`; 8 providers (LSP/SourceOutline/JSON/XML/Markdown/INI/Binary/Folding); `DocumentStructureProviderResolver`; `IDocumentStructureProvider` SDK extension point; 18 `DS_*` theme tokens × 18 themes. |
-| #180 | **Tab Groups** | ✅ **Done v0.6.4.6** — `ITabGroupService` SDK contract + `TabGroupService`; split horizontal/vertical; move between groups; 16 `TG_*` theme tokens; keyboard shortcuts; settings page; 77 integration tests. |
+| #84 | **Code Editor — VS-Like Advanced** | *(In Progress ~90% — see above)* |
+| #85 | **LSP Engine** | *(In Progress ~70% — see above)* Remaining: inline value hints, LSP 3.18 pull-diagnostics (`textDocument/diagnostic`). Note: Roslyn replaces OmniSharp for C#/VB.NET (ADR-ROSLYN-01). |
 | #86 | **SmartComplete v4 (LSP)** | Advanced autocomplete, signature help, quick-info, multi-caret editing, virtual scroll for >1 GB files. |
-| #88 | **Dynamic Snippets** | `SnippetsManager` with context-aware snippets, dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); user/plugin/language-scoped. |
-| #89 | **AI-Assisted Code Suggestions** | AI Assistant plugin shipped (v0.6.4.3) with 5 providers, 25 MCP tools, streaming chat, inline apply. Remaining: `AICompletionEngine` (inline ghost-text completions), `AIRefactoringAssistant`, plugin-extensible AI rules. |
+| #88 | **Dynamic Snippets** | ✅ **Done v0.6.5.95** — `SnippetsManager`, context-aware snippets, dynamic variables; user/plugin/language-scoped; visual in-app snippet editor; default pack + user store. |
+| #89 | **AI-Assisted Code Suggestions** | ✅ **Done v0.6.4.3** — AI Assistant plugin with 5 providers, 25 MCP tools, streaming chat, inline apply. Remaining: `AICompletionEngine` (inline ghost-text completions), `AIRefactoringAssistant`, plugin-extensible AI rules. |
 | #94 | **Advanced Refactoring** | Rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions. |
 | #96 | **Code Analysis & Metrics** | Cyclomatic complexity, code duplication detection, dependency graphs; dedicated panel with filter/sort. |
-| #106 | **.NET Decompilation via ILSpy** | C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation; decompiled source in Code Editor tab. |
-| #157 | **Go-to-References / Find All References** | ✅ **Done v0.6.3.7** — `Shift+F12`; `WorkspaceFileCache` (thread-safe solution file index); `InlineHintsService` (regex reference counting); dockable `FindReferencesPanel` with scope filter + search debounce; `F8`/`Shift+F8` navigation. |
-| #158 | **Peek Definition** | ✅ **Done** — `Alt+F12`; `InlinePeekHost` (DrawingVisual overlay, title bar, resize handle, keyboard nav, Esc to close); `ShowPeekDefinitionAsync` + `OpenInlinePeekAsync` in `CodeEditor.LSP.cs`; command registered in `MainWindow.Commands.cs`. |
-| #159 | **Code Formatting** | ✅ **Done** — Format-on-save toggle (`FormatOnSave` DP), full LSP `textDocument/formatting` + range formatting (`CodeFormattingService`, `RoslynFormattingProvider`, `BasicIndentFormatter` fallback), `Ctrl+K Ctrl+D` document format. |
-| #160 | **Sticky Scroll** | ✅ **Done v0.6.3.7** — Scope header pinned at top while scrolling; line numbers in gutter; syntax-highlighted rows; 6 options; `StickyScrollHeader` with allocation-free `OnRender` (resources cached in `Update()`); click to navigate. |
-| #161 | **Code Minimap** | ✅ **Done** — `MinimapControl` (GlyphRun canvas, click-to-scroll, viewport slider, diagnostic overlay, context menu, `CE_Minimap*` tokens). |
-| #162 | **Bracket Pair Colorization** | ✅ **Done v0.6.4.2** — `BracketPairColorizationEnabled` DP on `CodeEditor`; `BracketDepthColorizer` pipeline; synthetic bracket `RegexHighlightRule` generated from `language.BracketPairs`; `CE_Bracket_1/2/3/4` tokens × 18 themes; `InvalidateAllCache()` on highlighter change; option wired in settings. |
-| #163 | **Auto-close Brackets & Quotes** | ✅ **Done v0.6.3.7** — Auto-insert matching `)` `]` `}` `"` `'` on type; skip-over on duplicate type; wrap selection in pair; 4 options (`AutoClosingBrackets`, `AutoClosingQuotes`, `SkipOverClosingChar`, `WrapSelectionInPairs`). |
-| #164 | **Smart Indentation** | ✅ **Done** — `SmartIndentService` (3 strategies: CopyIndent, BraceIndent, ColonIndent); respects `.whfmt` indent rules. |
-| #165 | **Column Ruler Guides** | ✅ **Done** — Configurable vertical ruler lines at user-defined columns; `CE_RulerBrush` token; per-language defaults via `.whfmt`; wired in options. |
-| #166 | **Inline Gutter Change Markers** | ✅ **Done** — `ChangeMarkerGutterControl` (4px strip, `DrawingContext`); `GutterChangeTracker` (O(n) hash diff vs save-point, 800ms debounce); `LineChangeKind` enum; `ShowChangeMarkers` DP; `CE_GutterAdded`/`CE_GutterModified`/`CE_GutterDeleted` × 18 themes. |
-| #167 | **Expand / Collapse All Folds** | ✅ **Done** — `FoldingEngine.CollapseAll/ExpandAll`; `Ctrl+M Ctrl+L` = expand all; `Ctrl+M Ctrl+O` = collapse all to definitions; `Ctrl+M Ctrl+M` = toggle current region. |
-| #168 | **Color Swatch Inline Preview** | ✅ **Done v0.6.4.2** — `ColorSwatchPreviewEnabled` DP on `CodeEditor`; detects CSS/XAML/C# color literals (e.g. `#FF5733`); renders 12×12 inline swatch; option wired in settings. |
-| #169 | **TextEditor Phase 2** | Multi-caret (`Ctrl+Alt+Click`, `Ctrl+D`); column/block select (Shift+Alt+drag); LSP integration (hover, completion); advanced encoding auto-detection; text statistics panel. |
-| #170 | **ImageViewer Phase 2** | Inline color picker (click pixel); histogram panel (R/G/B/A channels); batch export (resize/convert/reformat); pixel inspector overlay; animated GIF frame viewer. |
-| #171 | **DiffViewer Phase 2** | 3-way merge UI; chunk-level accept/reject staging; word-level diff mode; unified diff view; export as `.patch` file; integrated ChangesetEditor bridge. |
-| #172 | **StructureEditor Phase 2** | Phase 1 shipped v0.6.4.75 (block DataGrid, drag-drop, validation, undo/redo, TestTab, SmartComplete, ForensicPattern). Remaining: live binary preview sync (change field → hex view updates); complex type support (arrays, unions, conditionals, bitfields); template validation engine; import/export template packages. |
-| #173 | **EntropyViewer Phase 2** | Named section labels (overlay on chart); chart export (PNG/SVG); multi-file overlay comparison; zoom/pan on entropy graph; region selection → jump to hex offset. |
-| #174 | **AudioViewer — Full Implementation** | Waveform rendering (DrawingVisual); playback controls (play/pause/stop/seek); spectrogram view; audio metadata panel (sample rate, channels, bitrate, duration); format-aware (WAV/MP3/FLAC/OGG). |
-| #175 | **TileEditor — Full Implementation** | Tile grid picker; palette editor (256-color + alpha); sprite sheet layout (N×M grid); pixel-level editing; export as PNG/BMP; zoom 1×–16×; ROM-format import (2bpp/4bpp/8bpp). |
-| #176 | **JsonEditor — Full Implementation** | Dedicated JSON editor (not CodeEditor fallback); collapsible tree view with virtual scroll; JSON Schema validation + inline error markers; JSON path navigator (`$.foo.bar`); format/minify/sort-keys; side-by-side JSON diff. |
+| #106 | **.NET Decompilation via ILSpy** | *(In Progress — see #104–106 above)* C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation. |
+| #157 | **Go-to-References / Find All References** | ✅ **Done v0.6.3.7** — `Shift+F12`; `WorkspaceFileCache`; `InlineHintsService`; dockable `FindReferencesPanel`; `F8`/`Shift+F8` navigation. |
+| #158 | **Peek Definition** | ✅ **Done** — `Alt+F12`; `InlinePeekHost`; resize handle; keyboard nav; Esc to close. |
+| #159 | **Code Formatting** | ✅ **Done** — Format-on-save toggle; full LSP `textDocument/formatting`; `RoslynFormattingProvider`; `Ctrl+K Ctrl+D`. |
+| #160 | **Sticky Scroll** | ✅ **Done v0.6.3.7** — Scope header pinned at top; line numbers in gutter; syntax-highlighted rows; 6 options; click to navigate. |
+| #161 | **Code Minimap** | ✅ **Done** — `MinimapControl` (GlyphRun canvas, click-to-scroll, viewport slider, diagnostic overlay, context menu). |
+| #162 | **Bracket Pair Colorization** | ✅ **Done v0.6.4.2** — `BracketPairColorizationEnabled` DP; `BracketDepthColorizer`; `CE_Bracket_1/2/3/4` tokens × 18 themes. |
+| #163 | **Auto-close Brackets & Quotes** | ✅ **Done v0.6.3.7** — Auto-insert matching pairs; skip-over; wrap selection; 4 options. |
+| #164 | **Smart Indentation** | ✅ **Done** — `SmartIndentService` (3 strategies); respects `.whfmt` indent rules. |
+| #165 | **Column Ruler Guides** | ✅ **Done** — Configurable vertical ruler lines; `CE_RulerBrush` token; per-language defaults via `.whfmt`. |
+| #166 | **Inline Gutter Change Markers** | ✅ **Done** — `ChangeMarkerGutterControl`; `GutterChangeTracker`; `CE_GutterAdded/Modified/Deleted` × 18 themes. |
+| #167 | **Expand / Collapse All Folds** | ✅ **Done** — `FoldingEngine.CollapseAll/ExpandAll`; `Ctrl+M` shortcuts. |
+| #168 | **Color Swatch Inline Preview** | ✅ **Done v0.6.4.2** — Detects CSS/XAML/C# color literals; renders 12×12 inline swatch. |
+| #169 | **TextEditor Phase 2** | ✅ **Done** — Multi-caret (`Ctrl+Alt+Click`, `Ctrl+D`); column/block select (Shift+Alt+drag); LSP integration; advanced encoding auto-detection; text statistics panel. |
+| #170 | **ImageViewer Phase 2** | ✅ **Done** — `ImageViewerFactory` + full viewer; inline color picker; histogram panel; batch export; pixel inspector overlay; animated GIF frame viewer. |
+| #171 | **DiffViewer Phase 2** | ✅ **Done** — `DiffViewerFactory`; `DiffViewerViewModel`; side-by-side + unified diff view; chunk-level accept/reject; **word-level diff** (`MyersDiffAlgorithm.WordEdits`, inline `Run` highlights ✅ v0.6.5.96); **`.patch` export** (`DiffExportService.ExportUnifiedPatch`, `SaveFileDialog` ✅ v0.6.5.96); **3-way merge** (`ThreeWayMergeEngine`, `MergeConflict`, 3-column viewer, accept ours/theirs/both, save merged output ✅ v0.6.5.96). |
+| #172 | **StructureEditor Phase 2** | *(In Progress ~30% — see above)* |
+| #173 | **EntropyViewer Phase 2** | 🔧 **Partial** — `EntropyViewer` project exists with controls. Remaining: named section labels (overlay on chart), chart export (PNG/SVG), multi-file overlay comparison, zoom/pan, region selection → jump to hex offset. |
+| #174 | **AudioViewer — Full Implementation** | ✅ **Done** — `WpfHexEditor.Editor.AudioViewer`; waveform rendering; playback controls; spectrogram view; audio metadata panel. |
+| #175 | **TileEditor — Full Implementation** | ✅ **Done** — `TileEditorFactory` + `TileEditor`; tile grid picker; palette editor; sprite sheet layout; pixel-level editing; export PNG/BMP; zoom 1×–16×. |
+| #176 | **JsonEditor — Full Implementation** | ✅ **Done** — `JsonEditorFactory`; dedicated JSON editor; collapsible tree view. Remaining: JSON Schema validation, JSON path navigator, format/minify/sort-keys, side-by-side diff. |
 | #177 | **ScriptEditor Phase 2** | Step-debugger for `.hxscript` (breakpoints, watch, call stack); REPL panel (interactive HxScript console); snippet templates; syntax error underline + gutter marker; HxScript language server (LSP). |
-| #178 | **DisassemblyViewer Phase 2** | x86/x64/ARM/WASM instruction decoding; jump arrows between branch targets; symbol table overlay (resolved function names); address navigation bar; cross-reference to hex view; export as `.asm`. |
-| #155 | **Visual XAML Editor — Phase 2** | Core designer shipped in v0.6.0; overkill 10-phase improvement (constraint adorner, gradient editor, binding path picker, perf overlay, responsive breakpoint bar) shipped in v0.6.3. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
-| #156 | **Class Diagram Plugin** | 🔧 **~30% Done** — Overkill upgrade across 10+ phases: **syntax-highlighted DSL pane** (`classdiagram.whfmt`, `CodeEditorSplitHost`, read-only syntax coloring), 3 layout strategies (Force-Directed / Hierarchical / Swimlane), canvas with minimap drag-to-reposition + corner-snap + hide, left-panel TreeView with colored selectable members, collapsible sections + dual metrics badge, hover tooltips (400 ms), context menu (double-click, ZoomToRect, clipboard export), scrollbars + 1 px separator, session state save & restore on reopen, options page with 8 upgrade phases. Remaining: live Roslyn-backed incremental analysis, export to SVG/PNG. |
+| #178 | **DisassemblyViewer Phase 2** | x86/x64/ARM/WASM instruction decoding; jump arrows between branch targets; symbol table overlay; address navigation bar; cross-reference to hex view; export as `.asm`. |
+| #155 | **Visual XAML Editor — Phase 2** | ✅ **Core + Phase 2 done** — `ConstraintAdorner`, gradient editor, binding path picker, perf overlay, responsive breakpoint bar shipped in v0.6.3. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
+| #179 | **Document Structure Panel** | ✅ **Done v0.6.4.6** — `WpfHexEditor.Plugins.DocumentStructure`; 8 providers; `IDocumentStructureProvider` SDK extension point; 18 `DS_*` theme tokens × 18 themes. |
+| #180 | **Tab Groups** | ✅ **Done v0.6.4.6** — `ITabGroupService` SDK contract + `TabGroupService`; split horizontal/vertical; 16 `TG_*` theme tokens; keyboard shortcuts; settings page; 77 integration tests. |
 
 ---
 
@@ -116,12 +114,12 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 | #41 | **Plugin Marketplace** | `MarketplaceManager` — browse, install, update from online registry; signed `.whxplugin` packages. |
 | #42 | **Plugin Security & Sandboxing** | Permission declarations at install time, integrity verification, AppDomain isolation. |
 | #43 | **Plugin Auto-Update** | `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins. |
-| #44 | **Integrated Debugger** | `DebuggerService` (StartDebug, StepInto/Over/Out, Evaluate), `BreakpointsManager`, `WatchPanel`, `CallStackPanel`. |
+| #44 | **Integrated Debugger** | ✅ **Done v0.6.5.110** — `DebugModule` (merged from `WpfHexEditor.Plugins.Debugger`); `DebuggerServiceImpl`; `IDebugAdapterRegistry` / `IDebugVisualizerRegistry` SDK; nine debug panels; VS-style Call Stack toolbar. |
 | #90 | **Debugger — Multi-Project** | Multi-project debug sessions via EventBus; supports scripts, plugins, and workspace projects. |
-| #91b | **Output Panel — Debug Filters** | Context-menu filters in the Output panel (exceptions, module load/unload, thread exit, process exit, program output) — mirrors VS2022 debug output filtering. Requires Integrated Debugger (#44). |
-| #91 | **Git Integration** | 🔧 **~40%** — UI layer implemented: `GitChangesPanel` (stage/unstage/commit/discard, diff preview), push/pull/fetch toolbar, branch picker popup (create/switch/delete), stash manager (stash/pop/drop), status bar adapter (branch/ahead/behind), `GitHistoryPanel` (log graph, commit detail, file tree), `BlameGutterControl` (per-line author/date, Ctrl+Click to history); 18 `GC_*` theme tokens. **Not yet integration-tested** — real-repo operations unverified. |
+| #91b | **Output Panel — Debug Filters** | Context-menu filters in the Output panel (exceptions, module load/unload, thread exit). Requires Integrated Debugger (#44 ✅). |
+| #91 | **Git Integration** | 🔧 **~40%** — `GitChangesPanel` (stage/unstage/commit/discard, diff preview), push/pull/fetch toolbar, branch picker popup, stash manager, status bar adapter, `GitHistoryPanel`, `BlameGutterControl`; 18 `GC_*` tokens. **Not yet integration-tested** — real-repo operations unverified. |
 | #93 | **Plugin Installer / Marketplace UI** | Plugin search UI, download/update manager, sandbox enforcement at install time. |
-| #95 | **Unit Testing Panel** | ✅ `WpfHexEditor.Plugins.UnitTesting` plugin — `DotnetTestRunner` (`dotnet test --logger trx --no-build`), `TrxParser` (ECMA TRX XML), `UnitTestingViewModel` (pass/fail/skip counters, `ObservableCollection<TestResultRow>`), dockable `UnitTestingPanel` (Run/Stop/Clear toolbar, color-coded outcome glyphs, duration ms, virtualized ListView); auto-run on `BuildSucceededEvent`; test project auto-detection (xunit/nunit/mstest/Microsoft.NET.Test.Sdk keywords in .csproj). | ✅ Done |
+| #95 | **Unit Testing Panel** | ✅ **Done** — `WpfHexEditor.Plugins.UnitTesting`; `DotnetTestRunner`; `TrxParser`; `UnitTestingPanel`; auto-run on `BuildSucceededEvent`; xunit/nunit/mstest auto-detection. |
 | #98 | **Multi-User Collaboration** | Multi-cursor real-time editing, document sync, contextual chat/comments per line. |
 
 ---
@@ -143,7 +141,7 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 | #47 | **Notification & Alert System** | Centralized `NotificationService` — inline toast alerts, priority levels, EventBus integration, plugin-extensible notification hooks. |
 | #48 | **Monitoring & Analytics** | IDE health dashboard — plugin CPU/RAM usage, event frequency, command stats, latency tracking; exportable reports. |
 | #49 | **Export / Import Projects & Configurations** | Full export/import of workspace configs, settings, plugin lists, templates and keybindings for portability and backup. |
-| #54 | **Auto-Save & Restore** | Automatic session backup at configurable intervals; full restore on crash or abnormal exit without data loss. |
+| #54 | **Auto-Save & Restore** | ✅ **Done** — `AutoSaveService` in `WpfHexEditor.Editor.DocumentEditor`; automatic session backup at configurable intervals; full restore on crash. |
 | #58 | **Reporting & Dashboards** | Dedicated report panel — code quality metrics, plugin health, build history, test results; filterable and exportable. |
 | #63 | **Smart Session Backup & Auto-Resume** | Intelligent session snapshot (open files, cursors, layout, unsaved changes); seamless resume after restart or crash. |
 | #65 | **Interactive Tutorials & Onboarding** | Step-by-step interactive onboarding for new users; contextual tutorial overlays for major features; plugin authors guide. |
@@ -166,15 +164,17 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #110 | **String Extraction Panel** | Dockable panel scanning the active binary for ASCII, Unicode, and custom-encoding strings with minimum-length filter and one-click jump to offset in hex view. |
-| #111 | **Cryptographic Hash Inspector** | Compute MD5, SHA-1, SHA-256, SHA-512, CRC-32, and Adler-32 for the full file or any byte-range selection in real time, with copy-to-clipboard and reference-hash comparison. |
+| #110 | **String Extraction Panel** | ✅ **Done v0.6.5.95** — `StringExtractionPanel` + `StringExtractorPanel`; ASCII/Unicode/custom-encoding scan; minimum-length filter; one-click jump to hex offset; CSV export. |
+| #111 | **Cryptographic Hash Inspector** | ✅ **Done** — `HashInspectorPanel` + `HashInspectorViewModel`; MD5/SHA-1/SHA-256/SHA-512/CRC-32/Adler-32; real-time over selection or full file; copy-to-clipboard; reference-hash comparison. |
 | #112 | **Embedded File Carver** | Detect and extract embedded PE files, ZIP archives, PNG images, and other magic-byte signatures from within a binary; carved blobs open as virtual child documents. |
 | #113 | **YARA Rule Engine** | Author, compile, and run YARA rules directly in the IDE; matches highlighted in hex view and listed in a results panel with offset, length, and rule name. |
 | #114 | **PE Import / Export Table Analyzer** | Parse PE32/PE64 IAT and Export Directory; display resolved DLL and function names side-by-side with raw offsets; flag suspicious ordinal-only imports. |
 | #115 | **Binary Patch Recorder** | Record every byte modification as a named, annotated patch; export as binary diff, IDA script, or human-readable `.patch` file for reproducible patching. |
 | #116 | **Obfuscation & Packing Detector** | Heuristic analysis of section entropy, suspicious imports, and known packer watermarks (UPX, Themida, MPRESS); produces a risk score and actionable report. |
 | #117 | **Memory Snapshot Viewer** | Load Windows mini-dump (`.dmp`) or Linux core-dump files; display memory regions, thread stacks, loaded modules, and heap blocks in the hex view with structured overlays. |
-| #139 | Grammar File Support | Add support for loading and parsing .syn grammar files from Synalysis; enable syntax highlighting, structured parsing, and integration with memory/code analysis workflows. |
+| #119 | **Byte Frequency & Bigram Heatmap** | 🔧 **Partial** — `ByteFrequencyPanel` + `ByteFrequencyService` + `ByteFrequencyViewModel` done. Remaining: bigram (256×256 dot-plot), multi-file overlay comparison. |
+| #124 | **Hex Bookmarks & Named Regions** | ✅ **Done** — `BookmarkService`, `EnhancedBookmark`, `BookmarkGroup`, `BookmarksPanel`, `BookmarkExportService`; persistent named bookmarks with groups, colors, comments; JSON import/export. |
+| #139 | **Grammar File Support** | Add support for loading and parsing .syn grammar files from Synalysis; enable syntax highlighting, structured parsing, and integration with memory/code analysis workflows. |
 
 ---
 
@@ -183,7 +183,6 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 | Feature # | Title | Description |
 |-----------|-------|-------------|
 | #118 | **File Signature Database** | ✅ **Partially done v0.6.4.75** — `EmbeddedFormatCatalog` ships 790+ format definitions with magic-byte signatures, MIME types, confidence scoring, and auto-detection on open; `whfmt.FileFormatCatalog` NuGet published. Remaining: user-extensible custom signatures (currently embedded-only). |
-| #119 | **Byte Frequency & Bigram Heatmap** | 256×256 bigram dot-plot and 256-bucket byte-frequency histogram for any selection or full file — visually distinguishes encrypted, compressed, text, and binary payloads. |
 | #120 | **XOR / ROT Cipher Decoder** | Brute-force single-byte XOR keys and ROT offsets over a selection; score candidates by ASCII printability; display top results with one-click "apply to selection". |
 | #121 | **Audit Log & Forensic Session Journal** | Record every user action (open, edit, navigate, export) with timestamps and byte-range context into a tamper-evident journal, exportable as signed HTML or JSON report. |
 | #122 | **Certificate & ASN.1 Inspector** | Parse DER/PEM X.509 certificates, PKCS#7/12 containers, and raw ASN.1 structures embedded in any binary; tree-view with field names, OIDs, validity dates, and key parameters. |
@@ -195,13 +194,12 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #124 | **Hex Bookmarks & Named Regions** | Persistent named bookmarks at absolute or relative offsets with groups, colors, and comments; importable/exportable as JSON; visible in a dedicated Bookmarks Panel. |
 | #125 | **Regex Search over Hex & ASCII** | Full regex search across hex byte patterns (e.g. `\xDE\xAD.{2}\xBE\xEF`) and decoded ASCII simultaneously, with match highlighting, results list, and replace support. |
 | #126 | **Byte-Range Calculator** | Inline calculator panel for arithmetic, bitwise, and shift operations on raw byte values; accepts hex/decimal/binary input; shows two's-complement and IEEE-754 float interpretations. |
 | #127 | **Column / Block Selection** | Rectangular block selection across hex and ASCII panes; paste, fill, or export selected columns as independent byte arrays — essential for fixed-width record formats. |
 | #128 | **Binary Template Marketplace** | Community-driven repository of binary template definitions; browse, search, install, and auto-update format templates (PE, ELF, ZIP, PNG, MP4, etc.) from within the IDE. |
 | #129 | **Multi-File Hex Session Tabs** | True independent hex editor sessions per tab with separate cursors, selections, undo stacks, and bookmarks — enabling parallel analysis of multiple binaries. |
-| #130 | **Changeset Review Panel** | Diff-style view of all pending unsaved byte modifications across the file: offset, original value, new value, age, and per-change accept/reject controls before save. |
+| #130 | **Changeset Review Panel** | ✅ **Done** — `ChangesetEditorFactory` + `WpfHexEditor.Editor.ChangesetEditor`; diff-style view of all pending unsaved byte modifications; offset, original value, new value, age; per-change accept/reject controls before save. |
 
 ---
 
@@ -211,10 +209,10 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 |-----------|-------|-------------|
 | #131 | **Plugin Dependency Graph Panel** | Interactive directed-graph visualization of all loaded plugins, their service dependencies, and SDK version constraints; detects cycles and orphaned dependencies. |
 | #132 | **Theme Designer & Live Preview** | In-IDE XAML brush editor to create, fork, and export custom themes; changes applied live to all dockable panels; themes packaged as `.whtheme` files. |
-| #133 | **Command Palette (Ctrl+Shift+P)** | ✅ Done v0.6.3.6 — VS Code-style fuzzy-search palette, 9 modes (`>`/`@`/`:`/`#`/`%`/`?`/Tab), frequency boost, context boost, file search, content grep. |
+| #133 | **Command Palette (Ctrl+Shift+P)** | ✅ **Done v0.6.3.6** — `CommandPaletteWindow` + `CommandPaletteService`; VS Code-style fuzzy-search palette; 9 modes (`>`/`@`/`:`/`#`/`%`/`?`/Tab); frequency boost; context boost; file search; content grep; `CommandPaletteOptionsPage`. |
 | #134 | **Extension Point Debugger** | Developer panel listing every SDK extension point (menus, toolbar, statusbar, eventbus) registered by each plugin with live invocation counts and last-call stack. |
 | #135 | **Workspace File Watcher** | Monitor all open project files for external changes (from other processes or Git operations); prompt to reload, diff, or merge changes without closing the editor tab. |
-| #138 | **In-IDE Plugin Development** | Develop, build, hot-reload, and live-test SDK plugins directly inside the IDE — `PluginProjectTemplate` scaffolding, MSBuild integration (#103), collectible `AssemblyLoadContext` hot-reload, lightweight sandbox, full SDK SmartComplete, Plugin Dev Log panel, and `.whxplugin` packaging; no external toolchain required. |
+| #138 | **Welcome Screen Redesign** | ✅ **Done v0.6.5.95+** — VS Start Page-style welcome panel: template cards (8 cards wired to onNewFile/onOpenFile/onOpenProject), enriched recent file rows (icon + dir + date + pin/remove), search filter, categorised news feed with filter pills, `WelcomeNewsService` (JSON→changelog fallback, 30-min cache), `MruService` pin/unpin/remove, 7 `WS_*` theme tokens × 18 themes, 10 new AppResources keys × 28 satellites. |
 
 ---
 
@@ -247,7 +245,7 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 |-----------|-------|-------------|
 | #186 | **AssemblyExplorer Phase 2** | Full ILSpy backend wiring (replaces Skeleton fallback) ✅ partial; **ECMA-335 token→offset** (`PeOffsetResolver` ✅); **hex sync** (`AssemblyHexSyncService` ✅). Remaining: PDB symbol + source-link matching UI, plugin panel improvements. |
 | #187 | **ArchiveStructure Phase 2** | In-place archive editing (add/remove/rename entries without re-pack); multi-format packer (TAR/GZ/XZ/BR); compression ratio analysis per entry; drag-and-drop files into archive panel. |
-| #188 | **FileComparison Phase 2** | Diff algorithm choice (LCS / Myers / Histogram — selectable in toolbar); binary patch export (`.bdiff` / `xdelta` format); unified diff view mode; 3-way merge (base + mine + theirs). |
+| #188 | **FileComparison Phase 2** | Diff algorithm choice (LCS / Myers / Histogram — selectable in toolbar); binary patch export (`.bdiff` / `xdelta` format); unified diff view mode; **3-way merge ✅ v0.6.5.96** (base + ours + theirs — `ThreeWayMergeEngine`, conflict resolution UI, save merged output). Remaining: diff algorithm selector in toolbar, `.bdiff`/`xdelta` binary patch format. |
 | #189 | **DiagnosticTools Phase 2** | Memory leak heuristic (detect growing gen2 objects across GC cycles); GC pressure analyzer (alert on LOH allocations); thread deadlock detector (wait graph); flame graph for CPU samples. |
 
 ---
@@ -311,7 +309,7 @@ Features internal to the `WPFHexaEditor` control itself — engine, ByteProvider
 | #226 | **Inline structural validation** | Edits that break a parsed checksum / CRC / structure are highlighted red with a tooltip explaining which constraint failed; non-blocking (the edit applies, but the warning persists). |
 | #227 | **Modification templates** | Apply named templates ("PE relocation", "PNG IHDR width=N") to a selection; templates ship from `whfmt` and from a user folder; preview-then-apply. |
 | #228 | **Live edit preview popover** | Mini-bubble over the cursor while typing a new byte: shows the proposed value + decoded interpretations (int/float/string/etc.) before commit. |
-| #229 | **Split view** | ✅ **Done v0.6.5.16** — `HexEditorSplitHost` wraps two `HexEditor` instances sharing the same `ByteProvider`; independent scroll/selection/caret; inline toggle button at top of scrollbar; focus borders (split mode only); `ByteProvider.DataChanged` event propagates all mutation types (modify/insert/delete) to the peer pane; breadcrumb bar, format detection blocks, undo/redo and custom background overlays all synced to secondary pane; status bar hidden on secondary; standalone-safe (`HexEditorSplitHost` used in `Sample.HexEditor`); `IDocumentEditor` delegation (undo/redo always via primary where shared `UndoEngine` lives). |
+| #229 | **Split view** | ✅ **Done v0.6.5.16** — `HexEditorSplitHost` wraps two `HexEditor` instances sharing the same `ByteProvider`; independent scroll/selection/caret; inline toggle button at top of scrollbar; focus borders (split mode only); `ByteProvider.DataChanged` event propagates all mutation types (modify/insert/delete) to the peer pane; breadcrumb bar, format detection blocks, undo/redo and custom background overlays all synced to secondary pane; status bar hidden on secondary; standalone-safe; `IDocumentEditor` delegation (undo/redo always via primary where shared `UndoEngine` lives). |
 | #230 | **Locked / pinned panes** | Freeze one half of a split at a fixed offset while the other scrolls; useful for keeping a header table visible while exploring later regions. |
 | #231 | **Ghost overlay for visual diff** | Render a second buffer in transparent overlay on top of the current one; quick visual binary diff without leaving the editor. |
 | #232 | **Smart paste auto-detection** | Detect clipboard format on paste: `0x41 0x42`, `4142`, `AB`, base64, hex-with-spaces, C array literal — convert and paste in one action. Status-bar hint shows detected source format. |
@@ -325,6 +323,10 @@ Features internal to the `WPFHexaEditor` control itself — engine, ByteProvider
 
 | Feature | Version / Release |
 |---------|-------------------|
+| **DiffViewer Phase 2 — word diff + .patch export + 3-way merge (#171 complete)** — Text tab with side-by-side line diff; word-level inline highlights (`MyersDiffAlgorithm.WordEdits`); Export `.patch` (unified diff format); 3-way merge tab (`ThreeWayMergeEngine` — base/ours/theirs, auto-accept single-side, conflict resolution buttons, save merged output); 28-lang localized (28 new keys × 28 satellites) | [0.6.5.96] — 2026-05-20 |
+| **ClassDiagram — incremental Roslyn live-sync (#156-A)** — `AnalyzeFilesIncremental`: re-parses only changed files, preserves canvas positions of unchanged nodes; `_pendingChanges` ConcurrentBag drains per debounce cycle; O(1) path lookup via HashSet | [0.6.5.96] — 2026-05-20 |
+| **Entropy Heatmap viewport rendering (#095)** — `AddCustomBackgroundBlockRange` SDK batch API; `EntropyHeatmapService` brush-cache + batch inject; `EntropyWindowSizeBytes` rename | [0.6.5.96] — 2026-05-20 |
+| **Welcome Screen Redesign (#138)** — VS Start Page-style welcome panel: template cards, enriched recent file rows (icon + dir + date + pin/remove), search filter, categorised news feed with filter pills; `WelcomeNewsService` (JSON→changelog fallback, 30-min cache); `MruService` pin/unpin/remove; 7 `WS_*` theme tokens × 18 themes; 10 new AppResources keys × 28 satellites | [0.6.5.95+] — 2026-05-19 |
 | **ScreenRecorder plugin** — full capture pipeline (BitBlt + DPI-aware region selector, F9/Shift+F9 global hotkey), timeline UI (thumbnails, drag-reorder, multi-select), GIF/PNG/FFmpeg export, playback scrubber, undo/redo, import/clipboard; themed + 28-lang localized; `.whscr` format | [0.6.5.95] — 2026-05-17 |
 | **ClassDiagram live arrow redraw** — arrows follow nodes in real time during drag (≤60 relations); stale-arrow-after-drop fix | [0.6.5.95] — 2026-05-17 |
 | **Scripting Console panel** — dockable Roslyn scripting console; history, output cap, CTS-safe shutdown; `ScriptingModule` | [0.6.5.95] — 2026-05-17 |
@@ -334,91 +336,35 @@ Features internal to the `WPFHexaEditor` control itself — engine, ByteProvider
 | **ByteProvider v1.3.0** — DI/AOP/Slice/Metrics public API tier; 90 xUnit tests | [0.6.5.95] — 2026-05-17 |
 | **whfmt.CodeGen v1.1.3** — JSONC header parsing in `.whfmt` files | [0.6.5.95] — 2026-05-17 |
 | **WpfTerminal decoupled from IIDEHostContext** — `RoslynServiceFactory` injected; `Process` leak fixed | [0.6.5.95] — 2026-05-17 |
-| **Build-number scheme reset** — `WpfHexEditor.App` realigned from `0.6.5.225` to `0.6.5.8` to adopt a small monotonic build counter inside the `0.6.5.*` revision slot; no functional regression; published NuGet packages unchanged | [0.6.5.8] — 2026-05-12 |
-| **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File) displayed in italic in toolbar after each run; SplitButton: left = re-run same scope, dropdown = Run Solution / Run Project… / Run File…; `_lastScope/_lastPath` persisted in `CodeAnalysisModule`; `SetScope` on `CodeAnalysisReportViewModel` | [0.6.5.225] — 2026-05-09 |
-| **Code Analysis Treemap context menu** — right-click raises `ContextMenuRequested` event with `FileMetrics`; 6 items: Open File (editor nav), Copy Path, Copy Metrics (clipboard), Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots (toggle dims non-critical tiles); 15 new AppResources keys × 28 satellite languages | [0.6.5.225] — 2026-05-09 |
-| **Code Analysis localization fixes** — `AppLocalizedDictionary` added to `UserControl.Resources.MergedDictionaries` in `CodeAnalysisReportPane.xaml`; fixes empty `DataGridTextColumn.Header` and logical-tree `DynamicResource` resolution; matches `WatchesPanel` / `AssemblyDetailPane` pattern | [0.6.5.225] — 2026-05-09 |
-| **DocumentEditor Glyph-Accurate Caret & Hit-Test** — `GetCharOffsetFromGlyphLines` and `GetCaretXYFromGlyphLines` route all hit-testing and caret positioning through the GlyphRun pipeline (`PlacedSegment.AdvanceWidths`, `InlineVisualLine.CharStart/CharEnd`); eliminates caret/insert misalignment on wrapped lines caused by `FormattedText` vs `GlyphTypeface` pipeline divergence; synchronous `RebuildLayout` in all edit paths (InsertTextAtCaret, SplitBlockAtCaret, DeleteAtCaret); opens-dirty fix (`UndoEngine.MarkSaved` + `IsDirty=false` in `BindModel`); `GetCaretX` ArgumentOutOfRangeException guard | [0.6.5.110] — 2026-05-05 |
-| **DocumentEditor Vertical Ruler Scroll-Tracking** — `SetVerticalOffset` now fires `PageGeometryChanged`; ruler `DrawGraduations` anchored to `PageCanvasPadding × zoom − scrollOffset × zoom` so unit-0 always aligns with first content line regardless of scroll; margin zones clip to visible viewport | [0.6.5.110] — 2026-05-05 |
-| **DocumentEditor Ruler Indent Markers Follow Caret** — `OnMouseDown` and `OnMouseUp` (pending-collapse path) now call `NotifyCaretBlockChangedIfNeeded` and `NotifyCaretMoved`; all edit operations (insert, split, delete) also fire both notifications; horizontal ruler indent markers update on every caret movement, not only keyboard-driven ones | [0.6.5.110] — 2026-05-05 |
-| **DebugModule Core Integration (ADR-010)** — `WpfHexEditor.Plugins.Debugger` merged into `WpfHexEditor.App/Debug` as `DebugModule`; nine debug panels (Locals, Autos, Watch, Call Stack, Threads, Tasks, Registers, Memory, Disassembly) pre-register shells at startup for docking restore; VS-style Call Stack toolbar (search, ←/→ nav, Show All Threads, Show External Code); `IDebugAdapterRegistry` and `IDebugVisualizerRegistry` SDK extension points preserved | [0.6.5.110] — 2026-05-05 |
-| **AssemblyExplorer Blank-Panel Fix** — dual-cache bug: `DockControl._displayContent` kept serving a stale placeholder after `_contentCache` was cleared; both caches now invalidated on `EagerContentKey` miss; lazy activation (Dormant plugin behaviour) restored | [0.6.5.110] — 2026-05-05 |
-| **HexEditor Split View (#229)** — `HexEditorSplitHost` with shared `ByteProvider`; inline split toggle (top of scrollbar); `ByteProvider.DataChanged` syncs modify/insert/delete across panes; breadcrumb, format blocks, undo/redo, background overlays all propagated to secondary; focus borders (split-only); status bar hidden on secondary; standalone-safe; `IDocumentEditor` undo routes to primary pane (shared `UndoEngine`); layout persistence; options page toggle (`ShowSplitToggleButton`) | [0.6.5.16] — 2026-05-04 |
-| **Code/Text Editor Options Localization** — 4 new `OptionsResources` keys (`CodeEditor_Tab_Formatting`, `CodeEditor_HighlightCurrentLine`, `TextEditor_WordWrap`, `TextEditor_HighlightCurrentLine`) × 29 locales; `CodeEditorFormattingPage` / `TextEditorOptionsPage` fully DynamicResource; `ErrorPanelOptionsPage` added | [0.6.5.16] — 2026-05-04 |
-| **DocEditor Page Rulers** — interactive rulers (horizontal + vertical) tracking zoom, caret position, and resize; `LayoutTransform`-based zoom (snap-to-pixel in `GlyphRunRenderer`); `DocumentCanvasRenderer` minimap viewport rect fix (pre-zoom metrics); drag-to-move selection (`Word`/VS-style); stale `FormattedText` eviction on `MarkBlockDirty` | [0.6.5.16] — 2026-05-04 |
-| **Docking Layout Auto-Reset** — corrupt or oversized saved layouts auto-reset on startup instead of crashing; layout persistence save/restore on close/load wired in `MainWindow` | [0.6.5.16] — 2026-05-04 |
-| **NuGet release wave** — 6 standalone packages: WPFHexaEditor 3.2.0, WpfCodeEditor 0.9.8.0, WpfDocking 0.9.7.0, WpfTerminal 0.9.7.0, WpfHexEditor.Core.ByteProvider 1.1.0, whfmt.FileFormatCatalog 1.1.0; satellite assembly isolation fix (`_BundledProjectDll` pattern); full guide docs bundled in each package | [0.6.5.15] — 2026-05-01 |
-| **IDE Localization — 27 languages** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons localized; per-assembly `LocalizedResourceDictionary` pattern; ar-SA · cs-CZ · da-DK · de-DE · el-GR · es-419 · es-ES · fi-FI · fr-CA · fr-FR · hi-IN · hu-HU · id-ID · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ro-RO · ru-RU · sv-SE · th-TH · tr-TR · uk-UA · vi-VN · zh-CN | [0.6.5.15] — 2026-05-01 |
-| **WpfDocking 0.9.7.0** — horizontal tab reorder for docked tool-panel tabs; tab-switch triple-fire eliminated (layout passes 3→1); StaticResource toolbar labels resolved; full Phase 5+6 localization wired into all Docking strings | [0.6.5.15] — 2026-05-01 |
-| **790+ .whfmt format definitions** — +100 new definitions (Groups C–J complete); `FormatSchemaValidator` wired at load time; `EmbeddedFormatCatalog.GetAll()` returns `FrozenSet<T>` | [0.6.5.15] — 2026-05-01 |
-| **whfmt.FileFormatCatalog v1.1.0** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` utility layer; `IReadOnlySet<T>` backed by `FrozenSet<T>` | [0.6.5.15] — 2026-05-01 |
-| **WPFHexaEditor 3.2.0** — Go to offset dialog (`Ctrl+G`); unified `UndoEngine`; drag-selection auto-scroll fix; column highlight defaults `false`; BreadcrumbBar freeze + phantom row fix | [0.6.5.15] — 2026-05-01 |
-| **whfmt.FileFormatCatalog v1.0.0 NuGet** — cross-platform `net8.0` NuGet package with `EmbeddedFormatCatalog` singleton, `DetectFromBytes`, `GetByExtension`, `GetByMimeType`, `GetByCategory(FormatCategory)`, `GetSchemaJson(SchemaName)`, zero external dependencies; `WpfHexEditor.Core.Contracts` assembly with `FormatCategory` enum (27 categories) + `SchemaName` enum (5 schemas) | [0.6.4.75] — 2026-04-15 |
-| **790+ .whfmt format definitions** — +230 new definitions (from ~460 to 790+); schema v2.3; `references`, `forensicPatterns`, `variables` blocks; 57 syntax grammars; 27 categories | [0.6.4.75] — 2026-04-15 |
+| **Build-number scheme reset** — `WpfHexEditor.App` realigned from `0.6.5.225` to `0.6.5.8` | [0.6.5.8] — 2026-05-12 |
+| **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File); SplitButton: left = re-run same scope, dropdown = Run Solution / Run Project… / Run File… | [0.6.5.225] — 2026-05-09 |
+| **Code Analysis Treemap context menu** — right-click: Open File, Copy Path, Copy Metrics, Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots; 15 new keys × 28 satellites | [0.6.5.225] — 2026-05-09 |
+| **DocumentEditor Glyph-Accurate Caret & Hit-Test** — `GetCharOffsetFromGlyphLines`/`GetCaretXYFromGlyphLines` via GlyphRun pipeline; synchronous `RebuildLayout` in all edit paths; opens-dirty fix; `GetCaretX` guard | [0.6.5.110] — 2026-05-05 |
+| **DebugModule Core Integration (ADR-010)** — `WpfHexEditor.Plugins.Debugger` merged into `WpfHexEditor.App/Debug`; nine debug panels; VS-style Call Stack toolbar; `IDebugAdapterRegistry` / `IDebugVisualizerRegistry` SDK extension points preserved | [0.6.5.110] — 2026-05-05 |
+| **HexEditor Split View (#229)** — `HexEditorSplitHost` with shared `ByteProvider`; inline split toggle; `ByteProvider.DataChanged` syncs all mutation types; breadcrumb, format blocks, undo/redo propagated to secondary; focus borders; options page toggle | [0.6.5.16] — 2026-05-04 |
+| **DocEditor Page Rulers** — interactive rulers (horizontal + vertical) tracking zoom, caret position, and resize; `LayoutTransform`-based zoom; drag-to-move selection | [0.6.5.16] — 2026-05-04 |
+| **Docking Layout Auto-Reset** — corrupt or oversized saved layouts auto-reset on startup instead of crashing | [0.6.5.16] — 2026-05-04 |
+| **NuGet release wave** — 6 standalone packages: WPFHexaEditor 3.2.0, WpfCodeEditor 0.9.8.0, WpfDocking 0.9.7.0, WpfTerminal 0.9.7.0, WpfHexEditor.Core.ByteProvider 1.1.0, whfmt.FileFormatCatalog 1.1.0 | [0.6.5.15] — 2026-05-01 |
+| **IDE Localization — 27 languages** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, toolbar buttons; per-assembly `LocalizedResourceDictionary` pattern; 28 satellite languages | [0.6.5.15] — 2026-05-01 |
+| **WPFHexaEditor 3.2.0** — Go to offset dialog (`Ctrl+G`); unified `UndoEngine`; drag-selection auto-scroll fix; BreadcrumbBar freeze + phantom row fix | [0.6.5.15] — 2026-05-01 |
+| **790+ .whfmt format definitions** — +100 new definitions; `FormatSchemaValidator` wired at load time; `EmbeddedFormatCatalog.GetAll()` returns `FrozenSet<T>` | [0.6.5.15] — 2026-05-01 |
+| **whfmt.FileFormatCatalog v1.1.0** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` | [0.6.5.15] — 2026-05-01 |
 | **Structure Editor** — visual `.whfmt` template editor with block DataGrid, drag-drop, validation pipeline, undo/redo, TestTab, expression SmartComplete, ForensicPattern tolerant converter | [0.6.4.75] — 2026-04-15 |
-| **WhfmtExplorer browser panels** — WhfmtBrowserPanel + WhfmtCatalogDocument for browsing 790+ embedded format definitions; category filtering, detail view, format JSON preview | [0.6.4.75] — 2026-04-15 |
-| **Format detection hardening** — thread-safe `GetAll()`, self-healing cache, TIER scoring fixes, SignatureStrength converter, corrupted whfmt crash guard, PR #230 integration | [0.6.4.75] — 2026-04-15 |
-| **Window Menu + Win32 Fullscreen** — `_Window` top-level menu (Close/Close All But This/Close All Documents, Next/Previous Document `Ctrl+Tab`); `F11` fullscreen via Win32 `MonitorFromWindow`/`GetMonitorInfo` covers full monitor including taskbar, restores exact position; `MainWindow.Window.cs` partial extracted | [0.6.4.8] — 2026-04-08 |
-| **Docking Overlay Polish** — VS-like drop overlay with active-tab gap (`CombinedGeometry` punch-out); placement-aware tab styles: top → `DockTabItemStyle` (top CornerRadius), bottom → `DockTabItemBottomStyle` (bottom CornerRadius); `SelectionBorder` matrix (TopBar/FullBorder/Glow × Top/Bottom); `PART_TabStrip` border named for Margin-based offset | [0.6.4.8] — 2026-04-08 |
-| **Plugin Panel Loading Overlay Fix** — `DockItem.Metadata["_materialized"]` replaces instance-scoped `_everMaterialized` so placeholder never reappears on dock/undock; `ViewModelBase.TryFirstLoad()` gate suppresses `IsLoading` overlay for all plugin panel VMs after first init; Git user-ops switched to `IsRemoteOp` flag | [0.6.4.8] — 2026-04-08 |
-| **Minimap Scroll Fix** — `MinimapControl.InvalidateVisual()` fires immediately on drag/click; `CodeEditor` fires `MinimapRefreshRequested` on `ScrollViewToLine`/`ScrollViewToOffset` so minimap stays in sync after programmatic navigation | [0.6.4.8] — 2026-04-08 |
-| **Git Integration G0–G7** — `GitChangesPanel` (stage/unstage/commit/discard, diff preview), push/pull/fetch, branch picker (create/switch/delete), stash manager, status bar adapter (branch/ahead/behind), `GitHistoryPanel` (log graph + file tree), `BlameGutterControl` (per-line author/date, Ctrl+Click → history); 18 `GC_*` tokens × 18 themes | [0.6.4.7] — 2026-04-07 |
-| **Class Diagram Overkill Upgrade** — syntax-highlighted DSL pane (`classdiagram.whfmt` + `CodeEditorSplitHost`), 3 layout strategies, canvas minimap drag + corner-snap, TreeView left panel with colored members, collapsible sections + dual metrics badge, hover tooltips (400 ms), context menu (ZoomToRect, clipboard export), scrollbars, session state save/restore; `ArrangeOverride` 100k extent removed (infinite layout loop fix) | [0.6.4.7] — 2026-04-07 |
-| **AI Assistant Plugin** — 5 providers (Anthropic/OpenAI/Gemini/Ollama/Claude Code CLI), 25 MCP tools, streaming chat, inline apply, @mentions, command palette (`Ctrl+Shift+A`), conversation history, prompt presets, auto-fallback to CLI, 17 `CA_*` tokens × 18 themes | [0.6.4.3] — 2026-04-02 |
-| **Roslyn Integration** — In-process `RoslynLanguageClient` replacing OmniSharp for C#/VB.NET; non-blocking load + LSP status bar follows active document | [0.6.4.3] — 2026-04-02 |
-| **LSP Client Engine** — full JSON-RPC LSP client; 10 providers (completion, hover, sig-help, code actions, rename, inlay hints, code lens, semantic tokens, breadcrumb bar, workspace symbols); `LspDocumentBridgeService`; `LspStatusBarAdapter`; 30 tokens × 18 themes | [0.6.3.6] — 2026-03-23 |
-| **Command Palette** — `Ctrl+Shift+P`, 9 search modes (`>`/`@`/`:`/`#`/`%`/`?`/Tab), fuzzy scoring, frequency boost, context boost, `CommandPaletteSettings` 14 props, `CommandPaletteOptionsPage` | [0.6.3.6] — 2026-03-23 |
-| **Command System Central** — `WpfHexEditor.Commands` project; `CommandRegistry` (~45 commands); `KeyBindingService`; `KeyboardShortcutsPage`; TitleBar launcher; `TB_Search*` tokens × 18 themes | [0.6.3.6] — 2026-03-23 |
-| **Diagnostic Tools Plugin** — `ProcessMonitor` (CPU/mem 500 ms), `EventCounterReader` (EventPipe), heap snapshot, 4-tab panel, `CpuGraphControl`/`MemoryGraphControl`; 8 `DT_*` tokens × 18 themes | [0.6.3.6] — 2026-03-23 |
-| **Document Model Phase 1** — `IDocumentBuffer`/`DocumentBuffer`; `IBufferAwareEditor`; `LspBufferBridge`; `LspDocumentBridgeService`; wired for CodeEditor, TextEditor, MarkdownEditorHost, XamlDesignerSplitHost | [0.6.3.6] — 2026-03-23 |
-| **IDE EventBus 100% coverage** — 39 typed events (Phase 1–3); `ProcessLaunchedEvent`/`ProcessExitedEvent`; `ParseCompletedEvent`; `CodeEditorCursorMovedEvent`/`FoldingChangedEvent`/`SelectionChangedEvent`; `BuildProgressUpdatedEvent` | [0.6.3.6] — 2026-03-23 |
-| **Incremental Build** — `IIncrementalBuildTracker`/`IncrementalBuildTracker` (FSW per project); `BuildDirtyAsync()`; `Ctrl+Alt+F7`; orange dirty dot in Solution Explorer | [0.6.3.6] — 2026-03-23 |
-| **Code Editor Gutter Diagnostics + Multi-caret** — `CE_GutterError`/`CE_GutterWarning` tokens; scrollbar markers; `Ctrl+Alt+Click` multi-caret; `Ctrl+D` SelectNextOccurrence; secondary carets at 60% opacity | [0.6.3.6] — 2026-03-23 |
-| **Dockable Search Panel** — `Ctrl+Shift+F`; `ISearchable`/`ISearchPanel` contracts; `RegexSearchEngine`; `SearchPanelViewModel`; `HexEditor`/`CodeEditor`/`TblEditor` integration; 14 `SP_*` tokens × 18 themes | [0.6.3.6] — 2026-03-23 |
-| **DI Infrastructure** — `AppServiceCollection` (MEF → `Microsoft.Extensions.DependencyInjection 8.0`); `MainWindowServiceArgs` record; `BuildServiceAdapters()` | [0.6.3.6] — 2026-03-23 |
-| **Plugin Sandbox Signing** — `ValidateSignature()`; `[SECURITY]` prefix on mismatch; `SIGNED`/`unsigned` per-plugin log (ADR-SB-01) | [0.6.3.6] — 2026-03-23 |
-| **Class Diagram Overkill (10 phases)** — DSL v2, Force-Directed + Hierarchical + Swimlane layouts, canvas adorners, A* orthogonal + Bézier routing, Roslyn incremental analysis, PlantUML/XMI/Interactive SVG export, minimap, spatial index, live sync; 46 `CD_*` tokens | [0.6.3.6] — 2026-03-23 |
-| **XAML Designer Phase 3** — `ConstraintAdorner`, `ResponsiveBreakpointBar`, `GradientEditorAdorner`, `BindingPathPickerPopup`, `PerformanceOverlayAdorner` (`Ctrl+Shift+F9`); 9 panels migrated to plugin project; 40 `XD_*` tokens | [0.6.3.6] — 2026-03-23 |
-| **Markdown Editor Full IDE Integration** — `MD.whfmt` routing, lazy mermaid.js, image paste, outline panel, context menus (`MD_*` tokens), adaptive debounce, off-thread word count | [0.6.3.6] — 2026-03-23 |
-| **Code Editor Word Wrap** — `IsWordWrapEnabled` toggle; prefix-sum wrap map; `RenderTextContentWrapped` / `RenderSelectionWrapped`; H-scrollbar auto-hides | [0.6.3.6] — 2026-03-23 |
-| **Docking Sprint 3** — M2.1 incremental visual tree; M2.4 WeakEvent subscriptions; M3.3 undo/redo layout (`Ctrl+Shift+Z/Y`) | [0.6.3.6] — 2026-03-23 |
-| **Shell Split** — `WpfHexEditor.Docking.Wpf` extracted from `WpfHexEditor.Shell`; Shell is now theme-XAML-only; pack URIs updated (ADR-055) | [0.6.3.6] — 2026-03-23 |
-| **Theme Persistence + Default Layout** — `ApplyTheme()` persists `ActiveThemeName`; `LoadDefaultLayoutFromResource()` reads embedded `defaultLayout.json` (ADR-052) | [0.6.3.6] — 2026-03-23 |
-| **Visual XAML Designer** — live WPF canvas, bidirectional canvas↔code sync (~95%), move/resize/rotate handles, property inspector (F4), multi-select + alignment guides, snap grid, `#region` colorization, error card overlay, 4 split layouts (`Ctrl+Shift+L`), zoom/pan, `DesignHistoryPanel`, Toolbox/ResourceBrowser/DesignData/Animation panels | [0.6.0] — 2026-03-18 |
-| **Shared `UndoEngine`** — `WpfHexEditor.Editor.Core.Undo`; coalescing (500 ms window), transactions (`BeginTransaction`/`CommitTransaction`), save-point tracking (`MarkSaved`/`IsAtSavePoint`), `Ctrl+Shift+Z` redo, dynamic "Undo (N)" headers; replaces both editors' custom stacks | [0.6.0] — 2026-03-18 |
-| **Rectangular Selection + Drag-and-Drop** — Alt+Click block selection, text drag-to-move, rect block drag-to-move; single-rect rendering (no row seams); `IUndoEntry` migration for TextEditor | [0.6.0] — 2026-03-18 |
-| **NuGet Solution Manager** — solution-level panel (Browse/Installed/Consolidate/Updates); right-click solution node; `doc-nuget-solution-` content ID | [0.6.0] — 2026-03-18 |
-| **Inline Hints per-language gates + 29 new `.whlang` definitions** — 55+ total embedded language definitions; per-language Ctrl+Click and Inline Hints activation | [0.6.0] — 2026-03-18 |
-| **Shell rename** — `WpfHexEditor.Docking.Wpf` → `WpfHexEditor.Shell`; namespace, assembly name and Pack URI updated | [0.6.0] — 2026-03-18 |
-| **Ctrl+Click Navigation** — workspace cross-file declaration scan, multi-location `ReferencesPopup`, OmniSharp `MetadataUri` passthrough, external symbol decompilation via `AssemblyAnalysisEngine` + `CSharpSkeletonEmitter` → read-only Code Editor tab | [0.5.8] — 2026-03-17 |
-| **Search highlight fix** — `ComputeVisualX` for tab-aware X alignment + `_lineYLookup` for Inline Hints-aware Y in `RenderFindResults` | [0.5.8] — 2026-03-17 |
-| **Code Editor Navigation Bar** — VS-like types/members combos, Segoe MDL2 icons, `CaretMoved` event, auto-scroll to declaration | [0.5.2] — 2026-03-16 |
-| **Assembly Explorer Expansion** — ILSpy backend, VB.NET, CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache, options page | [0.5.2] — 2026-03-16 |
-| **NuGet support** — `NuGetV3Client`, `CsprojPackageWriter`, `NuGetPackageViewModel` in ProjectSystem | [0.5.2] — 2026-03-16 |
-| **Workspace Templates** — `TemplateManager`, `ProjectScaffolder`, 3 built-in JSON templates, `NewProjectDialog` | [0.5.2] — 2026-03-16 |
-| **Build system refactoring** — `MSBuildAdapter` error surfacing, async fix, Locator DLL copy; `MSBuildLogger`/`NuGetRestoreStep` removed | [0.5.2] — 2026-03-16 |
-| **Themes: `CE_SelectionInactive`** brush token — Code Editor inactive selection, all 8 themes | [0.5.2] — 2026-03-16 |
-| **Source Outline Navigation** — lazy type/member tree in Solution Explorer for `.cs`/`.xaml` files; `SourceOutlineEngine` BCL-only parser; `LoadingNode` placeholder + async expand | [0.5.0] — 2026-03-16 |
-| **Assembly Explorer v0.2.1** — Decompile to C# → Code Editor tab with syntax highlighting; Extract to Project (`AssemblyCodeExtractService` + `ProjectPickerDialog`); Collapse All; Close All Assemblies | [0.5.0] — 2026-03-16 |
-| **Code Editor — full syntax highlighting** — all 26 `.whlang` definitions; live `TryFindResource` brush resolution; foreground base pass; hover-only URL underline with tooltip; split host + document model cleanup | [0.5.0] — 2026-03-16 |
-| **Build Output Channel** — `OutputServiceImpl.Write("Build",…)` now routes to Build channel; auto-focus via `OutputLogger.FocusChannel`; severity coloring (info/warn/error/success); empty-solution guard | [0.5.0] — 2026-03-16 |
-| **VS Solution Loader** — `VsSolutionLoaderPlugin` with dynamic file-dialog filter + external solution routing; 4 project templates (Console, ClassLib, WPF, AspNet API) | [0.5.0] — 2026-03-16 |
-| **LSP Infrastructure** — `WpfHexEditor.LSP`: `RefactoringEngine`, `RenameRefactoring`, `ExtractMethodRefactoring`, `CodeFormatter`, `SymbolTableManager`, `CommandIntegration` mediator (#85–86 foundation) | [0.5.0] — 2026-03-16 |
-| **Docking: Tab Overflow Panel** — `TabOverflowButton` + `TabOverflowPanel` improvements; correct positioning and theme-aware context menu | [0.5.0] — 2026-03-16 |
-| **IDE EventBus** — `WpfHexEditor.Events`, `IIDEEventBus`, 10 typed events, IPC bridge for sandbox plugins, options page (#80) | [0.4.0] — 2026-03-16 |
-| **Plugin Lazy Loading** — `PluginActivationConfig`, `PluginActivationService`, `Dormant` state, file-extension/command triggers (#77 partial) | [0.4.0] — 2026-03-16 |
-| **Capability Registry** — `IPluginCapabilityRegistry`, `PluginFeature` constants, manifest `features` field | [0.4.0] — 2026-03-16 |
-| **Extension Points** — `IFileAnalyzerExtension`, `IHexViewOverlayExtension`, `IBinaryParserExtension`, `IDecompilerExtension`, `ExtensionPointCatalog` | [0.4.0] — 2026-03-16 |
-| **Plugin Dependency Graph** — versioned constraints, topological ordering, cascading unload/reload | [0.4.0] — 2026-03-16 |
-| **ALC Isolation Diagnostics** — assembly count, conflict detection, weak-reference GC verification | [0.4.0] — 2026-03-16 |
-| **Plugin Sandbox — HWND embedding + IPC menu/toolbar/event bridges** (#81 Phase 9-12) | [0.3.0] — 2026-03-15 |
-| **Auto-isolation decision engine + PluginMigrationPolicy** (#81) | [0.3.0] — 2026-03-15 |
-| **SandboxJobObject** — per-plugin CPU/RAM resource limits (#81) | [0.3.0] — 2026-03-15 |
-| Multi-tab terminal sessions + macro recording (#92) | [0.3.0] — 2026-03-15 |
-| Assembly Explorer stub — PEReader pipeline, IDE menu, statusbar (#104 Phase 1) | [0.3.0] — 2026-03-15 |
-| Plugin system (SDK, PluginHost, 9 first-party plugins, monitoring) | [0.3.0] — 2026-03-15 |
+| **Window Menu + Win32 Fullscreen** — `_Window` top-level menu; `F11` fullscreen via Win32 covering full monitor | [0.6.4.8] — 2026-04-08 |
+| **Git Integration G0–G7** — `GitChangesPanel`, push/pull/fetch, branch picker, stash manager, status bar adapter, `GitHistoryPanel`, `BlameGutterControl`; 18 `GC_*` tokens × 18 themes | [0.6.4.7] — 2026-04-07 |
+| **Class Diagram Overkill Upgrade** — syntax-highlighted DSL pane, 3 layout strategies, canvas minimap, TreeView left panel, session state save/restore; round-trip Roslyn sync phases 1A–7 | [0.6.4.7] — 2026-04-07 |
+| **AI Assistant Plugin** — 5 providers (Anthropic/OpenAI/Gemini/Ollama/Claude Code CLI), 25 MCP tools, streaming chat, inline apply, @mentions, command palette (`Ctrl+Shift+A`), 17 `CA_*` tokens × 18 themes | [0.6.4.3] — 2026-04-02 |
+| **Roslyn Integration** — In-process `RoslynLanguageClient` replacing OmniSharp for C#/VB.NET | [0.6.4.3] — 2026-04-02 |
+| **LSP Client Engine** — full JSON-RPC LSP client; 10 providers; `LspDocumentBridgeService`; `LspStatusBarAdapter`; 30 tokens × 18 themes | [0.6.3.6] — 2026-03-23 |
+| **Command Palette** — `Ctrl+Shift+P`, 9 search modes, fuzzy scoring, frequency boost, `CommandPaletteOptionsPage` | [0.6.3.6] — 2026-03-23 |
+| **Command System Central** — `WpfHexEditor.Commands`; `CommandRegistry` (~45 commands); `KeyBindingService`; `KeyboardShortcutsPage`; TitleBar launcher | [0.6.3.6] — 2026-03-23 |
+| **Document Structure Panel (#179)** — `WpfHexEditor.Plugins.DocumentStructure`; 8 providers; `IDocumentStructureProvider` SDK; 18 `DS_*` tokens × 18 themes | [0.6.4.6] — 2026-04-06 |
+| **Tab Groups (#180)** — `ITabGroupService` SDK + `TabGroupService`; split horizontal/vertical; 16 `TG_*` tokens; 77 integration tests | [0.6.4.6] — 2026-04-06 |
+| **Visual XAML Designer** — live WPF canvas, bidirectional canvas↔code sync (~95%), move/resize/rotate handles, property inspector, multi-select, snap grid, 4 split layouts, zoom/pan, full Phase 2/3 (ConstraintAdorner, gradient editor, binding path picker, perf overlay, responsive breakpoint bar) | [0.6.0] — 2026-03-18 |
+| **Shared `UndoEngine`** — coalescing (500 ms), transactions, save-point tracking, `Ctrl+Shift+Z` redo; replaces both editors' custom stacks | [0.6.0] — 2026-03-18 |
+| **Unit Testing Panel (#95)** — `DotnetTestRunner`, `TrxParser`, `UnitTestingPanel`; auto-run on `BuildSucceededEvent`; xunit/nunit/mstest auto-detection | [0.6.0] — 2026-03-16 |
+| **Plugin Sandbox — HWND embedding + IPC menu/toolbar/event bridges + auto-isolation + signing** (#81 Phase 9-12) | [0.3.0] — 2026-03-15 |
 | VS-style docking engine (100% in-house) | [2.7.0] — 2026-02 |
 | Project system (`.whsln` / `.whproj`) | [2.7.0] — 2026-02 |
-| Insert Mode fix, save reliability, unlimited undo/redo | [2.5.0] — 2026-02 |
 
 > Full history → [CHANGELOG.md](CHANGELOG.md)

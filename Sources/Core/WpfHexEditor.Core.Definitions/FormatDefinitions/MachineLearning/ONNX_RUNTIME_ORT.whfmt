@@ -1,0 +1,120 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "ONNX Runtime Optimized Model",
+  "formatId": "ONNX_RUNTIME_ORT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "ONNX Runtime pre-optimized model format (.ort). ORT files are produced by ONNX Runtime's model optimization tools and contain a graph already transformed for a specific execution provider (CPU, CUDA, TensorRT, DirectML, etc.). The format starts with the magic bytes 'ORT1' followed by a versioned binary layout.",
+  "extensions": [".ort"],
+  "category": "MachineLearning",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "4F525431",
+      "offset": 0,
+      "label": "ORT1 magic bytes",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 4,  "name": "magic",         "type": "ascii",    "description": "Magic identifier 'ORT1'", "storeAs": "string" },
+      { "offset": 4,  "size": 4,  "name": "version",       "type": "uint32le", "description": "ORT format version number", "storeAs": "uint32" },
+      { "offset": 8,  "size": 8,  "name": "model_version", "type": "uint64le", "description": "ONNX model version from the original ONNX graph", "storeAs": "uint64" },
+      { "offset": 16, "size": 4,  "name": "ir_version",    "type": "uint32le", "description": "ONNX IR version used when the model was optimized", "storeAs": "uint32" },
+      { "offset": 20, "size": 4,  "name": "opset_version", "type": "uint32le", "description": "Primary ONNX opset version of the optimized graph", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "version", "model_version", "ir_version", "opset_version"],
+    "valueMaps": {
+      "version": { "1": "ORT Format v1", "2": "ORT Format v2", "3": "ORT Format v3", "4": "ORT Format v4", "5": "ORT Format v5" }
+    },
+    "tooltips": {
+      "magic":         "Must be exactly 'ORT1' (0x4F525431)",
+      "version":       "ORT binary format version; determines layout of subsequent data",
+      "model_version": "Inherited from the original ONNX ModelProto.model_version field",
+      "ir_version":    "ONNX IR version at time of optimization (typically 7 or 8)",
+      "opset_version": "ONNX standard opset version; determines available operators"
+    }
+  },
+  "assertions": [
+    {
+      "id": "ORT_001",
+      "field": "magic",
+      "operator": "equals",
+      "value": "ORT1",
+      "description": "File must start with ASCII magic 'ORT1'"
+    },
+    {
+      "id": "ORT_002",
+      "field": "version",
+      "operator": "greaterThan",
+      "value": 0,
+      "description": "ORT format version must be a positive integer"
+    },
+    {
+      "id": "ORT_003",
+      "field": "opset_version",
+      "operator": "greaterOrEqual",
+      "value": 7,
+      "description": "Opset version should be 7 or higher for modern ONNX Runtime compatibility"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "ORT1 Magic",       "color": "#4A90D9" },
+      { "offset": 4,  "label": "Format Version",   "color": "#7ED321" },
+      { "offset": 16, "label": "IR Version",        "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ORT Header Summary",
+      "fields": ["magic", "version", "model_version", "ir_version", "opset_version"],
+      "format": "json"
+    },
+    {
+      "name": "Deployment Compatibility Report",
+      "fields": ["version", "ir_version", "opset_version"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "ORT files are produced by the onnxruntime.tools.convert_onnx_models_to_ort tool or by onnxruntime itself during model loading with optimization level ORT_ENABLE_ALL.",
+    "The ORT format embeds pre-computed kernel hashes and execution provider-specific subgraph partitions, making the file non-portable across different ONNX Runtime versions or EP configurations.",
+    "ORT format version history: v1 (ORT 1.x), v2 (ORT 1.5+), v3 (ORT 1.8+), v4 (ORT 1.11+), v5 (ORT 1.14+); always check version before loading.",
+    "Unlike ONNX protobuf files, ORT files use a FlatBuffers-based binary layout for zero-copy deserialization, significantly reducing model load time for edge deployment.",
+    "For mobile and embedded targets, ORT format is preferred over ONNX because it avoids protobuf parsing overhead and supports pre-packed operator kernels."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "ORT files do not support arbitrary code execution; all inference is handled by the ONNX Runtime engine.",
+      "ORT files may embed model metadata including domain, description, and author strings from the original ONNX model.",
+      "EP-specific ORT files may contain provider-specific configuration that reveals deployment environment details (CUDA device IDs, TensorRT precision settings)."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "ONNX",    "relationship": "derived",    "note": "ORT files are compiled/optimized representations of ONNX .onnx models" },
+    { "format": "TFLITE",  "relationship": "alternative", "note": "TFLite serves a similar edge-deployment role as ORT on non-Apple platforms" },
+    { "format": "COREML_MLPACKAGE", "relationship": "alternative", "note": "CoreML .mlpackage is Apple's equivalent of ORT for iOS/macOS edge inference" }
+  ],
+  "software": [
+    { "name": "ONNX Runtime",          "role": "Primary runtime for loading and executing .ort model files" },
+    { "name": "onnxruntime-tools",     "role": "Python package providing convert_onnx_models_to_ort conversion utility" },
+    { "name": "Netron",                "role": "Cross-platform neural network visualizer supporting .ort file inspection" },
+    { "name": "Visual Studio Code (ONNX extension)", "role": "IDE extension for browsing ONNX/ORT graph structure" }
+  ],
+  "useCases": [
+    "Deploying pre-optimized ML models to edge devices (ARM Cortex-M, Android, iOS) with reduced load time via ORT mobile runtime",
+    "Forensic analysis of embedded AI features in mobile apps distributing .ort model assets",
+    "Verifying ONNX Runtime version compatibility before upgrading production inference infrastructure",
+    "Comparing model sizes between ONNX source and ORT optimized formats to quantify optimization gains"
+  ],
+  "technicalDetails": "The ORT binary format uses FlatBuffers (Google) as its serialization layer, replacing the protobuf encoding used by the parent ONNX format. The FlatBuffers schema is defined in onnxruntime/core/flatbuffers/schema/ort.fbs in the ONNX Runtime source tree. The file begins with a 4-byte magic 'ORT1', followed by a 4-byte format version, then a FlatBuffers root table offset. The graph topology, initializer tensors (weights), and node attributes are all stored in FlatBuffers tables. Sparse initializers and external data references are supported from format version 4 onward. The ORT format is designed for zero-copy read: tensors can be memory-mapped directly without deserialization.",
+  "completenessScore": 83
+}

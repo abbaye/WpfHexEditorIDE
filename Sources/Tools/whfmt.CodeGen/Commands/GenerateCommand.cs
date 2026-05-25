@@ -35,11 +35,14 @@ internal static class GenerateCommand
             var catalog = EmbeddedFormatCatalog.Instance;
             OutputLanguage language = ParseLanguage(lang);
 
-            // Resolve entry
-            var entry = catalog.GetAll().FirstOrDefault(e =>
-                e.Name.Equals(format, StringComparison.OrdinalIgnoreCase) ||
-                e.Extensions.Any(x => x.TrimStart('.').Equals(format.TrimStart('.'), StringComparison.OrdinalIgnoreCase)) ||
-                (e.ResourceKey?.EndsWith(format, StringComparison.OrdinalIgnoreCase) ?? false));
+            // Resolve entry — restrict to .whfmt resources so .grammar (Synalysis XML) files
+            // with the same basename (bmp, elf, flac, gif, jpeg, mp3, png, sqlite, zip) are never matched.
+            var entry = catalog.GetAll()
+                .Where(e => e.ResourceKey?.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase) == true)
+                .FirstOrDefault(e =>
+                    e.Name.Equals(format, StringComparison.OrdinalIgnoreCase) ||
+                    e.Extensions.Any(x => x.TrimStart('.').Equals(format.TrimStart('.'), StringComparison.OrdinalIgnoreCase)) ||
+                    (e.ResourceKey?.EndsWith("." + format + ".whfmt", StringComparison.OrdinalIgnoreCase) ?? false));
 
             string json;
             string resolvedClass;

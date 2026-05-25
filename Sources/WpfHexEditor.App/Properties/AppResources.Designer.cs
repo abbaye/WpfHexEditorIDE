@@ -1044,6 +1044,12 @@ namespace WpfHexEditor.App.Properties {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Project Tables.
         /// </summary>
+        internal static string App_Editor_ExternalTables {
+            get {
+                return ResourceManager.GetString("App_Editor_ExternalTables", resourceCulture);
+            }
+        }
+
         internal static string App_Editor_ProjectTables {
             get {
                 return ResourceManager.GetString("App_Editor_ProjectTables", resourceCulture);
@@ -2266,7 +2272,80 @@ namespace WpfHexEditor.App.Properties {
                 return ResourceManager.GetString("App_Menu_ResetLayout", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset the layout to default? Open documents will be preserved.
+        /// </summary>
+        internal static string App_ResetLayout_Confirm {
+            get {
+                return ResourceManager.GetString("App_ResetLayout_Confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear Roaming Data….
+        /// </summary>
+        internal static string App_Menu_ClearRoamingData {
+            get {
+                return ResourceManager.GetString("App_Menu_ClearRoamingData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear Roaming Data.
+        /// </summary>
+        internal static string App_ClearRoamingData_Title {
+            get {
+                return ResourceManager.GetString("App_ClearRoamingData_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This will delete saved settings, layout, and session data. Installed extensions will not be affected. Continue?
+        /// </summary>
+        internal static string App_ClearRoamingData_Confirm {
+            get {
+                return ResourceManager.GetString("App_ClearRoamingData_Confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Roaming data cleared. A restart is recommended to apply the changes. Restart now?
+        /// </summary>
+        internal static string App_ClearRoamingData_RestartPrompt {
+            get {
+                return ResourceManager.GetString("App_ClearRoamingData_RestartPrompt", resourceCulture);
+            }
+        }
+
+        internal static string App_RoamingDataInfoBar_Message {
+            get { return ResourceManager.GetString("App_RoamingDataInfoBar_Message", resourceCulture); }
+        }
+
+        internal static string App_RoamingDataInfoBar_BackupReset {
+            get { return ResourceManager.GetString("App_RoamingDataInfoBar_BackupReset", resourceCulture); }
+        }
+
+        internal static string App_RoamingDataInfoBar_Ignore {
+            get { return ResourceManager.GetString("App_RoamingDataInfoBar_Ignore", resourceCulture); }
+        }
+
+        internal static string App_Menu_RestoreRoamingBackup {
+            get { return ResourceManager.GetString("App_Menu_RestoreRoamingBackup", resourceCulture); }
+        }
+
+        internal static string App_RestoreRoamingBackup_Confirm {
+            get { return ResourceManager.GetString("App_RestoreRoamingBackup_Confirm", resourceCulture); }
+        }
+
+        internal static string App_RestoreRoamingBackup_NoBackup {
+            get { return ResourceManager.GetString("App_RestoreRoamingBackup_NoBackup", resourceCulture); }
+        }
+
+        internal static string App_RestoreRoamingBackup_Done {
+            get { return ResourceManager.GetString("App_RestoreRoamingBackup_Done", resourceCulture); }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à R_esize....
         /// </summary>

@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Guardar diseño</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Cargar diseño</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Restablecer diseño</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>¿Restablecer el diseño al valor predeterminado? Los documentos abiertos se conservarán.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Borrar datos de itinerancia…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Borrar datos de itinerancia</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Esto eliminará la configuración guardada, el diseño y los datos de sesión. Las extensiones instaladas no se verán afectadas. ¿Continuar?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Datos de itinerancia borrados. Se recomienda reiniciar para aplicar los cambios. ¿Reiniciar ahora?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>Se detectaron datos de itinerancia corruptos ({0}). Haga una copia de seguridad y restablezca para corregirlo, o ignore para continuar.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>Copia de seguridad &amp; Restablecer</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>Ignorar</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>Restaurar desde copia de seguridad…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>¿Restaurar datos de itinerancia desde la copia de seguridad '{0}'? Los archivos actuales serán sobrescritos.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>No se encontró ninguna copia de seguridad. Use 'Borrar datos de itinerancia' al menos una vez para crear una copia de seguridad.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>Copia de seguridad restaurada correctamente. ¿Reiniciar ahora para aplicar los cambios?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Alternar _diseño bloqueado</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Herramientas</value></data>
@@ -840,6 +852,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>INICIO</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>FIJADOS</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Función</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Corrección</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Rendimiento</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Fijar</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Desfijar</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Quitar de recientes</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Buscar en recientes…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analizar PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filtro:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Importaciones</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exportaciones</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Secciones</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Encabezados</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>No es un archivo PE — abra primero un ejecutable o DLL de Windows.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Decodificar</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Modo:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Clave (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Desplazamiento:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Usar selección</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>Descartar</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Ver en:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>Cambios sin guardar</value></data>
@@ -1132,4 +1227,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Copiar ubicaciones ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Abrir en la declaración</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Copiar nombre del símbolo</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Ejecutar</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Long. mín.:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filtrar…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Longitud</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Codificación</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Valor</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Bytes</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Contexto</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Desplazamiento en bytes de la cadena en el archivo (hexadecimal)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Número de bytes brutos que ocupa esta cadena</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Codificación detectada: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC o TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Bytes hexadecimales brutos de la región</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Valor de cadena decodificado</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Número de cadenas con el mismo valor decodificado (naranja = duplicados encontrados)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 bytes antes (gris) + bytes correspondientes (coloreados por codificación) + 4 bytes después (gris)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Filtro regex — cuando está activo, el cuadro de búsqueda se trata como expresión regular</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>El archivo ha cambiado desde el último análisis — pulse F5 para volver a analizar</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Sincronizar cursor HexEditor con la cuadrícula</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Resaltar resultados visibles</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Borrar resaltados</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Exportar…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Cargar archivo TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Ejecutar (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Quitar TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Anclar/Desanclar (sobrevive al filtro)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Longitud mínima de cadena</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Número mínimo de caracteres distintos en la cadena</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filtrar desde desplazamiento (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filtrar hasta desplazamiento (hex, 0 = sin límite)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Ocultar resultados en bloques de alta entropía</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Archivo a analizar</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Filtro en vivo (F3 = siguiente, Mayús+F3 = anterior)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> DESACTUALIZADO</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Excl. alta entropía</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Archivo:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Codificaciones:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Mín.:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Despl.:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

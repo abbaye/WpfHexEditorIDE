@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "semantic",
   "formatName": "XML Markup Source File",
   "formatId": "XMLMarkup",

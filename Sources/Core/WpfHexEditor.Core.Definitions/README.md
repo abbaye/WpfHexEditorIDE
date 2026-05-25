@@ -1,6 +1,6 @@
 # whfmt.FileFormatCatalog
 
-799 embedded file format and language definitions for automatic format detection and syntax highlighting.  
+**856** embedded file format and language definitions for automatic format detection and syntax highlighting.  
 Cross-platform `net8.0` — works in any .NET 8 application. Zero external NuGet dependencies.
 
 ```
@@ -8,6 +8,46 @@ dotnet add package whfmt.FileFormatCatalog
 ```
 
 > **Full documentation**: [whfmt-FileFormatCatalog-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.Definitions/whfmt-FileFormatCatalog-guide.md) — API reference, architecture, integration guides (Level 1–4), and .whfmt format specification.
+
+---
+
+## What's New in 1.4.0
+
+### Catalog: 856 definitions (+57 since 1.3.2)
+
+New formats added across: 3D, Game, Images, Network, Science, and more — bringing the total to **856 embedded definitions**.
+
+### New companion NuGet: `whfmt.Formats`
+
+[`whfmt.Formats`](https://www.nuget.org/packages/whfmt.Formats) is a content-only NuGet that ships all 856 `.whfmt` files as `AdditionalFiles`.  
+Pair it with [`whfmt.SourceGenerator`](https://www.nuget.org/packages/whfmt.SourceGenerator) to get **compile-time C# parsers** for every format — no CLI step, no checked-in generated files:
+
+```xml
+<PackageReference Include="whfmt.FileFormatCatalog"  Version="1.4.0" />  <!-- runtime detection -->
+<PackageReference Include="whfmt.Formats"             Version="1.0.0" />  <!-- .whfmt as AdditionalFiles -->
+<PackageReference Include="whfmt.SourceGenerator"     Version="1.0.0" />  <!-- compile-time parsers -->
+```
+
+```csharp
+// Runtime detection (whfmt.FileFormatCatalog)
+var match = FormatMatcher.Match(fileBytes);
+
+// Compile-time parser (whfmt.SourceGenerator + whfmt.Formats)
+var png = PngParser.ParseFile("image.png");   // WhfmtFormats.Images namespace
+Console.WriteLine(png.Width);
+```
+
+### Ecosystem overview
+
+| Package | Role |
+|---------|------|
+| `whfmt.FileFormatCatalog` | Runtime — format detection, metadata, expression engine |
+| `whfmt.Formats` | Content — ships `.whfmt` files as `AdditionalFiles` for source generation |
+| `whfmt.SourceGenerator` | Build-time — Roslyn generator, turns `.whfmt` into typed C# parsers |
+| `whfmt.Analysis` | Runtime — semantic diff using the `diff` block |
+| `whfmt.Fuzz` | Runtime — format-aware fuzzing using the `fuzz` strategies |
+| `whfmt.CodeGen` *(tool)* | CLI — one-shot generation for C#/F#/Rust/VB outside MSBuild |
+| `whfmt.Validate` *(tool)* | CLI — validate, repair, lint-expressions |
 
 ---
 

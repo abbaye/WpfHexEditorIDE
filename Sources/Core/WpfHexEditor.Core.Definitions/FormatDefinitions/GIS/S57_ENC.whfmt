@@ -1,0 +1,125 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "IHO S-57 Electronic Nautical Chart",
+  "formatId": "S57_ENC",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "IHO S-57 Electronic Navigational Chart (ENC) format (.000) is the international standard for digital nautical charts used in ECDIS (Electronic Chart Display and Information System) navigation. S-57 is based on ISO/IEC 8211 Data Descriptive File (DDF) binary format with a hierarchical record structure encoding hydrographic features, depths, and aids to navigation.",
+  "extensions": [".000", ".s57"],
+  "category": "GIS",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "3030",
+      "offset": 0,
+      "label": "ISO 8211 DDR record length leading zeros (ASCII '00')",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 5,  "name": "record_length",    "type": "ascii", "description": "ISO 8211 DDR record length as 5 ASCII digits", "storeAs": "string" },
+      { "offset": 5,  "size": 1,  "name": "interchange_level", "type": "ascii", "description": "ISO 8211 interchange level: '1', '2', or '3'", "storeAs": "string" },
+      { "offset": 6,  "size": 1,  "name": "leader_id",         "type": "ascii", "description": "Leader identifier: 'L' for DDR, 'D' for DR", "storeAs": "string" },
+      { "offset": 7,  "size": 1,  "name": "inline_code_ext",   "type": "ascii", "description": "In-line code extension indicator", "storeAs": "string" },
+      { "offset": 8,  "size": 1,  "name": "version",           "type": "ascii", "description": "Version number of ISO 8211 standard used", "storeAs": "string" },
+      { "offset": 9,  "size": 1,  "name": "app_indicator",     "type": "ascii", "description": "Application indicator", "storeAs": "string" },
+      { "offset": 10, "size": 2,  "name": "field_control_len", "type": "ascii", "description": "Field control length as 2 ASCII digits", "storeAs": "string" },
+      { "offset": 12, "size": 5,  "name": "base_address",      "type": "ascii", "description": "Base address of field area as 5 ASCII digits", "storeAs": "string" },
+      { "offset": 17, "size": 3,  "name": "extended_charset",  "type": "ascii", "description": "Extended character set indicator (3 bytes)", "storeAs": "string" },
+      { "offset": 20, "size": 4,  "name": "size_indicators",   "type": "ascii", "description": "Field/position size indicators: entry map field length + position size", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["record_length", "interchange_level", "leader_id", "base_address"],
+    "valueMaps": {
+      "interchange_level": { "49": "Level 1", "50": "Level 2", "51": "Level 3" },
+      "leader_id":         { "76": "DDR (Data Descriptive Record)", "68": "DR (Data Record)" }
+    },
+    "tooltips": {
+      "record_length":    "Total length of the DDR in bytes; S-57 DDRs are typically 200-1000 bytes",
+      "interchange_level":"1=simplest profile; S-57 uses Level 1 per IHO specification",
+      "leader_id":        "'L' (0x4C) identifies the first record as a Data Descriptive Record (DDR)",
+      "base_address":     "Byte offset from start of record to start of field area; after the directory"
+    }
+  },
+  "assertions": [
+    {
+      "id": "S57_001",
+      "field": "record_length",
+      "operator": "greaterThan",
+      "value": "00000",
+      "description": "ISO 8211 record length must be non-zero"
+    },
+    {
+      "id": "S57_002",
+      "field": "leader_id",
+      "operator": "equals",
+      "value": "L",
+      "description": "First record must be a DDR (leader_id = 'L') per ISO 8211"
+    },
+    {
+      "id": "S57_003",
+      "field": "interchange_level",
+      "operator": "equals",
+      "value": "1",
+      "description": "S-57 ENC files use ISO 8211 interchange level 1"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "ISO 8211 DDR Leader",    "color": "#4A90D9" },
+      { "offset": 24, "label": "Directory Start",         "color": "#7ED321" },
+      { "offset": -1, "label": "First Data Record (DR)",  "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "S-57 DDR Header",
+      "fields": ["record_length", "interchange_level", "leader_id", "base_address", "field_control_len"],
+      "format": "json"
+    },
+    {
+      "name": "ENC Audit Report",
+      "fields": ["record_length", "leader_id", "interchange_level"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "S-57 .000 files are cells of a chart: each ENC cell covers a specific geographic area and scale band (1=Overview, 2=General, 3=Coastal, 4=Approach, 5=Harbour, 6=Berthing); the cell scale and coverage are encoded in the DSID (Dataset Identification) record.",
+    "S-57 features are encoded using IHO object classes (e.g., DEPARE=depth area, LIGHTS=light, BOYSPP=special purpose buoy) with attributes defined in the S-57 Appendix A object catalogue.",
+    "S-57 is being superseded by IHO S-100 (a GML-based framework) and S-102 (bathymetric surface); ECDIS manufacturers are required to support both formats during the transition period.",
+    "GDAL/OGR provides full S-57 read support via its IHO S-57 driver; use `ogrinfo -al file.000` to list all feature layers and attributes.",
+    "S-57 cell names follow a strict convention: CCAAMMNN.000 where CC=country code, AA=chart scale band, MM=row, NN=column within the ENC grid; this allows precise chart area identification from the filename alone."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Official S-57 ENCs are protected by PRIMAR/IC-ENC encryption (S-63 data protection scheme); files without S-63 protection may be unofficial or compromised charts.",
+      "Depth soundings in nautical charts are sensitive infrastructure data; unauthorized redistribution is restricted by chart licensing agreements.",
+      "S-57 datasets contain precise harbor layouts and underwater obstruction data that could be used for navigation of unauthorized vessels."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GEOTIFF",  "relationship": "alternative", "note": "RNC (Raster Navigational Charts) use GeoTIFF-like raster encoding vs S-57 vector features" },
+    { "format": "GML",      "relationship": "successor",   "note": "IHO S-100/S-102 uses GML encoding as the successor to S-57 ISO 8211 encoding" },
+    { "format": "GPKG",     "relationship": "convertible", "note": "GDAL can convert S-57 features to GeoPackage for GIS analysis" }
+  ],
+  "software": [
+    { "name": "OpenCPN",           "role": "Open-source ECDIS-like chart plotter that reads S-57 ENC files natively" },
+    { "name": "GDAL/OGR S-57 driver", "role": "Converts S-57 ENCs to GeoJSON, Shapefile, GeoPackage, and other GIS formats" },
+    { "name": "SevenCs ENC Manager", "role": "Professional ENC management and S-63 encryption handling tool" },
+    { "name": "CARIS HIPS and SIPS", "role": "Hydrographic survey processing suite that exports S-57 ENCs from survey data" }
+  ],
+  "useCases": [
+    "Electronic chart display on ECDIS navigation systems for maritime vessel guidance in international waters",
+    "Forensic analysis of vessel navigation records cross-referenced with ENC chart data for maritime incident investigation",
+    "Converting S-57 nautical chart data to modern GIS formats for port authority infrastructure planning",
+    "Academic and research use of depth, obstruction, and fairway data from digitized nautical charts"
+  ],
+  "technicalDetails": "IHO S-57 Edition 3.1 uses ISO/IEC 8211-1994 (Information technology — Specification for a data descriptive file for information interchange) as its physical encoding. An ISO 8211 file consists of a single DDR (Data Descriptive Record) that defines the field structure, followed by multiple DRs (Data Records) containing the actual feature data. The DDR leader is 24 bytes of ASCII. S-57 defines specific record types: DSID (dataset identification), DSPM (dataset parameter), VRID (vector record), FRID (feature record), ATTF (attribute), NATF (national attribute), SG2D (sounding group 2D), SG3D (sounding group 3D), and FSPT (feature-to-spatial pointer). Feature objects use IHO object class codes (6-character acronyms) and attribute codes from the S-57 object catalogue. Coordinates are stored as integer values in units of 10^-7 degrees.",
+  "completenessScore": 80
+}

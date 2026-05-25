@@ -1,41 +1,111 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Microsoft Access Project",
   "formatId": "ADP",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".adp"
   ],
   "description": "Microsoft Access project file for SQL Server",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Microsoft Access Project Format"
+      "Microsoft Access Project Format (ADP)",
+      "OLE2 Compound Document File Format — MS-CFB"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/ADP"
+      "https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-cfb/",
+      "https://en.wikipedia.org/wiki/Microsoft_Access",
+      "https://learn.microsoft.com/en-us/office/client-developer/access/desktop-database-reference/"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "ADP magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+  "signatures": [
+    {
+      "value": "D0CF11E0A1B11AE1",
+      "offset": 0,
+      "label": "OLE2/CFB magic — Microsoft Compound Binary File format",
+      "weight": 0.8,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "name": "ole2_magic",       "type": "bytes",    "offset": "0x00", "length": 8,  "description": "OLE2 signature: D0 CF 11 E0 A1 B1 1A E1" },
+      { "name": "class_id",         "type": "bytes",    "offset": "0x08", "length": 16, "description": "OLE2 class GUID (all zeros for generic compound files)" },
+      { "name": "minor_version",    "type": "uint16le", "offset": "0x18", "length": 2,  "description": "Minor version (0x003E for sector size 512)" },
+      { "name": "major_version",    "type": "uint16le", "offset": "0x1A", "length": 2,  "description": "Major version: 3 (512-byte sectors) or 4 (4096-byte sectors)" },
+      { "name": "byte_order",       "type": "uint16le", "offset": "0x1C", "length": 2,  "description": "Byte order: 0xFFFE = little-endian" },
+      { "name": "sector_size_exp",  "type": "uint16le", "offset": "0x1E", "length": 2,  "description": "Sector size as power of 2: 9=512 bytes, 12=4096 bytes" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["ole2_magic", "major_version", "sector_size_exp", "byte_order"],
+    "valueMaps": {
+      "major_version": {
+        "0x0003": "Version 3 (512-byte sectors, max 2 GB)",
+        "0x0004": "Version 4 (4096-byte sectors, larger files)"
+      },
+      "byte_order": {
+        "0xFFFE": "Little-endian (standard)"
+      }
+    },
+    "tooltips": {
+      "ole2_magic": "D0CF11E0A1B11AE1 is the universal OLE2/CFB magic; shared by .doc, .xls, .mdb, .adp, .ppt",
+      "sector_size_exp": "Sector size = 2^sector_size_exp; version 3 uses 9 (512 bytes), version 4 uses 12 (4096 bytes)"
+    }
+  },
+  "assertions": [
+    {
+      "name": "OLE2 magic present",
+      "expression": "bytes[0..7] == D0CF11E0A1B11AE1",
+      "severity": "error",
+      "message": "OLE2/CFB magic not found; not a valid Microsoft Compound Binary File"
+    },
+    {
+      "name": "Byte order is little-endian",
+      "expression": "byte_order == 0xFFFE",
+      "severity": "error",
+      "message": "Byte order mark should be 0xFFFE (little-endian); big-endian CFB is not used in practice"
+    },
+    {
+      "name": "Major version valid",
+      "expression": "major_version == 3 || major_version == 4",
+      "severity": "warning",
+      "message": "Major version should be 3 or 4; other values are non-standard"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Magic",      "offset": 0,   "icon": "", "color": "#2A9D8F" },
+      { "name": "Version Info",    "offset": 24,  "icon": "", "color": "#2A9D8F" },
+      { "name": "Sector Config",   "offset": 28,  "icon": "", "color": "#2A9D8F" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ADP CFB Header (JSON)",
+      "format": "json",
+      "fields": ["ole2_magic", "major_version", "sector_size_exp", "byte_order"]
+    },
+    {
+      "name": "ADP CFB Header (C struct)",
+      "format": "c-struct",
+      "structName": "OLE2_CFB_HEADER",
+      "fields": ["ole2_magic", "major_version", "byte_order", "sector_size_exp"]
+    }
+  ],
+  "aiHints": [
+    "ADP files use the OLE2/CFB container format (magic D0CF11E0A1B11AE1) — same as .doc, .xls, .mdb",
+    "ADP (Access Data Project) links Access forms to SQL Server rather than embedding a Jet/ACE database",
+    "The CFB directory stream identifies the specific application type stored inside the container",
+    "Sector allocation table (SAT/FAT) at the CFB header maps sector chains for each stream",
+    "OLE2 tools: libolecf, ole2viewer, or python-pptx/openpyxl libraries can inspect the stream hierarchy"
+  ],
   "variables": {
     "currentOffset": 0,
     "pageSize": 0,
@@ -51,7 +121,7 @@
       "length": 256,
       "color": "#2A9D8F",
       "opacity": 0.4,
-      "description": "Access project header"
+      "description": "Access project header (OLE2/CFB container)"
     },
     {
       "type": "metadata",
@@ -79,17 +149,29 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Microsoft Access (2007 and earlier)",
+    "libolecf (OLE2 extraction library)",
+    "OLE2 Viewer",
+    "DBeaver"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".adp"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "MDB",
+      "relation": "alternative",
+      "note": "MDB/ACCDB embed the Jet/ACE database engine; ADP links to SQL Server instead"
+    }
+  ],
+  "useCases": [
+    "Microsoft Access front-end linked to SQL Server data",
+    "Legacy enterprise application forms and reports inspection",
+    "OLE2 container forensics for Access project files",
+    "Migration analysis from Access/SQL Server to modern databases"
+  ],
+  "technicalDetails": "ADP files are OLE2/CFB containers (Compound Binary Format). The 76-byte CFB header at offset 0 includes the universal OLE2 magic, version, sector size, and FAT information. Access Data Project (.adp) stores VBA code, forms, and reports inside the CFB streams but connects to SQL Server for table data rather than storing it locally.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/msaccess"
   ],
   "Software": [
     "SQL Server",
@@ -105,23 +187,29 @@
     "Backup"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Container": "OLE2/CFB (Compound Binary Format)",
+    "DatabaseType": "SQL Server front-end (no embedded data)"
+  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
   },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
+    "notes": [
+      "ADP files may contain VBA macros; scan with antivirus before opening in Access",
+      "Connection strings inside ADP streams may expose SQL Server credentials",
+      "OLE2 container streams can be extracted with libolecf for deeper forensic analysis"
+    ]
   },
   "aiHints": {
     "analysisContext": "Microsoft Access project file for SQL Server",

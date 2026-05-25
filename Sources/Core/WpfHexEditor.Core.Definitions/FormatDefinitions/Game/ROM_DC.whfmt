@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Sega Dreamcast Disc Image",
   "formatId": "ROM_DC",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".gdi",
     ".cdi",
@@ -11,6 +12,7 @@
   "description": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -25,15 +27,102 @@
       "https://fabiensanglard.net/dreamcast_hacking/"
     ]
   },
-  "detection": {
-    "signature": "534547412053454741",
-    "offset": 0,
-    "required": false,
-    "validation": {
-      "minFileSize": 9,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "53454741",
+      "offset": 0,
+      "label": "SEGA marker at start of IP.BIN hardware ID field",
+      "weight": 0.8,
+      "strength": "Medium"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "sega_marker",    "type": "ascii",  "offset": "0x00", "length": 16,  "description": "Hardware ID: SEGA SEGAKATANA (or SEGA DISCSYSTEM for older format)" },
+      { "name": "device_info",    "type": "ascii",  "offset": "0x10", "length": 16,  "description": "Maker/publisher ID and device info" },
+      { "name": "area_symbols",   "type": "ascii",  "offset": "0x20", "length": 8,   "description": "Supported regions: J=Japan, U=USA, E=Europe" },
+      { "name": "peripherals",    "type": "ascii",  "offset": "0x28", "length": 8,   "description": "Supported peripheral devices" },
+      { "name": "product_number", "type": "ascii",  "offset": "0x30", "length": 10,  "description": "Product catalog number" },
+      { "name": "version",        "type": "ascii",  "offset": "0x3A", "length": 6,   "description": "Version string e.g. V1.000" },
+      { "name": "release_date",   "type": "ascii",  "offset": "0x40", "length": 8,   "description": "Release date YYYYMMDD" },
+      { "name": "boot_filename",  "type": "ascii",  "offset": "0x48", "length": 16,  "description": "Boot executable: 1ST_READ.BIN" },
+      { "name": "producer",       "type": "ascii",  "offset": "0x58", "length": 16,  "description": "Producer/developer name" },
+      { "name": "product_name",   "type": "ascii",  "offset": "0x68", "length": 128, "description": "Full game/product name" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["sega_marker", "product_number", "version", "release_date", "boot_filename", "area_symbols"],
+    "valueMaps": {
+      "area_symbols": {
+        "J": "Japan (NTSC-J)",
+        "U": "USA (NTSC-U)",
+        "E": "Europe (PAL)"
+      }
+    },
+    "tooltips": {
+      "sega_marker": "Must be 'SEGA SEGAKATANA  ' (16 bytes) for Dreamcast hardware to boot the disc",
+      "boot_filename": "Usually '1ST_READ.BIN'; the Dreamcast BIOS loads and executes this file",
+      "peripherals": "Comma-separated peripheral codes in a fixed 8-byte field"
     }
   },
+  "assertions": [
+    {
+      "name": "SEGA hardware marker present",
+      "expression": "bytes[0..3] == 53454741",
+      "severity": "error",
+      "message": "SEGA hardware ID not found at offset 0; not a valid Dreamcast IP.BIN header"
+    },
+    {
+      "name": "Boot filename declared",
+      "expression": "boot_filename != ''",
+      "severity": "warning",
+      "message": "Boot filename is empty; Dreamcast BIOS will not know which executable to load"
+    },
+    {
+      "name": "Release date format",
+      "expression": "release_date matches [0-9]{8}",
+      "severity": "info",
+      "message": "Release date should be 8 digits in YYYYMMDD format"
+    },
+    {
+      "name": "Version format",
+      "expression": "version startsWith 'V'",
+      "severity": "info",
+      "message": "Version string should start with 'V' followed by major.minor e.g. V1.000"
+    }
+  ],
+  "navigation": [
+    {
+      "bookmarks": [
+        { "name": "Hardware ID",    "offset": 0,   "icon": "", "color": "#FF6B6B" },
+        { "name": "Area Symbols",   "offset": 32,  "icon": "", "color": "#FFE66D" },
+        { "name": "Product Number", "offset": 48,  "icon": "", "color": "#FFE66D" },
+        { "name": "Boot Filename",  "offset": 72,  "icon": "", "color": "#95E1D3" },
+        { "name": "Product Name",   "offset": 104, "icon": "", "color": "#4ECDC4" }
+      ]
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "Dreamcast IP.BIN Header (JSON)",
+      "format": "json",
+      "fields": ["sega_marker", "product_number", "version", "release_date", "boot_filename", "area_symbols", "product_name"]
+    },
+    {
+      "name": "Dreamcast IP.BIN Header (C struct)",
+      "format": "c-struct",
+      "structName": "DC_IPBIN_HEADER",
+      "fields": ["sega_marker", "product_number", "version", "boot_filename", "area_symbols"]
+    }
+  ],
+  "aiHints": [
+    "Hardware ID at 0x00 must be exactly 'SEGA SEGAKATANA  ' (16 bytes with trailing spaces) for hardware boot",
+    "Boot filename at 0x48 is always '1ST_READ.BIN' on official discs; custom homebrew may differ",
+    "Area symbols at 0x20 are space-filled with letter codes: J=Japan, U=USA, E=Europe",
+    "GDI format stores track information separately in a .gdi text file; IP.BIN is in the data track",
+    "CDI format wraps the disc image in DiscJuggler container; IP.BIN starts at sector 0 of the data track"
+  ],
   "variables": {
     "currentOffset": 0,
     "productNumber": "",
@@ -194,17 +283,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "Demul",
+    "redream",
+    "NullDC",
+    "Flycast"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".gdi",
-      ".cdi",
-      ".iso"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "SAVE_DC_VMU",
+      "relation": "companion",
+      "note": "Dreamcast save data is stored on the VMU (Visual Memory Unit) in a separate format"
+    }
+  ],
+  "useCases": [
+    "Dreamcast game preservation and archiving",
+    "GDI/CDI disc image inspection and metadata extraction",
+    "Emulation with Flycast or redream",
+    "Homebrew development targeting the SH-4 CPU"
+  ],
+  "technicalDetails": "IP.BIN is the 16-sector bootstrap image (16 * 2048 = 32768 bytes) written to the first data track of the GD-ROM. The hardware ID 'SEGA SEGAKATANA  ' at offset 0 is verified by the BIOS. The boot filename at 0x48 (1ST_READ.BIN) is loaded to 0x8C010000 and executed. GDI format stores track layout in a plain-text .gdi file referencing separate .raw track files.",
+  "completenessScore": 84,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -222,11 +320,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
+    "CompletenessScore": 84,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -239,25 +337,16 @@
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
-    "suggestedInspections": [
-      "Validate Sega Dreamcast Disc Image container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "Modified hardware ID is a common indicator of a region-patched or bootleg disc image",
+      "Changed boot filename may indicate a modified disc that redirects to a different executable",
+      "CDI images from DiscJuggler may have different sector padding than standard GDI images"
     ]
   },
   "diff": {
-    "keyFields": [
-      "hardware_id"
-    ],
-    "ignoreFields": [
-      "release_date"
-    ],
+    "keyFields": ["hardware_id", "product_number", "version"],
+    "ignoreFields": ["release_date"],
     "note": "Inferred semantic diff for ROM_DC. Compare key structural fields; ignore volatile metadata."
   },
   "fuzz": {

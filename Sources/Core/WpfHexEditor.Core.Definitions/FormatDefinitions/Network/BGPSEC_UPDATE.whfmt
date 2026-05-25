@@ -1,0 +1,101 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "BGPsec UPDATE Message",
+  "formatId": "BGPSEC_UPDATE",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "BGP UPDATE message with BGPsec path attribute as defined by RFC 8205. Extends standard BGP UPDATE (RFC 4271) with cryptographic path validation signatures to prevent route hijacking.",
+  "extensions": [".bgp"],
+  "category": "Network",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "offset": 0,
+      "label": "BGP message marker (16 bytes of 0xFF)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 16,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 16, "name": "marker", "type": "bytes", "description": "BGP synchronization marker, all 16 bytes must be 0xFF", "storeAs": "hex" },
+      { "offset": 16, "size": 2, "name": "length", "type": "uint16be", "description": "Total BGP message length including marker (19-4096 bytes)", "storeAs": "uint" },
+      { "offset": 18, "size": 1, "name": "type", "type": "uint8", "description": "BGP message type: 1=OPEN, 2=UPDATE, 3=NOTIFICATION, 4=KEEPALIVE, 5=ROUTE-REFRESH", "storeAs": "uint" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["marker", "length", "type"],
+    "valueMaps": {
+      "type": {
+        "1": "OPEN",
+        "2": "UPDATE",
+        "3": "NOTIFICATION",
+        "4": "KEEPALIVE",
+        "5": "ROUTE-REFRESH"
+      }
+    },
+    "tooltips": {
+      "marker": "Must be 16 bytes of 0xFF; was historically used for authentication in RFC 1771",
+      "length": "Minimum 19 bytes (KEEPALIVE); UPDATE messages carry withdrawn routes and path attributes",
+      "type": "BGPsec is carried as a path attribute (type code 30) within UPDATE messages (type=2)"
+    }
+  },
+  "assertions": [
+    { "id": "BGP_MARKER", "field": "marker", "operator": "equals", "value": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", "description": "All 16 marker bytes must be 0xFF per RFC 4271" },
+    { "id": "BGP_TYPE_UPDATE", "field": "type", "operator": "equals", "value": "2", "description": "BGPsec path attributes are carried in UPDATE messages (type=2)" },
+    { "id": "BGP_LENGTH_MIN", "field": "length", "operator": "greaterThanOrEqual", "value": "19", "description": "BGP message length must be at least 19 bytes (header only)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "BGP Marker", "color": "#3498DB" },
+      { "offset": 16, "label": "Length + Type", "color": "#2ECC71" },
+      { "offset": 19, "label": "UPDATE Payload", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BGP Message Header",
+      "fields": ["marker", "length", "type"],
+      "format": "text"
+    },
+    {
+      "name": "BGP CSV Export",
+      "fields": ["length", "type"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "BGP marker is always 16 bytes of 0xFF; this is the most reliable signature for any BGP message",
+    "BGPsec path attribute (type code 30) replaces AS_PATH in BGPsec-capable sessions with signed path segments",
+    "BGPsec UPDATE messages contain a Secure_Path attribute and a Signatures attribute carrying ECDSA-P256 or P384 signatures",
+    "Each router in the AS path adds its signature; validators walk the chain from origin to each intermediate AS",
+    "BGPsec requires RPKI route origin authorizations (ROAs) as a foundation for path validation"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "BGP session captures may reveal AS peering relationships and routing policy",
+      "Invalid BGPsec signatures in a capture indicate potential route hijacking or misconfiguration",
+      "BGP NOTIFICATION messages (type=3) encode the reason for session teardown"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MRT_DUMP", "relationship": "container", "note": "BGP UPDATE messages are archived in MRT dump format for routing table analysis" },
+    { "format": "PCAP", "relationship": "container", "note": "BGP sessions captured in PCAP over TCP port 179" }
+  ],
+  "software": [
+    { "name": "Wireshark", "role": "BGP dissector with BGPsec path attribute decoding support" },
+    { "name": "FRRouting (FRR)", "role": "Open-source routing daemon implementing BGP with BGPsec support" },
+    { "name": "RIPE NCC RPKI Validator", "role": "Validates BGPsec certificates and RPKI objects for route origin validation" }
+  ],
+  "useCases": [
+    "Analysis of BGP routing table dumps and UPDATE sequences during route hijacking incidents",
+    "Verification of BGPsec signature chains in operator test environments",
+    "Forensic investigation of BGP session resets and path attribute anomalies"
+  ],
+  "technicalDetails": "BGP (RFC 4271) messages always begin with a 19-byte header: 16-byte marker, 2-byte length, 1-byte type. UPDATE messages (type=2) carry withdrawn routes, path attributes (including BGPsec attribute type 30), and NLRI. BGPsec (RFC 8205) adds a Secure_Path attribute encoding the signed AS path and a Signatures attribute with per-AS ECDSA signatures validating the path from origin AS to each downstream AS.",
+  "completenessScore": 82
+}

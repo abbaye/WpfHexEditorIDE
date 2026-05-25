@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "RAR Archive",
   "formatId": "RAR",
@@ -22,6 +23,82 @@
       "https://codedread.github.io/bitjs/docs/unrar.html"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "526172211A0700",
+      "offset": 0,
+      "label": "Rar!\\x1A\\x07\\x00 — RAR4 archive signature (7 bytes)",
+      "weight": 1.0,
+      "strength": "Strong"
+    },
+    {
+      "value": "526172211A070100",
+      "offset": 0,
+      "label": "Rar!\\x1A\\x07\\x01\\x00 — RAR5 archive signature (8 bytes)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "signature", "type": "hex", "offset": 0, "length": 7, "description": "RAR4: 52 61 72 21 1A 07 00 (7 bytes)" },
+      { "name": "versionMarker", "type": "uint8", "offset": 7, "length": 1, "description": "RAR5: 00 at offset 7 after 8-byte signature; RAR4: first header byte" },
+      { "name": "headerCrc", "type": "uint16le", "offset": 7, "length": 2, "description": "RAR4: CRC-16 of main archive header" },
+      { "name": "headerType", "type": "uint8", "offset": 9, "length": 1, "description": "RAR4: block type (0x73 = main archive header)" },
+      { "name": "headerFlags", "type": "uint16le", "offset": 10, "length": 2, "description": "Archive flags: solid(0x08), volume(0x01), locked(0x04)" },
+      { "name": "headerSize", "type": "uint16le", "offset": 12, "length": 2, "description": "RAR4: header size in bytes" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["rarSignature", "rarVersionByte", "isRar5", "isSolid", "isVolume"],
+    "valueMaps": {
+      "rarVersionByte": { "0": "RAR5 (modern format)", "255": "RAR4" }
+    },
+    "tooltips": {
+      "rarSignature": "Rar! magic + version bytes",
+      "isRar5": "RAR5 uses 8-byte signature and variable-length integer encoding",
+      "isSolid": "Solid archive compresses all files together for better ratio"
+    }
+  },
+  "assertions": [
+    {
+      "name": "RAR signature valid",
+      "expression": "rarSignature.startsWith('526172211A07')",
+      "severity": "error",
+      "message": "RAR archive must start with 52 61 72 21 1A 07 (Rar!\\x1A\\x07)"
+    },
+    {
+      "name": "RAR version recognized",
+      "expression": "rarVersionByte == 0 || rarVersionByte == 255",
+      "severity": "warning",
+      "message": "Unexpected RAR version byte — expected 0x00 (RAR5) or 0x00 terminator (RAR4)"
+    },
+    {
+      "name": "Minimum file size",
+      "expression": "fileSize >= 20",
+      "severity": "error",
+      "message": "RAR archive too small to contain a valid header"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "RAR Header (JSON)",
+      "format": "json",
+      "fields": ["rarSignature", "rarVersionByte", "isRar5", "headerCrc", "headerType", "headerFlags"]
+    },
+    {
+      "name": "RAR Summary (Text)",
+      "format": "text",
+      "fields": ["rarSignature", "isRar5", "isSolid", "isVolume"]
+    }
+  ],
+  "formatRelationships": [
+    { "format": "7Z", "relationship": "Competing format with similar solid-archive and encryption capabilities" },
+    { "format": "ZIP", "relationship": "More widely supported alternative without proprietary licensing" },
+    { "format": "ACE", "relationship": "Earlier competing proprietary format, now abandoned" }
+  ],
   "detection": {
     "signature": "526172211A07",
     "offset": 0,
@@ -332,7 +409,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 18,
     "ValidationRules": 1,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -341,7 +418,15 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
+  "aiHints": [
+    "RAR4 signature: 52 61 72 21 1A 07 00 (7 bytes); RAR5 signature: 52 61 72 21 1A 07 01 00 (8 bytes)",
+    "RAR4 main header at offset 7: CRC16(2,LE) + type(1) + flags(2,LE) + size(2,LE) + reserved(6)",
+    "RAR5 uses variable-length integers (vint) and a completely different header structure from offset 8",
+    "Solid archive flag (0x08 in headerFlags) means all files compressed together — single corrupt block affects all",
+    "AES-256 encryption can encrypt file names in addition to content — headers may be encrypted too",
+    "WinRAR removal of unasp.dll in v5.70 (Feb 2019) was due to ACE path traversal CVE-2018-20250, not RAR itself"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "RAR archive format created by Eugene Roshal. Supports high compression ratios, solid archives, multi-volume ...",
     "suggestedInspections": [
       "Verify RAR Archive file header, compression method, and stored CRCs",

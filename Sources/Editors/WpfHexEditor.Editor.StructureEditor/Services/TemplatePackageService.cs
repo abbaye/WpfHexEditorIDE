@@ -35,9 +35,16 @@ public sealed class TemplatePackageService
         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
 
-    private static readonly JsonSerializerOptions ImportOptions = new()
+    internal static readonly JsonSerializerOptions ImportOptions = new()
     {
         PropertyNameCaseInsensitive = true,
+    };
+
+    internal static readonly JsonSerializerOptions WriteIndentedOptions = new()
+    {
+        WriteIndented          = true,
+        PropertyNamingPolicy   = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
 
     /// <summary>Exports <paramref name="def"/> to <paramref name="outputPath"/> in the requested format.</summary>
@@ -66,6 +73,36 @@ public sealed class TemplatePackageService
             System.Diagnostics.Debug.WriteLine($"[TemplatePackageService] import failed: {filePath} — {ex.Message}");
             return null;
         }
+    }
+
+    /// <summary>
+    /// Merges blocks and variables from <paramref name="source"/> into <paramref name="target"/>.
+    /// Blocks with duplicate names are renamed with a "_merged" suffix.
+    /// Variables that already exist in target are skipped.
+    /// </summary>
+    public static FormatDefinition Merge(FormatDefinition target, FormatDefinition source)
+    {
+        var existingNames = new HashSet<string>(
+            (target.Blocks ?? []).Select(b => b.Name ?? "").Where(n => n.Length > 0),
+            StringComparer.Ordinal);
+
+        foreach (var block in source.Blocks ?? [])
+        {
+            if (block is null) continue;
+            var name = !string.IsNullOrEmpty(block.Name) && existingNames.Contains(block.Name!)
+                ? block.Name + "_merged"
+                : block.Name;
+            block.Name = name;
+            (target.Blocks ??= []).Add(block);
+        }
+
+        foreach (var kv in source.Variables ?? new Dictionary<string, object>())
+        {
+            (target.Variables ??= new Dictionary<string, object>())
+                .TryAdd(kv.Key, kv.Value);
+        }
+
+        return target;
     }
 
     // ── C struct ──────────────────────────────────────────────────────────────

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "LZH Archive",
   "formatId": "LZH",
@@ -74,7 +75,7 @@
       "offset": 1,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Simple additive checksum of the header bytes following this field (level-0/level-1). Computed as the sum of all subsequent header bytes modulo 256. Used to detect header corruption. Level-2 headers do not use this checksum field — they use a CRC-16 of the entire header instead.",
       "storeAs": "headerChecksum",
       "valueType": "uint8"
@@ -109,7 +110,7 @@
       "offset": 7,
       "length": 4,
       "color": "#FFE66D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Size of the compressed data in the archive in bytes (little-endian 32-bit). Immediately follows the file header block. For method -lh0- (stored), this equals originalSize. For directory entries (-lhd-), this is typically 0.",
       "storeAs": "compressedSize",
       "valueType": "uint32",
@@ -121,7 +122,7 @@
       "offset": 11,
       "length": 4,
       "color": "#45B7D1",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Original uncompressed file size in bytes (little-endian 32-bit). Used to allocate output buffer during extraction. For directory entries, this is 0.",
       "storeAs": "originalSize",
       "valueType": "uint32",
@@ -133,7 +134,7 @@
       "offset": 15,
       "length": 4,
       "color": "#96CEB4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "File modification timestamp in MS-DOS packed date/time format (little-endian 32-bit). Upper 16 bits = date (bits 15-9=year-1980, bits 8-5=month, bits 4-0=day). Lower 16 bits = time (bits 15-11=hour, bits 10-5=minute, bits 4-0=2-second steps).",
       "storeAs": "timestamp",
       "valueType": "uint32",
@@ -145,16 +146,36 @@
       "offset": 19,
       "length": 1,
       "color": "#DDA0DD",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "MS-DOS file attribute byte. Bit flags: bit 0=read-only, bit 1=hidden, bit 2=system, bit 3=volume label, bit 4=directory, bit 5=archive.",
       "storeAs": "attribute",
       "valueType": "uint8",
       "bitfields": [
-        { "bit": 0, "name": "ReadOnly", "description": "File is read-only" },
-        { "bit": 1, "name": "Hidden", "description": "File is hidden from directory listing" },
-        { "bit": 2, "name": "System", "description": "File is a system file" },
-        { "bit": 4, "name": "Directory", "description": "Entry is a directory" },
-        { "bit": 5, "name": "Archive", "description": "File has been modified since last backup" }
+        {
+          "bit": 0,
+          "name": "ReadOnly",
+          "description": "File is read-only"
+        },
+        {
+          "bit": 1,
+          "name": "Hidden",
+          "description": "File is hidden from directory listing"
+        },
+        {
+          "bit": 2,
+          "name": "System",
+          "description": "File is a system file"
+        },
+        {
+          "bit": 4,
+          "name": "Directory",
+          "description": "Entry is a directory"
+        },
+        {
+          "bit": 5,
+          "name": "Archive",
+          "description": "File has been modified since last backup"
+        }
       ]
     },
     {
@@ -163,7 +184,7 @@
       "offset": 20,
       "length": 1,
       "color": "#FF8C69",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Header format level: 0 (original lharc), 1 (extended), or 2 (new extended with 2-byte header size). Level 0 and 1 are most common. Level 2 uses a different layout: the first 2 bytes are a 16-bit header size (LE) instead of headerSize+checksum.",
       "storeAs": "headerLevel",
       "valueType": "uint8",
@@ -179,7 +200,7 @@
       "offset": 21,
       "length": 1,
       "color": "#87CEEB",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Length of the filename field that follows (in bytes, 0-255). The filename is a null-free byte sequence; no null terminator. In level-1/2 headers, extended headers may contain a longer filename or OS-2/Unix path information.",
       "storeAs": "filenameLength",
       "valueType": "uint8"
@@ -277,8 +298,14 @@
       "name": "Header Additive Checksum",
       "algorithm": "sum8",
       "note": "Sum of all header bytes following the checksum field, modulo 256. Only for level-0 and level-1 headers.",
-      "dataRange": { "fixedOffset": 2, "lengthVar": "headerSize" },
-      "storedAt": { "fixedOffset": 1, "length": 1 },
+      "dataRange": {
+        "fixedOffset": 2,
+        "lengthVar": "headerSize"
+      },
+      "storedAt": {
+        "fixedOffset": 1,
+        "length": 1
+      },
       "storedType": "uint8",
       "severity": "warning"
     },
@@ -286,8 +313,14 @@
       "name": "File Data CRC-16",
       "algorithm": "crc16",
       "note": "CRC-16 (polynomial 0x8005) of the fully decompressed file data.",
-      "dataRange": { "description": "Decompressed output of the compressed data block" },
-      "storedAt": { "fixedOffset": 22, "length": 2, "endianness": "little" },
+      "dataRange": {
+        "description": "Decompressed output of the compressed data block"
+      },
+      "storedAt": {
+        "fixedOffset": 22,
+        "length": 2,
+        "endianness": "little"
+      },
       "storedType": "uint16",
       "severity": "warning"
     }
@@ -297,25 +330,25 @@
       {
         "name": "First File Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Method ID (-lhN-)",
         "offset": 2,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "File Sizes",
         "offset": 7,
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#FFE66D"
       },
       {
         "name": "CRC-16",
         "offset": 22,
-        "icon": "\uE72E",
+        "icon": "",
         "color": "#98D8C8"
       }
     ]
@@ -327,18 +360,31 @@
     "groups": [
       {
         "title": "File Header",
-        "icon": "\uE71B",
-        "fields": ["headerSize", "headerChecksum", "methodId", "headerLevel"]
+        "icon": "",
+        "fields": [
+          "headerSize",
+          "headerChecksum",
+          "methodId",
+          "headerLevel"
+        ]
       },
       {
         "title": "File Data",
-        "icon": "\uE9D9",
-        "fields": ["compressedSize", "originalSize", "filenameLength", "isDirectory"]
+        "icon": "",
+        "fields": [
+          "compressedSize",
+          "originalSize",
+          "filenameLength",
+          "isDirectory"
+        ]
       },
       {
         "title": "Integrity",
-        "icon": "\uE72E",
-        "fields": ["crc16", "attribute"]
+        "icon": "",
+        "fields": [
+          "crc16",
+          "attribute"
+        ]
       }
     ]
   },
@@ -346,18 +392,44 @@
     {
       "name": "LZH File Header (JSON)",
       "format": "json",
-      "fields": ["headerSize", "methodId", "compressedSize", "originalSize", "timestamp", "attribute", "headerLevel", "filenameLength", "crc16", "isDirectory"]
+      "fields": [
+        "headerSize",
+        "methodId",
+        "compressedSize",
+        "originalSize",
+        "timestamp",
+        "attribute",
+        "headerLevel",
+        "filenameLength",
+        "crc16",
+        "isDirectory"
+      ]
     },
     {
       "name": "lzh_header_t (C struct)",
       "format": "c-struct",
       "structName": "lzh_header",
-      "fields": ["headerSize", "headerChecksum", "methodId", "compressedSize", "originalSize", "timestamp", "attribute", "headerLevel", "filenameLength"]
+      "fields": [
+        "headerSize",
+        "headerChecksum",
+        "methodId",
+        "compressedSize",
+        "originalSize",
+        "timestamp",
+        "attribute",
+        "headerLevel",
+        "filenameLength"
+      ]
     },
     {
       "name": "Python LZH check",
       "format": "python-bytes",
-      "fields": ["headerSize", "methodId", "compressedSize", "originalSize"]
+      "fields": [
+        "headerSize",
+        "methodId",
+        "compressedSize",
+        "originalSize"
+      ]
     }
   ],
   "forensic": {
@@ -384,22 +456,13 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "LZH level-0 header layout: headerSize(1) + checksum(1) + methodID(5,'-lhN-') + compressedSize(4,LE) + originalSize(4,LE) + timestamp(4,LE,DOS) + attribute(1) + level(1) + filenameLen(1) + filename(N bytes) + CRC16(2,LE). Detection: bytes at offset 2-4 are 0x2D 0x6C 0x68 ('-lh'). End of archive: headerSize == 0. Level-1 headers add extended headers after the base header. Level-2 uses a 2-byte LE header size at offset 0 instead of single-byte. Most common method: -lh5- (8k dictionary LZSS+Huffman). CRC-16 polynomial: 0x8005.",
-    "knownVulnerabilities": [
-      "CVE-2006-4335 to CVE-2006-4338: Multiple buffer overflows in lha 1.14 via crafted headers",
-      "Path traversal via ../ or absolute paths in LZH filenames (pre-2006 lha versions)",
-      "Integer overflow in compressedSize + originalSize causing allocator underalloc"
-    ],
-    "suggestedInspections": [
-      "Verify bytes at offset 2-4 are 0x2D 0x6C 0x68 ('-lh')",
-      "Verify headerLevel is 0, 1, or 2",
-      "Validate headerChecksum: sum bytes 2..headerSize+2 mod 256 should equal byte at offset 1",
-      "Check methodId is one of: -lh0-, -lh1-, -lh2-, -lh3-, -lh4-, -lh5-, -lh6-, -lh7-, -lhd-",
-      "Scan stored filename (after filenameLength bytes) for path traversal (../ or absolute paths)",
-      "Verify CRC-16 of decompressed data matches crc16 field"
-    ]
-  },
+  "aiHints": [
+    "LZH/LHA header level 0: headerSize(1) + checksum(1) + methodId(5,'-lh5-') + compSize(4,LE) + origSize(4,LE)",
+    "Method IDs: -lh0-=stored, -lh4--lh7-=LZSS+Huffman, -lhd-=directory, -lzs-=LZSS only",
+    "Archive ends when headerSize byte == 0 at the start of a new header",
+    "Header checksum (byte 1): sum of all header bytes except CRC fields, mod 256",
+    "LZH was dominant in Japan and on Amiga systems throughout the 1990s"
+  ],
   "software": [
     "LHA (Haruyasu Yoshizaki)",
     "lha (Unix port, jca02266)",
@@ -410,8 +473,15 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".lzh", ".lha"],
-    "relatedFormats": ["ZIP", "ARJ", "RAR"],
+    "extensions": [
+      ".lzh",
+      ".lha"
+    ],
+    "relatedFormats": [
+      "ZIP",
+      "ARJ",
+      "RAR"
+    ],
     "popularIn": "Japan (dominant archive format until ~2000), Amiga community"
   },
   "MimeTypes": [
@@ -429,7 +499,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },
@@ -507,5 +577,76 @@
       }
     ],
     "note": "Inferred fuzz strategies for LZH. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "signatures": [
+    {
+      "value": "2D6C68352D",
+      "offset": 2,
+      "label": "'-lh5-' — LZH method ID at offset 2 (common LZH method)",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 7,
+  "structure": {
+    "fields": [
+      {
+        "name": "headerSize",
+        "type": "uint8",
+        "offset": 0,
+        "length": 1,
+        "description": "Header size in bytes"
+      },
+      {
+        "name": "headerChecksum",
+        "type": "uint8",
+        "offset": 1,
+        "length": 1,
+        "description": "Sum of header bytes"
+      },
+      {
+        "name": "methodId",
+        "type": "ascii",
+        "offset": 2,
+        "length": 5,
+        "description": "5-char method: -lh0-=stored, -lh5-=LZSS+Huffman"
+      },
+      {
+        "name": "compressedSize",
+        "type": "uint32le",
+        "offset": 7,
+        "length": 4,
+        "description": "Compressed file size"
+      },
+      {
+        "name": "originalSize",
+        "type": "uint32le",
+        "offset": 11,
+        "length": 4,
+        "description": "Uncompressed file size"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint32le",
+        "offset": 15,
+        "length": 4,
+        "description": "MS-DOS timestamp"
+      },
+      {
+        "name": "headerLevel",
+        "type": "uint8",
+        "offset": 20,
+        "length": 1,
+        "description": "Header level: 0, 1, or 2"
+      },
+      {
+        "name": "filenameLen",
+        "type": "uint8",
+        "offset": 21,
+        "length": 1,
+        "description": "Filename length in bytes"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20"
 }

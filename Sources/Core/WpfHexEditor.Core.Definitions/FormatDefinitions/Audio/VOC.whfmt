@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Creative Voice File",
   "formatId": "VOC",
@@ -6,6 +7,17 @@
   "extensions": [
     ".voc"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "437265617469766520566F696365",
+      "offset": 0,
+      "label": "Creative Voice File magic 'Creative Voice'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "Creative Voice File (VOC) — the native audio format of Creative Labs Sound Blaster cards, widely used in MS-DOS games from the late 1980s through mid-1990s. The 26-byte header contains a 20-byte ASCII identifier string 'Creative Voice File' followed by 0x1A (EOF character, prevents accidental TYPE display), a 2-byte data block offset (LE uint16), a 2-byte version number (LE uint16), and a 2-byte version check (LE uint16). Data blocks follow: each block has a 1-byte type, 3-byte little-endian size, and variable data. Block type 0 terminates the file; block type 1 contains Sound Data (sample rate divisor + codec byte + PCM data).",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

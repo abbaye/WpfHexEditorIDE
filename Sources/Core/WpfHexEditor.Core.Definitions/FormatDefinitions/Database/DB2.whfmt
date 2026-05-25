@@ -1,41 +1,125 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "IBM DB2 Database",
   "formatId": "DB2",
-  "version": "2.33",
+  "version": "2.34",
   "extensions": [
     ".db2"
   ],
   "description": "IBM DB2 database file format",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "IBM DB2 Database Format"
+      "IBM DB2 for Linux, UNIX and Windows — Database File Format",
+      "IBM DB2 System Catalog and Recovery Log format",
+      "IBM DB2 LUW Page Layout — IBM Knowledge Center"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DB2"
+      "https://en.wikipedia.org/wiki/IBM_Db2",
+      "https://www.ibm.com/docs/en/db2/",
+      "https://www.ibm.com/docs/en/db2/11.5?topic=recovery-database-logs"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "53514C30363430",
+      "offset": 0,
+      "label": "DB2 log file magic 'SQL0640' — DB2 transaction log header",
+      "weight": 0.9,
+      "strength": "Strong"
     },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "DB2 magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "44423200",
+      "offset": 0,
+      "label": "DB2 catalog signature 'DB2\\0' — found in some DB2 internal files",
+      "weight": 0.6,
+      "strength": "Medium"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "name": "file_magic",    "type": "bytes",    "offset": "0x00", "length": 7,  "description": "File magic bytes — 'SQL0640' for DB2 log files or 'DB2\\0' for catalog files" },
+      { "name": "log_version",   "type": "uint16be", "offset": "0x07", "length": 2,  "description": "Log format version (big-endian)" },
+      { "name": "page_size",     "type": "uint32be", "offset": "0x10", "length": 4,  "description": "Database page size in bytes (4096, 8192, 16384, or 32768)" },
+      { "name": "extent_size",   "type": "uint32be", "offset": "0x14", "length": 4,  "description": "Extent size in pages (default: 32)" },
+      { "name": "db_version",    "type": "uint16be", "offset": "0x18", "length": 2,  "description": "DB2 database version (e.g., 0x000B = DB2 v11)" },
+      { "name": "timestamp",     "type": "bytes",    "offset": "0x20", "length": 8,  "description": "Database creation timestamp (DB2 internal format)" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["file_magic", "page_size", "db_version", "extent_size"],
+    "valueMaps": {
+      "page_size": {
+        "4096":  "4 KB pages",
+        "8192":  "8 KB pages",
+        "16384": "16 KB pages",
+        "32768": "32 KB pages"
+      },
+      "db_version": {
+        "0x0009": "DB2 v9.x (Viper)",
+        "0x000A": "DB2 v10.x",
+        "0x000B": "DB2 v11.x",
+        "0x000C": "DB2 v11.5 (Mod Packs)"
+      }
+    },
+    "tooltips": {
+      "file_magic": "'SQL0640' (hex 53514C30363430) identifies a DB2 log file; DB2 data files use internal page headers rather than a single global magic",
+      "page_size": "DB2 page size must be 4096, 8192, 16384, or 32768 bytes; set at CREATE DATABASE time and cannot be changed",
+      "db_version": "DB2 version stored in system catalog pages; inspect with db2 get db cfg for <dbname>"
+    }
+  },
+  "assertions": [
+    {
+      "name": "File size is multiple of page size",
+      "expression": "fileSize % page_size == 0 || fileSize < page_size",
+      "severity": "warning",
+      "message": "DB2 database files are composed of fixed-size pages; file size should be a multiple of page_size"
+    },
+    {
+      "name": "Page size is valid",
+      "expression": "page_size == 4096 || page_size == 8192 || page_size == 16384 || page_size == 32768",
+      "severity": "warning",
+      "message": "DB2 page size must be 4096, 8192, 16384, or 32768 bytes — other values indicate corruption or a non-DB2 file"
+    },
+    {
+      "name": "File is not empty",
+      "expression": "fileSize > 0",
+      "severity": "error",
+      "message": "DB2 database file is empty — no valid content to parse"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Magic",    "offset": 0,   "icon": "", "color": "#3D5A80" },
+      { "name": "Page Config",   "offset": 16,  "icon": "", "color": "#3D5A80" },
+      { "name": "DB Version",    "offset": 24,  "icon": "", "color": "#3D5A80" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DB2 Header (JSON)",
+      "format": "json",
+      "fields": ["file_magic", "page_size", "db_version", "extent_size"]
+    },
+    {
+      "name": "DB2 Header (C struct)",
+      "format": "c-struct",
+      "structName": "DB2_FILE_HEADER",
+      "fields": ["file_magic", "log_version", "page_size", "extent_size", "db_version"]
+    }
+  ],
+  "aiHints": [
+    "DB2 log files begin with 'SQL0640' (hex 53514C30363430); DB2 data container files use page-level headers rather than a single global magic",
+    "DB2 database files are composed of fixed-size pages (4 KB, 8 KB, 16 KB, or 32 KB); page size is set at CREATE DATABASE time",
+    "Each DB2 page has a 20-byte page header: page type (uint16), page number (uint32), log sequence number (uint64), and checksum",
+    "DB2 stores tablespace metadata in SYSCAT.TABLESPACES; physical container files are named SQL00001, SQL00002, etc.",
+    "DB2 recovery logs are named S0000000.LOG through SNNNNNNNN.LOG; inspect with db2cklog utility"
+  ],
   "variables": {
     "currentOffset": 0,
     "pageSize": 0,
@@ -79,56 +163,65 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "IBM DB2 for Linux, UNIX, and Windows",
+    "DBeaver (DB2 JDBC driver)",
+    "IBM Data Studio",
+    "db2cklog (DB2 log inspection utility)"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".db2"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "SQLITE",
+      "relation": "alternative",
+      "note": "SQLite uses a single portable file; DB2 uses multiple container files with a dedicated catalog tablespace"
+    }
+  ],
+  "useCases": [
+    "Enterprise relational database inspection and forensic analysis",
+    "DB2 transaction log parsing for recovery and audit",
+    "Database container file integrity verification",
+    "Migration analysis from IBM DB2 to modern database platforms"
+  ],
+  "technicalDetails": "IBM DB2 database files are divided into tablespace containers. Each container is composed of fixed-size pages (4, 8, 16, or 32 KB). DB2 transaction log files begin with the ASCII marker 'SQL0640'. Data pages have a 20-byte header including page type, LSN, and checksum. The system catalog (SYSCAT) is stored in the SYSCATSPACE tablespace. DB2 supports multiple storage engines: SMS (file-per-object) and DMS (pre-allocated container).",
+  "completenessScore": 80,
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
+    "IBM DB2",
+    "DBeaver",
+    "IBM Data Studio",
+    "db2cklog"
   ],
   "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
+    "Enterprise database storage",
+    "Transaction log recovery",
+    "Schema inspection",
+    "Database migration"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 80,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "PageSizes": "4096, 8192, 16384, 32768 bytes",
+    "LogMagic": "SQL0640 (53514C30363430)",
+    "StorageModels": "SMS (file-per-object) and DMS (pre-allocated container)"
+  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
   },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "IBM DB2 database file format",
-    "suggestedInspections": [
-      "Verify IBM DB2 Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "DB2 database files may contain sensitive enterprise data including PII, financial records, and credentials",
+      "DB2 transaction logs (SQL0640 files) can be replayed or inspected with db2cklog for audit trails",
+      "DB2 containers have no file-level encryption by default; full-disk encryption or DB2 Native Encryption required for data-at-rest protection"
     ]
   }
 }

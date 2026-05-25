@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Зберегти розташування</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Завантажити розташування</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Скинути розташування</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>Скинути розташування до типового? Відкриті документи буде збережено.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Очистити дані роумінгу…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Очистити дані роумінгу</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Буде видалено збережені параметри, макет і дані сеансу. Встановлені розширення не постраждають. Продовжити?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Дані роумінгу очищено. Для застосування змін рекомендується перезапуск. Перезапустити зараз?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>Виявлено пошкоджені дані роумінгу ({0}). Створіть резервну копію та виконайте скидання для виправлення або ігноруйте для продовження.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>Резервна копія &amp; Скидання</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>Ігнорувати</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>Відновити з резервної копії…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>Відновити дані роумінгу з резервної копії '{0}'? Поточні файли буде перезаписано.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>Резервну копію не знайдено. Використайте 'Очистити дані роумінгу' принаймні один раз, щоб створити резервну копію.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>Резервну копію успішно відновлено. Перезапустити зараз для застосування змін?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Увімкнути/вимкнути блокування _розташування</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Інструменти</value></data>
@@ -536,6 +548,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Повний журнал змін</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>ПОЧАТОК</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>ЗАКРІПЛЕНІ</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>Усі</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Функція</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Виправлення</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Продуктивність</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Закріпити</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Відкріпити</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Видалити з нещодавніх</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Пошук у нещодавніх…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Аналіз PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Фільтр:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Імпорти</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Експорти</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Секції</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Заголовки</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Не PE-файл — спочатку відкрийте виконуваний файл або DLL Windows.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Декодувати</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Копіювати</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Режим:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Ключ (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Зсув:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Використати виділення</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Байти:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>Закрити</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Переглянути в:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>Незбережені зміни</value></data>
@@ -828,4 +923,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Копіювати місця ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Відкрити в оголошенні</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Копіювати ім'я символу</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Запустити</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Мін. дл.:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Фільтр…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Зміщення</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Довжина</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Кодування</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Значення</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Байти</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Дуп</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Контекст</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Зміщення байта рядка у файлі (шістнадцяткове)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Кількість сирих байт рядка</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Виявлене кодування: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC або TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Сирі байти у шістнадцятковому вигляді відповідної області</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Декодоване значення рядка</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Кількість рядків з однаковим декодованим значенням (помаранчевий = знайдено дублікати)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 байти до (сірий) + відповідні байти (колір за кодуванням) + 4 байти після (сірий)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Фільтр regex — коли увімкнено, поле пошуку трактується як регулярний вираз</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Файл змінився з часу останнього сканування — натисніть F5 для повторного сканування</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Синхронізувати курсор HexEditor з таблицею</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Виділити видимі результати</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Очистити виділення</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Експорт…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Завантажити файл TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Запустити (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Видалити TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Закріпити/Відкріпити (залишається при фільтрації)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Мінімальна довжина рядка</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Мінімальна кількість різних символів у рядку</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Фільтрувати від зміщення (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Фільтрувати до зміщення (hex, 0 = без обмежень)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Приховати результати в блоках з високою ентропією</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Файл для сканування</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Живий фільтр (F3 = наступний, Shift+F3 = попередній)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> ЗАСТАРІЛО</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Викл. вис. ентропію</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Файл:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Кодування:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Мін:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Зміщення:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "ZigBee Network Layer Frame",
+  "formatId": "ZIGBEE_NWK",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "ZigBee Network (NWK) layer frame format as defined in the ZigBee specification. Operates over IEEE 802.15.4 MAC layer for low-power mesh networking.",
+  "extensions": [".zigbee", ".zbee"],
+  "category": "Network",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "0841",
+      "offset": 0,
+      "label": "ZigBee NWK Data Frame Control",
+      "weight": 0.6,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "frame_control", "type": "uint16le", "description": "NWK frame control: frame type (2b), protocol version (4b), discover route (2b), multicast (1b), security (1b), source route (1b), dest IEEE addr (1b), src IEEE addr (1b)", "storeAs": "hex" },
+      { "offset": 2, "size": 2, "name": "dest_address", "type": "uint16le", "description": "16-bit destination network address", "storeAs": "hex" },
+      { "offset": 4, "size": 2, "name": "src_address", "type": "uint16le", "description": "16-bit source network address", "storeAs": "hex" },
+      { "offset": 6, "size": 1, "name": "radius", "type": "uint8", "description": "Hop count limit (TTL) for the frame", "storeAs": "uint" },
+      { "offset": 7, "size": 1, "name": "sequence_number", "type": "uint8", "description": "NWK layer sequence number for deduplication", "storeAs": "uint" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["frame_control", "dest_address", "src_address", "radius", "sequence_number"],
+    "valueMaps": {
+      "frame_control_type": {
+        "00": "Data",
+        "01": "NWK Command",
+        "03": "Inter-PAN"
+      }
+    },
+    "tooltips": {
+      "frame_control": "Bits 0-1: frame type, bits 2-5: protocol version (ZigBee=2), bit 9: security enabled",
+      "dest_address": "0xFFFF = broadcast to all devices",
+      "radius": "Decremented at each hop; frame discarded when reaches 0"
+    }
+  },
+  "assertions": [
+    { "id": "ZBEE_PROTO_VER", "field": "frame_control", "operator": "maskEquals", "value": "003C:0008", "description": "Protocol version bits (5-2) should be 2 for ZigBee 2004+" },
+    { "id": "ZBEE_RADIUS_NONZERO", "field": "radius", "operator": "greaterThan", "value": "0", "description": "Radius must be > 0 for a valid in-transit frame" },
+    { "id": "ZBEE_FRAME_TYPE_VALID", "field": "frame_control", "operator": "maskIn", "value": "0003:00,01,03", "description": "Frame type bits must be 00 (Data), 01 (Command), or 03 (Inter-PAN)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Frame Control", "color": "#3498DB" },
+      { "offset": 2, "label": "Destination Address", "color": "#E74C3C" },
+      { "offset": 4, "label": "Source Address", "color": "#2ECC71" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ZigBee NWK Summary",
+      "fields": ["frame_control", "dest_address", "src_address", "radius", "sequence_number"],
+      "format": "text"
+    },
+    {
+      "name": "ZigBee CSV Export",
+      "fields": ["src_address", "dest_address", "sequence_number", "radius"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "ZigBee NWK frames use little-endian 16-bit addresses; 0xFFFF is broadcast, 0xFFFE is unassigned",
+    "Security bit in frame_control (bit 9) indicates an AES-CCM* encrypted payload with 128-bit keys",
+    "Radius field acts as TTL; coordinator sets initial value typically to nwkMaxDepth*2",
+    "ZigBee coordinator address is always 0x0000; routers and end devices get dynamic addresses",
+    "Route discovery frames (discover_route=1) trigger RREQ/RREP NWK command sequences across the mesh"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "Unencrypted ZigBee NWK frames expose source/destination topology of the mesh network",
+      "Network key extraction enables decryption of all frames; key is shared across the entire network",
+      "ZigBee device join sequences may expose network key in plaintext if sent over unsecured channel"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "PCAP", "relationship": "container", "note": "ZigBee captures stored in PCAP with IEEE 802.15.4 link type (195)" }
+  ],
+  "software": [
+    { "name": "Wireshark", "role": "ZigBee NWK dissector with optional decryption using known network key" },
+    { "name": "KillerBee", "role": "ZigBee security research toolkit for frame capture and injection" },
+    { "name": "Z-Stack", "role": "Texas Instruments ZigBee stack used in commercial coordinator hardware" }
+  ],
+  "useCases": [
+    "Debugging ZigBee mesh network routing and topology discovery",
+    "Security audit of smart home ZigBee devices (Hue, SmartThings, etc.)",
+    "Forensic analysis of ZigBee traffic captures from IoT incident investigations"
+  ],
+  "technicalDetails": "ZigBee NWK layer sits above the IEEE 802.15.4 MAC and below the APS/application layers. The 2-byte frame control field encodes frame type, protocol version, routing discovery mode, multicast flag, security flag, source routing flag, and optional IEEE address presence flags. Addresses are 16-bit short addresses assigned by the coordinator. Security uses AES-CCM* with a 128-bit network key shared across all devices.",
+  "completenessScore": 80
+}

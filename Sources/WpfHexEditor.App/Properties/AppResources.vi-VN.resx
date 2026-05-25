@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Lưu la disposition</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Tải bố cục</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Đặt lại bố cục</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>Đặt lại bố cục về mặc định? Các tài liệu đang mở sẽ được giữ nguyên.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Xóa dữ liệu chuyển vùng…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Xóa dữ liệu chuyển vùng</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Thao tác này sẽ xóa cài đặt đã lưu, bố cục và dữ liệu phiên. Các tiện ích mở rộng đã cài đặt sẽ không bị ảnh hưởng. Tiếp tục?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Dữ liệu chuyển vùng đã được xóa. Nên khởi động lại để áp dụng các thay đổi. Khởi động lại ngay bây giờ?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>Đã phát hiện dữ liệu roaming bị hỏng ({0}). Sao lưu và đặt lại để khắc phục, hoặc bỏ qua để tiếp tục.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>Sao lưu &amp; Đặt lại</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>Bỏ qua</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>Khôi phục từ bản sao lưu…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>Khôi phục dữ liệu roaming từ bản sao lưu '{0}'? Các tệp hiện tại sẽ bị ghi đè.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>Không tìm thấy bản sao lưu. Sử dụng 'Xóa dữ liệu roaming' ít nhất một lần để tạo bản sao lưu.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>Bản sao lưu đã được khôi phục thành công. Khởi động lại ngay để áp dụng các thay đổi?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Bật/tắt khóa _bố cục</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Công cụ</value></data>
@@ -536,6 +548,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Nhật ký thay đổi đầy đủ</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>BẮT ĐẦU</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>ĐÃ GHIM</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Tính năng</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Sửa lỗi</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Hiệu suất</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Ghim</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Bỏ ghim</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Xóa khỏi gần đây</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Tìm kiếm gần đây…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Phân tích PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Bộ lọc:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Nhập</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Xuất</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Phần</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Không phải tệp PE — hãy mở tệp thực thi hoặc DLL Windows trước.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Giải mã</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Sao chép</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Chế độ:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Khóa (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Dịch chuyển:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Dùng vùng chọn</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Byte:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>Đóng</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Hiển thị trong :</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>Thay đổi chưa lưu</value></data>
@@ -828,4 +923,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Sao chép vị trí ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Mở tại khai báo</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Sao chép tên ký hiệu</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Chạy</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Độ dài tối thiểu:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Lọc…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Độ lệch</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Độ dài</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Mã hóa</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Giá trị</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Byte</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Trùng</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Ngữ cảnh</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Độ lệch byte của chuỗi trong tệp (thập lục phân)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Số byte thô mà chuỗi này chiếm</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Mã hóa được phát hiện: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC hoặc TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Byte hex thô của vùng khớp</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Giá trị chuỗi đã giải mã</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Số chuỗi có cùng giá trị đã giải mã (cam = tìm thấy bản sao)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 byte trước (xám) + byte khớp (màu theo mã hóa) + 4 byte sau (xám)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Bộ lọc regex — khi bật, hộp tìm kiếm được xử lý như biểu thức chính quy</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Tệp đã thay đổi kể từ lần quét cuối — nhấn F5 để quét lại</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Đồng bộ con trỏ HexEditor với lưới</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Đánh dấu kết quả hiển thị</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Xóa đánh dấu</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Xuất…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Tải tệp TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Chạy (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Xóa TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Ghim/Bỏ ghim (tồn tại sau khi lọc)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Độ dài tối thiểu của chuỗi</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Số ký tự riêng biệt tối thiểu trong chuỗi</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Lọc từ độ lệch (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Lọc đến độ lệch (hex, 0 = không giới hạn)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Ẩn kết quả trong các khối có entropy cao</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Tệp cần quét</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Bộ lọc trực tiếp (F3 = tiếp theo, Shift+F3 = trước đó)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> LỖI THỜI</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Loại trừ entropy cao</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Tệp:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Mã hóa:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Tối thiểu:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Độ lệch:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

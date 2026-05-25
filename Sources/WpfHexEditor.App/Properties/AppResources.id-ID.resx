@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Simpan tata letak</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Muat tata letak</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Reset tata letak</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>Reset tata letak ke default? Dokumen yang terbuka akan tetap ada.</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Hapus Data Roaming…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Hapus Data Roaming</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Ini akan menghapus pengaturan tersimpan, tata letak, dan data sesi. Ekstensi yang terpasang tidak akan terpengaruh. Lanjutkan?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Data roaming dihapus. Disarankan untuk memulai ulang agar perubahan diterapkan. Mulai ulang sekarang?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>Data roaming yang rusak terdeteksi ({0}). Cadangkan dan atur ulang untuk memperbaiki, atau abaikan untuk melanjutkan.</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>Cadangkan &amp; Atur Ulang</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>Abaikan</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>Pulihkan dari Cadangan…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>Pulihkan data roaming dari cadangan '{0}'? File saat ini akan ditimpa.</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>Tidak ada cadangan ditemukan. Gunakan 'Hapus Data Roaming' setidaknya sekali untuk membuat cadangan.</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>Cadangan berhasil dipulihkan. Mulai ulang sekarang untuk menerapkan perubahan?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Alihkan kunci _tata letak</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Alat</value></data>
@@ -536,6 +548,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>MULAI</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>DISEMATKAN</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>Semua</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>Fitur</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>Perbaikan</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>Performa</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>Sematkan</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>Lepas sematan</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>Hapus dari terbaru</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>Cari di terbaru…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analisis PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Impor</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Ekspor</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Bagian</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Bukan file PE — buka dulu executable Windows atau DLL.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Dekode</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Salin</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Kunci (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Geser:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Gunakan pilihan</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Byte:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>Tutup</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Afficher dans :</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>Perubahan belum disimpan</value></data>
@@ -828,4 +923,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Salin lokasi ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Buka di deklarasi</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Salin nama simbol</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Jalankan</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Panjang min.:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filter…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Panjang</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Enkoding</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Nilai</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Byte</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Konteks</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Offset byte string dalam file (heksadesimal)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Jumlah byte mentah yang ditempati string ini</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Enkoding terdeteksi: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC, atau TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Byte heksadesimal mentah dari wilayah yang cocok</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Nilai string yang telah didekode</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Jumlah string dengan nilai dekode yang sama (oranye = duplikat ditemukan)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 byte sebelum (abu-abu) + byte yang cocok (berwarna per enkoding) + 4 byte sesudah (abu-abu)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Filter regex — saat aktif, kotak pencarian diperlakukan sebagai ekspresi reguler</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>File telah berubah sejak pemindaian terakhir — tekan F5 untuk memindai ulang</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Sinkronkan kursor HexEditor dengan kisi</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Sorot hasil yang terlihat</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Hapus sorotan</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Ekspor…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Muat file TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Jalankan (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Hapus TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Sematkan/Lepas (tetap setelah filter)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Panjang minimum string</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Jumlah minimum karakter berbeda dalam string</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filter dari offset (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filter hingga offset (hex, 0 = tanpa batas)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Sembunyikan hasil di blok entropi tinggi</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>File untuk dipindai</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Filter langsung (F3 = berikutnya, Shift+F3 = sebelumnya)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> KEDALUWARSA</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Kecualikan entropi tinggi</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>File:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Enkoding:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

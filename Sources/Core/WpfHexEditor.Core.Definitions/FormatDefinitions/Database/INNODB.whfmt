@@ -1,8 +1,30 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "InnoDB Tablespace",
   "formatId": "INNODB",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 4,
+  "signatures": [
+    {
+      "value": "0000",
+      "offset": 0,
+      "label": "InnoDB identified by structure, not magic bytes — FIL header checksum at offset 0 (no fixed magic)",
+      "weight": 0.2,
+      "strength": "Weak"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "fil_checksum", "offset": 0, "size": 4, "type": "uint32le", "description": "FIL header checksum (no fixed magic at this position)" },
+      { "name": "page_offset", "offset": 4, "size": 4, "type": "uint32le", "description": "Page number within the tablespace (0 for first page)" },
+      { "name": "lsn", "offset": 16, "size": 8, "type": "uint64le", "description": "Log Sequence Number of last modification" },
+      { "name": "page_type", "offset": 24, "size": 2, "type": "uint16le", "description": "InnoDB page type code" },
+      { "name": "space_id", "offset": 34, "size": 4, "type": "uint32le", "description": "Tablespace ID" }
+    ]
+  },
   "extensions": [
     ".ibd",
     ".ibdata"
@@ -254,7 +276,15 @@
       }
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "InnoDB has NO fixed magic bytes at offset 0 — detection relies on page structure and .ibd/.ibdata extension",
+    "Page 0 must have page_number (offset 4, uint32 LE) equal to 0 — this is the primary structural assertion",
+    "Page type at offset 24 (uint16 LE): 1=INDEX, 3=UNDO_LOG, 4=INODE, 6=FSP_HDR — use to navigate the tablespace",
+    "Space ID at offset 34 (uint32 LE) must be consistent across all pages in the same file",
+    "Flush LSN at offset 26 (uint64 LE) is non-zero only on page 0 of ibdata1 (system tablespace)",
+    "FIL trailer at last 8 bytes of each 16KB page: old-style checksum (4B LE) + LSN low 32 bits (4B LE)"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "InnoDB .ibd tablespace: pages are 16384 bytes each. Every page starts with a 38-byte FIL header. Page 0 (FSP_HDR) is always the first page and contains the File Space Header. FIL header: checksum(4B LE) + page_number(4B LE) + prev_page(4B LE) + next_page(4B LE) + LSN(8B LE) + page_type(2B LE) + flush_LSN(8B LE) + space_id(4B LE). FIL trailer (last 8 bytes): old-style checksum(4B LE) + LSN low 32 bits(4B LE). No file-level magic — detection by structure and extension.",
     "suggestedInspections": [
       "Verify page 0 FIL header page_number field is exactly 0",
@@ -287,12 +317,29 @@
     "InnoDB crash recovery analysis",
     "Database migration and backup verification"
   ],
+  "useCases": [
+    "MySQL/MariaDB database table storage and recovery",
+    "Database forensics — extracting records from .ibd files without MySQL",
+    "InnoDB crash recovery analysis",
+    "Database migration and backup verification"
+  ],
+  "technicalDetails": {
+    "DatabaseEngine": "InnoDB (MySQL/MariaDB)",
+    "DefaultPageSize": 16384,
+    "FILHeaderSize": 38,
+    "FILTrailerSize": 8,
+    "Endianness": "little-endian for all multi-byte fields",
+    "ChecksumAlgorithms": ["innodb (legacy)", "crc32", "none"],
+    "SupportsEncryption": true,
+    "SupportsCompression": true,
+    "SpaceIDZero": "System tablespace (ibdata1)"
+  },
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 85,
     "DocumentationLevel": "standard",
     "BlocksDefined": 8,
     "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

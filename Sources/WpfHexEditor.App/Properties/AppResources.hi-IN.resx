@@ -88,6 +88,18 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>लेआउट सहेजें</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>लेआउट लोड करें</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>लेआउट रीसेट करें</value></data>
+  <data name="App_ResetLayout_Confirm" xml:space="preserve"><value>लेआउट को डिफ़ॉल्ट पर रीसेट करें? खुले दस्तावेज़ सुरक्षित रहेंगे।</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>रोमिंग डेटा साफ़ करें…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>रोमिंग डेटा साफ़ करें</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>यह सहेजी गई सेटिंग्स, लेआउट और सत्र डेटा हटा देगा। इंस्टॉल किए गए एक्सटेंशन प्रभावित नहीं होंगे। जारी रखें?</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>रोमिंग डेटा साफ़ किया गया। परिवर्तन लागू करने के लिए पुनः आरंभ करने की सलाह दी जाती है। अभी पुनः आरंभ करें?</value></data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve"><value>दूषित रोमिंग डेटा ({0}) मिला। ठीक करने के लिए बैकअप और रीसेट करें, या जारी रखने के लिए अनदेखा करें।</value></data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve"><value>बैकअप &amp; रीसेट</value></data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve"><value>अनदेखा करें</value></data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve"><value>बैकअप से पुनर्स्थापित करें…</value></data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve"><value>बैकअप '{0}' से रोमिंग डेटा पुनर्स्थापित करें? वर्तमान फ़ाइलें अधिलेखित हो जाएंगी।</value></data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve"><value>कोई बैकअप नहीं मिला। बैकअप बनाने के लिए कम से कम एक बार 'रोमिंग डेटा साफ़ करें' का उपयोग करें।</value></data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve"><value>बैकअप सफलतापूर्वक पुनर्स्थापित हुआ। परिवर्तन लागू करने के लिए अभी पुनः प्रारंभ करें?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>लॉक किए गए लेआउट को टॉगल करें</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>टूल्स</value></data>
@@ -840,6 +852,89 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+
+  <!-- Welcome Panel redesign (#138) -->
+  <data name="APP_StartTemplatesSection" xml:space="preserve">
+    <value>प्रारंभ</value>
+  </data>
+  <data name="APP_PinnedSection" xml:space="preserve">
+    <value>पिन किए गए</value>
+  </data>
+  <data name="APP_FilterAll" xml:space="preserve">
+    <value>सभी</value>
+  </data>
+  <data name="APP_FilterFeature" xml:space="preserve">
+    <value>फ़ीचर</value>
+  </data>
+  <data name="APP_FilterFix" xml:space="preserve">
+    <value>सुधार</value>
+  </data>
+  <data name="APP_FilterPerf" xml:space="preserve">
+    <value>प्रदर्शन</value>
+  </data>
+  <data name="APP_PinFile" xml:space="preserve">
+    <value>पिन करें</value>
+  </data>
+  <data name="APP_UnpinFile" xml:space="preserve">
+    <value>अनपिन करें</value>
+  </data>
+  <data name="APP_RemoveRecent" xml:space="preserve">
+    <value>हाल के से हटाएँ</value>
+  </data>
+  <data name="APP_SearchRecent" xml:space="preserve">
+    <value>हाल के में खोजें…</value>
+  </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>PE विश्लेषण</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>फ़िल्टर:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>आयात</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>निर्यात</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>अनुभाग</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>हेडर</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>PE फ़ाइल नहीं — पहले Windows EXE या DLL खोलें।</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>डीकोड करें</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>कॉपी करें</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>मोड:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>कुंजी (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>शिफ्ट:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>चयन का उपयोग करें</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>बाइट्स:</value>
+  </data>
+
+
+
   <data name="APP_Dismiss" xml:space="preserve"><value>खारिज करें</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>इसमें देखें:</value></data>
   <data name="APP_UnsavedChanges" xml:space="preserve"><value>असहेजे बदलाव</value></data>
@@ -1132,4 +1227,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>स्थान कॉपी करें ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>घोषणा पर खोलें</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>चिह्न का नाम कॉपी करें</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>चलाएं</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>न्यून. लंबाई:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>फ़िल्टर…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>लंबाई</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>एन्कोडिंग</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>मान</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>बाइट्स</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>डुप</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>संदर्भ</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>फ़ाइल में स्ट्रिंग का बाइट ऑफ़सेट (हेक्साडेसिमल)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>इस स्ट्रिंग द्वारा अधिकृत कच्चे बाइट्स की संख्या</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>पहचानी गई एन्कोडिंग: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC या TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>मिलान क्षेत्र के कच्चे हेक्स बाइट्स</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>डिकोड किया गया स्ट्रिंग मान</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>समान डिकोड मान वाली स्ट्रिंग्स की संख्या (नारंगी = डुप्लीकेट मिले)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 बाइट पहले (ग्रे) + मिलान बाइट्स (एन्कोडिंग अनुसार रंगीन) + 4 बाइट बाद (ग्रे)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>रेगेक्स फ़िल्टर — सक्रिय होने पर खोज बॉक्स रेगुलर एक्सप्रेशन के रूप में काम करता है</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>फ़ाइल अंतिम स्कैन से बदल गई है — पुनः स्कैन करने के लिए F5 दबाएं</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>HexEditor कर्सर को ग्रिड के साथ सिंक करें</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>दृश्यमान परिणाम हाइलाइट करें</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>हाइलाइट साफ करें</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>निर्यात…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>TBL फ़ाइल लोड करें…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>चलाएं (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>TBL हटाएं</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>पिन/अनपिन (फ़िल्टर के बाद भी रहता है)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>स्ट्रिंग की न्यूनतम लंबाई</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>स्ट्रिंग में न्यूनतम विशिष्ट अक्षर</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>ऑफ़सेट से फ़िल्टर (हेक्स)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>ऑफ़सेट तक फ़िल्टर (हेक्स, 0 = कोई सीमा नहीं)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>उच्च एन्ट्रॉपी ब्लॉक में परिणाम छुपाएं</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>स्कैन करने के लिए फ़ाइल</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>लाइव फ़िल्टर (F3 = अगला, Shift+F3 = पिछला)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> पुराना</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>उच्च एन्ट्रॉपी बाहर करें</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>फ़ाइल:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>एन्कोडिंग:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>न्यून:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>ऑफ़सेट:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Project      : whfmt.Formats
+       Description  : Content-only NuGet package that ships all 856 .whfmt binary format
+                      definitions as AdditionalFiles. Consumers that also reference
+                      whfmt.SourceGenerator receive strongly-typed C# parsers for every
+                      format at compile time — no CLI step, no checked-in generated files.
+       Architecture : Zero assembly. All .whfmt files live under Formats/ (mirrors the
+                      FormatDefinitions/ folder structure from WpfHexEditor.Core.Definitions).
+                      A build/whfmt.Formats.props wires WhfmtNamespace per-category so
+                      generated parsers land in tidy namespaces (e.g. WhfmtFormats.Images). -->
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>whfmt.Formats</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>abbaye</Authors>
+    <Description>856 .whfmt binary format definitions (Images, Audio, Video, Archives, …) shipped as AdditionalFiles. Pair with whfmt.SourceGenerator to get strongly-typed C# parsers at compile time.</Description>
+    <PackageTags>whfmt;binary;formats;parser;codegen;roslyn</PackageTags>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+
+    <!-- Content-only: no assembly, no lib/ folder -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoWarn>NU5128</NoWarn>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <!-- ── .whfmt files as contentFiles (buildAction=AdditionalFiles) ─────────── -->
+  <ItemGroup>
+    <_WhfmtSource Include="..\..\Core\WpfHexEditor.Core.Definitions\FormatDefinitions\**\*.whfmt" />
+
+    <Content Include="@(_WhfmtSource)"
+             Link="Formats\%(RecursiveDir)%(Filename)%(Extension)"
+             Pack="true"
+             PackagePath="contentFiles/any/any/Formats/%(RecursiveDir)%(Filename)%(Extension)"
+             BuildAction="AdditionalFiles"
+             CopyToOutputDirectory="Never" />
+  </ItemGroup>
+
+  <!-- ── MSBuild props + README packed at root ─────────────────────────────── -->
+  <ItemGroup>
+    <None Include="build\whfmt.Formats.props" Pack="true" PackagePath="build\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\whfmt.CodeGen\icon.png" Pack="true" PackagePath="\" Link="icon.png" />
+  </ItemGroup>
+
+</Project>

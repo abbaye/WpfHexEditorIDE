@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Pages",
   "formatId": "PAGES",
@@ -303,16 +304,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Apple Pages word processing document - a ZIP-based iWork package containing protobuf (.iwa) files and embedd...",
-    "suggestedInspections": [
-      "Validate Apple Pages file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Apple Pages word processing document - a ZIP-based iWork package containing protobuf (.iwa) files and embedd...",
+    "Validate Apple Pages file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Index/index.iwa is a Protobuf-encoded iWork Archive — not human-readable without a schema.",
+    "The .iwa format uses snappy-compressed Protobuf; decompress before parsing.",
+    "buildVersionHistory.plist reveals the Pages version that created or last edited the file.",
+    "Older Pages files ('08-'09) used a package-folder structure, not ZIP.",
+    "Thumbnail previews in QuickLook/Thumbnail.jpg can reveal document content without extraction.",
+    "iCloud collaborative edits are tracked in the Protobuf model with revision tokens."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -387,5 +397,136 @@
       }
     ],
     "note": "Inferred fuzz strategies for PAGES. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "PAGES signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "IndexIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "Index/index.iwa — Protobuf document index"
+      },
+      {
+        "name": "DocumentIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "index.zip/Data/index.iwa — Protobuf model data"
+      },
+      {
+        "name": "BuildVersionJson",
+        "offset": -1,
+        "size": -1,
+        "type": "json",
+        "description": "buildVersionHistory.plist recording app version"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "docx",
+      "relation": "export",
+      "note": "Pages exports to DOCX for Microsoft Word compatibility"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "export",
+      "note": "Pages exports to PDF for distribution"
+    },
+    {
+      "formatId": "numbers",
+      "relation": "sibling",
+      "note": "Numbers is the Apple iWork spreadsheet counterpart"
+    }
+  ],
+  "software": [
+    "Apple Pages",
+    "Apple Pages for iCloud",
+    "LibreOffice Writer (limited support)"
+  ],
+  "useCases": [
+    "Apple word processing",
+    "macOS/iOS document creation",
+    "iWork collaboration"
+  ],
+  "technicalDetails": "PAGES (iWork '13+) is a ZIP archive containing Protobuf-encoded .iwa (iWork Archive) files. The document model is stored as Google Protobuf messages in Index/index.iwa. Binary .iwa files use snappy compression internally. Earlier Pages formats (pre-2013) used a different XML-based structure.",
+  "completenessScore": 88
 }

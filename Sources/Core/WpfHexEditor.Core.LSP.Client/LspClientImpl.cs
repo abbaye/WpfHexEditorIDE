@@ -604,13 +604,7 @@ public sealed class LspClientImpl : ILspClient,
         });
     }
 
-    private static string SeverityToString(int s) => s switch
-    {
-        1 => "error",
-        2 => "warning",
-        3 => "information",
-        _ => "hint",
-    };
+    private static string SeverityToString(int s) => LspSeverity.ToString(s);
 
     // ── IAsyncDisposable ───────────────────────────────────────────────────────
 

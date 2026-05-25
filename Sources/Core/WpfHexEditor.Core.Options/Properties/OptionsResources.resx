@@ -537,4 +537,8 @@
   <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Selected block</value></data>
   <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Forensic alert overlay</value></data>
   <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Show split view toggle button</value></data>
+  <data name="HexDisplay_EntropySection"        xml:space="preserve"><value>ENTROPY HEATMAP</value></data>
+  <data name="HexDisplay_ShowEntropyHeatmap"    xml:space="preserve"><value>Show entropy heatmap overlay</value></data>
+  <data name="HexDisplay_EntropyWindowSize"     xml:space="preserve"><value>Window size</value></data>
+  <data name="HexDisplay_EntropyColorTheme"     xml:space="preserve"><value>Color theme</value></data>
 </root>

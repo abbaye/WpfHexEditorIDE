@@ -1,0 +1,120 @@
+<Project>
+  <!--
+    whfmt.Formats — MSBuild integration props.
+
+    Wires every .whfmt file delivered by this package as an AdditionalFile so that
+    whfmt.SourceGenerator picks them up automatically.
+
+    Per-category WhfmtNamespace is applied via condition on the file path so that
+    generated parsers land in tidy namespaces:
+        Images  → WhfmtFormats.Images
+        Audio   → WhfmtFormats.Audio
+        Video   → WhfmtFormats.Video
+        …       → WhfmtFormats  (fallback)
+
+    Consumers can override per-file by re-declaring the item after this props file runs:
+        <AdditionalFiles Update="Formats\Images\PNG.whfmt">
+          <WhfmtNamespace>MyApp.Parsers</WhfmtNamespace>
+          <WhfmtClass>PngParser</WhfmtClass>
+        </AdditionalFiles>
+  -->
+
+  <!-- Expose custom metadata as compiler-visible so AnalyzerConfigOptionsProvider
+       can read them (same contract as whfmt.SourceGenerator.props). -->
+  <ItemGroup>
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtNamespace" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtClass" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtLanguage" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtValidate" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtAsync" />
+  </ItemGroup>
+
+  <!-- Assign per-category namespaces to the bundled format files. -->
+  <ItemGroup>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\3D\*.whfmt"            >
+      <WhfmtNamespace>WhfmtFormats.ThreeD</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Archives\*.whfmt"      >
+      <WhfmtNamespace>WhfmtFormats.Archives</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Audio\*.whfmt"         >
+      <WhfmtNamespace>WhfmtFormats.Audio</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\CAD\*.whfmt"           >
+      <WhfmtNamespace>WhfmtFormats.CAD</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Certificates\*.whfmt"  >
+      <WhfmtNamespace>WhfmtFormats.Certificates</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Crypto\*.whfmt"        >
+      <WhfmtNamespace>WhfmtFormats.Crypto</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Data\*.whfmt"          >
+      <WhfmtNamespace>WhfmtFormats.Data</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Database\*.whfmt"      >
+      <WhfmtNamespace>WhfmtFormats.Database</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Disk\*.whfmt"          >
+      <WhfmtNamespace>WhfmtFormats.Disk</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Documents\*.whfmt"     >
+      <WhfmtNamespace>WhfmtFormats.Documents</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Executables\*.whfmt"   >
+      <WhfmtNamespace>WhfmtFormats.Executables</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Firmware\*.whfmt"      >
+      <WhfmtNamespace>WhfmtFormats.Firmware</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Fonts\*.whfmt"         >
+      <WhfmtNamespace>WhfmtFormats.Fonts</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\GIS\*.whfmt"           >
+      <WhfmtNamespace>WhfmtFormats.GIS</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Game\*.whfmt"          >
+      <WhfmtNamespace>WhfmtFormats.Game</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Images\*.whfmt"        >
+      <WhfmtNamespace>WhfmtFormats.Images</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\IoT\*.whfmt"           >
+      <WhfmtNamespace>WhfmtFormats.IoT</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\MachineLearning\*.whfmt">
+      <WhfmtNamespace>WhfmtFormats.MachineLearning</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Medical\*.whfmt"       >
+      <WhfmtNamespace>WhfmtFormats.Medical</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Network\*.whfmt"       >
+      <WhfmtNamespace>WhfmtFormats.Network</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Programming\*.whfmt"   >
+      <WhfmtNamespace>WhfmtFormats.Programming</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\RomHacking\*.whfmt"    >
+      <WhfmtNamespace>WhfmtFormats.RomHacking</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Science\*.whfmt"       >
+      <WhfmtNamespace>WhfmtFormats.Science</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Subtitles\*.whfmt"     >
+      <WhfmtNamespace>WhfmtFormats.Subtitles</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\System\*.whfmt"        >
+      <WhfmtNamespace>WhfmtFormats.System</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Text\*.whfmt"          >
+      <WhfmtNamespace>WhfmtFormats.Text</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Video\*.whfmt"         >
+      <WhfmtNamespace>WhfmtFormats.Video</WhfmtNamespace>
+    </AdditionalFiles>
+    <AdditionalFiles Update="$(MSBuildThisFileDirectory)..\contentFiles\any\any\Formats\Virtualization\*.whfmt">
+      <WhfmtNamespace>WhfmtFormats.Virtualization</WhfmtNamespace>
+    </AdditionalFiles>
+  </ItemGroup>
+
+</Project>

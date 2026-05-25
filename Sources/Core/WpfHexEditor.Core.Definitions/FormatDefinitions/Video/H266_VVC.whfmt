@@ -1,0 +1,87 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "H.266/VVC Video Codec",
+  "formatId": "H266_VVC",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "H.266/VVC (Versatile Video Coding) is the next-generation video codec standardized by ITU-T and ISO/IEC in 2020 (ITU-T H.266, ISO/IEC 23090-3). It offers approximately 50% bitrate reduction compared to H.265/HEVC at the same quality. Bitstreams use NALU start codes identical to H.264 and H.265.",
+  "extensions": [".vvc", ".h266", ".266"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "00000001",
+      "offset": 0,
+      "label": "NALU start code (3-byte or 4-byte prefix)",
+      "weight": 0.6,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "start_code", "type": "uint32be", "description": "NALU start code 0x00000001 (4-byte form)", "storeAs": "uint32" },
+      { "offset": 4, "size": 2, "name": "nalu_header", "type": "uint16be", "description": "VVC NALU header: forbidden_zero(1b), nuh_reserved(1b), nuh_layer_id(6b), nuh_temporal_id_plus1(3b), nal_unit_type(5b)", "storeAs": "uint16" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["start_code", "nalu_header"],
+    "valueMaps": {
+      "nalu_header": {}
+    },
+    "tooltips": {
+      "start_code": "NALU start code prefix 0x00000001 (4-byte) or 0x000001 (3-byte); shared with H.264 and H.265",
+      "nalu_header": "VVC NALU header is 2 bytes; bits 10-5 contain nal_unit_type (see ITU-T H.266 Table 5); VCL NALUs 0-15, non-VCL 16-31"
+    }
+  },
+  "assertions": [
+    { "id": "VVC_001", "field": "start_code", "operator": "equals", "value": 1, "description": "First 4 bytes must be 0x00000001 NALU start code" },
+    { "id": "VVC_002", "field": "nalu_header", "operator": "bitwiseAnd", "value": 32768, "description": "Forbidden zero bit (MSB) in NALU header must be 0" },
+    { "id": "VVC_003", "field": "nalu_header", "operator": "notEquals", "value": 0, "description": "NALU header must not be all zeros" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "NALU Start Code (0x00000001)", "color": "#FF6B35" },
+      { "offset": 4, "label": "NALU Header (type + layer + temporal)", "color": "#4ECDC4" },
+      { "offset": 6, "label": "NALU Payload Data", "color": "#45B7D1" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "NALU Header", "fields": ["start_code", "nalu_header"], "format": "text" },
+    { "name": "Start Code Hex", "fields": ["start_code", "nalu_header"], "format": "hex" }
+  ],
+  "aiHints": [
+    "VVC NALU type is encoded in bits 4-0 of the second byte of the 2-byte NALU header (shifted: bits 10-5 of the 16-bit field, little-endian extraction needed)",
+    "Key VVC NALU types: 0-15 = VCL (coded slice data), 14=IDR_W_RADL, 15=IDR_N_LP (keyframe types), 16=CRA_NUT, 17=GDR, 12=SPS, 13=PPS, 14=APS, 23=PH (picture header), 24=AU_DELIMITER",
+    "VVC introduced more NALU types than H.265; Decoding Parameter Sets (DPS), Video Parameter Sets (VPS), and Adaptation Parameter Sets (APS) are new addition",
+    "The 4-byte start code (0x00000001) is used for the first NALU in a stream; subsequent NALUs may use 3-byte (0x000001) for efficiency in Annex B format",
+    "VVC supports up to 6 layers and 7 temporal sub-layers; the nuh_layer_id and nuh_temporal_id_plus1 fields in the header identify the layer context"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Start code emulation prevention (inserting 0x03 byte before 0x000001 sequences in payload) must be accounted for during raw bitstream parsing",
+      "SEI (Supplemental Enhancement Information) NALUs can carry arbitrary data including watermarks and metadata",
+      "VVC is new enough that parser implementations may have unresolved vulnerabilities; treat unknown .vvc files cautiously"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "H265", "relationship": "predecessor", "note": "H.265/HEVC is the direct predecessor; VVC offers ~50% better compression" },
+    { "format": "AV1", "relationship": "contemporary", "note": "AV1 (Alliance for Open Media) is the royalty-free competitor to VVC for next-gen video" },
+    { "format": "MP4", "relationship": "container", "note": "VVC elementary streams are typically packaged in ISOBMFF/MP4 containers for file storage" }
+  ],
+  "software": [
+    { "name": "VVdeC (Fraunhofer HHI)", "role": "Open-source VVC decoder; fastest available software decoder for H.266" },
+    { "name": "VVenC (Fraunhofer HHI)", "role": "Open-source VVC encoder optimized for speed/quality tradeoffs" },
+    { "name": "FFmpeg", "role": "Experimental VVC decode support via external libvvdec plugin" },
+    { "name": "MediaInfo", "role": "Identifies VVC streams and reports codec parameters and NALU structure" }
+  ],
+  "useCases": [
+    "Next-generation 4K/8K streaming where bandwidth reduction vs HEVC justifies re-encoding costs",
+    "Video conferencing and immersive media (360-degree, volumetric) requiring high efficiency",
+    "Future broadcast standards and OTT streaming replacing HEVC as the primary delivery codec"
+  ],
+  "technicalDetails": "H.266/VVC (ITU-T H.266 | ISO/IEC 23090-3, finalized July 2020) uses Annex B byte stream format with NALU start codes identical to H.264/H.265. The 2-byte NALU header contains: forbidden_zero_bit(1), nuh_reserved_zero_bit(1), nuh_layer_id(6), nal_unit_type(5), nuh_temporal_id_plus1(3). VVC introduces many new coding tools: extended quad-tree (QT+BT+TT), larger coding units (up to 128x128), affine motion compensation, sub-block based TMVP, BDOF/DMVR for refined motion, LMCS (luma mapping and chroma scaling), and JVET-developed deblocking. Partition structures are significantly more flexible than HEVC. Entropy coding uses CABAC as in HEVC. The format is patented and licensed through the Media Coding Industry Forum (MC-IF).",
+  "completenessScore": 80
+}

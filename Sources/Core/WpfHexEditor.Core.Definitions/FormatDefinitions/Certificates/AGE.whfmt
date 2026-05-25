@@ -1,5 +1,6 @@
 {
-  "diffMode": "binary",
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "diffMode": "text",
   "formatName": "Age Encryption",
   "formatId": "AGE",
   "version": "1.0",
@@ -21,6 +22,32 @@
       "https://github.com/FiloSottile/age",
       "https://en.wikipedia.org/wiki/Age_(encryption)",
       "https://words.filippo.io/dispatches/age-design/"
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "4147452D5345435245542D4B45592D",
+      "offset": 0,
+      "label": "AGE-SECRET-KEY- — age identity file (secret key) header",
+      "weight": 1.0,
+      "strength": "Strong"
+    },
+    {
+      "value": "6167652D656E6372797074696F6E2E6F72672F7631",
+      "offset": 0,
+      "label": "age-encryption.org/v1 — Age encrypted file version header",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "versionLine", "type": "ascii", "offset": 0, "length": 22, "description": "'age-encryption.org/v1' + LF (22 bytes)" },
+      { "name": "recipientStanzas", "type": "ascii", "offset": 22, "length": -1, "description": "One or more '-> <type> <args>' recipient stanzas" },
+      { "name": "headerMac", "type": "ascii", "offset": -1, "length": -1, "description": "'--- <base64-mac>' header authentication line" },
+      { "name": "encryptedPayload", "type": "binary", "offset": -1, "length": -1, "description": "ChaCha20-Poly1305 encrypted payload (64 KB chunks)" }
     ]
   },
   "detection": {
@@ -154,7 +181,7 @@
   ],
   "forensic": {
     "category": "encrypted",
-    "riskLevel": "medium",
+    "riskLevel": "critical",
     "suspiciousPatterns": [
       {
         "name": "Passphrase-encrypted file",
@@ -170,7 +197,31 @@
       }
     ]
   },
-  "aiHints": {
+  "useCases": [
+    "File encryption for backup and secrets storage",
+    "Encrypted dotfiles and configuration management",
+    "Password manager storage backend (passage)",
+    "Secure file transfer with public key recipients",
+    "CI/CD secrets encryption (sops with age backend)"
+  ],
+  "technicalDetails": {
+    "headerEncoding": "ASCII text with LF line endings",
+    "recipientTypes": "X25519 (ECDH) and scrypt (passphrase KDF)",
+    "symmetricCipher": "ChaCha20-Poly1305 (STREAM construction, 64 KB chunks)",
+    "keyAgreement": "X25519 ECDH + HKDF-SHA256 for file key wrapping",
+    "passphraseKDF": "scrypt (memory-hard, configurable cost factor)",
+    "supportsMultipleRecipients": true,
+    "supportsStreaming": true
+  },
+  "aiHints": [
+    "Age .age file: ASCII header 'age-encryption.org/v1' + LF, then recipient stanzas, then '--- <mac>' + LF, then binary ChaCha20-Poly1305 payload",
+    "Age identity file (AGE-SECRET-KEY-): single Bech32-encoded X25519 private key starting with 'AGE-SECRET-KEY-1'",
+    "X25519 recipient stanza: '-> X25519 <ephemeral-pub-base64>' — ECDH-wrapped file key",
+    "scrypt recipient stanza: '-> scrypt <salt-base64> <log2-work>' — passphrase-wrapped file key",
+    "Identity files (AGE-SECRET-KEY-*) are critically sensitive — equivalent to SSH private keys",
+    "Decrypt with: age --decrypt -i key.txt file.age or age --decrypt -p file.age (passphrase)"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "Age format header structure: 'age-encryption.org/v1\\n' + one or more stanzas + '--- <mac>\\n' + binary payload. X25519 stanza: '-> X25519 <ephemeral-pub-base64>\\n<wrapped-key-base64>\\n'. Scrypt stanza: '-> scrypt <salt-base64> <log2-work>\\n<wrapped-key-base64>\\n'. Header MAC: HMAC-SHA256 of all header lines up to and not including '---'. Payload: STREAM[ChaCha20-Poly1305] with 64 KB chunks, each authenticated. File key: 16 random bytes, wrapped per-recipient. X25519 wrapping: HKDF-SHA256 of shared_secret + X25519(ephemeral, recipient) as key for ChaCha20-Poly1305 wrapping. Decrypt with: age --decrypt -i key.txt file.age or age --decrypt -p file.age (passphrase).",
     "suggestedInspections": [
       "Verify ASCII header at offset 0: 'age-encryption.org/v1' (21 bytes) + LF (0x0A)",
@@ -210,7 +261,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

@@ -118,20 +118,31 @@ public partial class MainWindow
             () => _ = OnCloseWorkspaceAsync());
 
         // ── Edit ────────────────────────────────────────────────────────────
-        Reg(CommandIds.Edit.Undo,          "Undo",                   "Edit",    "Ctrl+Z",         "\uE7A7",
-            () => ActiveDocumentEditor?.UndoCommand?.Execute(null));
-        Reg(CommandIds.Edit.Redo,          "Redo",                   "Edit",    "Ctrl+Y",         "\uE7A6",
-            () => ActiveDocumentEditor?.RedoCommand?.Execute(null));
-        Reg(CommandIds.Edit.Cut,           "Cut",                    "Edit",    "Ctrl+X",         "\uE8C6",
-            () => ActiveDocumentEditor?.CutCommand?.Execute(null));
-        Reg(CommandIds.Edit.Copy,          "Copy",                   "Edit",    "Ctrl+C",         "\uE8C8",
-            () => ActiveDocumentEditor?.CopyCommand?.Execute(null));
-        Reg(CommandIds.Edit.Paste,         "Paste",                  "Edit",    "Ctrl+V",         "\uE77F",
-            () => ActiveDocumentEditor?.PasteCommand?.Execute(null));
-        Reg(CommandIds.Edit.Delete,        "Delete",                 "Edit",    "Del",            "\uE74D",
-            () => ActiveDocumentEditor?.DeleteCommand?.Execute(null));
-        Reg(CommandIds.Edit.SelectAll,     "Select All",             "Edit",    "Ctrl+A",         null,
-            () => ActiveDocumentEditor?.SelectAllCommand?.Execute(null));
+        // Editor-delegate commands gate on the active editor's CanExecute so
+        // DispatchRegisteredGesture does not mark e.Handled=true when the editor
+        // can't act (e.g. nothing to undo) \u2014 otherwise PreviewKeyDown swallows
+        // keystrokes before the focused editor's OnKeyDown can handle them.
+        Reg(CommandIds.Edit.Undo,      "Undo",       "Edit", "Ctrl+Z", "\uE7A7",
+            () => ActiveDocumentEditor?.UndoCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.UndoCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.Redo,      "Redo",       "Edit", "Ctrl+Y", "\uE7A6",
+            () => ActiveDocumentEditor?.RedoCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.RedoCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.Cut,       "Cut",        "Edit", "Ctrl+X", "\uE8C6",
+            () => ActiveDocumentEditor?.CutCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.CutCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.Copy,      "Copy",       "Edit", "Ctrl+C", "\uE8C8",
+            () => ActiveDocumentEditor?.CopyCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.CopyCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.Paste,     "Paste",      "Edit", "Ctrl+V", "\uE77F",
+            () => ActiveDocumentEditor?.PasteCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.PasteCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.Delete,    "Delete",     "Edit", "Del",    "\uE74D",
+            () => ActiveDocumentEditor?.DeleteCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.DeleteCommand?.CanExecute(null) is true);
+        Reg(CommandIds.Edit.SelectAll, "Select All", "Edit", "Ctrl+A", null,
+            () => ActiveDocumentEditor?.SelectAllCommand?.Execute(null),
+            ()  => ActiveDocumentEditor?.SelectAllCommand?.CanExecute(null) is true);
         Reg(CommandIds.Edit.Find,          "Find / Quick Search",    "Edit",    "Ctrl+F",         "\uE721",
             () => System.Windows.Input.ApplicationCommands.Find.Execute(null, this));
         Reg(CommandIds.Edit.AdvancedSearch,"Advanced Search",        "Edit",    "Ctrl+Shift+F",   "\uE721",
@@ -454,6 +465,26 @@ public partial class MainWindow
                 _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
                 execute();
             })));
+    }
+
+    /// <summary>
+    /// Registers a command with an explicit <paramref name="canExecute"/> gate.
+    /// Prevents <see cref="DispatchRegisteredGesture"/> from marking keyboard events
+    /// Handled when the active editor cannot execute the command.
+    /// </summary>
+    private void Reg(string id, string name, string category,
+                     string? defaultGesture, string? icon,
+                     Action execute, Func<bool> canExecute)
+    {
+        _commandRegistry.Register(new CommandDefinition(
+            id, name, category, defaultGesture, icon,
+            new RelayCommand(
+                _ =>
+                {
+                    _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
+                    execute();
+                },
+                _ => canExecute())));
     }
 
     /// <summary>Same as Reg but the execute action receives the command parameter.</summary>

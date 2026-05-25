@@ -1,12 +1,13 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Btrfs Filesystem",
   "formatId": "BTRFS",
-  "version": "1.14",
-  "extensions": [
-    ".btrfs"
-  ],
-  "description": "B-tree Filesystem with copy-on-write",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 82,
+  "extensions": [".btrfs"],
+  "description": "B-tree Filesystem with copy-on-write. Btrfs superblock magic '_BHrfM_b' (0x5F42487266 4D5F62) is at offset 0x10040 (65600) in the first superblock. The superblock occupies bytes 65536–69631 (4096 bytes). Primary detection uses the 8-byte magic at offset 65600.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -19,24 +20,23 @@
     "WebLinks": [
       "https://btrfs.readthedocs.io/en/latest/dev/On-disk-format.html",
       "https://en.wikipedia.org/wiki/Btrfs",
-      "https://btrfs.readthedocs.io/en/latest/dev/dev-btrfs-design.html",
-      "https://dl.acm.org/doi/10.1145/2501620.2501623"
+      "https://btrfs.readthedocs.io/en/latest/dev/dev-btrfs-design.html"
     ]
   },
+  "maxSignatureOffset": 65608,
+  "signatures": [
+    {
+      "value": "5F42487266 4D5F62",
+      "offset": 65600,
+      "label": "Btrfs superblock magic '_BHrfM_b' at offset 0x10040",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 6,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "5F42486D5F4D",
-        "offset": 65600,
-        "label": "BTRFS magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 6, "maxSignatureOffset": 65608 },
+    "signatures": [{ "value": "5F42487266 4D5F62", "offset": 65600, "label": "BTRFS magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Strong"
@@ -46,88 +46,105 @@
     "fileSize": 0,
     "version": 0,
     "format": "",
-    "formattedSize": ""
+    "formattedSize": "",
+    "superblockMagic": "",
+    "fsUUID": "",
+    "generation": 0,
+    "totalBytes": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "superblock_csum", "offset": 65536, "size": 32, "type": "bytes", "description": "Checksum of the superblock (SHA256 or CRC32)" },
+      { "name": "fs_uuid", "offset": 65568, "size": 16, "type": "uuid", "description": "Filesystem UUID" },
+      { "name": "bytenr", "offset": 65584, "size": 8, "type": "uint64le", "description": "Physical address of this superblock (should be 65536)" },
+      { "name": "superblock_magic", "offset": 65600, "size": 8, "type": "bytes", "description": "Btrfs magic: '_BHrfM_b' (0x5F42487266 4D5F62)" },
+      { "name": "generation", "offset": 65608, "size": 8, "type": "uint64le", "description": "Transaction generation number" },
+      { "name": "total_bytes", "offset": 65640, "size": 8, "type": "uint64le", "description": "Total usable filesystem size in bytes" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "Btrfs Superblock", "offset": 65536, "length": 4096, "color": "#F77F00", "opacity": 0.4, "description": "Btrfs superblock '_BHrfM_b'" },
+    { "type": "metadata", "name": "File Size", "variable": "fileSize", "description": "File Size" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" },
+    { "type": "metadata", "name": "Formatted Size", "variable": "formattedSize", "description": "Human-readable file size" }
+  ],
+  "inspector": {
+    "displayFields": ["superblock_magic", "generation", "total_bytes", "fs_uuid"],
+    "valueMaps": {},
+    "tooltips": {
+      "superblock_magic": "8-byte magic at offset 65600 (0x10040) — '_BHrfM_b'",
+      "generation": "Monotonically increasing transaction generation — higher is newer",
+      "total_bytes": "Total usable filesystem size in bytes"
+    }
+  },
+  "assertions": [
+    { "name": "Btrfs magic present", "expression": "superblock_magic == '5F4248726F4D5F62'", "severity": "error", "message": "Btrfs superblock magic '_BHrfM_b' must be at offset 65600 (0x10040)" },
+    { "name": "Superblock byte number valid", "expression": "bytenr == 65536", "severity": "warning", "message": "Btrfs superblock bytenr should be 65536 (first superblock location)" },
+    { "name": "Generation positive", "expression": "generation > 0", "severity": "warning", "message": "Btrfs generation counter should be positive" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 65536, "label": "Btrfs Superblock (offset 0x10000)", "color": "#F77F00" },
+      { "offset": 65600, "label": "Superblock Magic '_BHrfM_b'", "color": "#E9C46A" },
+      { "offset": 131072, "label": "Second Superblock Copy (0x20000)", "color": "#2A9D8F" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "Btrfs Superblock",
-      "offset": 65536,
-      "length": 4096,
-      "color": "#F77F00",
-      "opacity": 0.4,
-      "description": "Btrfs superblock '_BHm_M'"
+      "name": "Btrfs Superblock Summary",
+      "format": "text",
+      "template": "Btrfs Filesystem\nMagic      : {superblock_magic}\nGeneration : {generation}\nTotal Bytes: {total_bytes}\nFS UUID    : {fs_uuid}"
     },
     {
-      "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Btrfs Superblock CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{superblock_magic}\nGeneration,{generation}\nTotalBytes,{total_bytes}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "Btrfs superblock magic is at offset 0x10040 (65600), not at offset 0 — file must be at least 65608 bytes",
+    "There are up to 4 superblock copies at offsets 0x10000, 0x4000000, 0x4000000000, 0x4000000000000",
+    "Generation counter at offset 65608 is monotonically increasing — compare copies to find most recent",
+    "Btrfs uses 256-bit checksums (SHA256 or CRC32c) for all metadata — superblock includes its own checksum",
+    "B-tree nodes start at offset 65536 and contain filesystem metadata (extents, inodes, dir entries)"
   ],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [
-      ".btrfs"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "DiskInternals",
-    "R-Studio",
-    "HxD",
-    "FTK Imager",
-    "Autopsy"
-  ],
-  "UseCases": [
-    "Disk imaging",
-    "Forensics",
-    "Data recovery",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
   "forensic": {
-    "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "B-tree Filesystem with copy-on-write",
-    "suggestedInspections": [
-      "Verify Btrfs Filesystem superblock/boot sector signature and version",
-      "Check partition/volume layout and allocation bitmap",
-      "Inspect filesystem journal and metadata consistency"
+    "notes": [
+      "Btrfs CoW means deleted files may persist in old snapshots even after deletion",
+      "Multiple superblock copies allow recovery even if the primary superblock is corrupt",
+      "Subvolume support means multiple filesystem trees may coexist in one image"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "EXT4", "relation": "sibling", "note": "Both are Linux block device filesystems; Btrfs is newer with CoW and snapshots" }
+  ],
+  "software": ["btrfs-progs", "Linux kernel 2.6.29+", "DiskInternals Linux Recovery", "R-Studio", "Autopsy"],
+  "useCases": [
+    "Linux system and data partitions requiring snapshot capability",
+    "RAID management with Btrfs native RAID modes",
+    "Forensic imaging of Btrfs filesystems",
+    "Data recovery from Btrfs damaged volumes"
+  ],
+  "technicalDetails": {
+    "SuperblockOffset": "0x10000 (65536)",
+    "MagicOffset": "0x10040 (65600)",
+    "MagicValue": "_BHrfM_b",
+    "ChecksumTypes": ["CRC32c", "xxHash", "SHA256", "Blake2b"],
+    "MaxFilesystemSize": "16 EiB"
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "Software": ["DiskInternals", "R-Studio", "HxD", "FTK Imager", "Autopsy"],
+  "UseCases": ["Disk imaging", "Forensics", "Data recovery", "Analysis"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "SuperblockOffset": "0x10000", "MagicOffset": "0x10040", "MagicValue": "_BHrfM_b" },
+  "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }

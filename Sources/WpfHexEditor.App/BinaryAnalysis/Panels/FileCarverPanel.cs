@@ -23,14 +23,16 @@ public sealed class FileCarverPanel : UserControl
     {
         _vm = vm;
 
-        var scanBtn   = new Button { Content = "Scan",    Margin = new Thickness(0, 0, 4, 0), Padding = new Thickness(10, 2, 10, 2) };
-        var cancelBtn = new Button { Content = "Cancel",  Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 2, 10, 2) };
-        var statusTxt = new TextBlock { VerticalAlignment = VerticalAlignment.Center };
+        var scanBtn      = new Button { Content = "Scan",       Margin = new Thickness(0, 0, 4, 0), Padding = new Thickness(10, 2, 10, 2) };
+        var cancelBtn    = new Button { Content = "Cancel",     Margin = new Thickness(0, 0, 4, 0), Padding = new Thickness(10, 2, 10, 2) };
+        var exportAllBtn = new Button { Content = "Export All", Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 2, 10, 2) };
+        var statusTxt    = new TextBlock { VerticalAlignment = VerticalAlignment.Center };
         statusTxt.SetBinding(TextBlock.TextProperty, new Binding(nameof(_vm.StatusText)) { Source = _vm });
 
         var toolbar = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(4, 4, 4, 4) };
         toolbar.Children.Add(scanBtn);
         toolbar.Children.Add(cancelBtn);
+        toolbar.Children.Add(exportAllBtn);
         toolbar.Children.Add(statusTxt);
 
         var grid = new DataGrid
@@ -46,12 +48,8 @@ public sealed class FileCarverPanel : UserControl
         grid.Columns.Add(new DataGridTextColumn { Header = "Confidence", Binding = new Binding(nameof(CarvedEntry.Confidence))  { StringFormat = "{0:P0}" }, Width = 90 });
         grid.Columns.Add(new DataGridTextColumn { Header = "Source",     Binding = new Binding(nameof(CarvedEntry.Source)),      Width = 90 });
         grid.Columns.Add(new DataGridTextColumn { Header = "Est. Size",  Binding = new Binding(nameof(CarvedEntry.EstSize))     { StringFormat = "{0:N0}" }, Width = 90 });
-        grid.Columns.Add(new DataGridTemplateColumn
-        {
-            Header       = "Extract",
-            Width        = 65,
-            CellTemplate = BuildExtractTemplate(),
-        });
+        grid.Columns.Add(new DataGridTemplateColumn { Header = "Jump",    Width = 55, CellTemplate = BuildJumpTemplate() });
+        grid.Columns.Add(new DataGridTemplateColumn { Header = "Extract", Width = 65, CellTemplate = BuildExtractTemplate() });
         grid.ItemsSource = _vm.Results;
 
         var root = new DockPanel();
@@ -60,8 +58,15 @@ public sealed class FileCarverPanel : UserControl
         root.Children.Add(grid);
         Content = root;
 
-        scanBtn.Click   += async (_, _) => await _vm.ScanAsync();
-        cancelBtn.Click += (_, _) => _vm.Cancel();
+        scanBtn.Click      += async (_, _) => await _vm.ScanAsync();
+        cancelBtn.Click    += (_, _) => _vm.Cancel();
+        exportAllBtn.Click += async (_, _) =>
+        {
+            if (_context is null) return;
+            var dlg = new Microsoft.Win32.OpenFolderDialog { Title = "Select output folder" };
+            if (dlg.ShowDialog() == true)
+                await _vm.ExtractAllAsync(dlg.FolderName, _context);
+        };
     }
 
     public void SetContext(IIDEHostContext context)
@@ -71,6 +76,19 @@ public sealed class FileCarverPanel : UserControl
     }
 
     public void OnFileOpened() { _vm.Results.Clear(); }
+
+    private DataTemplate BuildJumpTemplate()
+    {
+        var factory = new FrameworkElementFactory(typeof(Button));
+        factory.SetValue(Button.ContentProperty, "Jump");
+        factory.SetValue(Button.PaddingProperty, new Thickness(4, 1, 4, 1));
+        factory.AddHandler(Button.ClickEvent, new RoutedEventHandler((s, _) =>
+        {
+            if (s is Button b && b.DataContext is CarvedEntry e)
+                _vm.JumpTo(e);
+        }));
+        return new DataTemplate { VisualTree = factory };
+    }
 
     private DataTemplate BuildExtractTemplate()
     {

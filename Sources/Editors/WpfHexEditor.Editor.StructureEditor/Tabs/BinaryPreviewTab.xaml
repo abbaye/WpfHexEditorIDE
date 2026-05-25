@@ -28,12 +28,14 @@
         </ToolBar>
 
         <!-- Results DataGrid -->
-        <DataGrid Grid.Row="1"
+        <DataGrid x:Name="FieldsGrid"
+                  Grid.Row="1"
                   ItemsSource="{Binding Rows}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column"
+                  SelectionChanged="OnFieldsGridSelectionChanged"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   CanUserResizeRows="False"

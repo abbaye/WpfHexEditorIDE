@@ -1,8 +1,28 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Badger Key-Value Database",
   "formatId": "BADGER",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 8,
+  "signatures": [
+    {
+      "value": "4241444745520000",
+      "offset": 0,
+      "label": "'BADGER\\x00\\x00' — Badger database magic header",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "magic_ascii", "offset": 0, "size": 6, "type": "ascii", "description": "ASCII 'BADGER'" },
+      { "name": "magic_padding", "offset": 6, "size": 2, "type": "bytes", "description": "Two null padding bytes" },
+      { "name": "format_version", "offset": 8, "size": 4, "type": "uint32le", "description": "File format version (uint32 LE)" }
+    ]
+  },
   "extensions": [".badger"],
   "description": "Badger is a fast, embeddable key-value database written in Go by Dgraph Labs. Files use the 8-byte magic header 'BADGER\\u0000\\u0000' (0x4241444745520000) at offset 0, followed by a 4-byte little-endian version number. Badger stores keys and values in LSM trees with a value log for large values, optimized for SSD workloads.",
   "category": "Database",
@@ -112,23 +132,27 @@
     }
   ],
   "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Badger Magic 'BADGER\\x00\\x00'", "color": "#3498DB" },
+      { "offset": 8, "label": "Format Version", "color": "#2ECC71" },
+      { "offset": 12, "label": "LSM Key Directory", "color": "#E67E22" }
+    ],
     "entryPoints": [
       { "name": "File Magic", "offset": 0 },
       { "name": "Version", "offset": 8 }
-    ],
-    "jumpTable": [
-      { "label": "Magic 'BADGER'", "offset": 0 },
-      { "label": "Format Version", "offset": 8 }
     ]
   },
   "inspector": {
     "badge": "BG",
     "primaryField": "badgerMagic",
+    "displayFields": ["badgerMagic", "badgerVersion"],
+    "valueMaps": {},
+    "tooltips": {
+      "badgerMagic": "8-byte magic: ASCII 'BADGER' + two null bytes = 4241444745520000",
+      "badgerVersion": "Badger format version — incompatible with different major versions"
+    },
     "groups": [
-      {
-        "name": "Identification",
-        "fields": ["badgerMagic", "badgerVersion"]
-      }
+      { "name": "Identification", "fields": ["badgerMagic", "badgerVersion"] }
     ]
   },
   "exportTemplates": [
@@ -145,13 +169,25 @@
   ],
   "forensic": {
     "riskLevel": "low",
+    "notes": [
+      "Badger databases backing Dgraph may contain graph data with PII or relationship metadata",
+      "Magic bytes absent means file is not Badger or is truncated",
+      "Value log files (.vlog) must accompany SST files for complete data recovery"
+    ],
     "suspiciousPatterns": [
       "Magic bytes absent — file may be truncated or not a Badger database",
       "Version mismatch — incompatible Badger library version",
       "Unexpected trailing data beyond known structure"
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "Badger magic is 8 bytes: ASCII 'BADGER' (6 bytes) followed by two null bytes at offset 0",
+    "Format version at offset 8 (uint32 LE) — breaking changes increment major version",
+    "Badger uses LSM tree for keys with a separate value log for large values",
+    "The value log is separate from the key SST files — both must be present for complete data",
+    "Dgraph graph database uses Badger as its storage backend — high forensic value"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "Badger is Dgraph's embeddable Go key-value store. Files begin with 8-byte magic 'BADGER\\u0000\\u0000' followed by a uint32 LE version. The LSM tree stores sorted keys; large values go to a separate value log for write amplification reduction.",
     "suggestedInspections": [
       "Verify 8-byte magic 0x4241444745520000 at offset 0",
@@ -178,9 +214,24 @@
     "High-performance SSD-optimized data storage",
     "Cache and session stores"
   ],
+  "useCases": [
+    "Embedded key-value storage in Go applications",
+    "Dgraph graph database backend",
+    "High-performance SSD-optimized data storage",
+    "Cache and session stores"
+  ],
+  "technicalDetails": {
+    "headerSize": 12,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "magicValue": "4241444745520000",
+    "storageEngine": "LSM tree with separate value log",
+    "notes": "Badger v3+ may use different header versions; verify version field for compatibility"
+  },
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "LastUpdated": "2026-04-16"
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-05-20"
   },
   "TechnicalDetails": {
     "headerSize": 12,

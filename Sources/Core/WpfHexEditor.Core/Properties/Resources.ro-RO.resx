@@ -1,51 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -58,8 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
-  <!-- French (Canada) -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
     <value>Ați ajuns la sfârșitul fișierului. Doriți să adăugați un octet? Această operație nu poate fi anulată dacă continuați.</value>
   </data>
@@ -699,8 +697,6 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Inverser tous les bits de chaque octet (XOR avec 0xFF)</value>
   </data>
-
-  <!-- TBL Editor Localizations -->
   <data name="TblEditor_Title" xml:space="preserve">
     <value>Editor tabel caractere TBL</value>
     <comment>TBL Editor - Title</comment>
@@ -833,262 +829,246 @@
     <value>● Modificat</value>
     <comment>TBL Editor - Modified</comment>
   </data>
-
-<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Afișare numere de linie (temporar)</value>
   </data>
-<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
     <value>Această funcționalitate nu este disponibilă în V2</value>
   </data>
-<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
     <value>Afișare tooltip octet</value>
   </data>
-
-
-
-<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
     <value>Permitere inserare oriunde</value>
   </data>
-<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
     <value>Autoriser suppression d'octet</value>
   </data>
-<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
     <value>Autoriser extension du fichier</value>
   </data>
-<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
     <value>Adăugarea necesită confirmare</value>
   </data>
-
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+  <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
     <value>Înlocuire</value>
   </data>
-
-
-
-
-
-
-
-
-
-<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Permitere glisare fișier</value>
   </data>
-<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
     <value>Confirmare glisare fișier</value>
   </data>
-<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Permitere glisare text</value>
   </data>
-
-<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
     <value>Selectare automată același octet (dublu-clic)</value>
   </data>
-<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+  <data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
     <value>Autoriser navigation par clic sur marqueur</value>
   </data>
-<data name="HexSettings_Highlight_Color" xml:space="preserve">
+  <data name="HexSettings_Highlight_Color" xml:space="preserve">
     <value>Couleur de surlignage automatique :</value>
   </data>
-<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+  <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
     <value>Activare căutare paralelă</value>
   </data>
-<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+  <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
     <value>Utilizare căutare cu caractere generice (??)</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+  <data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
     <value>Evidențiere toate rezultatele</value>
   </data>
-
-<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
     <value>Autoriser compte d'octets</value>
   </data>
-<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Deplasare octet la stânga:</value>
   </data>
-
-
-<data name="HexSettings_Title" xml:space="preserve">
+  <data name="HexSettings_Title" xml:space="preserve">
     <value>SETĂRI EDITOR HEX</value>
   </data>
-<data name="HexSettings_Display_Title" xml:space="preserve">
+  <data name="HexSettings_Display_Title" xml:space="preserve">
     <value>📺 Options d'affichage</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
     <value>Afișare numere de linie (placeholder)</value>
   </data>
-<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
     <value>Această funcționalitate nu este disponibilă în V2</value>
   </data>
-<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
     <value>Afișare tooltip octet</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+  <data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
     <value>Octets par ligne :</value>
   </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+  <data name="HexSettings_Display_ZoomScale" xml:space="preserve">
     <value>Scară zoom:</value>
   </data>
-<data name="HexSettings_Editing_Title" xml:space="preserve">
+  <data name="HexSettings_Editing_Title" xml:space="preserve">
     <value>✏️ Opțiuni editare</value>
   </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+  <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
     <value>Mode lecture seule</value>
   </data>
-<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
     <value>Permitere inserare oriunde</value>
   </data>
-<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
     <value>Permettre la suppression d'octet</value>
   </data>
-<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
     <value>Permettre l'extension du fichier</value>
   </data>
-<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
     <value>Adăugarea necesită confirmare</value>
   </data>
-<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+  <data name="HexSettings_Editing_EditMode" xml:space="preserve">
     <value>Mod editare:</value>
   </data>
-
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
+  <data name="HexSettings_Editing_Insert" xml:space="preserve">
     <value>Inserare</value>
   </data>
-<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+  <data name="HexSettings_Editing_CaretMode" xml:space="preserve">
     <value>Mode curseur :</value>
   </data>
-<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+  <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 Options du presse-papiers</value>
   </data>
-<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
     <value>Mod copiere implicit:</value>
   </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+  <data name="HexSettings_Clipboard_HexString" xml:space="preserve">
     <value>Șir hexadecimal</value>
   </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+  <data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
     <value>Tableau d'octets</value>
   </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
     <value>Code C#</value>
   </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
     <value>Code VB</value>
   </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_CCode" xml:space="preserve">
     <value>Code C</value>
   </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+  <data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
     <value>Code Java</value>
   </data>
-<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+  <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 Opțiuni glisare-depunere</value>
   </data>
-<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
     <value>Permitere glisare fișier</value>
   </data>
-<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
     <value>Confirmare glisare fișier</value>
   </data>
-<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
     <value>Permitere glisare text</value>
   </data>
-<data name="HexSettings_Highlight_Title" xml:space="preserve">
+  <data name="HexSettings_Highlight_Title" xml:space="preserve">
     <value>🎨 Evidențiere și selecție</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
     <value>Evidențiere automată octetul selectat</value>
   </data>
-<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
     <value>Selectare automată același octet (dublu-clic)</value>
   </data>
-<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+  <data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
     <value>Permettre la navigation par clic sur marqueur</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
     <value>Couleur de surbrillance automatique :</value>
   </data>
-<data name="HexSettings_Search_Title" xml:space="preserve">
+  <data name="HexSettings_Search_Title" xml:space="preserve">
     <value>🔍 Options de recherche</value>
   </data>
-<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+  <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
     <value>Activare căutare paralelă</value>
   </data>
-<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+  <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>Utiliser la recherche par joker (??)</value>
   </data>
-
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+  <data name="HexSettings_Search_ResultLimit" xml:space="preserve">
     <value>Limită rezultate căutare:</value>
   </data>
-<data name="HexSettings_Statistics_Title" xml:space="preserve">
+  <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 Statistiques</value>
   </data>
-<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+  <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
     <value>Permettre le comptage d'octets</value>
   </data>
-<data name="HexSettings_Advanced_Title" xml:space="preserve">
+  <data name="HexSettings_Advanced_Title" xml:space="preserve">
     <value>⚙️ Opțiuni avansate</value>
   </data>
-<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+  <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Deplasare octet la stânga:</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+  <data name="HexSettings_Advanced_SaveState" xml:space="preserve">
     <value>Salvare stare curentă</value>
   </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+  <data name="HexSettings_Advanced_LoadState" xml:space="preserve">
     <value>Încărcare stare salvată</value>
   </data>
-<data name="HexSettings_ResetButton" xml:space="preserve">
+  <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 Resetare totală la implicit</value>
   </data>
-<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+  <data name="HexSettings_StatusBar_Title" xml:space="preserve">
     <value>Bară de stare</value>
   </data>
-<data name="HexSettings_Colors_Title" xml:space="preserve">
+  <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>Couleurs</value>
   </data>
-<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+  <data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
     <value>Markere defilare</value>
     <comment>Hex editor settings - Scroll Markers category header</comment>
   </data>
-<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
     <value>Afișare markere semne de carte</value>
     <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
     <value>Afișare markere octeți modificați</value>
     <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
     <value>Afișare markere octeți inserați</value>
     <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
     <value>Afișare markere octeți șterși</value>
     <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
   </data>
-<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+  <data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
     <value>Afișare markere rezultate căutare</value>
     <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
   </data>
-<data name="HexSettings_Behavior_Title" xml:space="preserve">
+  <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>Comportement</value>
   </data>
-<data name="HexSettings_Data_Title" xml:space="preserve">
+  <data name="HexSettings_Data_Title" xml:space="preserve">
     <value>Date</value>
   </data>
-<data name="HexSettings_Visual_Title" xml:space="preserve">
+  <data name="HexSettings_Visual_Title" xml:space="preserve">
     <value>Visuel</value>
   </data>
-<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+  <data name="HexSettings_Keyboard_Title" xml:space="preserve">
     <value>Clavier</value>
   </data>
-<data name="HexSettings_TBL_Title" xml:space="preserve">
+  <data name="HexSettings_TBL_Title" xml:space="preserve">
     <value>Table de caracteres</value>
   </data>
-<data name="HexSettings_SaveButton" xml:space="preserve"><value>Salvare stare</value></data>
-<data name="HexSettings_LoadButton" xml:space="preserve"><value>Încărcare stare</value></data>
+  <data name="HexSettings_SaveButton" xml:space="preserve">
+    <value>Salvare stare</value>
+  </data>
+  <data name="HexSettings_LoadButton" xml:space="preserve">
+    <value>Încărcare stare</value>
+  </data>
   <data name="HexSettings_BarChart_Title" xml:space="preserve">
     <value>📈 Bar Chart</value>
     <comment>Hex editor settings - Bar Chart category header</comment>
@@ -1125,35 +1105,75 @@
     <value>Afișare statistici</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
-
-  <!-- ByteValueTooltip labels -->
-  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Nicio dată</value></data>
-  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Cu semn</value></data>
-  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binar</value></data>
-  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
-  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(neimprimabil)</value></data>
-  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
-
-  <!-- HexEditor status messages -->
-  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operație anulată</value></data>
-  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Fișierul există deja</value></data>
-  <data name="StatusText_Ready" xml:space="preserve"><value>Pregătit</value></data>
-  <data name="StatusText_FileSaved" xml:space="preserve"><value>Fișier salvat</value></data>
-  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Marcatorii de căutare au fost șterși.</value></data>
-  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Toate modificările au fost șterse</value></data>
-  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL închis, utilizare ASCII</value></data>
-  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Nicio selecție de inversat</value></data>
-  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Selecția este goală</value></data>
-  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Nicio selecție de inversat bit cu bit</value></data>
-  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Nicio selecție de căutat</value></data>
-  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Nu s-au găsit rezultate.</value></data>
-  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Dimensiune: -</value></data>
-  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Nicio selecție</value></data>
-  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Poziție: 0</value></data>
-  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Mod: Suprascriere</value></data>
-  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Octeți/Linie: 16</value></data>
-
-  <!-- Search Module -->
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Nicio dată</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>Cu semn</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>Binar</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(neimprimabil)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>Octal</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>Operație anulată</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Fișierul există deja</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Pregătit</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>Fișier salvat</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Marcatorii de căutare au fost șterși.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Toate modificările au fost șterse</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL închis, utilizare ASCII</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Nicio selecție de inversat</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>Selecția este goală</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Nicio selecție de inversat bit cu bit</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Nicio selecție de căutat</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Nu s-au găsit rezultate.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Dimensiune: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Nicio selecție</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>Poziție: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>Mod: Suprascriere</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Octeți/Linie: 16</value>
+  </data>
   <data name="Search_NoMatches" xml:space="preserve">
     <value>Niciun rezultat</value>
   </data>
@@ -1211,7 +1231,6 @@
   <data name="Search_CloseTBL_Title" xml:space="preserve">
     <value>Închidere TBL</value>
   </data>
-  <!-- IPS Patcher -->
   <data name="IPS_Error_NoFileOpen" xml:space="preserve">
     <value>Vă rugăm să deschideți mai întâi un fișier ROM înainte de a aplica un patch.</value>
   </data>
@@ -1257,7 +1276,6 @@
   <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
     <value>Patch creat</value>
   </data>
-  <!-- Undo/Redo history popup -->
   <data name="UndoHistory_Undo" xml:space="preserve">
     <value>Anulare</value>
   </data>
@@ -1270,7 +1288,6 @@
   <data name="UndoHistory_Actions" xml:space="preserve">
     <value>acțiuni</value>
   </data>
-
   <data name="DynSettings_Title" xml:space="preserve">
     <value>Setări editor hexazecimal</value>
   </data>
@@ -1792,17 +1809,39 @@ Remarque : L'intégration complète avec HexEditor nécessite de se connecter au
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>Copiere (auto)</value>
   </data>
-  <data name="WrapAroundString" xml:space="preserve"><value>Căutare ciclică</value></data>
-  <data name="EncodingLabel" xml:space="preserve"><value>Codificare:</value></data>
-  <data name="HexadecimalString" xml:space="preserve"><value>Hexazecimal</value></data>
-  <data name="DecimalString" xml:space="preserve"><value>Zecimal</value></data>
-  <data name="GoToPositionTitle" xml:space="preserve"><value>Salt la poziție</value></data>
-  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
-  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 sau zecimal</value></data>
-  <data name="WildcardCheckbox" xml:space="preserve"><value>Joker (??)</value></data>
-  <data name="TruncateReplacementString" xml:space="preserve"><value>Trunchiere înlocuire la lungimea căutării</value></data>
-  <data name="FindNextButtonLabel" xml:space="preserve"><value>Suivant</value></data>
-  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Anterior</value></data>
+  <data name="WrapAroundString" xml:space="preserve">
+    <value>Căutare ciclică</value>
+  </data>
+  <data name="EncodingLabel" xml:space="preserve">
+    <value>Codificare:</value>
+  </data>
+  <data name="HexadecimalString" xml:space="preserve">
+    <value>Hexazecimal</value>
+  </data>
+  <data name="DecimalString" xml:space="preserve">
+    <value>Zecimal</value>
+  </data>
+  <data name="GoToPositionTitle" xml:space="preserve">
+    <value>Salt la poziție</value>
+  </data>
+  <data name="GoToPositionHeader" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve">
+    <value>0x00000000 sau zecimal</value>
+  </data>
+  <data name="WildcardCheckbox" xml:space="preserve">
+    <value>Joker (??)</value>
+  </data>
+  <data name="TruncateReplacementString" xml:space="preserve">
+    <value>Trunchiere înlocuire la lungimea căutării</value>
+  </data>
+  <data name="FindNextButtonLabel" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
   <data name="HE_SearchDialogTitle" xml:space="preserve">
     <value>Find / Replace</value>
   </data>
@@ -1932,26 +1971,64 @@ Remarque : L'intégration complète avec HexEditor nécessite de se connecter au
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
-  <data name="HE_CompareFileWith" xml:space="preserve"><value>Comparare fișier cu…</value></data>
-  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Comparare selecție la stânga…</value></data>
-  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Niciun fișier TBL încărcat</value></data>
-  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEXT</value></data>
-  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
-  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKER</value></data>
-  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXT TBL</value></data>
-  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIV</value></data>
-  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Format fișier detectat</value></data>
-  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Scor de încredere detecție</value></data>
-  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Încredere detecție: {0}</value></data>
-  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
-  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Schimbare format detectat</value></data>
-  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Căutare toate aparițiile cu suprapunere progres</value></data>
-  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_CompareFileWith" xml:space="preserve">
+    <value>Comparare fișier cu…</value>
+  </data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve">
+    <value>Comparare selecție la stânga…</value>
+  </data>
+  <data name="HE_ToggleEntropyHeatmap" xml:space="preserve">
+    <value>Entropy Heatmap</value>
+  </data>
+  <data name="HE_NoTblLoaded" xml:space="preserve">
+    <value>Niciun fișier TBL încărcat</value>
+  </data>
+  <data name="HE_SearchTypeText" xml:space="preserve">
+    <value>TEXT</value>
+  </data>
+  <data name="HE_SearchTypeHex" xml:space="preserve">
+    <value>HEX</value>
+  </data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve">
+    <value>JOKER</value>
+  </data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve">
+    <value>TEXT TBL</value>
+  </data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve">
+    <value>RELATIV</value>
+  </data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve">
+    <value>Format fișier detectat</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve">
+    <value>Scor de încredere detecție</value>
+  </data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve">
+    <value>Încredere detecție: {0}</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve">
+    <value>Schimbare format detectat</value>
+  </data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve">
+    <value>Căutare toate aparițiile cu suprapunere progres</value>
+  </data>
+  <data name="HE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Rezultate</value>
   </data>
-  <!-- HexEditor split view -->
-  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Împarte</value></data>
-  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Deschideți sau închideți un al doilea panou hex sincronizat</value></data>
-  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Închideți împărțirea</value></data>
+  <data name="HexEditor_SplitView_Toggle" xml:space="preserve">
+    <value>Împarte</value>
+  </data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve">
+    <value>Deschideți sau închideți un al doilea panou hex sincronizat</value>
+  </data>
+  <data name="HexEditor_SplitView_Close" xml:space="preserve">
+    <value>Închideți împărțirea</value>
+  </data>
 </root>

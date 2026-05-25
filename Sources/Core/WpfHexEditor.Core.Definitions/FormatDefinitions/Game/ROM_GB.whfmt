@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Game Boy ROM",
   "formatId": "ROM_GB",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".gb",
     ".gbc"
@@ -10,6 +11,7 @@
   "description": "Game Boy/Game Boy Color ROM cartridge format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -22,15 +24,16 @@
       "https://en.wikipedia.org/wiki/Game_Boy"
     ]
   },
-  "detection": {
-    "signature": "CEED6666CC0D000B03730083000C000D0008",
-    "offset": 260,
-    "required": true,
-    "validation": {
-      "minFileSize": 18,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "CEED6666CC0D000B",
+      "offset": 260,
+      "label": "Nintendo logo (first 8 bytes at 0x0104)",
+      "weight": 1.0,
+      "strength": "Strong"
     }
-  },
+  ],
+  "maxSignatureOffset": 268,
   "variables": {
     "currentOffset": 0,
     "cgbFlag": 0,
@@ -51,6 +54,112 @@
     "maskRomVersion": 0,
     "globalChecksum": 0
   },
+  "structure": {
+    "fields": [
+      { "name": "entry_point",       "type": "bytes",  "offset": "0x0100", "length": 4,  "description": "Boot entry point (NOP; JP $0150)" },
+      { "name": "logo",              "type": "bytes",  "offset": "0x0104", "length": 48, "description": "Nintendo bootrom logo (must match exactly)" },
+      { "name": "title",             "type": "ascii",  "offset": "0x0134", "length": 16, "description": "Game title, null-padded ASCII" },
+      { "name": "cgb_flag",          "type": "uint8",  "offset": "0x0143", "length": 1,  "description": "0x80=CGB compatible, 0xC0=CGB only" },
+      { "name": "new_licensee",      "type": "ascii",  "offset": "0x0144", "length": 2,  "description": "New licensee code (2 chars)" },
+      { "name": "sgb_flag",          "type": "uint8",  "offset": "0x0146", "length": 1,  "description": "0x03=SGB functions enabled" },
+      { "name": "cart_type",         "type": "uint8",  "offset": "0x0147", "length": 1,  "description": "MBC/hardware type code" },
+      { "name": "rom_size",          "type": "uint8",  "offset": "0x0148", "length": 1,  "description": "ROM size code (0=32KB, 1=64KB …)" },
+      { "name": "ram_size",          "type": "uint8",  "offset": "0x0149", "length": 1,  "description": "External RAM size code" },
+      { "name": "dest_code",         "type": "uint8",  "offset": "0x014A", "length": 1,  "description": "0x00=Japan, 0x01=Overseas" },
+      { "name": "header_checksum",   "type": "uint8",  "offset": "0x014D", "length": 1,  "description": "8-bit checksum of header bytes 0x0134–0x014C" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["title", "cgb_flag", "cart_type", "rom_size", "ram_size", "header_checksum"],
+    "valueMaps": {
+      "cart_type": {
+        "0x00": "ROM ONLY",
+        "0x01": "MBC1",
+        "0x02": "MBC1+RAM",
+        "0x03": "MBC1+RAM+BATTERY",
+        "0x05": "MBC2",
+        "0x06": "MBC2+BATTERY",
+        "0x08": "ROM+RAM",
+        "0x09": "ROM+RAM+BATTERY",
+        "0x0F": "MBC3+TIMER+BATTERY",
+        "0x10": "MBC3+TIMER+RAM+BATTERY",
+        "0x11": "MBC3",
+        "0x12": "MBC3+RAM",
+        "0x13": "MBC3+RAM+BATTERY",
+        "0x19": "MBC5",
+        "0x1A": "MBC5+RAM",
+        "0x1B": "MBC5+RAM+BATTERY",
+        "0x1C": "MBC5+RUMBLE",
+        "0x1D": "MBC5+RUMBLE+RAM",
+        "0x1E": "MBC5+RUMBLE+RAM+BATTERY"
+      },
+      "cgb_flag": {
+        "0x00": "DMG only",
+        "0x80": "CGB compatible (also DMG)",
+        "0xC0": "CGB only"
+      }
+    },
+    "tooltips": {
+      "header_checksum": "Hardware verifies this on boot; wrong value = black screen",
+      "cgb_flag": "Determines Game Boy Color mode",
+      "cart_type": "Memory Bank Controller type installed in the cartridge"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Nintendo logo present",
+      "expression": "bytes[0x0104..0x010B] == CEED6666CC0D000B",
+      "severity": "error",
+      "message": "Nintendo logo bytes at 0x0104 are incorrect; hardware boot ROM will reject cartridge"
+    },
+    {
+      "name": "Header checksum valid",
+      "expression": "header_checksum == (-(sum(bytes[0x0134..0x014C])) - 1) & 0xFF",
+      "severity": "error",
+      "message": "Header checksum mismatch; Game Boy hardware will refuse to boot"
+    },
+    {
+      "name": "Destination code valid",
+      "expression": "dest_code == 0x00 || dest_code == 0x01",
+      "severity": "warning",
+      "message": "Destination code should be 0x00 (Japan) or 0x01 (Overseas)"
+    },
+    {
+      "name": "ROM size code in range",
+      "expression": "rom_size <= 8",
+      "severity": "warning",
+      "message": "ROM size code > 8 is non-standard (max official = 8 = 8 MB)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Entry Point",      "offset": 256,  "icon": "", "color": "#4ECDC4" },
+      { "name": "Nintendo Logo",    "offset": 260,  "icon": "", "color": "#FF6B6B" },
+      { "name": "Game Title",       "offset": 308,  "icon": "", "color": "#4ECDC4" },
+      { "name": "Cart Type",        "offset": 327,  "icon": "", "color": "#FFE66D" },
+      { "name": "Header Checksum",  "offset": 333,  "icon": "", "color": "#FF6B9D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GB ROM Header (JSON)",
+      "format": "json",
+      "fields": ["title", "cgb_flag", "cart_type", "rom_size", "ram_size", "header_checksum"]
+    },
+    {
+      "name": "GB ROM Header (C struct)",
+      "format": "c-struct",
+      "structName": "GB_ROM_HEADER",
+      "fields": ["title", "cgb_flag", "cart_type", "rom_size", "ram_size", "header_checksum"]
+    }
+  ],
+  "aiHints": [
+    "Validate Nintendo logo bytes at 0x0104 — hardware boot ROM checks 48 bytes exactly",
+    "Compute header checksum as -(sum(0x0134..0x014C)) - 1 (mod 256); mismatch = boot failure",
+    "CGB flag 0xC0 means CGB-only; 0x80 = compatible with both DMG and CGB",
+    "cart_type encodes the Memory Bank Controller (MBC) required to address ROM beyond 32 KB",
+    "Global checksum at 0x014E–0x014F is not verified by hardware but useful for integrity checks"
+  ],
   "blocks": [
     {
       "type": "field",
@@ -96,11 +205,7 @@
       "storeAs": "cgbFlag",
       "description": "0x80=CGB compatible, 0xC0=CGB only, other=DMG only",
       "validationRules": {
-        "allowedValues": [
-          0,
-          128,
-          192
-        ]
+        "allowedValues": [0, 128, 192]
       }
     },
     {
@@ -168,10 +273,7 @@
       "valueType": "uint8",
       "description": "0x00=Japan only, 0x01=Overseas",
       "validationRules": {
-        "allowedValues": [
-          0,
-          1
-        ]
+        "allowedValues": [0, 1]
       },
       "storeAs": "destinationCode"
     },
@@ -244,13 +346,21 @@
     "mGBA",
     "RetroArch"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".gb",
-      ".gbc"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_GBC",
+      "relation": "superset",
+      "note": "GBC ROMs share the same header; CGB flag at 0x0143 distinguishes color-only titles"
+    }
+  ],
+  "useCases": [
+    "Retro game preservation and archiving",
+    "ROM hacking and translation patches",
+    "Emulation and accuracy testing",
+    "Homebrew game development on original hardware"
+  ],
+  "technicalDetails": "Game Boy ROM header is located at 0x0100–0x014F. The 48-byte Nintendo logo starting at 0x0104 is verified by the boot ROM; a mismatch prevents the cartridge from booting. The header checksum at 0x014D is the only integrity field enforced at runtime. Multiple MBC types allow ROMs larger than 32 KB by bank-switching.",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -268,11 +378,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 69,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 17,
     "ValidationRules": 2,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -284,16 +394,11 @@
     "extractASCIIString": "Read file list"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Game Boy/Game Boy Color ROM cartridge format",
-    "suggestedInspections": [
-      "Validate Game Boy ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "Corrupted Nintendo logo bytes are a common sign of a bad ROM dump or modified header",
+      "Invalid header checksum causes hardware boot failure but not emulator failure",
+      "Non-standard cart_type values may indicate a pirate or unlicensed cartridge"
     ]
   },
   "diff": {

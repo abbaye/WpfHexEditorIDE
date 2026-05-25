@@ -67,6 +67,27 @@ public sealed class BinaryPreviewViewModel : ViewModelBase
         private set { _isRunning = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// When set, fires with (offset, byteLength) each time the user selects a field row.
+    /// The host wires this to navigate the active HexEditor.
+    /// </summary>
+    public Action<long, long>? FieldNavigationRequested { get; set; }
+
+    /// <summary>Navigates the hex editor to the field represented by <paramref name="row"/>.</summary>
+    public void NavigateToField(FieldResultRow row)
+    {
+        if (FieldNavigationRequested is null) return;
+        if (!long.TryParse(
+                row.Offset.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? row.Offset[2..] : row.Offset,
+                System.Globalization.NumberStyles.HexNumber,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out long offset))
+            return;
+
+        long length = long.TryParse(row.Length, out long l) ? l : 1;
+        FieldNavigationRequested(offset, length);
+    }
+
     // ── Wiring ────────────────────────────────────────────────────────────────
 
     /// <summary>

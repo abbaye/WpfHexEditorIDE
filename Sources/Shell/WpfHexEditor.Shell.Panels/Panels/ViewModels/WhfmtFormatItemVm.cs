@@ -131,6 +131,7 @@ public sealed class WhfmtFormatItemVm : ViewModelBase
     public ICommand OpenReadOnlyCommand   { get; set; } = DisabledCommand.Instance;
     public ICommand ExportToFileCommand   { get; set; } = DisabledCommand.Instance;
     public ICommand ViewJsonCommand       { get; set; } = DisabledCommand.Instance;
+    public ICommand GenerateParserCommand { get; set; } = DisabledCommand.Instance;
     public ICommand DeleteCommand         { get; set; } = DisabledCommand.Instance;
     public ICommand CopyPathCommand       { get; set; } = DisabledCommand.Instance;
     public ICommand RevealInExplorerCommand { get; set; } = DisabledCommand.Instance;

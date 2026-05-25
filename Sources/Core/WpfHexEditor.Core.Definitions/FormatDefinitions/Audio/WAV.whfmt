@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "WAV Audio",
   "formatId": "WAV",
@@ -7,6 +8,24 @@
     ".wav",
     ".wave"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "52494646",
+      "offset": 0,
+      "label": "RIFF container header 'RIFF'",
+      "weight": 0.7,
+      "strength": "Moderate"
+    },
+    {
+      "value": "57415645",
+      "offset": 8,
+      "label": "RIFF WAVE type identifier 'WAVE'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "Waveform Audio File Format - A RIFF-based container for uncompressed (PCM) and compressed audio. The file begins with a 12-byte RIFF header followed by a mandatory 'fmt ' chunk describing the audio encoding parameters and a 'data' chunk containing the sample payload.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
@@ -281,6 +300,19 @@
       "name": "Duration",
       "variable": "formattedDuration",
       "description": "Estimated audio duration formatted as HH:MM:SS"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "WAV Header (JSON)",
+      "format": "json",
+      "fields": ["riffSignature", "waveType", "audioFormat", "numChannels", "sampleRate", "byteRate", "blockAlign", "bitsPerSample"]
+    },
+    {
+      "name": "WAV_FMT_CHUNK (C struct)",
+      "format": "c-struct",
+      "structName": "wav_fmt_chunk",
+      "fields": ["audioFormat", "numChannels", "sampleRate", "byteRate", "blockAlign", "bitsPerSample"]
     }
   ],
   "MimeTypes": [

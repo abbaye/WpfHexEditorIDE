@@ -30,6 +30,12 @@ Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790
 
 ## What's New
 
+### v1.1.4 — Format lookup fix (9 formats)
+
+- **Bug fix**: `generate` command no longer crashes with `JsonReaderException: '<' is an invalid start of a value` on formats that have a companion Synalysis `.grammar` file.  
+  Affected: `bmp`, `elf`, `flac`, `gif`, `jpeg`, `mp3`, `png`, `sqlite`, `zip`.  
+  Root cause: the catalog lookup matched `.grammar` (XML) resources whose basename equals the format name; `JsonDocument.Parse` then choked on `<?xml`. The lookup is now restricted to `.whfmt` resources only. A clear `InvalidOperationException` is thrown as a defense-in-depth guard if a non-JSON resource is somehow resolved.
+
 ### v1.1.3 — JSONC header fix
 
 - **Bug fix**: `generate` command now correctly parses `.whfmt` files that contain `/* ... */` block-comment headers (JSONC). Previously crashed with `JsonReaderException: '<' is an invalid start of a value`.

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Cabinet Archive",
   "formatId": "CAB",
@@ -77,7 +78,7 @@
       "offset": 4,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Reserved field, must be zero. Part of the fixed cabinet header. Non-zero values indicate a non-standard or corrupted cabinet file.",
       "valueType": "uint32",
       "endianness": "little"
@@ -100,7 +101,7 @@
       "offset": 12,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Reserved field, must be zero.",
       "valueType": "uint32",
       "endianness": "little"
@@ -123,7 +124,7 @@
       "offset": 20,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Reserved field, must be zero.",
       "valueType": "uint32",
       "endianness": "little"
@@ -134,7 +135,7 @@
       "offset": 24,
       "length": 1,
       "color": "#FFE66D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Minor version number of the cabinet format. Current value is 3 (for cabinet format version 1.3). A value other than 3 may indicate a non-standard cabinet or a format extension.",
       "storeAs": "versionMinor",
       "valueType": "uint8",
@@ -148,7 +149,7 @@
       "offset": 25,
       "length": 1,
       "color": "#FFE66D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Major version number of the cabinet format. Current value is 1 (for cabinet format version 1.3). A value other than 1 indicates a non-standard cabinet format.",
       "storeAs": "versionMajor",
       "valueType": "uint8",
@@ -196,19 +197,28 @@
           "bit": 0,
           "name": "hasPrevCabinet",
           "description": "When set, this cabinet is not the first in a set — there is a previous cabinet. The header contains additional fields for the previous cabinet filename and disk label.",
-          "valueMap": { "0": "First cabinet in set", "1": "Continuation of previous cabinet" }
+          "valueMap": {
+            "0": "First cabinet in set",
+            "1": "Continuation of previous cabinet"
+          }
         },
         {
           "bit": 1,
           "name": "hasNextCabinet",
           "description": "When set, this cabinet is not the last in a set — there is a next cabinet. The header contains additional fields for the next cabinet filename and disk label.",
-          "valueMap": { "0": "Last cabinet in set", "1": "Continued in next cabinet" }
+          "valueMap": {
+            "0": "Last cabinet in set",
+            "1": "Continued in next cabinet"
+          }
         },
         {
           "bit": 2,
           "name": "reservedFields",
           "description": "When set, the cabinet header, folder, and data block structures contain optional per-block reserved fields (used for custom data or alignment). The cbCFHeader, cbCFFolder, cbCFData fields follow in an extended header.",
-          "valueMap": { "0": "No reserved fields", "1": "Optional reserved fields present" }
+          "valueMap": {
+            "0": "No reserved fields",
+            "1": "Optional reserved fields present"
+          }
         }
       ]
     },
@@ -218,7 +228,7 @@
       "offset": 32,
       "length": 2,
       "color": "#FF8C69",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Identifies which cabinet set this cabinet belongs to (little-endian 16-bit). All cabinets in the same multi-cabinet set share the same setID value. A setID of 0 means the cabinet is standalone. The setID is assigned by the cabinet creation tool and used to verify that a continuation cabinet belongs to the correct set.",
       "storeAs": "setID",
       "valueType": "uint16",
@@ -230,7 +240,7 @@
       "offset": 34,
       "length": 2,
       "color": "#B8B8FF",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Zero-based index of this cabinet within its cabinet set (little-endian 16-bit). The first cabinet has index 0, the second has index 1, etc. Used to determine the order of cabinets when assembling a multi-cabinet set.",
       "storeAs": "cabinetIndex",
       "valueType": "uint16",
@@ -367,22 +377,38 @@
       {
         "title": "Cabinet Header",
         "icon": "",
-        "fields": ["cabSignature", "cabSize", "filesOffset"]
+        "fields": [
+          "cabSignature",
+          "cabSize",
+          "filesOffset"
+        ]
       },
       {
         "title": "Format Version",
         "icon": "",
-        "fields": ["versionMajor", "versionMinor"]
+        "fields": [
+          "versionMajor",
+          "versionMinor"
+        ]
       },
       {
         "title": "Content Structure",
         "icon": "",
-        "fields": ["numFolders", "numFiles", "cabinetFlags", "hasPrevCabinet", "hasNextCabinet"]
+        "fields": [
+          "numFolders",
+          "numFiles",
+          "cabinetFlags",
+          "hasPrevCabinet",
+          "hasNextCabinet"
+        ]
       },
       {
         "title": "Cabinet Set",
         "icon": "",
-        "fields": ["setID", "cabinetIndex"]
+        "fields": [
+          "setID",
+          "cabinetIndex"
+        ]
       }
     ]
   },
@@ -390,18 +416,47 @@
     {
       "name": "CAB Header Summary (JSON)",
       "format": "json",
-      "fields": ["cabSignature", "cabSize", "filesOffset", "versionMajor", "versionMinor", "numFolders", "numFiles", "cabinetFlags", "setID", "cabinetIndex", "hasPrevCabinet", "hasNextCabinet"]
+      "fields": [
+        "cabSignature",
+        "cabSize",
+        "filesOffset",
+        "versionMajor",
+        "versionMinor",
+        "numFolders",
+        "numFiles",
+        "cabinetFlags",
+        "setID",
+        "cabinetIndex",
+        "hasPrevCabinet",
+        "hasNextCabinet"
+      ]
     },
     {
       "name": "CFHEADER (C struct)",
       "format": "c-struct",
       "structName": "CFHEADER",
-      "fields": ["cabSignature", "cabSize", "filesOffset", "versionMinor", "versionMajor", "numFolders", "numFiles", "cabinetFlags", "setID", "cabinetIndex"]
+      "fields": [
+        "cabSignature",
+        "cabSize",
+        "filesOffset",
+        "versionMinor",
+        "versionMajor",
+        "numFolders",
+        "numFiles",
+        "cabinetFlags",
+        "setID",
+        "cabinetIndex"
+      ]
     },
     {
       "name": "Python CAB magic check",
       "format": "python-bytes",
-      "fields": ["cabSignature", "versionMajor", "versionMinor", "numFiles"]
+      "fields": [
+        "cabSignature",
+        "versionMajor",
+        "versionMinor",
+        "numFiles"
+      ]
     }
   ],
   "forensic": {
@@ -440,23 +495,13 @@
       "Cabinet files used as delivery mechanism for Windows malware installer packages (.msi/.exe)"
     ]
   },
-  "aiHints": {
-    "analysisContext": "Microsoft Cabinet header (36 bytes, all LE): 'MSCF'(4) + reserved1(4,=0) + cabSize(4) + reserved2(4,=0) + filesOffset(4) + reserved3(4,=0) + versionMinor(1) + versionMajor(1) + numFolders(2) + numFiles(2) + cabinetFlags(2) + setID(2) + cabinetIndex(2). Optional extended header follows if flags bit 2 is set (reserved fields). After base header: CFFOLDER structures (one per folder) then CFFILE structures (one per file). CFFOLDER contains: first data block offset, data block count, compression type (0=None, 1=MSZIP, 2=Quantum, 3=LZX). CFFILE contains: uncompressed size, folder offset, folder index, date, time, attributes, filename (null-terminated).",
-    "knownVulnerabilities": [
-      "CVE-2003-0831: cabinet.dll path traversal allows writing files outside extraction directory",
-      "CVE-2019-0565: heap corruption in cabinet parsing",
-      "Malicious filenames with ../ components can extract to arbitrary paths"
-    ],
-    "suggestedInspections": [
-      "Verify 'MSCF' magic at offset 0",
-      "Verify version is 1.3 (versionMajor=1, versionMinor=3)",
-      "Check all reserved fields are zero",
-      "Verify cabSize matches actual file size",
-      "Read CFFILE entries at filesOffset and check for path traversal (../) in stored filenames",
-      "Check CFFOLDER compression type: 0=None, 1=MSZIP, 2=Quantum, 3=LZX",
-      "For multi-cabinet sets: verify setID is consistent across all cabinets in the set"
-    ]
-  },
+  "aiHints": [
+    "CAB header: 'MSCF' + reserved(4)=0 + cabinetSize(4,LE) + reserved(4)=0 + firstFolderOffset(4,LE) + firstDataOffset(4,LE)",
+    "CAB compression codecs: 0x0000=stored, 0x0001=MSZIP (DEFLATE), 0x0002=Quantum, 0x0003=LZX",
+    "Multiple files in a CAB are organized into CFFOLDER entries; data split into CFDATA blocks",
+    "Windows Setup uses CAB for distributing system files; MSI installers embed CABs for payloads",
+    "Malware commonly uses CABs for payload delivery via Windows trusted installer paths"
+  ],
   "software": [
     "makecab.exe (Windows built-in cabinet creator)",
     "expand.exe (Windows built-in extractor)",
@@ -467,8 +512,14 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".cab"],
-    "relatedFormats": ["MSI", "WIM", "ZIP"]
+    "extensions": [
+      ".cab"
+    ],
+    "relatedFormats": [
+      "MSI",
+      "WIM",
+      "ZIP"
+    ]
   },
   "MimeTypes": [
     "application/vnd.ms-cab-compressed",
@@ -486,7 +537,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 15,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },
@@ -502,8 +553,16 @@
     "ChecksumAlgorithm": "Custom XOR-based checksum (not standard CRC-32)"
   },
   "diff": {
-    "keyFields": ["cabSignature", "cabSize", "numFiles", "numFolders"],
-    "ignoreFields": ["hasPrevCabinet", "hasNextCabinet"],
+    "keyFields": [
+      "cabSignature",
+      "cabSize",
+      "numFiles",
+      "numFolders"
+    ],
+    "ignoreFields": [
+      "hasPrevCabinet",
+      "hasNextCabinet"
+    ],
     "groupBy": "cabHeader",
     "note": "Signature confirms identity; cabSize and file/folder counts describe archive content structure; multi-cabinet flags are topology metadata derived from cabinetFlags"
   },
@@ -521,11 +580,37 @@
     "preserveChecksums": true,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "cabSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt MSCF magic to test cabinet signature rejection" },
-      { "field": "numFiles", "mutation": "boundary_values", "weight": 2, "description": "Set numFiles to 0 or UINT16_MAX to test empty cabinet and overflow handling" },
-      { "field": "cabSize", "mutation": "overflow", "weight": 2, "description": "Set cabSize larger than actual file to test size validation and read-past-end bugs" },
-      { "field": "cabinetFlags", "mutation": "random_bytes", "weight": 1, "description": "Set undefined cabinet flag bits to test reserved bit handling" },
-      { "field": "versionMajor", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip version byte bits to probe unknown format version handling" }
+      {
+        "field": "cabSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt MSCF magic to test cabinet signature rejection"
+      },
+      {
+        "field": "numFiles",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Set numFiles to 0 or UINT16_MAX to test empty cabinet and overflow handling"
+      },
+      {
+        "field": "cabSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Set cabSize larger than actual file to test size validation and read-past-end bugs"
+      },
+      {
+        "field": "cabinetFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Set undefined cabinet flag bits to test reserved bit handling"
+      },
+      {
+        "field": "versionMajor",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Flip version byte bits to probe unknown format version handling"
+      }
     ]
   },
   "migration": [
@@ -534,9 +619,90 @@
       "to": "1.3",
       "description": "Update cabinet version fields to the current 1.3 standard",
       "changes": [
-        { "field": "versionMajor", "changeType": "set_value", "value": "1", "description": "Set major version to 1 (current standard)" },
-        { "field": "versionMinor", "changeType": "set_value", "value": "3", "description": "Set minor version to 3 (current 1.3 standard)" }
+        {
+          "field": "versionMajor",
+          "changeType": "set_value",
+          "value": "1",
+          "description": "Set major version to 1 (current standard)"
+        },
+        {
+          "field": "versionMinor",
+          "changeType": "set_value",
+          "value": "3",
+          "description": "Set minor version to 3 (current 1.3 standard)"
+        }
       ]
     }
-  ]
+  ],
+  "signatures": [
+    {
+      "value": "4D534346",
+      "offset": 0,
+      "label": "MSCF — Microsoft Cabinet signature",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 4,
+        "description": "'MSCF' Cabinet signature"
+      },
+      {
+        "name": "reserved1",
+        "type": "uint32le",
+        "offset": 4,
+        "length": 4,
+        "description": "Reserved (must be 0)"
+      },
+      {
+        "name": "cabinetSize",
+        "type": "uint32le",
+        "offset": 8,
+        "length": 4,
+        "description": "Total cabinet file size in bytes"
+      },
+      {
+        "name": "reserved2",
+        "type": "uint32le",
+        "offset": 12,
+        "length": 4,
+        "description": "Reserved (must be 0)"
+      },
+      {
+        "name": "firstCFFOLDER",
+        "type": "uint32le",
+        "offset": 16,
+        "length": 4,
+        "description": "Offset to first CFFOLDER entry"
+      },
+      {
+        "name": "firstCFDATA",
+        "type": "uint32le",
+        "offset": 20,
+        "length": 4,
+        "description": "Offset to first CFDATA entry"
+      },
+      {
+        "name": "numFolders",
+        "type": "uint16le",
+        "offset": 28,
+        "length": 2,
+        "description": "Number of CFFOLDER entries"
+      },
+      {
+        "name": "numFiles",
+        "type": "uint16le",
+        "offset": 30,
+        "length": 2,
+        "description": "Number of CFFILE entries"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20"
 }

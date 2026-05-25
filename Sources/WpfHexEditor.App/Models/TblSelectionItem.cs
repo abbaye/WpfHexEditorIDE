@@ -25,6 +25,8 @@ public enum TblSelectionKind
     Encoding,
     /// <summary>A project-local .tbl or .tblx file.</summary>
     ProjectFile,
+    /// <summary>A .tbl file loaded externally (e.g. from StringExtraction panel), not part of a project.</summary>
+    ExternalFile,
 }
 
 /// <summary>
@@ -45,10 +47,14 @@ public sealed class TblSelectionItem
     /// <summary>Non-null only when <see cref="Kind"/> == <see cref="TblSelectionKind.ProjectFile"/>.</summary>
     public IProjectItem?              ProjectItem  { get; init; }
 
+    /// <summary>Non-null only when <see cref="Kind"/> == <see cref="TblSelectionKind.ExternalFile"/>.</summary>
+    public string?                    ExternalPath { get; init; }
+
     /// <summary>True for rows the user can actually select (not headers or separators).</summary>
     public bool IsSelectable => Kind is TblSelectionKind.BuiltIn
                                      or TblSelectionKind.Encoding
-                                     or TblSelectionKind.ProjectFile;
+                                     or TblSelectionKind.ProjectFile
+                                     or TblSelectionKind.ExternalFile;
 
     /// <summary>True for section header rows (bold label, non-interactive).</summary>
     public bool IsHeader    => Kind == TblSelectionKind.Header;
@@ -72,4 +78,7 @@ public sealed class TblSelectionItem
 
     public static TblSelectionItem MakeProjectFile(IProjectItem item)
         => new() { DisplayName = item.Name, Kind = TblSelectionKind.ProjectFile, ProjectItem = item };
+
+    public static TblSelectionItem MakeExternalFile(string filePath)
+        => new() { DisplayName = System.IO.Path.GetFileName(filePath), Kind = TblSelectionKind.ExternalFile, ExternalPath = filePath };
 }

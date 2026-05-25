@@ -82,7 +82,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
             try
             {
                 var def = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
-                    json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    json, Services.TemplatePackageService.ImportOptions);
                 if (def is not null)
                     items.AddRange(_semanticValidator.Validate(def));
             }
@@ -93,6 +93,12 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 
         // Wire structure-edit → hex sync to the preview view-model.
         _previewVm.SyncService = _hexSync;
+
+        // Auto-wire: if the file being previewed is the active hex file,
+        // navigate to the field when the user selects a row.
+        // The host can also override this via SetHexNavigationCallback.
+        _previewVm.FieldNavigationRequested = (offset, length) =>
+            HexNavigationRequested?.Invoke(this, (offset, length));
 
         // Register variable source for autocomplete in all ExpressionTextBox controls
         ExpressionContextService.Register(this, _vm.VariableSource);
@@ -175,6 +181,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         PopToolbar.DuplicateRequested      += (_, _) => _vm.Blocks.DuplicateCommand.Execute(null);
         PopToolbar.ToggleCodeViewRequested += (_, _) => ToggleCodeView();
         PopToolbar.ImportRequested         += async (_, _) => await ImportTemplateAsync();
+        PopToolbar.MergeRequested          += async (_, _) => await MergeTemplateAsync();
         PopToolbar.ExportRequested         += async (_, e) => await ExportTemplateAsync(e.Format);
 
         // Preload schema for tooltips
@@ -231,6 +238,12 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     public ICommand SelectAllCommand { get; }
 
     // ── IDocumentEditor — Events ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Raised when the user selects a field row in BinaryPreview and live-sync is active.
+    /// Item1 = file offset, Item2 = byte length. Host wires to hex editor SetPosition.
+    /// </summary>
+    public event EventHandler<(long Offset, long Length)>? HexNavigationRequested;
 
     public event EventHandler?         ModifiedChanged;
     public event EventHandler<string>? TitleChanged;
@@ -469,6 +482,33 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 
     // ── Template Import / Export ─────────────────────────────────────────────
 
+    private async Task MergeTemplateAsync()
+    {
+        var ofd = new Microsoft.Win32.OpenFileDialog
+        {
+            Title  = "Merge blocks from .whfmt template",
+            Filter = "Whfmt template (*.whfmt;*.json)|*.whfmt;*.json|All files (*.*)|*.*",
+        };
+        if (ofd.ShowDialog() != true) return;
+
+        var svc    = new Services.TemplatePackageService();
+        var source = await svc.ImportAsync(ofd.FileName);
+        if (source is null) return;
+
+        // Deserialize current state, merge, re-serialize.
+        var currentJson = _vm.SerializeToJson();
+        var target = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
+            currentJson, Services.TemplatePackageService.ImportOptions);
+        if (target is null) return;
+
+        Services.TemplatePackageService.Merge(target, source);
+
+        var mergedJson = System.Text.Json.JsonSerializer.Serialize(target,
+            Services.TemplatePackageService.WriteIndentedOptions);
+        _liveBuffer?.SetText(mergedJson);
+        _vm.LoadFromJson(mergedJson);
+    }
+
     private async Task ImportTemplateAsync()
     {
         var ofd = new Microsoft.Win32.OpenFileDialog
@@ -483,7 +523,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         if (def is null) return;
 
         var json = System.Text.Json.JsonSerializer.Serialize(def,
-            new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            Services.TemplatePackageService.WriteIndentedOptions);
         _liveBuffer?.SetText(json);
         _vm.LoadFromJson(json);
     }
@@ -509,7 +549,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         {
             var json = _vm.SerializeToJson();
             var def  = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
-                json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                json, Services.TemplatePackageService.ImportOptions);
             if (def is null) return;
 
             var svc = new Services.TemplatePackageService();

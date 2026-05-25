@@ -1,212 +1,549 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>ASPECT</value></data>
-  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Temă de culoare:</value></data>
-  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Previzualizarea se aplică imediat.</value></data>
-  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>LIMBĂ</value></data>
-  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Limba IDE:</value></data>
-  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Este necesară o repornire pentru a aplica complet noua limbă.</value></data>
-  <!-- MARKETPLACE OPTIONS PAGE -->
-  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
-  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value></data>
-  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value></data>
-  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATIC UPDATES</value></data>
-  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Check for plugin updates automatically at startup</value></data>
-  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Update check interval (hours):</value></data>
-  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimum interval: 1 hour.</value></data>
-  <!-- OUTPUT OPTIONS PAGE -->
-  <data name="Output_Section" xml:space="preserve"><value>LOG-LEVEL COLOURS</value></data>
-  <data name="Output_Note" xml:space="preserve"><value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value></data>
-  <data name="Output_WarnLabel" xml:space="preserve"><value>Warning (WARN):</value></data>
-  <data name="Output_ErrorLabel" xml:space="preserve"><value>Error (ERROR):</value></data>
-  <data name="Output_DebugLabel" xml:space="preserve"><value>Debug (DEBUG):</value></data>
-  <data name="Output_SuccessLabel" xml:space="preserve"><value>Success (OK):</value></data>
-  <data name="Output_ResetColors" xml:space="preserve"><value>Reset to Default Colours</value></data>
-  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
-  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
-  <data name="PluginDev_Enable" xml:space="preserve"><value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value></data>
-  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
-  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Delay before triggering hot-reload after a file change (ms):</value></data>
-  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (default: 500)</value></data>
-  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>WATCHED FOLDERS</value></data>
-  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value></data>
-  <data name="PluginDev_Browse" xml:space="preserve"><value>Răsfoire…</value></data>
-  <data name="PluginDev_Example" xml:space="preserve"><value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
-  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
-  <data name="Plugin_GeneralSection" xml:space="preserve"><value>GENERAL</value></data>
-  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Încărcarea automată a tuturor plug-in-urilor descoperite la pornire</value></data>
-  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Director suplimentar de plug-in-uri (lăsați gol pentru %AppData%\WpfHexEditor\Plugins):</value></data>
-  <data name="Plugin_Browse" xml:space="preserve"><value>Răsfoire…</value></data>
-  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
-  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Activare watchdog pentru plug-in-uri (monitorizează depășirile de timp)</value></data>
-  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Timp limită watchdog (secunde):</value></data>
-  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTICE &amp; EȘANTIONARE</value></data>
-  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Interval de eșantionare diagnostic (secunde):</value></data>
-  <data name="Plugin_DiagNote" xml:space="preserve"><value>Determină rata de reîmprospătare a graficului CPU/Memorie din Monitorul de plug-in-uri.</value></data>
-  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>DETECTARE PLUG-IN LENT</value></data>
-  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Interval de monitorizare (secunde):</value></data>
-  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Prag timp de răspuns (ms):</value></data>
-  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>Prag CPU (%):</value></data>
-  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>PRAGURI ALERTĂ MEMORIE</value></data>
-  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Activare alerte și insigne utilizare memorie</value></data>
-  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Afișare gradație culori în monitoare (verde/galben/portocaliu/roșu)</value></data>
-  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Prag avertizare (galben):</value></data>
-  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 Prag ridicat (portocaliu):</value></data>
-  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Prag critic (roșu):</value></data>
-  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
-  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Notă: Pragurile trebuie să fie în ordine crescătoare (Avertizare &lt; Ridicat &lt; Critic).</value></data>
-  <data name="Plugin_MemColorSection" xml:space="preserve"><value>CULORI ALERTĂ MEMORIE</value></data>
-  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Personalizează culorile insignelor pentru fiecare nivel de prag de memorie.</value></data>
-  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Prag normal:</value></data>
-  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Prag avertizare:</value></data>
-  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 Prag ridicat:</value></data>
-  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Prag critic:</value></data>
-  <data name="Plugin_ResetColors" xml:space="preserve"><value>Resetare la culorile implicite</value></data>
-  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
-  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGARE</value></data>
-  <data name="SolExp_TrackActive" xml:space="preserve"><value>Evidențierea automată a documentului activ în arbore</value></data>
-  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Memorarea stării expandat/restrâns între sesiuni</value></data>
-  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>NOTIFICĂRI</value></data>
-  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Afișare notificări contextuale (modificări externe, conflicte de lipire…)</value></data>
-  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>IMPLICITE LA DESCHIDEREA UNEI SOLUȚII</value></data>
-  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Sortare implicită:</value></data>
-  <data name="SolExp_SortNone" xml:space="preserve"><value>Niciunul</value></data>
-  <data name="SolExp_SortName" xml:space="preserve"><value>Nume</value></data>
-  <data name="SolExp_SortType" xml:space="preserve"><value>Tip</value></data>
-  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Dată modificare</value></data>
-  <data name="SolExp_SortSize" xml:space="preserve"><value>Dimensiune</value></data>
-  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Filtru implicit:</value></data>
-  <data name="SolExp_FilterAll" xml:space="preserve"><value>Toate</value></data>
-  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binar</value></data>
-  <data name="SolExp_FilterText" xml:space="preserve"><value>Text</value></data>
-  <data name="SolExp_FilterImage" xml:space="preserve"><value>Imagine</value></data>
-  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Limbaj</value></data>
-  <!-- TAB GROUPS OPTIONS PAGE -->
-  <data name="TabGroups_SplitSection" xml:space="preserve"><value>COMPORTAMENT LA ÎMPĂRȚIRE</value></data>
-  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Forțare dimensiuni egale la împărțire (50/50)</value></data>
-  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Lățime minimă panou (px):</value></data>
-  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Înălțime minimă panou (px):</value></data>
-  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VIZUAL</value></data>
-  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Afișare insignă „Grup N" pe bara de file când mai multe grupuri sunt deschise</value></data>
-  <data name="TabGroups_PersistSection" xml:space="preserve"><value>PERSISTENȚĂ</value></data>
-  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Includerea dispunerii grupurilor de file în salvările spațiului de lucru</value></data>
-  <!-- TEXT EDITOR OPTIONS PAGE -->
-  <data name="TextOpt_FontSection" xml:space="preserve"><value>FONT</value></data>
-  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Familie de fonturi:</value></data>
-  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Dimensiune font (pt):</value></data>
-  <data name="TextOpt_IndentSection" xml:space="preserve"><value>INDENTARE</value></data>
-  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Dimensiune indentare:</value></data>
-  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Inserare spații în loc de caractere tab</value></data>
-  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FUNCȚIONALITĂȚI</value></data>
-  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Afișare numere de linie</value></data>
-  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Afișare rată de reîmprospătare în bara de stare (timp redare cadru)</value></data>
-  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Încadrare text (Alt+Z)</value></data>
-  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Activare Ctrl+Clic pentru deschidere linkuri web (http/https)</value></data>
-  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Activare Ctrl+Clic pentru compunere e-mail</value></data>
-  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Zoom implicit (%):</value></data>
-  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Viteză rotițăă mouse:</value></data>
-  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>SET DE MODIFICĂRI (.WHCHG)</value></data>
-  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Urmărirea editărilor în fișierul companion .whchg (necesită modul de salvare urmărit)</value></data>
-  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SUPRASCRIERI CULORI SINTAXĂ</value></data>
-  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Activați o culoare pentru a suprascrie implicita temei active.</value></data>
-  <data name="TextOpt_Background" xml:space="preserve"><value>Fundal:</value></data>
-  <data name="TextOpt_Foreground" xml:space="preserve"><value>Prim-plan:</value></data>
-  <data name="TextOpt_Keyword" xml:space="preserve"><value>Cuvânt cheie:</value></data>
-  <data name="TextOpt_String" xml:space="preserve"><value>Șir:</value></data>
-  <data name="TextOpt_Comment" xml:space="preserve"><value>Comentariu:</value></data>
-  <data name="TextOpt_Number" xml:space="preserve"><value>Număr:</value></data>
-  <data name="TextOpt_Type" xml:space="preserve"><value>Tip:</value></data>
-  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocesor:</value></data>
-  <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
-  <data name="TextOpt_Identifier" xml:space="preserve"><value>Identificator:</value></data>
-
-  <!-- Options categories -->
-  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Mediu</value></data>
-  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Editor hexadecimal</value></data>
-  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Explorator soluție</value></data>
-  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Editor de cod</value></data>
-  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Editor de text</value></data>
-  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Sistem plug-in-uri</value></data>
-  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Compilare și rulare</value></data>
-  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Depanator</value></data>
-  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Extensii</value></data>
-  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Editor format (.whfmt)</value></data>
-  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Instrumente</value></data>
-
-  <!-- Options page names -->
-  <data name="Opt_Page_General"              xml:space="preserve"><value>General</value></data>
-  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Salvare</value></data>
-  <data name="Opt_Page_Output"               xml:space="preserve"><value>Ieșire</value></data>
-  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Grupuri de file</value></data>
-  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Comenzi rapide tastatură</value></data>
-  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Documente</value></data>
-  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Spațiu de lucru</value></data>
-  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>File</value></data>
-  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Dispunere</value></data>
-  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Andocare</value></data>
-  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Meniu Vizualizare</value></data>
-  <data name="Opt_Page_Display"              xml:space="preserve"><value>Afișare</value></data>
-  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Editare</value></data>
-  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Bară de stare</value></data>
-  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Comportament</value></data>
-  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Aspect și culori</value></data>
-  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Indicii integrate</value></data>
-  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Navigare</value></data>
-  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Formatare</value></data>
-  <data name="Opt_Page_Features"             xml:space="preserve"><value>Funcționalități</value></data>
-  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Servere de limbaj</value></data>
-  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
-  <data name="Opt_Page_Development"          xml:space="preserve"><value>Dezvoltare</value></data>
-  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Migrare</value></data>
-  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Bus de evenimente</value></data>
-  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Compilator</value></data>
-  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Puncte de întrerupere</value></data>
-  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
-  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Explorator formate</value></data>
-  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Comparare fișiere</value></data>
-    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Listă de erori</value></data>
-  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Paletă de comenzi</value></data>
-
-  <!-- Plugin System Options Page — folder picker dialog -->
-  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Selectați directorul de extensii suplimentare</value></data>
-
-  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
-  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Selectați directorul de ieșire al extensiei</value></data>
-
-  <!-- Whfmt Explorer Options Page — view mode combo -->
-  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Arbore</value></data>
-  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Plat</value></data>
-
-  <!-- Structure Editor Options Page — panel position combo -->
-  <data name="Opt_Position_Right"            xml:space="preserve"><value>Dreapta</value></data>
-  <data name="Opt_Position_Left"             xml:space="preserve"><value>Stânga</value></data>
-  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Jos</value></data>
-  <data name="Opt_Position_Top"              xml:space="preserve"><value>Sus</value></data>
-
-  <!-- Structure Editor Options Page — endianness combo -->
-  <data name="Opt_Endian_Little"             xml:space="preserve"><value>little-endian</value></data>
-  <data name="Opt_Endian_Big"                xml:space="preserve"><value>big-endian</value></data>
-
-  <!-- Code Editor Formatting Page — indentation levels combo -->
-  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 nivel (4 spații la rădăcină)</value></data>
-  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 niveluri (8 spații la rădăcină) — implicit VS</value></data>
-<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Limbă</value></data>
-  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Resetare suprascrieri</value></data>
-  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Resetare toate suprascrierile</value></data>
-  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Aceste setări înlocuiesc valorile implicite ale limbajului .whfmt.
-Lăsați casetele de selectare în starea nedeterminată (—) pentru a moșteni regulile limbajului.</value></data>
-  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 niveluri (12 spații la rădăcină)</value></data>
-
-  <!-- Markdown Editor Options Page — layout combo -->
-  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Previzualizare la dreapta</value></data>
-  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Previzualizare jos</value></data>
-  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Numai editor</value></data>
-  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Numai previzualizare</value></data>
-  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Previzualizare</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve">
+    <value>ASPECT</value>
+  </data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve">
+    <value>Temă de culoare:</value>
+  </data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve">
+    <value>Previzualizarea se aplică imediat.</value>
+  </data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve">
+    <value>LIMBĂ</value>
+  </data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve">
+    <value>Limba IDE:</value>
+  </data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve">
+    <value>Este necesară o repornire pentru a aplica complet noua limbă.</value>
+  </data>
+  <data name="Mkt_GitHubSection" xml:space="preserve">
+    <value>GITHUB API</value>
+  </data>
+  <data name="Mkt_PatDescription" xml:space="preserve">
+    <value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value>
+  </data>
+  <data name="Mkt_PatWarning" xml:space="preserve">
+    <value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value>
+  </data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve">
+    <value>AUTOMATIC UPDATES</value>
+  </data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve">
+    <value>Check for plugin updates automatically at startup</value>
+  </data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve">
+    <value>Update check interval (hours):</value>
+  </data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve">
+    <value>Minimum interval: 1 hour.</value>
+  </data>
+  <data name="Output_Section" xml:space="preserve">
+    <value>LOG-LEVEL COLOURS</value>
+  </data>
+  <data name="Output_Note" xml:space="preserve">
+    <value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value>
+  </data>
+  <data name="Output_WarnLabel" xml:space="preserve">
+    <value>Warning (WARN):</value>
+  </data>
+  <data name="Output_ErrorLabel" xml:space="preserve">
+    <value>Error (ERROR):</value>
+  </data>
+  <data name="Output_DebugLabel" xml:space="preserve">
+    <value>Debug (DEBUG):</value>
+  </data>
+  <data name="Output_SuccessLabel" xml:space="preserve">
+    <value>Success (OK):</value>
+  </data>
+  <data name="Output_ResetColors" xml:space="preserve">
+    <value>Reset to Default Colours</value>
+  </data>
+  <data name="PluginDev_Section" xml:space="preserve">
+    <value>PLUGIN DEV LOADER</value>
+  </data>
+  <data name="PluginDev_Enable" xml:space="preserve">
+    <value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value>
+  </data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve">
+    <value>DEBOUNCE</value>
+  </data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve">
+    <value>Delay before triggering hot-reload after a file change (ms):</value>
+  </data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve">
+    <value>ms  (default: 500)</value>
+  </data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve">
+    <value>WATCHED FOLDERS</value>
+  </data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve">
+    <value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Răsfoire…</value>
+  </data>
+  <data name="PluginDev_Example" xml:space="preserve">
+    <value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value>
+  </data>
+  <data name="Plugin_GeneralSection" xml:space="preserve">
+    <value>GENERAL</value>
+  </data>
+  <data name="Plugin_AutoLoad" xml:space="preserve">
+    <value>Încărcarea automată a tuturor plug-in-urilor descoperite la pornire</value>
+  </data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve">
+    <value>Director suplimentar de plug-in-uri (lăsați gol pentru %AppData%\WpfHexEditor\Plugins):</value>
+  </data>
+  <data name="Plugin_Browse" xml:space="preserve">
+    <value>Răsfoire…</value>
+  </data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve">
+    <value>WATCHDOG</value>
+  </data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve">
+    <value>Activare watchdog pentru plug-in-uri (monitorizează depășirile de timp)</value>
+  </data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve">
+    <value>Timp limită watchdog (secunde):</value>
+  </data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve">
+    <value>DIAGNOSTICE &amp; EȘANTIONARE</value>
+  </data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve">
+    <value>Interval de eșantionare diagnostic (secunde):</value>
+  </data>
+  <data name="Plugin_DiagNote" xml:space="preserve">
+    <value>Determină rata de reîmprospătare a graficului CPU/Memorie din Monitorul de plug-in-uri.</value>
+  </data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve">
+    <value>DETECTARE PLUG-IN LENT</value>
+  </data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve">
+    <value>Interval de monitorizare (secunde):</value>
+  </data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve">
+    <value>Prag timp de răspuns (ms):</value>
+  </data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve">
+    <value>Prag CPU (%):</value>
+  </data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve">
+    <value>PRAGURI ALERTĂ MEMORIE</value>
+  </data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve">
+    <value>Activare alerte și insigne utilizare memorie</value>
+  </data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve">
+    <value>Afișare gradație culori în monitoare (verde/galben/portocaliu/roșu)</value>
+  </data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve">
+    <value>⚠️ Prag avertizare (galben):</value>
+  </data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve">
+    <value>🟠 Prag ridicat (portocaliu):</value>
+  </data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve">
+    <value>🔴 Prag critic (roșu):</value>
+  </data>
+  <data name="Plugin_MB" xml:space="preserve">
+    <value> MB</value>
+  </data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve">
+    <value>Notă: Pragurile trebuie să fie în ordine crescătoare (Avertizare &lt; Ridicat &lt; Critic).</value>
+  </data>
+  <data name="Plugin_MemColorSection" xml:space="preserve">
+    <value>CULORI ALERTĂ MEMORIE</value>
+  </data>
+  <data name="Plugin_MemColorNote" xml:space="preserve">
+    <value>Personalizează culorile insignelor pentru fiecare nivel de prag de memorie.</value>
+  </data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve">
+    <value>🟢 Prag normal:</value>
+  </data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve">
+    <value>🟡 Prag avertizare:</value>
+  </data>
+  <data name="Plugin_MemHighColor" xml:space="preserve">
+    <value>🟠 Prag ridicat:</value>
+  </data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve">
+    <value>🔴 Prag critic:</value>
+  </data>
+  <data name="Plugin_ResetColors" xml:space="preserve">
+    <value>Resetare la culorile implicite</value>
+  </data>
+  <data name="SolExp_NavigationSection" xml:space="preserve">
+    <value>NAVIGARE</value>
+  </data>
+  <data name="SolExp_TrackActive" xml:space="preserve">
+    <value>Evidențierea automată a documentului activ în arbore</value>
+  </data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve">
+    <value>Memorarea stării expandat/restrâns între sesiuni</value>
+  </data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve">
+    <value>NOTIFICĂRI</value>
+  </data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve">
+    <value>Afișare notificări contextuale (modificări externe, conflicte de lipire…)</value>
+  </data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve">
+    <value>IMPLICITE LA DESCHIDEREA UNEI SOLUȚII</value>
+  </data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve">
+    <value>Sortare implicită:</value>
+  </data>
+  <data name="SolExp_SortNone" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
+  <data name="SolExp_SortName" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="SolExp_SortType" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="SolExp_SortDateModified" xml:space="preserve">
+    <value>Dată modificare</value>
+  </data>
+  <data name="SolExp_SortSize" xml:space="preserve">
+    <value>Dimensiune</value>
+  </data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve">
+    <value>Filtru implicit:</value>
+  </data>
+  <data name="SolExp_FilterAll" xml:space="preserve">
+    <value>Toate</value>
+  </data>
+  <data name="SolExp_FilterBinary" xml:space="preserve">
+    <value>Binar</value>
+  </data>
+  <data name="SolExp_FilterText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="SolExp_FilterImage" xml:space="preserve">
+    <value>Imagine</value>
+  </data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve">
+    <value>Limbaj</value>
+  </data>
+  <data name="TabGroups_SplitSection" xml:space="preserve">
+    <value>COMPORTAMENT LA ÎMPĂRȚIRE</value>
+  </data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve">
+    <value>Forțare dimensiuni egale la împărțire (50/50)</value>
+  </data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve">
+    <value>Lățime minimă panou (px):</value>
+  </data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve">
+    <value>Înălțime minimă panou (px):</value>
+  </data>
+  <data name="TabGroups_VisualSection" xml:space="preserve">
+    <value>VIZUAL</value>
+  </data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve">
+    <value>Afișare insignă „Grup N" pe bara de file când mai multe grupuri sunt deschise</value>
+  </data>
+  <data name="TabGroups_PersistSection" xml:space="preserve">
+    <value>PERSISTENȚĂ</value>
+  </data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve">
+    <value>Includerea dispunerii grupurilor de file în salvările spațiului de lucru</value>
+  </data>
+  <data name="TextOpt_FontSection" xml:space="preserve">
+    <value>FONT</value>
+  </data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Familie de fonturi:</value>
+  </data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve">
+    <value>Dimensiune font (pt):</value>
+  </data>
+  <data name="TextOpt_IndentSection" xml:space="preserve">
+    <value>INDENTARE</value>
+  </data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Dimensiune indentare:</value>
+  </data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve">
+    <value>Inserare spații în loc de caractere tab</value>
+  </data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve">
+    <value>FUNCȚIONALITĂȚI</value>
+  </data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Afișare numere de linie</value>
+  </data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve">
+    <value>Afișare rată de reîmprospătare în bara de stare (timp redare cadru)</value>
+  </data>
+  <data name="TextOpt_WordWrap" xml:space="preserve">
+    <value>Încadrare text (Alt+Z)</value>
+  </data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve">
+    <value>Activare Ctrl+Clic pentru deschidere linkuri web (http/https)</value>
+  </data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve">
+    <value>Activare Ctrl+Clic pentru compunere e-mail</value>
+  </data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Zoom implicit (%):</value>
+  </data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Viteză rotițăă mouse:</value>
+  </data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve">
+    <value>SET DE MODIFICĂRI (.WHCHG)</value>
+  </data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve">
+    <value>Urmărirea editărilor în fișierul companion .whchg (necesită modul de salvare urmărit)</value>
+  </data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve">
+    <value>SUPRASCRIERI CULORI SINTAXĂ</value>
+  </data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve">
+    <value>Activați o culoare pentru a suprascrie implicita temei active.</value>
+  </data>
+  <data name="TextOpt_Background" xml:space="preserve">
+    <value>Fundal:</value>
+  </data>
+  <data name="TextOpt_Foreground" xml:space="preserve">
+    <value>Prim-plan:</value>
+  </data>
+  <data name="TextOpt_Keyword" xml:space="preserve">
+    <value>Cuvânt cheie:</value>
+  </data>
+  <data name="TextOpt_String" xml:space="preserve">
+    <value>Șir:</value>
+  </data>
+  <data name="TextOpt_Comment" xml:space="preserve">
+    <value>Comentariu:</value>
+  </data>
+  <data name="TextOpt_Number" xml:space="preserve">
+    <value>Număr:</value>
+  </data>
+  <data name="TextOpt_Type" xml:space="preserve">
+    <value>Tip:</value>
+  </data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve">
+    <value>Preprocesor:</value>
+  </data>
+  <data name="TextOpt_Operator" xml:space="preserve">
+    <value>Operator:</value>
+  </data>
+  <data name="TextOpt_Identifier" xml:space="preserve">
+    <value>Identificator:</value>
+  </data>
+  <data name="Opt_Category_Environment" xml:space="preserve">
+    <value>Mediu</value>
+  </data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve">
+    <value>Editor hexadecimal</value>
+  </data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve">
+    <value>Explorator soluție</value>
+  </data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve">
+    <value>Editor de cod</value>
+  </data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve">
+    <value>Editor de text</value>
+  </data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve">
+    <value>Sistem plug-in-uri</value>
+  </data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve">
+    <value>Compilare și rulare</value>
+  </data>
+  <data name="Opt_Category_Debugger" xml:space="preserve">
+    <value>Depanator</value>
+  </data>
+  <data name="Opt_Category_Extensions" xml:space="preserve">
+    <value>Extensii</value>
+  </data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve">
+    <value>Editor format (.whfmt)</value>
+  </data>
+  <data name="Opt_Category_Tools" xml:space="preserve">
+    <value>Instrumente</value>
+  </data>
+  <data name="Opt_Page_General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Opt_Page_Save" xml:space="preserve">
+    <value>Salvare</value>
+  </data>
+  <data name="Opt_Page_Output" xml:space="preserve">
+    <value>Ieșire</value>
+  </data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve">
+    <value>Grupuri de file</value>
+  </data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve">
+    <value>Comenzi rapide tastatură</value>
+  </data>
+  <data name="Opt_Page_Documents" xml:space="preserve">
+    <value>Documente</value>
+  </data>
+  <data name="Opt_Page_Workspace" xml:space="preserve">
+    <value>Spațiu de lucru</value>
+  </data>
+  <data name="Opt_Page_Tabs" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Opt_Page_Layout" xml:space="preserve">
+    <value>Dispunere</value>
+  </data>
+  <data name="Opt_Page_Docking" xml:space="preserve">
+    <value>Andocare</value>
+  </data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve">
+    <value>Meniu Vizualizare</value>
+  </data>
+  <data name="Opt_Page_Display" xml:space="preserve">
+    <value>Afișare</value>
+  </data>
+  <data name="Opt_Page_Editing" xml:space="preserve">
+    <value>Editare</value>
+  </data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve">
+    <value>Bară de stare</value>
+  </data>
+  <data name="Opt_Page_Behavior" xml:space="preserve">
+    <value>Comportament</value>
+  </data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve">
+    <value>Aspect și culori</value>
+  </data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve">
+    <value>Indicii integrate</value>
+  </data>
+  <data name="Opt_Page_Navigation" xml:space="preserve">
+    <value>Navigare</value>
+  </data>
+  <data name="Opt_Page_Formatting" xml:space="preserve">
+    <value>Formatare</value>
+  </data>
+  <data name="Opt_Page_Features" xml:space="preserve">
+    <value>Funcționalități</value>
+  </data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve">
+    <value>Servere de limbaj</value>
+  </data>
+  <data name="Opt_Page_Markdown" xml:space="preserve">
+    <value>Markdown</value>
+  </data>
+  <data name="Opt_Page_Development" xml:space="preserve">
+    <value>Dezvoltare</value>
+  </data>
+  <data name="Opt_Page_Migration" xml:space="preserve">
+    <value>Migrare</value>
+  </data>
+  <data name="Opt_Page_EventBus" xml:space="preserve">
+    <value>Bus de evenimente</value>
+  </data>
+  <data name="Opt_Page_Compiler" xml:space="preserve">
+    <value>Compilator</value>
+  </data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve">
+    <value>Puncte de întrerupere</value>
+  </data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
+  </data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve">
+    <value>Explorator formate</value>
+  </data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve">
+    <value>Comparare fișiere</value>
+  </data>
+  <data name="Opt_Page_ErrorList" xml:space="preserve">
+    <value>Listă de erori</value>
+  </data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve">
+    <value>Paletă de comenzi</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>Selectați directorul de extensii suplimentare</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Selectați directorul de ieșire al extensiei</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Arbore</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Plat</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Dreapta</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Stânga</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Jos</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Sus</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>little-endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>big-endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>1 nivel (4 spații la rădăcină)</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>2 niveluri (8 spații la rădăcină) — implicit VS</value>
+  </data>
+  <data name="Opt_Fmt_Language" xml:space="preserve">
+    <value>Limbă</value>
+  </data>
+  <data name="Opt_Fmt_ResetOverrides" xml:space="preserve">
+    <value>Resetare suprascrieri</value>
+  </data>
+  <data name="Opt_Fmt_ResetAllOverrides" xml:space="preserve">
+    <value>Resetare toate suprascrierile</value>
+  </data>
+  <data name="Opt_Fmt_Subtitle" xml:space="preserve">
+    <value>Aceste setări înlocuiesc valorile implicite ale limbajului .whfmt.
+Lăsați casetele de selectare în starea nedeterminată (—) pentru a moșteni regulile limbajului.</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>3 niveluri (12 spații la rădăcină)</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Previzualizare la dreapta</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Previzualizare jos</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Numai editor</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Numai previzualizare</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Previzualizare</value>
+  </data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>VALORI IMPLICITE C# / .NET</value>
   </data>
@@ -639,5 +976,19 @@ Lăsați casetele de selectare în starea nedeterminată (—) pentru a moșteni
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Afișare rată de reîmprospătare</value>
   </data>
-  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Afișați butonul de vizualizare divizată</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve">
+    <value>Afișați butonul de vizualizare divizată</value>
+  </data>
+  <data name="HexDisplay_EntropySection" xml:space="preserve">
+    <value>ENTROPY HEATMAP</value>
+  </data>
+  <data name="HexDisplay_ShowEntropyHeatmap" xml:space="preserve">
+    <value>Show entropy heatmap overlay</value>
+  </data>
+  <data name="HexDisplay_EntropyWindowSize" xml:space="preserve">
+    <value>Window size</value>
+  </data>
+  <data name="HexDisplay_EntropyColorTheme" xml:space="preserve">
+    <value>Color theme</value>
+  </data>
 </root>

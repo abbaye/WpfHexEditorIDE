@@ -1,0 +1,140 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Markdown with YAML Front Matter",
+  "formatId": "MARKDOWN_FRONTMATTER",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Markdown with YAML Front Matter — a plain-text document format combining a YAML metadata block at the top of a Markdown document. The front matter block begins with a line containing exactly '---' and ends with another '---' (or '...') line. Inside the front matter, structured YAML key-value pairs provide metadata such as title, author, date, tags, and layout. After the closing '---', the rest of the file is standard Markdown. This format is widely used by static site generators (Jekyll, Hugo, Gatsby, Eleventy, Astro), note-taking applications (Obsidian, Logseq), and documentation tools (Docusaurus, MkDocs). The .mdx extension adds JSX component support for React-based static sites.",
+  "extensions": [".md", ".mdx"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "2D2D2D0A",
+      "offset": 0,
+      "label": "YAML front matter opening delimiter '---\\n'",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": 4,
+        "name": "Front Matter Open Delimiter",
+        "type": "ascii",
+        "description": "Opening delimiter of the YAML front matter block: three hyphens followed by a newline ('---\\n'). Must appear at the very start of the file with no leading whitespace or BOM.",
+        "storeAs": "frontMatterOpen"
+      },
+      {
+        "offset": 4,
+        "size": -1,
+        "name": "YAML Front Matter",
+        "type": "ascii",
+        "description": "YAML key-value metadata pairs between the '---' delimiters. Common keys: title, author, date, tags, layout, draft, description, permalink, categories.",
+        "storeAs": "yamlContent"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Markdown Body",
+        "type": "ascii",
+        "description": "Standard Markdown content following the closing '---' delimiter. May include headings, paragraphs, lists, code blocks, tables, and inline HTML.",
+        "storeAs": "markdownBody"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["frontMatterOpen", "yamlContent", "markdownBody"],
+    "valueMaps": {},
+    "tooltips": {
+      "frontMatterOpen": "YAML front matter opening delimiter ('---' at file start)",
+      "yamlContent": "YAML metadata key-value pairs (title, author, date, tags, etc.)",
+      "markdownBody": "Markdown content body following the closing '---'"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "frontMatterOpen",
+      "operator": "eq",
+      "value": "---\n",
+      "severity": "error",
+      "description": "Markdown with front matter must start with '---' on the first line with no leading whitespace"
+    },
+    {
+      "id": "A2",
+      "field": "yamlContent",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "YAML front matter block must contain at least one key-value pair"
+    },
+    {
+      "id": "A3",
+      "field": "markdownBody",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "YAML front matter closing '---' delimiter must be present so that a Markdown body follows"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Front Matter Start", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "Front Matter End", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Markdown Body Start", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Front Matter (JSON)",
+      "format": "json",
+      "fields": ["yamlContent"]
+    },
+    {
+      "name": "Markdown Body Only",
+      "format": "text",
+      "description": "Extract only the Markdown body content, stripping the YAML front matter"
+    }
+  ],
+  "aiHints": [
+    "YAML front matter is delimited by '---' on its own line at the start of the file; closing delimiter is '---' or '...'",
+    "Jekyll popularized front matter in 2009; now standard in Hugo, Gatsby, Astro, Eleventy, Obsidian, and most SSGs",
+    "Common front matter keys: title, date, author, tags, categories, layout, draft, description, slug, permalink",
+    "MDX (.mdx) extends Markdown front matter with JSX component imports for React-based static sites",
+    "Obsidian and Logseq use front matter for note metadata; 'aliases', 'cssclass', and 'created' are common vault keys",
+    "TOML front matter (between '+++') is also used by Hugo; JSON front matter (between '{}') is less common"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Front matter may contain author names, creation dates, draft status, and internal tags revealing document workflow",
+      "Obsidian vault exports may contain front matter with personal metadata, linked note references, and file paths",
+      "YAML injection in front matter is a risk if the YAML is parsed without schema validation (e.g., !!python/object in PyYAML)"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "MARKDOWN",
+      "relationship": "superset",
+      "note": "MARKDOWN_FRONTMATTER is a superset of plain Markdown; it adds structured YAML metadata at the top of the file"
+    }
+  ],
+  "software": [
+    "Jekyll (Ruby static site generator)",
+    "Hugo (Go static site generator)",
+    "Gatsby / Next.js (React SSG/SSR)",
+    "Obsidian (note-taking with front matter)",
+    "Docusaurus (React documentation)",
+    "VS Code with YAML extension"
+  ],
+  "useCases": [
+    "Static site generator page and post metadata (Jekyll, Hugo, Astro, Gatsby)",
+    "Obsidian and Logseq note metadata (tags, aliases, creation date, backlinks)",
+    "Documentation system page metadata (layout, sidebar position, title override)"
+  ],
+  "technicalDetails": "Markdown with YAML front matter is a de facto standard encoding. The front matter block starts at byte 0 with '---\\n' (2D 2D 2D 0A) and is closed by another '---\\n' or '...\\n' line. The enclosed content is parsed as YAML. Everything after the closing delimiter is Markdown. Encoding is UTF-8. No BOM should precede the '---' delimiter. The MDX variant adds 'import' statements and JSX expression syntax for React component embedding.",
+  "completenessScore": 81
+}

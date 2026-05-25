@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Excel Workbook",
   "formatId": "XLSX",
@@ -281,16 +282,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft Excel Open XML spreadsheet stored as a ZIP container. The file begins with a ZIP Local File Header...",
-    "suggestedInspections": [
-      "Validate Excel Workbook file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Microsoft Excel Open XML spreadsheet stored as a ZIP container. The file begins with a ZIP Local File Header...",
+    "Validate Excel Workbook file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "xl/vbaProject.bin presence indicates macro-enabled workbook (use .xlsm extension check).",
+    "External data connections in xl/connections.xml may trigger network requests on open.",
+    "SharedStrings.xml contains all text cell values; useful for keyword forensics without parsing sheet XML.",
+    "Named ranges and defined names in workbook.xml may obfuscate formula targets.",
+    "Pivot cache definitions in xl/pivotCache/ may contain cached external data.",
+    "Check xl/externalLinks/ for DDE or OLE link injection vectors."
+  ],
   "MimeTypes": [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ],
@@ -323,8 +333,17 @@
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   },
   "diff": {
-    "keyFields": ["zipSignature", "compressionMethod", "crc32", "compressedSize"],
-    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "keyFields": [
+      "zipSignature",
+      "compressionMethod",
+      "crc32",
+      "compressedSize"
+    ],
+    "ignoreFields": [
+      "lastModTime",
+      "lastModDate",
+      "compressionRatio"
+    ],
     "groupBy": "ZIP Local File Header",
     "note": "Signature and CRC identify content integrity; compressed size detects sheet data changes. Timestamps are volatile noise."
   },
@@ -358,11 +377,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test parser rejection of invalid XLSX containers" },
-      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression method values for spreadsheet parsers" },
-      { "field": "uncompressedSize",    "mutation": "overflow",          "weight": 2, "description": "Overflow uncompressed size to stress memory allocation in sheet decompressors" },
-      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Randomize flag bits to expose unexpected parser branches" },
-      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC flip to verify integrity checking in Excel readers" }
+      {
+        "field": "zipSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt PK magic to test parser rejection of invalid XLSX containers"
+      },
+      {
+        "field": "compressionMethod",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test edge compression method values for spreadsheet parsers"
+      },
+      {
+        "field": "uncompressedSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow uncompressed size to stress memory allocation in sheet decompressors"
+      },
+      {
+        "field": "generalPurposeFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize flag bits to expose unexpected parser branches"
+      },
+      {
+        "field": "crc32",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Single-bit CRC flip to verify integrity checking in Excel readers"
+      }
     ]
   },
   "migration": [
@@ -371,8 +416,153 @@
       "to": "OOXML-2016",
       "description": "Transitional XLSX to strict conformance; may require updated versionNeeded for ZIP64",
       "changes": [
-        { "field": "versionNeeded", "changeType": "set_value", "value": "2D00", "description": "Raise version needed to 4.5 for ZIP64 support" }
+        {
+          "field": "versionNeeded",
+          "changeType": "set_value",
+          "value": "2D00",
+          "description": "Raise version needed to 4.5 for ZIP64 support"
+        }
       ]
     }
-  ]
+  ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "XLSX signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "ContentTypes",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "[Content_Types].xml"
+      },
+      {
+        "name": "WorkbookXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "xl/workbook.xml workbook root"
+      },
+      {
+        "name": "SharedStrings",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "xl/sharedStrings.xml string table"
+      },
+      {
+        "name": "Sheet1Xml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "xl/worksheets/sheet1.xml first worksheet data"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "xls",
+      "relation": "predecessor",
+      "note": "XLS is the binary BIFF predecessor"
+    },
+    {
+      "formatId": "ods",
+      "relation": "equivalent",
+      "note": "ODS is the ODF equivalent"
+    },
+    {
+      "formatId": "csv",
+      "relation": "export",
+      "note": "CSV is the flat text export format"
+    }
+  ],
+  "software": [
+    "Microsoft Excel",
+    "LibreOffice Calc",
+    "Google Sheets",
+    "Apple Numbers"
+  ],
+  "useCases": [
+    "Spreadsheets and data tables",
+    "Financial analysis and budgets",
+    "Data visualization and charts",
+    "Scientific and statistical data"
+  ],
+  "technicalDetails": "XLSX (ECMA-376 / ISO 29500) is a ZIP container with SpreadsheetML XML parts. Workbook.xml references sheets; each sheet in xl/worksheets/ stores cell data with row/column coordinates. Shared strings are pooled in sharedStrings.xml for compression.",
+  "completenessScore": 88
 }

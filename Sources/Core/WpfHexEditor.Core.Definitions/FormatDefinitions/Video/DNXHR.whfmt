@@ -1,0 +1,87 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Avid DNxHR Codec",
+  "formatId": "DNXHR",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Avid DNxHR (Digital Nonlinear Extensible High Resolution) is a professional video codec designed for post-production editing and color grading at resolutions above 1080p (2K, 4K, 8K). It is the successor to DNxHD and supports variable resolution. DNxHR is typically embedded in MXF or QuickTime containers; standalone .dnxhr files are rare.",
+  "extensions": [".dnxhr"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "060E2B34",
+      "offset": 0,
+      "label": "MXF Universal Label (UL) prefix for MXF-wrapped DNxHR",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "mxf_ul_prefix", "type": "bytes", "description": "MXF Universal Label prefix 0x060E2B34 identifying an SMPTE UL-based key", "storeAs": "bytes" },
+      { "offset": 4, "size": 4, "name": "ul_designator", "type": "bytes", "description": "Second group of 4 UL bytes identifying the MXF partition pack or essence container", "storeAs": "bytes" },
+      { "offset": 8, "size": 8, "name": "ul_body", "type": "bytes", "description": "Remaining 8 bytes of the 16-byte Universal Label", "storeAs": "bytes" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["mxf_ul_prefix", "ul_designator"],
+    "valueMaps": {},
+    "tooltips": {
+      "mxf_ul_prefix": "All MXF files start with 0x060E2B34 (SMPTE UL designator prefix); presence identifies MXF wrapper",
+      "ul_designator": "Second 4 bytes of UL; combined with prefix identifies specific MXF key type (partition pack, essence, etc.)"
+    }
+  },
+  "assertions": [
+    { "id": "DNXHR_001", "field": "mxf_ul_prefix", "operator": "startsWith", "value": "060E2B34", "description": "MXF-wrapped DNxHR must begin with SMPTE UL prefix 0x060E2B34" },
+    { "id": "DNXHR_002", "field": "ul_designator", "operator": "notNull", "value": true, "description": "UL designator bytes must be present" },
+    { "id": "DNXHR_003", "field": "ul_body", "operator": "notNull", "value": true, "description": "Full 16-byte Universal Label must be present" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "MXF UL Prefix (0x060E2B34)", "color": "#FF6B35" },
+      { "offset": 4, "label": "UL Designator Bytes", "color": "#4ECDC4" },
+      { "offset": 16, "label": "MXF BER-Length", "color": "#45B7D1" },
+      { "offset": 17, "label": "MXF Value (partition pack or essence)", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "MXF UL Info", "fields": ["mxf_ul_prefix", "ul_designator"], "format": "text" },
+    { "name": "First 16 Bytes Hex", "fields": ["mxf_ul_prefix", "ul_designator", "ul_body"], "format": "hex" }
+  ],
+  "aiHints": [
+    "DNxHR is an intra-only DCT-based codec operating at 8 or 12 bits per component; it shares the same frame structure as DNxHD but supports arbitrary resolutions",
+    "DNxHR profiles: LB (low bandwidth), SQ (standard quality), HQ (high quality), HQX (high quality extended, 12-bit), 444 (4:4:4 chroma, 12-bit)",
+    "In MXF containers, DNxHR essence is identified by essence container UL containing the VC-3 coding scheme designator (SMPTE ST 2019)",
+    "QuickTime .mov containers identify DNxHR with the FourCC 'AVdh' or 'AVdn' in the sample description atom",
+    "Avid Media Composer is the primary authoring tool; DNxHR files interop with DaVinci Resolve, Adobe Premiere Pro, and FFmpeg"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "MXF containers may include KLV (Key-Length-Value) metadata with production information, GPS data, and user comments",
+      "DNxHR 444 files contain full chroma information and may reveal color grading details not visible in display output",
+      "Avid internal metadata (ALE, AAF references) embedded in MXF wrapper can reveal production workflow details"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MXF", "relationship": "container", "note": "DNxHR is typically wrapped in MXF (OP-Atom or OP-1a) for Avid interchange" },
+    { "format": "DNXHD", "relationship": "predecessor", "note": "DNxHD is the 1080p-limited predecessor; DNxHR extends to 2K/4K/8K resolutions" },
+    { "format": "MOV", "relationship": "container", "note": "DNxHR can also be wrapped in QuickTime MOV using FourCC 'AVdh'" }
+  ],
+  "software": [
+    { "name": "Avid Media Composer", "role": "Primary authoring environment for DNxHR; native production codec" },
+    { "name": "DaVinci Resolve", "role": "Color grading and editing with full DNxHR read/write support" },
+    { "name": "FFmpeg", "role": "Cross-platform DNxHR encode/decode via libavcodec vc3 codec" },
+    { "name": "Adobe Premiere Pro", "role": "Professional editing with DNxHR import/export for Avid interchange" }
+  ],
+  "useCases": [
+    "High-resolution post-production editing at 2K, 4K, and 8K resolutions with manageable file sizes",
+    "Intermediate codec in color grading workflows between capture and final delivery",
+    "Avid-centric collaborative post-production environments requiring frame-accurate editing"
+  ],
+  "technicalDetails": "Avid DNxHR is defined in SMPTE ST 2019-7 and is based on the same VC-3 coding scheme as DNxHD (SMPTE ST 2019-1). It uses intra-only DCT compression with fixed bitrate profiles. Each compressed frame is self-contained, enabling random access and easy trimming in editing timelines. DNxHR profiles determine bitrate and chroma: LB (low bandwidth), SQ (standard quality 8-bit 4:2:2), HQ (high quality 8-bit 4:2:2), HQX (12-bit 4:2:2), 444 (12-bit 4:4:4). The codec operates on 8x8 macroblocks with FDCT quantization. Resolution support is flexible and covers up to 8K. MXF wrapping follows SMPTE RP 2057 for Avid-compliant interchange; QuickTime wrapping uses Avid codec FourCC 'AVdh'.",
+  "completenessScore": 81
+}

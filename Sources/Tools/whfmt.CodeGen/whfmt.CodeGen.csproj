@@ -14,9 +14,9 @@
     <ToolCommandName>whfmt-codegen</ToolCommandName>
 
     <PackageId>whfmt.CodeGen</PackageId>
-    <Version>1.1.3</Version>
-    <AssemblyVersion>1.1.3</AssemblyVersion>
-    <FileVersion>1.1.3</FileVersion>
+    <Version>1.1.4</Version>
+    <AssemblyVersion>1.1.4</AssemblyVersion>
+    <FileVersion>1.1.4</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.CodeGen</Product>
@@ -31,7 +31,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.1.2 — Catalog bump to whfmt.FileFormatCatalog 1.3.2 (Phase B audit + bug fixes, 799 definitions, schema v3 canonical). No CodeGen API changes. 1.1.1 — VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span / F# / Rust output, --project flag.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.4 — Fix: generate command no longer crashes with JsonReaderException on formats that have a companion Synalysis .grammar file (bmp, elf, flac, gif, jpeg, mp3, png, sqlite, zip). Lookup is now restricted to .whfmt resources; a clear InvalidOperationException is thrown if a non-JSON resource is mistakenly resolved. 1.1.3 — (previous). 1.1.2 — Catalog bump to whfmt.FileFormatCatalog 1.3.2 (Phase B audit + bug fixes, 799 definitions, schema v3 canonical). No CodeGen API changes. 1.1.1 — VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span / F# / Rust output, --project flag.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

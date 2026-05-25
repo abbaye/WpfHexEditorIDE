@@ -1,0 +1,147 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "iCalendar / vCalendar",
+  "formatId": "VCALENDAR",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "iCalendar (RFC 5545) / vCalendar — a text-based format for calendar and scheduling data. The file begins with 'BEGIN:VCALENDAR' and ends with 'END:VCALENDAR'. Inside the calendar component, properties define version ('VERSION:2.0' for iCalendar, '1.0' for vCalendar) and product identifier (PRODID). Calendar objects (VEVENT, VTODO, VJOURNAL, VFREEBUSY, VTIMEZONE) are nested between their respective BEGIN/END pairs. Events include DTSTART, DTEND/DURATION, SUMMARY, DESCRIPTION, LOCATION, RRULE (recurrence), ATTENDEE, and ORGANIZER properties. iCalendar is the standard for calendar interchange across Apple Calendar, Google Calendar, Microsoft Outlook, and all major calendar applications. Note: this format (formatId VCALENDAR) is distinct from ICAL in Documents/ which focuses on the document viewer.",
+  "extensions": [".ics", ".ical", ".ifb"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "424547494E3A5643414C454E444152",
+      "offset": 0,
+      "label": "iCalendar magic 'BEGIN:VCALENDAR'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": 15,
+        "name": "BEGIN:VCALENDAR",
+        "type": "ascii",
+        "description": "Mandatory opening line 'BEGIN:VCALENDAR' identifying the start of the iCalendar/vCalendar data object.",
+        "storeAs": "vcalendarBegin"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Calendar Properties",
+        "type": "ascii",
+        "description": "Top-level calendar properties: VERSION:2.0 (iCalendar RFC 5545) or VERSION:1.0 (vCalendar), PRODID (generating software identifier), CALSCALE (GREGORIAN), METHOD (PUBLISH/REQUEST/REPLY/etc.).",
+        "storeAs": "calendarProperties"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Calendar Components",
+        "type": "ascii",
+        "description": "Calendar component objects nested between BEGIN/END pairs: VEVENT (appointments), VTODO (tasks), VJOURNAL (journal entries), VFREEBUSY (availability), VTIMEZONE (timezone definitions).",
+        "storeAs": "calendarComponents"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["vcalendarBegin", "calendarProperties", "calendarComponents"],
+    "valueMaps": {
+      "version": {
+        "2.0": "iCalendar (RFC 5545) — modern standard",
+        "1.0": "vCalendar (vCard/vCal 1.0) — legacy"
+      }
+    },
+    "tooltips": {
+      "vcalendarBegin": "iCalendar object opening delimiter",
+      "calendarProperties": "Top-level calendar metadata (version, product ID, method)",
+      "calendarComponents": "VEVENT, VTODO, VJOURNAL, VTIMEZONE component objects"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "vcalendarBegin",
+      "operator": "eq",
+      "value": "BEGIN:VCALENDAR",
+      "severity": "error",
+      "description": "iCalendar file must start with 'BEGIN:VCALENDAR'"
+    },
+    {
+      "id": "A2",
+      "field": "calendarProperties",
+      "operator": "regex",
+      "value": "VERSION:(2\\.0|1\\.0)",
+      "severity": "warning",
+      "description": "iCalendar file should contain a VERSION property (2.0 for iCalendar RFC 5545, 1.0 for vCalendar)"
+    },
+    {
+      "id": "A3",
+      "field": "calendarComponents",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "iCalendar file must contain at least one calendar component (VEVENT, VTODO, etc.) and a closing END:VCALENDAR"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "BEGIN:VCALENDAR", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First VEVENT", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "END:VCALENDAR", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Calendar Metadata (JSON)",
+      "format": "json",
+      "fields": ["calendarProperties", "calendarComponents"]
+    },
+    {
+      "name": "Event Summary List",
+      "format": "text",
+      "description": "Extract all SUMMARY, DTSTART, and DTEND values from VEVENT components"
+    }
+  ],
+  "aiHints": [
+    "iCalendar (RFC 5545) uses VERSION:2.0; vCalendar (legacy) uses VERSION:1.0; always check VERSION first",
+    "VEVENT components contain DTSTART, DTEND (or DURATION), SUMMARY, UID (unique identifier), and optionally RRULE for recurrence",
+    "RRULE syntax: FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10 — recurrence rules can be complex",
+    "Long property values are folded at 75 octets and continued on the next line starting with a space or tab",
+    "ATTENDEE and ORGANIZER properties contain MAILTO: URIs for email-based scheduling (iTIP protocol)",
+    "VTIMEZONE components define daylight saving rules; always check TZID references for correct time interpretation"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "ICS files contain personal scheduling data including meeting attendees, locations, and descriptions",
+      "ATTENDEE properties expose email addresses of all meeting participants",
+      "Calendar imports from untrusted sources can be used for phishing (fake meeting invites with malicious URLs in descriptions)",
+      "ORGANIZER and ATTENDEE fields can expose organizational hierarchies and contact information"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "PROPERTIES",
+      "relationship": "sibling",
+      "note": "Both are text key-value formats; iCalendar uses structured BEGIN/END component nesting while PROPERTIES is flat"
+    }
+  ],
+  "software": [
+    "Apple Calendar (iCal)",
+    "Google Calendar (ICS import/export)",
+    "Microsoft Outlook",
+    "Thunderbird Lightning",
+    "caldav (CalDAV server protocol)",
+    "Nextcloud Calendar"
+  ],
+  "useCases": [
+    "Calendar event and task interchange between calendar applications",
+    "Meeting invite distribution via email (MIME-attached ICS with METHOD:REQUEST)",
+    "Calendar subscription feeds for public events, sports, and holidays"
+  ],
+  "technicalDetails": "iCalendar (RFC 5545) is a text format using the MIME type text/calendar. Files are UTF-8 encoded with CRLF line endings. Objects are delimited by BEGIN/END pairs. Properties are 'NAME:value' or 'NAME;param=val:value'. Values exceeding 75 octets are folded (line continuation with leading space). The older vCalendar 1.0 (vCard spec) used quoted-printable encoding and different property names.",
+  "completenessScore": 82
+}

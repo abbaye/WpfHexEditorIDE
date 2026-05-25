@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Mobipocket eBook",
   "formatId": "MOBI",
@@ -30,7 +31,10 @@
     "offset": 60,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.0
+    },
     "validation": {
       "minFileSize": 78,
       "note": "MOBI identifier 'BOOKMOBI' at offset 60 = PDB type ('BOOK') + PDB creator ('MOBI'). First 32 bytes are the database name (null-padded ASCII). Record list starts at offset 78."
@@ -60,7 +64,7 @@
       "offset": 0,
       "length": 32,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "PDB database name — 32-byte null-padded ASCII string. For MOBI eBooks, this is typically the book title (truncated to 31 characters + null terminator). The name is used by Palm OS to identify the database but may contain author-set book metadata.",
       "storeAs": "pdbName",
       "valueType": "ascii"
@@ -77,11 +81,31 @@
       "valueType": "uint16",
       "endianness": "big",
       "bitfields": [
-        { "name": "Read-Only", "bits": "0", "description": "Database is read-only" },
-        { "name": "Dirty AppInfo", "bits": "1", "description": "AppInfo block has been modified" },
-        { "name": "Backup on Sync", "bits": "2", "description": "Always backup on HotSync" },
-        { "name": "Prevent Beam", "bits": "4", "description": "Prevent beaming (DRM-like flag)" },
-        { "name": "Prevent Copy", "bits": "5", "description": "Prevent copying to other devices" }
+        {
+          "name": "Read-Only",
+          "bits": "0",
+          "description": "Database is read-only"
+        },
+        {
+          "name": "Dirty AppInfo",
+          "bits": "1",
+          "description": "AppInfo block has been modified"
+        },
+        {
+          "name": "Backup on Sync",
+          "bits": "2",
+          "description": "Always backup on HotSync"
+        },
+        {
+          "name": "Prevent Beam",
+          "bits": "4",
+          "description": "Prevent beaming (DRM-like flag)"
+        },
+        {
+          "name": "Prevent Copy",
+          "bits": "5",
+          "description": "Prevent copying to other devices"
+        }
       ]
     },
     {
@@ -90,7 +114,7 @@
       "offset": 34,
       "length": 2,
       "color": "#B8B8FF",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Palm Database version number (big-endian uint16). Usually 0 for MOBI files.",
       "storeAs": "pdbVersion",
       "valueType": "uint16",
@@ -102,7 +126,7 @@
       "offset": 60,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.40,
+      "opacity": 0.4,
       "description": "PDB database type identifier (4-byte ASCII). Must be 'BOOK' (0x424F4F4B) for Mobipocket eBooks. This field identifies the application type that owns the database.",
       "storeAs": "pdbType",
       "valueType": "ascii",
@@ -117,7 +141,7 @@
       "offset": 64,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.40,
+      "opacity": 0.4,
       "description": "PDB creator identifier (4-byte ASCII). Must be 'MOBI' (0x4D4F4249) for Mobipocket format. Together with pdbType ('BOOK' + 'MOBI' = 'BOOKMOBI') this is the definitive MOBI identifier.",
       "storeAs": "pdbCreator",
       "valueType": "ascii",
@@ -132,7 +156,7 @@
       "offset": 76,
       "length": 2,
       "color": "#FFE66D",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Number of records in the PDB database (big-endian uint16). Each record holds a chunk of the compressed book content. Record 0 is the PalmDOC + MOBI header. Records 1 through recordCount-1 contain compressed text. Last records may contain Cover image (KF7) or EXTH (metadata) extension.",
       "storeAs": "recordCount",
       "valueType": "uint16",
@@ -195,19 +219,19 @@
       {
         "name": "PDB Header",
         "offset": 0,
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "BOOKMOBI Type/Creator",
         "offset": 60,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Record List",
         "offset": 78,
-        "icon": "\uE80A",
+        "icon": "",
         "color": "#FFE66D"
       }
     ]
@@ -219,15 +243,30 @@
     "groups": [
       {
         "title": "PDB Container",
-        "icon": "\uE9D9",
-        "fields": ["pdbName", "pdbAttributes", "pdbVersion", "pdbType", "pdbCreator"]
+        "icon": "",
+        "fields": [
+          "pdbName",
+          "pdbAttributes",
+          "pdbVersion",
+          "pdbType",
+          "pdbCreator"
+        ]
       },
       {
         "title": "Content",
-        "icon": "\uE8A5",
-        "fields": ["recordCount"]
+        "icon": "",
+        "fields": [
+          "recordCount"
+        ]
       }
-    ]
+    ],
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
   },
   "versionDetection": {
     "field": "pdbCreator",
@@ -240,12 +279,21 @@
     {
       "name": "MOBI PDB Header (JSON)",
       "format": "json",
-      "fields": ["pdbName", "pdbAttributes", "pdbType", "pdbCreator", "recordCount"]
+      "fields": [
+        "pdbName",
+        "pdbAttributes",
+        "pdbType",
+        "pdbCreator",
+        "recordCount"
+      ]
     },
     {
       "name": "Python MOBI check",
       "format": "python-bytes",
-      "fields": ["pdbType", "pdbCreator"]
+      "fields": [
+        "pdbType",
+        "pdbCreator"
+      ]
     }
   ],
   "forensic": {
@@ -268,23 +316,28 @@
     "knownExploitVectors": [
       "Malformed MOBI record offsets leading to out-of-bounds reads in early Mobipocket Reader",
       "Integer overflow in Huffman-compressed PalmDOC record decompression"
-    ]
-  },
-  "aiHints": {
-    "analysisContext": "MOBI file structure: PDB header (78B) + record list (8B × recordCount entries, each: 4B offset BE uint32 + 4B uniqueID/attributes) + padding. Record 0 (at first offset in record list): 16-byte PalmDOC header (BE: 2B compressionType {1=none, 2=PalmDOC LZ77, 17480=Huffdic/HUFF}, 2B reserved=0, 4B textLength, 2B recordCount=textRecords, 2B maxRecordSize=4096, 4B encryptionType) + MOBI header starting with 'MOBI' (4D 4F 42 49) at recordStart+16, then 4B headerLength, 4B mobiType {2=book, 257=news, 258=newsWithPics, 516=magaWithPics, 517=catalog, 521=comic}, 4B encoding {1252=CP-1252, 65001=UTF-8}, 4B uniqueMobiId, 4B fileVersion {6=KF6/MOBI6, 8=KF8}. EXTH header (metadata block) may follow MOBI header if bit 6 of mobiFlags is set.",
-    "knownVulnerabilities": [
-      "CVE-2012-1539: Amazon Kindle MOBI parser integer overflow in HUFF/CDIC decompression",
-      "Calibre MOBI writer: crafted MOBI with negative record counts caused heap underallocation"
     ],
-    "suggestedInspections": [
-      "Verify 'BOOK' at offset 60 and 'MOBI' at offset 64 (or check combined 'BOOKMOBI' at offset 60)",
-      "Read record count at offset 76 (BE uint16) and first record offset at offset 78 (BE uint32)",
-      "At first record offset: read compressionType (BE uint16): 1=none, 2=PalmDOC, 17480=Huffdic",
-      "At firstRecord+16: check 'MOBI' magic (4D 4F 42 49); read fileVersion (+20, BE uint32): 6=KF6, 8=KF8",
-      "Check for EXTH header at firstRecord+16+mobiHeaderLength: starts with 'EXTH' (45 58 54 48)",
-      "EXTH records 100=author, 101=publisher, 103=description, 108=contributing writer, 201=coverOffset"
+    "notes": [
+      "EXTH metadata may expose ASIN (Amazon Standard Identification Number) linking to purchase account.",
+      "KFX format (successor to MOBI) uses a different container and requires separate analysis.",
+      "DRM-stripped MOBI files may contain watermarking in EXTH records identifying the purchaser."
     ]
   },
+  "aiHints": [
+    "MOBI file structure: PDB header (78B) + record list (8B × recordCount entries, each: 4B offset BE uint32 + 4B uniqueID/attributes) + padding. Record 0 (at first offset in record list): 16-byte PalmDOC header (BE: 2B compressionType {1=none, 2=PalmDOC LZ77, 17480=Huffdic/HUFF}, 2B reserved=0, 4B textLength, 2B recordCount=textRecords, 2B maxRecordSize=4096, 4B encryptionType) + MOBI header starting with 'MOBI' (4D 4F 42 49) at recordStart+16, then 4B headerLength, 4B mobiType {2=book, 257=news, 258=newsWithPics, 516=magaWithPics, 517=catalog, 521=comic}, 4B encoding {1252=CP-1252, 65001=UTF-8}, 4B uniqueMobiId, 4B fileVersion {6=KF6/MOBI6, 8=KF8}. EXTH header (metadata block) may follow MOBI header if bit 6 of mobiFlags is set.",
+    "Verify 'BOOK' at offset 60 and 'MOBI' at offset 64 (or check combined 'BOOKMOBI' at offset 60)",
+    "Read record count at offset 76 (BE uint16) and first record offset at offset 78 (BE uint32)",
+    "At first record offset: read compressionType (BE uint16): 1=none, 2=PalmDOC, 17480=Huffdic",
+    "At firstRecord+16: check 'MOBI' magic (4D 4F 42 49); read fileVersion (+20, BE uint32): 6=KF6, 8=KF8",
+    "Check for EXTH header at firstRecord+16+mobiHeaderLength: starts with 'EXTH' (45 58 54 48)",
+    "EXTH records 100=author, 101=publisher, 103=description, 108=contributing writer, 201=coverOffset",
+    "The PDB type field at offset 60 is 'BOOK' (42 4F 4F 4B) and creator at 64 is 'MOBI' (4D 4F 42 49).",
+    "The EXTH header begins with 'EXTH' magic and contains records with author, ASIN, publisher metadata.",
+    "MOBI compression: 0=none, 1=PalmDOC LZ77, 17480=Huffman/CDIC (KF8).",
+    "DRM-protected MOBI files have encrypted text records; look for DRM offset in MOBI header.",
+    "KF8 (Kindle Format 8) is an extension of MOBI using EPUB3-like HTML5 content.",
+    "The EXTH record type 503 contains the book's cover image offset for thumbnail display."
+  ],
   "software": [
     "Amazon Kindle devices and apps",
     "Calibre (calibre.ebookmanager.com)",
@@ -292,12 +345,43 @@
     "FBReader",
     "Kobo e-readers (import)"
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [".mobi", ".prc", ".azw"],
-    "relatedFormats": ["AZW"],
-    "note": "MOBI/PRC is the base format; .azw is Amazon's DRM-protected variant. KF8 (Kindle Format 8) extended MOBI to support HTML5/CSS3 content in a dual-format file (.mobi with MOBI6+KF8 sections). Superseded by KFX format on modern Kindle devices."
-  },
+  "formatRelationships": [
+    {
+      "formatId": "category",
+      "relation": "Documents",
+      "note": ""
+    },
+    {
+      "formatId": "extensions",
+      "relation": "['.mobi', '.prc', '.azw']",
+      "note": ""
+    },
+    {
+      "formatId": "relatedFormats",
+      "relation": "['AZW']",
+      "note": ""
+    },
+    {
+      "formatId": "note",
+      "relation": "MOBI/PRC is the base format; .azw is Amazon's DRM-protected variant. KF8 (Kindle Format 8) extended MOBI to support HTML5/CSS3 content in a dual-format file (.mobi with MOBI6+KF8 sections). Superseded by KFX format on modern Kindle devices.",
+      "note": ""
+    },
+    {
+      "formatId": "epub",
+      "relation": "equivalent",
+      "note": "EPUB is the open standard equivalent ebook format"
+    },
+    {
+      "formatId": "azw3",
+      "relation": "successor",
+      "note": "AZW3/KF8 is the modern Amazon Kindle format"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "alternative",
+      "note": "PDF is a common alternative ebook distribution format"
+    }
+  ],
   "MimeTypes": [
     "application/x-mobipocket-ebook",
     "application/x-mobi8-ebook"
@@ -362,5 +446,63 @@
       }
     ],
     "note": "Inferred fuzz strategies for MOBI. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "424F4F4B4D4F4249",
+      "offset": 60,
+      "label": "MOBI signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 68,
+  "structure": {
+    "fields": [
+      {
+        "name": "PDBHeader",
+        "offset": 0,
+        "size": 32,
+        "type": "struct",
+        "description": "Palm Database header: name[32], attributes, version, creation/modification dates"
+      },
+      {
+        "name": "RecordList",
+        "offset": 32,
+        "size": -1,
+        "type": "struct",
+        "description": "Record list: 8 bytes per record (offset+attrs+uniqueID)"
+      },
+      {
+        "name": "PalmDocHeader",
+        "offset": -1,
+        "size": 16,
+        "type": "struct",
+        "description": "PalmDOC record 0 header: compression, textLength, recordCount"
+      },
+      {
+        "name": "MobiHeader",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "MOBI header: headerLength, mobiType, textEncoding, uniqueID, fileVersion"
+      },
+      {
+        "name": "EXTHHeader",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "EXTH metadata block: identifier, headerLength, recordCount, followed by EXTH records"
+      }
+    ]
+  },
+  "useCases": [
+    "Amazon Kindle eBook delivery",
+    "Legacy Mobipocket Reader content",
+    "eBook conversion (Calibre source/target)",
+    "Digital textbooks and documents"
+  ],
+  "technicalDetails": "MOBI is based on the Palm Database (PDB) format. The PDB header at offset 0 contains a 32-byte book name. At offset 60-67 are the type ('BOOK') and creator ('MOBI') fields that identify the format. Record 0 contains the PalmDOC header followed by the MOBI header and optional EXTH metadata block with author, publisher, and ASIN fields.",
+  "completenessScore": 85
 }

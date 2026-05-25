@@ -1,0 +1,136 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "CPIO Initramfs Archive (newc)",
+  "formatId": "CPIO_INITRAMFS",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "CPIO archive in 'newc' (SVR4 without CRC) format used as the Linux initramfs initial RAM filesystem. The kernel decompresses this archive into a tmpfs during early boot. Each entry has a fixed 110-byte ASCII header followed by a null-terminated filename and padded file data. The archive is terminated by a special 'TRAILER!!!' entry.",
+  "extensions": [".cpio", ".img"],
+  "category": "Firmware",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "303730373031",
+      "offset": 0,
+      "label": "CPIO newc magic '070701'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 6,
+  "structure": {
+    "fields": [
+      { "offset": 0,   "size": 6,  "name": "magic",     "type": "ascii",    "description": "CPIO newc format magic: '070701' (no CRC) or '070702' (with CRC)", "storeAs": "string" },
+      { "offset": 6,   "size": 8,  "name": "ino",       "type": "ascii",    "description": "Inode number as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 14,  "size": 8,  "name": "mode",      "type": "ascii",    "description": "File mode and permissions as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 22,  "size": 8,  "name": "uid",       "type": "ascii",    "description": "User ID as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 30,  "size": 8,  "name": "gid",       "type": "ascii",    "description": "Group ID as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 38,  "size": 8,  "name": "nlink",     "type": "ascii",    "description": "Number of hard links as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 46,  "size": 8,  "name": "mtime",     "type": "ascii",    "description": "Modification time (Unix epoch) as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 54,  "size": 8,  "name": "filesize",  "type": "ascii",    "description": "File data size in bytes as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 62,  "size": 8,  "name": "devmajor",  "type": "ascii",    "description": "Device major number as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 70,  "size": 8,  "name": "devminor",  "type": "ascii",    "description": "Device minor number as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 78,  "size": 8,  "name": "rdevmajor", "type": "ascii",    "description": "For devices: major number; otherwise 0", "storeAs": "string" },
+      { "offset": 86,  "size": 8,  "name": "rdevminor", "type": "ascii",    "description": "For devices: minor number; otherwise 0", "storeAs": "string" },
+      { "offset": 94,  "size": 8,  "name": "namesize",  "type": "ascii",    "description": "Length of filename string (including null terminator) as 8-character uppercase hex", "storeAs": "string" },
+      { "offset": 102, "size": 8,  "name": "check",     "type": "ascii",    "description": "CRC checksum for '070702' format; always '00000000' for '070701'", "storeAs": "string" },
+      { "offset": 110, "size": -1, "name": "filename",  "type": "ascii",    "description": "Null-terminated filename, padded to 4-byte alignment from header start", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "ino", "mode", "uid", "gid", "mtime", "filesize", "namesize"],
+    "valueMaps": {
+      "magic": {
+        "070701": "newc (no CRC)",
+        "070702": "newc (with CRC)"
+      }
+    },
+    "tooltips": {
+      "magic":    "Must be '070701' (newc without CRC) or '070702' (newc with CRC); old binary cpio (070707) is not used in initramfs",
+      "mode":     "Octal file permissions encoded as hex; e.g., 000041ED = regular file 0755",
+      "filesize": "Size of file data following the padded filename; 0 for directories and symlinks",
+      "namesize": "Includes the null terminator byte; minimum value is 1 for an empty name",
+      "mtime":    "Unix timestamp as 32-bit hex; can be used for timeline reconstruction"
+    }
+  },
+  "assertions": [
+    {
+      "id": "CPIO_001",
+      "field": "magic",
+      "operator": "in",
+      "value": ["070701", "070702"],
+      "description": "CPIO magic must be '070701' (newc no CRC) or '070702' (newc with CRC)"
+    },
+    {
+      "id": "CPIO_002",
+      "field": "namesize",
+      "operator": "greaterOrEqual",
+      "value": "00000001",
+      "description": "namesize must be at least 1 to accommodate the null terminator"
+    },
+    {
+      "id": "CPIO_003",
+      "field": "check",
+      "operator": "equals",
+      "value": "00000000",
+      "description": "For '070701' format, the check field must be all zeros"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,   "label": "First Entry Header",  "color": "#4A90D9" },
+      { "offset": 54,  "label": "File Size Field",      "color": "#7ED321" },
+      { "offset": 94,  "label": "Name Size Field",      "color": "#F5A623" },
+      { "offset": 110, "label": "Filename Start",       "color": "#9B59B6" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "First Entry Metadata",
+      "fields": ["magic", "ino", "mode", "uid", "gid", "mtime", "filesize", "namesize"],
+      "format": "json"
+    },
+    {
+      "name": "Initramfs Forensic Report",
+      "fields": ["magic", "mode", "uid", "gid", "mtime", "filesize"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "The Linux kernel initramfs is typically a gzip-compressed (or lz4/lzma/zstd-compressed) CPIO archive; to inspect the raw CPIO, first decompress with `gunzip` or `zstd -d`, then extract with `cpio -idmv < initramfs.cpio`.",
+    "The CPIO newc header is entirely ASCII hex — all numeric fields are stored as 8 uppercase hex digits, making the format human-readable with a hex editor and easy to parse without endianness concerns.",
+    "Every CPIO newc archive must end with a special entry named 'TRAILER!!!' with all numeric fields set to zero; the kernel uses this sentinel to stop processing.",
+    "Padding rules: the filename (including null terminator) is padded to a 4-byte boundary from the start of the header, and the file data is also padded to a 4-byte boundary.",
+    "Multiple CPIO archives can be concatenated to form a multi-part initramfs; the kernel processes them sequentially, allowing early microcode updates (Intel/AMD) to be prepended before the main filesystem CPIO.",
+    "Forensic note: initramfs images extracted from Linux devices often contain /init (the PID 1 script), /sbin/init or /bin/busybox, and kernel modules — inspecting these reveals the early boot environment and installed kernel modules."
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "The initramfs runs as PID 1 with full root privileges before the real root filesystem is mounted; malicious modification of initramfs enables persistent pre-OS rootkits.",
+      "Initramfs images on embedded Linux devices (routers, IoT) frequently contain hardcoded credentials, API keys, and backdoor accounts.",
+      "The mtime fields in CPIO headers provide timestamps that can be used for build timeline reconstruction during firmware forensics.",
+      "uid/gid fields of 0 (root) on all files are normal for initramfs but should be verified — unexpected non-root ownership may indicate tampering."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GZIP",       "relationship": "container",  "note": "Initramfs CPIO archives are almost always gzip, lz4, or zstd compressed before embedding in the kernel image" },
+    { "format": "UBOOT_FIT",  "relationship": "sibling",    "note": "U-Boot FIT images often contain a CPIO initramfs as one of the embedded data blobs" },
+    { "format": "EXT4",       "relationship": "alternative", "note": "Older systems used a separate ext2/ext4 initrd ramdisk image; CPIO initramfs replaced this in Linux 2.6" }
+  ],
+  "software": [
+    { "name": "Linux kernel (gen_init_cpio)", "role": "Kernel tool that creates CPIO initramfs images from a file list specification" },
+    { "name": "dracut",                       "role": "Major Linux initramfs generator used by Fedora, RHEL, and systemd-based distributions" },
+    { "name": "mkinitcpio",                   "role": "Arch Linux initramfs generator producing CPIO newc archives" },
+    { "name": "binwalk",                      "role": "Firmware analysis tool that detects and extracts CPIO archives from larger firmware images" }
+  ],
+  "useCases": [
+    "Forensic extraction and analysis of Linux initramfs images from embedded devices, IoT firmware, and virtual machine disk images",
+    "Security auditing of boot-time credentials, backdoors, and hardcoded secrets in early userspace environments",
+    "Custom initramfs construction for embedded Linux systems requiring specific kernel modules and rescue tools",
+    "Timeline reconstruction of firmware build processes using mtime fields in CPIO entry headers"
+  ],
+  "technicalDetails": "The CPIO newc (SVR4 portable format, also called 'odc' in some contexts) uses a 110-byte fixed ASCII header per entry. All numeric fields are stored as 8 uppercase hexadecimal ASCII characters without any prefix or delimiter. The filename immediately follows the header at offset 110, null-terminated, and padded with null bytes to align the next boundary at a multiple of 4 bytes from the header start. File data follows the padded filename and is itself padded to a 4-byte boundary. The '070702' variant adds a 32-bit CRC of the file data in the check field; Linux kernels support both variants but most tools generate '070701'. The archive is terminated by a synthetic 'TRAILER!!!' entry (magic='070701', all fields zero, namesize=0x0000000B for the 11-byte name including null). Multiple concatenated CPIO archives (microcode + main rootfs) are supported by the Linux kernel since version 2.6.39.",
+  "completenessScore": 83
+}

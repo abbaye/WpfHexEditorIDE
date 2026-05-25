@@ -23,9 +23,13 @@ internal sealed class MruService
 
     private readonly List<string> _solutions = [];
     private readonly List<string> _files     = [];
+    private readonly HashSet<string> _pinnedFiles     = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _pinnedSolutions = new(StringComparer.OrdinalIgnoreCase);
 
     public IReadOnlyList<string> RecentSolutions => _solutions;
     public IReadOnlyList<string> RecentFiles     => _files;
+    public IReadOnlySet<string>  PinnedFiles     => _pinnedFiles;
+    public IReadOnlySet<string>  PinnedSolutions => _pinnedSolutions;
 
     // -- Lifecycle --------------------------------------------------------
 
@@ -39,8 +43,12 @@ internal sealed class MruService
             if (dto is null) return;
             _solutions.Clear();
             _files.Clear();
+            _pinnedFiles.Clear();
+            _pinnedSolutions.Clear();
             _solutions.AddRange(dto.Solutions ?? []);
             _files.AddRange(dto.Files ?? []);
+            foreach (var p in dto.PinnedFiles     ?? []) _pinnedFiles.Add(p);
+            foreach (var p in dto.PinnedSolutions ?? []) _pinnedSolutions.Add(p);
         }
         catch { /* silent on corrupt file */ }
     }
@@ -50,7 +58,13 @@ internal sealed class MruService
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_mruPath)!);
-            var dto  = new MruDto { Solutions = [.. _solutions], Files = [.. _files] };
+            var dto  = new MruDto
+            {
+                Solutions        = [.. _solutions],
+                Files            = [.. _files],
+                PinnedFiles      = [.. _pinnedFiles],
+                PinnedSolutions  = [.. _pinnedSolutions]
+            };
             var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_mruPath, json);
         }
@@ -61,6 +75,13 @@ internal sealed class MruService
 
     public void PushSolution(string path) => Push(_solutions, path);
     public void PushFile(string path)     => Push(_files, path);
+
+    public void PinFile(string path)      { _pinnedFiles.Add(path);                Save(); }
+    public void UnpinFile(string path)    { _pinnedFiles.Remove(path);             Save(); }
+    public void PinSolution(string path)  { _pinnedSolutions.Add(path);            Save(); }
+    public void UnpinSolution(string path){ _pinnedSolutions.Remove(path);         Save(); }
+    public void RemoveFile(string path)   { _files.RemoveAll(p => string.Equals(p, path, StringComparison.OrdinalIgnoreCase)); _pinnedFiles.Remove(path); Save(); }
+    public void RemoveSolution(string path){ _solutions.RemoveAll(p => string.Equals(p, path, StringComparison.OrdinalIgnoreCase)); _pinnedSolutions.Remove(path); Save(); }
 
     private static void Push(List<string> list, string path)
     {
@@ -74,7 +95,9 @@ internal sealed class MruService
 
     private sealed class MruDto
     {
-        public List<string>? Solutions { get; set; }
-        public List<string>? Files     { get; set; }
+        public List<string>? Solutions        { get; set; }
+        public List<string>? Files            { get; set; }
+        public List<string>? PinnedFiles      { get; set; }
+        public List<string>? PinnedSolutions  { get; set; }
     }
 }

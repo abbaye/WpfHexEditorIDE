@@ -1,0 +1,142 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "HLS Playlist",
+  "formatId": "M3U8",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "M3U8 / HLS Playlist — a UTF-8 encoded plain-text playlist format defined by Apple in RFC 8216 for HTTP Live Streaming (HLS). The file begins with the mandatory '#EXTM3U' tag on the first line. HLS playlists come in two types: master playlists reference multiple variant streams at different bitrates, and media playlists list the actual media segment URLs with their durations. Key directives include #EXT-X-VERSION, #EXT-X-TARGETDURATION, #EXT-X-MEDIA-SEQUENCE, #EXTINF (segment duration), and #EXT-X-ENDLIST. HLS is the dominant adaptive bitrate streaming protocol used by Apple devices, YouTube, Twitch, and most CDNs.",
+  "extensions": [".m3u8", ".m3u"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "23455854 4D3355",
+      "offset": 0,
+      "label": "HLS magic '#EXTM3U'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": 7,
+        "name": "EXTM3U Header",
+        "type": "ascii",
+        "description": "Mandatory first line '#EXTM3U' identifying the file as an Extended M3U playlist. The 'M3U' portion stands for MP3 URL, the original extended format from Nullsoft/Winamp.",
+        "storeAs": "extm3uHeader"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Version Tag",
+        "type": "ascii",
+        "description": "#EXT-X-VERSION:<n> declares the HLS protocol version. Version 3+ supports floating-point EXTINF durations. Version 6+ supports byte ranges. Absence implies version 1.",
+        "storeAs": "versionTag"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Segment Entries",
+        "type": "ascii",
+        "description": "Each media segment is described by an #EXTINF:<duration>,<title> line followed by the segment URL (absolute or relative). Duration is in seconds.",
+        "storeAs": "segmentEntries"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["extm3uHeader", "versionTag", "segmentEntries"],
+    "valueMaps": {},
+    "tooltips": {
+      "extm3uHeader": "Mandatory first line identifying the file as an HLS playlist",
+      "versionTag": "HLS protocol version number (1-7+)",
+      "segmentEntries": "#EXTINF + URL pairs defining the media segment sequence"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "extm3uHeader",
+      "operator": "eq",
+      "value": "#EXTM3U",
+      "severity": "error",
+      "description": "M3U8/HLS playlist must start with '#EXTM3U' on the first line"
+    },
+    {
+      "id": "A2",
+      "field": "segmentEntries",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "M3U8 playlist must contain at least one segment entry or stream reference"
+    },
+    {
+      "id": "A3",
+      "field": "versionTag",
+      "operator": "regex",
+      "value": "^#EXT-X-VERSION:[1-9]",
+      "severity": "info",
+      "description": "HLS media playlists should declare #EXT-X-VERSION for protocol version compatibility"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "#EXTM3U Header", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First #EXTINF Segment", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "#EXT-X-ENDLIST", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "M3U8 Metadata (JSON)",
+      "format": "json",
+      "fields": ["extm3uHeader", "versionTag", "segmentEntries"]
+    },
+    {
+      "name": "Segment URL List",
+      "format": "text",
+      "description": "Extract all segment URLs from the playlist in order"
+    }
+  ],
+  "aiHints": [
+    "M3U8 is the UTF-8 encoded variant of M3U; all HLS playlists are M3U8 format",
+    "Master playlists use #EXT-X-STREAM-INF to list variant streams at different bitrates/resolutions",
+    "Media playlists list segments in order with #EXTINF:<duration>,<title> followed by the segment URL",
+    "#EXT-X-KEY indicates AES-128 or SAMPLE-AES encryption of segments — important for DRM analysis",
+    "HLS is defined in RFC 8216 (Apple); DASH (MPEG) and Smooth Streaming (Microsoft) are competing adaptive protocols",
+    "Segments are typically .ts (MPEG-2 Transport Stream) or .fmp4 (fragmented MP4) files"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "M3U8 playlists may reference CDN URLs that expose content delivery infrastructure",
+      "#EXT-X-KEY tags expose DRM key server URLs and potentially encryption key material",
+      "Manipulated M3U8 files can redirect players to attacker-controlled segment URLs (playlist injection)",
+      "Live stream playlists are periodically refreshed; forensic captures may represent a specific point in time"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "MARKDOWN_FRONTMATTER",
+      "relationship": "none",
+      "note": "Unrelated text formats that both use the .md extension in some cases"
+    }
+  ],
+  "software": [
+    "Apple QuickTime / Safari (HLS native)",
+    "VLC media player",
+    "FFmpeg (ffplay, ffprobe)",
+    "hls.js (JavaScript HLS player)",
+    "ExoPlayer (Android)",
+    "Nginx RTMP / FFmpeg HLS server"
+  ],
+  "useCases": [
+    "HTTP Live Streaming (HLS) for adaptive bitrate video delivery",
+    "Apple device video streaming (iPhone, iPad, Apple TV)",
+    "Live streaming on Twitch, YouTube Live, and CDN platforms"
+  ],
+  "technicalDetails": "M3U8 is a UTF-8 plain-text playlist format for HLS (RFC 8216). The file begins with '#EXTM3U'. HLS-specific tags are prefixed with '#EXT-X-'. Segments are referenced by URL relative to the playlist base URI. Adaptive bitrate delivery uses a master playlist referencing variant-stream media playlists at different bitrates. Encryption uses #EXT-X-KEY with AES-128 CBC. Live streams omit #EXT-X-ENDLIST; VOD streams include it.",
+  "completenessScore": 83
+}

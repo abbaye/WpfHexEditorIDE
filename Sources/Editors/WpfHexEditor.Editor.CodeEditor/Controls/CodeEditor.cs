@@ -456,6 +456,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer? _wordHighlightTimer;
         private CodeScrollMarkerPanel?      _codeScrollMarkerPanel;
 
+        // ── External line highlights (e.g. StringExtraction) ─────────────────
+        private readonly List<LineHighlightEntry> _lineHighlights = [];
+
         #endregion
 
         #region Fields - Rendering State
@@ -4659,6 +4662,54 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        // ── SDK service surface ───────────────────────────────────────────────
+        // Thin read-only accessors so CodeEditorServiceImpl does not reach into private fields.
+
+        /// <summary>Language identifier of the loaded document (e.g. "csharp"), or null.</summary>
+        public string? CurrentLanguage => Language?.Id;
+
+        /// <summary>Absolute path of the currently open file, or null.</summary>
+        public string? CurrentFilePath => _currentFilePath;
+
+        /// <summary>Current caret line (1-based).</summary>
+        public int CaretLine   => _cursorLine + 1;
+
+        /// <summary>Current caret column (1-based).</summary>
+        public int CaretColumn => _cursorColumn + 1;
+
+        /// <summary>Full document text.</summary>
+        public string? GetContent() => _document is not null ? GetText() : null;
+
+        /// <summary>Currently selected text, or empty string.</summary>
+        public string GetSelectedText() =>
+            _document is not null && !_selection.IsEmpty
+                ? _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd)
+                : string.Empty;
+
+        /// <summary>
+        /// Public 1-based overload — mirrors <see cref="INavigableDocument.NavigateTo"/> convention.
+        /// Intended for SDK consumers (e.g. StringExtraction panel).
+        /// </summary>
+        public void NavigateToLine(int line, int column) =>
+            ((INavigableDocument)this).NavigateTo(line, column);
+
+        // ── External line highlights ──────────────────────────────────────────
+
+        /// <summary>Add a background highlight on a 1-based line, grouped by tag for bulk removal.</summary>
+        public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag, double opacity = 0.35)
+        {
+            if (line < 1) return;
+            _lineHighlights.Add(new LineHighlightEntry(line - 1, color, opacity, description, tag));
+            InvalidateVisual();
+        }
+
+        /// <summary>Remove all highlights whose tag equals <paramref name="tag"/>.</summary>
+        public void ClearLineHighlightsByTag(string tag)
+        {
+            int removed = _lineHighlights.RemoveAll(h => h.Tag == tag);
+            if (removed > 0) InvalidateVisual();
+        }
+
         /// <summary>
         /// <see cref="INavigableDocument"/> implementation.
         /// Accepts 1-based line/column (IDE convention) and converts to 0-based internal coords.
@@ -4823,6 +4874,27 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void OnStickyScrollScopeClicked(object? sender, int startLine)
             => NavigateToLine(startLine);
 
+    }
+
+    /// <summary>One externally-added line background highlight entry.</summary>
+    public sealed class LineHighlightEntry
+    {
+        public int    Line        { get; }
+        public string Description { get; }
+        public string Tag         { get; }
+        /// <summary>Pre-frozen brush with opacity already applied — zero allocation per render frame.</summary>
+        public Brush  FrozenBrush { get; }
+
+        public LineHighlightEntry(int line, SolidColorBrush color, double opacity, string description, string tag)
+        {
+            Line        = line;
+            Description = description;
+            Tag         = tag;
+            var b = color.Clone();
+            b.Opacity = opacity;
+            b.Freeze();
+            FrozenBrush = b;
+        }
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PEM Certificate",
   "formatId": "PEM",
@@ -25,6 +26,17 @@
       "https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "2D2D2D2D2D424547494E20",
+      "offset": 0,
+      "label": "-----BEGIN  — PEM armor header start (generic, covers CERTIFICATE, PRIVATE KEY, PUBLIC KEY, etc.)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "detection": {
     "signature": "2D2D2D2D2D424547494E20434552544946494341544544",
     "offset": 0,
@@ -121,33 +133,105 @@
       "description": "Subject"
     }
   ],
+  "structure": {
+    "fields": [
+      { "name": "pemHeader", "type": "ascii", "offset": 0, "length": 27, "description": "-----BEGIN <TYPE>----- armor line" },
+      { "name": "newline", "type": "uint16", "offset": 27, "length": 2, "description": "CRLF line ending (0x0D 0x0A)" },
+      { "name": "base64Data", "type": "ascii", "offset": 29, "length": -1, "description": "Base64-encoded DER payload (64-char lines)" },
+      { "name": "endHeader", "type": "ascii", "offset": -1, "length": 25, "description": "-----END <TYPE>----- armor line" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["pemHeader", "base64Data"],
+    "valueMaps": {},
+    "tooltips": {
+      "pemHeader": "PEM armor type line — CERTIFICATE, PRIVATE KEY, PUBLIC KEY, CERTIFICATE REQUEST, etc.",
+      "base64Data": "Base64-encoded DER-format data"
+    }
+  },
+  "assertions": [
+    {
+      "name": "File starts with PEM hyphens",
+      "expression": "pemHeader.startsWith('-----BEGIN')",
+      "severity": "error",
+      "message": "PEM file must start with '-----BEGIN ' armor header at offset 0"
+    },
+    {
+      "name": "Contains END marker",
+      "expression": "file.contains('-----END')",
+      "severity": "error",
+      "message": "PEM file must contain a '-----END ' armor footer"
+    },
+    {
+      "name": "Base64 data present",
+      "expression": "base64Data.length > 0",
+      "severity": "warning",
+      "message": "PEM file should contain Base64-encoded payload between BEGIN and END markers"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "BEGIN Header", "offset": 0, "color": "#FF4444" },
+      { "name": "Base64 Payload", "offset": 29, "color": "#44AAFF" },
+      { "name": "END Footer", "offset": -1, "color": "#44FF88" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PEM Header Info (JSON)",
+      "format": "json",
+      "fields": ["pemHeader", "base64Line1"]
+    },
+    {
+      "name": "PEM Summary (Text)",
+      "format": "text",
+      "fields": ["pemHeader"]
+    }
+  ],
   "software": [
+    "OpenSSL — openssl x509 -in file.pem -text -noout",
+    "certutil (Windows) — certutil -dump file.pem",
     "Common file viewers",
     "Specialized software"
   ],
-  "formatRelationships": {
-    "category": "Certificates",
-    "extensions": [
-      ".pem",
-      ".crt",
-      ".cer"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "format": "DER",
+      "relationship": "PEM is Base64+armor encoding of DER binary format",
+      "note": "Convert with: openssl x509 -in file.pem -outform DER -out file.der"
+    }
+  ],
   "MimeTypes": [
-    "application/octet-stream"
+    "application/x-pem-file",
+    "application/x-x509-ca-cert",
+    "text/plain"
   ],
   "Software": [
     "Hex Editor",
     "File Viewer",
     "Archive Manager"
   ],
+  "useCases": [
+    "X.509 certificate distribution for TLS/HTTPS servers",
+    "Public key sharing for SSH and code signing",
+    "Certificate chain file for web server configuration",
+    "Private key storage (encrypted or plaintext)",
+    "Certificate Signing Request (CSR) submission to CAs"
+  ],
   "UseCases": [
     "File storage",
     "Data exchange",
     "Archive"
   ],
+  "technicalDetails": {
+    "encoding": "Base64 with 64-character lines and CRLF or LF endings",
+    "armor": "-----BEGIN <TYPE>----- / -----END <TYPE>-----",
+    "innerFormat": "DER-encoded ASN.1 (X.509 certificate, PKCS#8 key, etc.)",
+    "commonTypes": "CERTIFICATE, PRIVATE KEY, PUBLIC KEY, CERTIFICATE REQUEST, ENCRYPTED PRIVATE KEY, RSA PRIVATE KEY",
+    "rfc": "RFC 7468 (textual encodings of PKIX/PKCS/CMS structures)"
+  },
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 85,
     "DocumentationLevel": "standard",
     "BlocksDefined": 8,
     "ValidationRules": 0,
@@ -163,16 +247,21 @@
   "forensic": {
     "category": "certificate",
     "riskLevel": "medium",
+    "notes": [
+      "PEM files may contain private keys — unencrypted private keys are high-risk if exposed",
+      "Verify BEGIN type matches expected content (e.g., CERTIFICATE vs PRIVATE KEY)",
+      "Self-signed certificates or expired certificates may indicate misconfiguration or attack"
+    ],
     "suspiciousPatterns": []
   },
-  "aiHints": {
-    "analysisContext": "PEM-encoded X.509 certificate - Base64 encoded certificate",
-    "suggestedInspections": [
-      "Verify PEM Certificate ASN.1 structure, tag-length-value encoding",
-      "Check certificate dates, issuer DN, and key algorithm OIDs",
-      "Inspect extensions (SAN, key usage) and signature algorithm"
-    ]
-  },
+  "aiHints": [
+    "PEM is a text-safe Base64 wrapper around binary DER-encoded ASN.1 structures",
+    "The armor header type (CERTIFICATE, PRIVATE KEY, etc.) identifies the payload format",
+    "Multiple PEM blocks can be concatenated in one file (certificate chain or key+cert bundle)",
+    "Decode Base64 payload to DER, then parse ASN.1 TLV structure for certificate fields",
+    "Check for unencrypted PRIVATE KEY blocks — these represent immediate credential exposure risk",
+    "openssl x509 -in file.pem -text -noout shows full human-readable certificate details"
+  ],
   "diff": {
     "keyFields": [
       "pem_header"

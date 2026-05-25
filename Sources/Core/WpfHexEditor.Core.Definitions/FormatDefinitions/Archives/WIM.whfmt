@@ -1,14 +1,22 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "formatName": "Windows Imaging Format",
   "formatId": "WIM",
   "version": "1.0.2",
   "diffMode": "binary",
-  "extensions": [ ".wim", ".esd", ".swm" ],
+  "extensions": [
+    ".wim",
+    ".esd",
+    ".swm"
+  ],
   "description": "Windows Imaging Format (WIM) is a file-based disk image format used by Microsoft for deploying Windows OS installations. The header begins with an 8-byte ASCII magic 'MSWIM\u0000\u0000\u0000' followed by header size, image count, and compression type fields.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "MimeTypes": [ "application/x-ms-wim", "application/octet-stream" ],
+  "MimeTypes": [
+    "application/x-ms-wim",
+    "application/octet-stream"
+  ],
   "UseCases": [
     "Windows OS deployment and imaging (install.wim / boot.wim)",
     "Incremental backup of Windows system volumes",
@@ -20,14 +28,35 @@
     "https://wimlib.net/man1/wimlib-imagex.html"
   ],
   "software": [
-    { "name": "DISM",       "url": "https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/dism-overview", "role": "Deployment Image Servicing and Management" },
-    { "name": "wimlib",     "url": "https://wimlib.net/",               "role": "Open-source WIM library and tools" },
-    { "name": "7-Zip",      "url": "https://www.7-zip.org/",            "role": "Can open WIM archives for extraction" }
+    {
+      "name": "DISM",
+      "url": "https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/dism-overview",
+      "role": "Deployment Image Servicing and Management"
+    },
+    {
+      "name": "wimlib",
+      "url": "https://wimlib.net/",
+      "role": "Open-source WIM library and tools"
+    },
+    {
+      "name": "7-Zip",
+      "url": "https://www.7-zip.org/",
+      "role": "Can open WIM archives for extraction"
+    }
   ],
   "formatRelationships": [
-    { "format": "ESD",  "relationship": ".esd is an encrypted/compressed WIM variant used for Windows Update delivery" },
-    { "format": "SWM",  "relationship": ".swm is a split WIM spanning multiple files" },
-    { "format": "ISO",  "relationship": "Windows installation ISOs contain WIM files inside the sources directory" }
+    {
+      "format": "ESD",
+      "relationship": ".esd is an encrypted/compressed WIM variant used for Windows Update delivery"
+    },
+    {
+      "format": "SWM",
+      "relationship": ".swm is a split WIM spanning multiple files"
+    },
+    {
+      "format": "ISO",
+      "relationship": "Windows installation ISOs contain WIM files inside the sources directory"
+    }
   ],
   "detection": {
     "signatures": [
@@ -41,15 +70,51 @@
     "matchMode": "any",
     "MinimumScore": 85,
     "Strength": "Strong",
-    "EntropyHint": { "min": 5.5, "max": 8.0, "note": "Compressed WIM data has high entropy; metadata sections have low entropy" },
+    "EntropyHint": {
+      "min": 5.5,
+      "max": 8.0,
+      "note": "Compressed WIM data has high entropy; metadata sections have low entropy"
+    },
     "validation": "Bytes 0-7 must be 4D 57 49 4D 00 00 00 00. Header size at offset 8 (4B LE) should be 0xD0 (208) for WIM v1.13. Image count at offset 16 must be > 0."
   },
   "variables": [
-    { "name": "wimMagic",        "type": "ascii",  "offset": 0,  "length": 8,  "description": "WIM magic 'MSWIM' followed by 3 null bytes" },
-    { "name": "wimHeaderSize",   "type": "uint32", "offset": 8,  "length": 4,  "endian": "little", "description": "Header size in bytes; typically 0xD0 (208) for WIM 1.13" },
-    { "name": "wimImageCount",   "type": "uint32", "offset": 16, "length": 4,  "endian": "little", "description": "Number of images contained in this WIM file" },
-    { "name": "wimCompression",  "type": "uint32", "offset": 40, "length": 4,  "endian": "little", "description": "Compression type",
-      "valueMap": { "0": "None", "1": "XPRESS", "2": "LZX", "3": "LZMS" } }
+    {
+      "name": "wimMagic",
+      "type": "ascii",
+      "offset": 0,
+      "length": 8,
+      "description": "WIM magic 'MSWIM' followed by 3 null bytes"
+    },
+    {
+      "name": "wimHeaderSize",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Header size in bytes; typically 0xD0 (208) for WIM 1.13"
+    },
+    {
+      "name": "wimImageCount",
+      "type": "uint32",
+      "offset": 16,
+      "length": 4,
+      "endian": "little",
+      "description": "Number of images contained in this WIM file"
+    },
+    {
+      "name": "wimCompression",
+      "type": "uint32",
+      "offset": 40,
+      "length": 4,
+      "endian": "little",
+      "description": "Compression type",
+      "valueMap": {
+        "0": "None",
+        "1": "XPRESS",
+        "2": "LZX",
+        "3": "LZMS"
+      }
+    }
   ],
   "blocks": [
     {
@@ -58,10 +123,30 @@
       "length": 208,
       "description": "WIM file header (208 bytes for v1.13): magic, header size, version, flags, chunk size, GUID, part number, image count, lookup table, directory, metadata, boot metadata, boot index, integrity table",
       "fields": [
-        { "name": "Magic",       "variable": "wimMagic",       "offset": 0,  "length": 8 },
-        { "name": "HeaderSize",  "variable": "wimHeaderSize",  "offset": 8,  "length": 4 },
-        { "name": "ImageCount",  "variable": "wimImageCount",  "offset": 16, "length": 4 },
-        { "name": "Compression", "variable": "wimCompression", "offset": 40, "length": 4 }
+        {
+          "name": "Magic",
+          "variable": "wimMagic",
+          "offset": 0,
+          "length": 8
+        },
+        {
+          "name": "HeaderSize",
+          "variable": "wimHeaderSize",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "ImageCount",
+          "variable": "wimImageCount",
+          "offset": 16,
+          "length": 4
+        },
+        {
+          "name": "Compression",
+          "variable": "wimCompression",
+          "offset": 40,
+          "length": 4
+        }
       ]
     },
     {
@@ -84,13 +169,30 @@
     }
   ],
   "assertions": [
-    { "id": "A1", "description": "Magic must start with 'MSWIM'",  "expression": "wimMagic.startsWith('MSWIM')" },
-    { "id": "A2", "description": "Image count must be greater than 0", "expression": "wimImageCount > 0" },
-    { "id": "A3", "description": "Compression type must be in known set (0-3)", "expression": "wimCompression <= 3" }
+    {
+      "id": "A1",
+      "description": "Magic must start with 'MSWIM'",
+      "expression": "wimMagic.startsWith('MSWIM')"
+    },
+    {
+      "id": "A2",
+      "description": "Image count must be greater than 0",
+      "expression": "wimImageCount > 0"
+    },
+    {
+      "id": "A3",
+      "description": "Compression type must be in known set (0-3)",
+      "expression": "wimCompression <= 3"
+    }
   ],
   "navigation": {
     "entryPoint": "WIMHeader",
-    "structure": [ "WIMHeader", "LookupTable", "ImageMetadata", "FileResources" ],
+    "structure": [
+      "WIMHeader",
+      "LookupTable",
+      "ImageMetadata",
+      "FileResources"
+    ],
     "notes": "The WIM header contains resource descriptors (reshdr) for the lookup table, directory, and XML data. Each reshdr is 24 bytes with packed offset/size fields. Use DISM /Get-ImageInfo to enumerate images without full extraction."
   },
   "inspector": {
@@ -99,7 +201,12 @@
     "groups": [
       {
         "name": "Header",
-        "fields": [ "wimMagic", "wimHeaderSize", "wimImageCount", "wimCompression" ]
+        "fields": [
+          "wimMagic",
+          "wimHeaderSize",
+          "wimImageCount",
+          "wimCompression"
+        ]
       }
     ]
   },
@@ -107,12 +214,22 @@
     {
       "name": "Image Summary CSV",
       "format": "csv",
-      "fields": [ "wimMagic", "wimHeaderSize", "wimImageCount", "wimCompression" ]
+      "fields": [
+        "wimMagic",
+        "wimHeaderSize",
+        "wimImageCount",
+        "wimCompression"
+      ]
     },
     {
       "name": "Header JSON",
       "format": "json",
-      "fields": [ "wimMagic", "wimHeaderSize", "wimImageCount", "wimCompression" ]
+      "fields": [
+        "wimMagic",
+        "wimHeaderSize",
+        "wimImageCount",
+        "wimCompression"
+      ]
     }
   ],
   "forensic": {
@@ -125,16 +242,13 @@
       "Modified timestamps in image metadata inconsistent with declared image capture date"
     ]
   },
-  "aiHints": {
-    "analysisContext": "WIM is a file-based image format where multiple OS images share file resources via single-instance storage (content-addressable by SHA-1 hash). The lookup table maps SHA-1 hashes to resource locations. Images are enumerated in an XML descriptor embedded in the WIM.",
-    "suggestedInspections": [
-      "Parse the embedded XML data resource to extract image names, descriptions, and capture timestamps",
-      "Decode the lookup table to enumerate all file resources and their SHA-1 hashes",
-      "Check for an integrity table (SHA-1 hashes of 10 MB WIM chunks) to verify file integrity",
-      "Compare wimImageCount in the binary header against the count of IMAGE elements in the XML descriptor",
-      "Identify compression algorithm (None/XPRESS/LZX/LZMS) to select appropriate decompressor for resource extraction"
-    ]
-  },
+  "aiHints": [
+    "WIM header: 'MSWIM\\x00\\x00\\x00'(8) + cbSize(4,LE) + imageCount(4,LE) + flags(4,LE) + chunkSize(4,LE) + GUID(16)",
+    "WIM uses single-instance file storage: duplicate files across images stored only once (deduplication)",
+    "Flags: 0x02=compressed (XPRESS), 0x04=boot image present, 0x08=read-only, 0x40=encrypted",
+    "DISM and ImageX tools manage WIM images for Windows deployment and servicing",
+    "apply.exe or DISM /Apply-Image for deployment; wimlib for cross-platform WIM handling"
+  ],
   "TechnicalDetails": {
     "endianness": "Little-endian",
     "headerSize": 208,
@@ -145,7 +259,78 @@
   },
   "QualityMetrics": {
     "CompletenessScore": 87,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "4D5357494D000000",
+      "offset": 0,
+      "label": "MSWIM\u0000\u0000\u0000 — Windows Imaging Format magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 8,
+        "description": "'MSWIM\u0000\u0000\u0000' header magic"
+      },
+      {
+        "name": "cbSize",
+        "type": "uint32le",
+        "offset": 8,
+        "length": 4,
+        "description": "Header size in bytes (136 for WIM 1.x)"
+      },
+      {
+        "name": "imageCount",
+        "type": "uint32le",
+        "offset": 12,
+        "length": 4,
+        "description": "Number of images in the WIM file"
+      },
+      {
+        "name": "resolvedFlags",
+        "type": "uint32le",
+        "offset": 16,
+        "length": 4,
+        "description": "WIM flags: boot(0x04), compressed(0x02), readonly(0x08)"
+      },
+      {
+        "name": "chunkSize",
+        "type": "uint32le",
+        "offset": 20,
+        "length": 4,
+        "description": "Compression chunk size (32768 default)"
+      },
+      {
+        "name": "guid",
+        "type": "hex",
+        "offset": 24,
+        "length": 16,
+        "description": "WIM file GUID"
+      },
+      {
+        "name": "partNumber",
+        "type": "uint16le",
+        "offset": 40,
+        "length": 2,
+        "description": "Part number in multi-part WIM set"
+      },
+      {
+        "name": "totalParts",
+        "type": "uint16le",
+        "offset": 42,
+        "length": 2,
+        "description": "Total number of parts in WIM set"
+      }
+    ]
   }
 }
