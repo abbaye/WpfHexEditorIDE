@@ -41,7 +41,8 @@ internal sealed class StringTimelineView : FrameworkElement
     private static readonly SolidColorBrush TooltipMetaFg      = FreezeB(new SolidColorBrush(Color.FromRgb(0x77, 0x77, 0x77)));
 
     // Pre-built heatmap brush pool keyed by quantized alpha.
-    private const byte HeatMaxAlpha    = 0x72;
+    // Drawn in a 4px band only — can use full opacity without masking string rows.
+    private const byte HeatMaxAlpha    = 0xC0;   // 75% opaque max
     private const int  HeatAlphaLevels = 64;
     private static readonly SolidColorBrush[] HeatBrushes = BuildHeatBrushes();
     private static SolidColorBrush[] BuildHeatBrushes()
@@ -97,6 +98,8 @@ internal sealed class StringTimelineView : FrameworkElement
 
     private const double RowHeight    = 12.0;
     private const double RulerHeight  = 18.0;
+    private const double HeatBandH      = 4.0;   // density band between ruler and string rows
+    private const double ContentOffsetY = RulerHeight + HeatBandH;  // y-origin of string rows
     private const int    HeatBuckets  = 512;
     private const double MinOpacity   = 0.35;
     private const double OpacityRange = 0.65;
@@ -526,8 +529,8 @@ internal sealed class StringTimelineView : FrameworkElement
         // cause MeasureOverride to apply zoom a second time (zoom²) on the next pass.
         double baseW = ViewportBaseWidth > 0 ? ViewportBaseWidth : 200;
         double w     = Math.Max(baseW, 1) * _zoom;
-        double h     = RulerHeight + _rowCount * RowHeight;
-        if (double.IsInfinity(h) || double.IsNaN(h)) h = RulerHeight + MaxRows * RowHeight;
+        double h     = ContentOffsetY + _rowCount * RowHeight;
+        if (double.IsInfinity(h) || double.IsNaN(h)) h = ContentOffsetY + MaxRows * RowHeight;
         return new Size(w, h);
     }
 
@@ -552,9 +555,9 @@ internal sealed class StringTimelineView : FrameworkElement
     private void DrawDensityHeatmap(DrawingContext dc, double h, double pixelW)
     {
         if (_densityMap.Length == 0) return;
-        double bucketW  = pixelW / HeatBuckets;
-        double contentH = h - RulerHeight;
-        double vpEnd    = ViewportOffsetX + ViewportWidth;
+        double bucketW = pixelW / HeatBuckets;
+        double vpEnd   = ViewportOffsetX + ViewportWidth;
+        double bandY   = RulerHeight;
         for (int i = 0; i < _densityMap.Length; i++)
         {
             float v = _densityMap[i];
@@ -562,7 +565,7 @@ internal sealed class StringTimelineView : FrameworkElement
             double bx = i * bucketW;
             if (bx + bucketW < ViewportOffsetX || bx > vpEnd) continue;
             int brushIdx = (int)Math.Clamp(v * (HeatAlphaLevels - 1), 0, HeatAlphaLevels - 1);
-            dc.DrawRectangle(HeatBrushes[brushIdx], null, new Rect(bx, RulerHeight, bucketW, contentH));
+            dc.DrawRectangle(HeatBrushes[brushIdx], null, new Rect(bx, bandY, bucketW, HeatBandH));
         }
     }
 
@@ -579,7 +582,7 @@ internal sealed class StringTimelineView : FrameworkElement
 
         for (int row = 0; row < _rowCount; row++)
         {
-            double y     = RulerHeight + row * RowHeight + 1;
+            double y     = ContentOffsetY + row * RowHeight + 1;
             double rectH = RowHeight - 2;
             int    rowOff = row * GridCols;
 
@@ -673,7 +676,7 @@ internal sealed class StringTimelineView : FrameworkElement
     private StringRun? HitTestRun(Point pos)
     {
         if (_bufferLength <= 0 || ActualWidth <= 0 || _rowCount == 0) return null;
-        if (pos.Y < RulerHeight) return null;
+        if (pos.Y < ContentOffsetY) return null;
 
         double pixelW  = ActualWidth * _zoom;
         double cellW   = pixelW / GridCols;
