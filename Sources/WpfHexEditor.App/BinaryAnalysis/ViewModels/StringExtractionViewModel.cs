@@ -226,6 +226,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     public void TogglePin(StringRun run)
     {
         if (!_pinnedRuns.Remove(run)) _pinnedRuns.Add(run);
+        OnPropertyChanged(nameof(PinnedRunsSnapshot));
         ScheduleFilterRefresh();
     }
 
@@ -643,6 +644,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         var activeKinds     = _activeKinds;
         var rangeFrom       = _rangeFrom;
         var rangeTo         = _rangeTo;
+        var offsetRangeStart = OffsetRangeStart;
+        var offsetRangeEnd   = OffsetRangeEnd;
         var minUnique       = _minUniqueChars;
         var exclEntropy     = _excludeHighEntropy;
         var entropyMap      = _entropyMap;
@@ -673,6 +676,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
                 {
                     if (!activeEncodings.Contains(run.Encoding)) continue;
                     if (run.Offset < rangeFrom || run.Offset + run.Length > rangeTo) continue;
+                    if (offsetRangeStart.HasValue && run.Offset < offsetRangeStart.Value) continue;
+                    if (offsetRangeEnd.HasValue   && run.Offset > offsetRangeEnd.Value)   continue;
                     if (run.UniqueCharCount < minUnique) continue;
                     if (exclEntropy && entropyMap is not null)
                     {
@@ -910,6 +915,30 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     public byte[]? LastBuffer => _lastBuffer;
 
     public long LastBufferLength => _lastBuffer?.Length ?? 0;
+
+    /// <summary>
+    /// Entropy map: one byte per 256-byte block, value = (Shannon entropy × 32) clamped to 0–255.
+    /// Safe to read from the UI thread after a scan completes.
+    /// </summary>
+    public byte[]? EntropyMap => _entropyMap;
+
+    /// <summary>Snapshot of currently pinned runs — safe to enumerate on UI thread.</summary>
+    public IReadOnlyCollection<StringRun> PinnedRunsSnapshot => _pinnedRuns;
+
+    /// <summary>
+    /// Applies an offset range filter to the Results grid.
+    /// Pass <c>null</c> to clear the filter.
+    /// </summary>
+    public void SetOffsetRangeFilter(long? startOffset, long? endOffset)
+    {
+        OffsetRangeStart = startOffset;
+        OffsetRangeEnd   = endOffset;
+        _filterDebounceTimer?.Stop();
+        _filterDebounceTimer?.Start();
+    }
+
+    public long? OffsetRangeStart { get; private set; }
+    public long? OffsetRangeEnd   { get; private set; }
 
     /// <summary>Notifies the IDE to apply the TBL at <paramref name="filePath"/> to the active HexEditor.</summary>
     public void PublishLoadTbl(string filePath)

@@ -13,6 +13,12 @@
 //   BuildGrid  — O(n) scatter into GridCell[MaxRows×GridCols]; offloaded to Task.Run.
 //   OnRender   — O(MaxRows×GridCols) = O(61 440) fixed, independent of run count.
 //   Zoom/Scroll — O(1): only InvalidateMeasure/Visual, no rebuild.
+//
+// Feature overlays (all pure DrawingContext, no sub-controls):
+//   F1 Entropy    — sparkline curve [0,EntropyBandH] above string rows, blue gradient.
+//   F2 Range sel  — clic-drag selects an offset range; filters Results grid via VM.
+//   F3 Caret sync — vertical white line tracks HexEditor caret in real time.
+//   F4 Pinned     — gold triangle markers at pinned-run positions in the heat band.
 
 using System.Windows;
 using System.Windows.Controls;
@@ -93,14 +99,28 @@ internal sealed class StringTimelineView : FrameworkElement
         BrushIndex = index;
     }
 
+    // ── Overlay brushes/pens ──────────────────────────────────────────────────
+    // F1 Entropy sparkline
+    private static readonly Pen   EntropyPen      = FreezePen(new Pen(FreezeB(new SolidColorBrush(Color.FromArgb(0x99, 0x40, 0x80, 0xFF))), 1.0));
+    private static readonly SolidColorBrush EntropyFillBrush = FreezeB(new SolidColorBrush(Color.FromArgb(0x28, 0x40, 0x80, 0xFF)));
+    // F2 Range selection
+    private static readonly SolidColorBrush SelFillBrush   = FreezeB(new SolidColorBrush(Color.FromArgb(0x44, 0x33, 0x99, 0xFF)));
+    private static readonly Pen             SelBorderPen   = FreezePen(new Pen(FreezeB(new SolidColorBrush(Color.FromArgb(0xCC, 0x66, 0xBB, 0xFF))), 1.0));
+    // F3 Caret line
+    private static readonly Pen   CaretPen        = FreezePen(new Pen(FreezeB(new SolidColorBrush(Color.FromArgb(0x99, 0xFF, 0xFF, 0xFF))), 1.0));
+    // F4 Pinned markers
+    private static readonly SolidColorBrush PinBrush       = FreezeB(new SolidColorBrush(Color.FromRgb(0xFF, 0xD7, 0x00)));
+
     private static SolidColorBrush FreezeB(SolidColorBrush b) { b.Freeze(); return b; }
     private static Pen FreezePen(Pen p) { p.Freeze(); return p; }
 
     private const double RowHeight    = 12.0;
     private const double RulerHeight  = 18.0;
-    private const double HeatBandH      = 4.0;   // density band between ruler and string rows
-    private const double ContentOffsetY = RulerHeight + HeatBandH;  // y-origin of string rows
+    private const double HeatBandH      = 4.0;    // density band between ruler and string rows
+    private const double EntropyBandH  = 20.0;   // F1: entropy sparkline height above string rows
+    private const double ContentOffsetY = RulerHeight + HeatBandH + EntropyBandH;  // y-origin of string rows
     private const int    HeatBuckets  = 512;
+    private const double DragThreshPx  = 4.0;    // F2: min drag distance before range mode activates
     private const double MinOpacity   = 0.35;
     private const double OpacityRange = 0.65;
     private const double MinRunNorm   = 0.0008;
@@ -172,6 +192,35 @@ internal sealed class StringTimelineView : FrameworkElement
 
     // Not readonly: replaced on every rebuild to cancel the previous in-flight Task.Run.
     private CancellationTokenSource _rebuildCts = new();
+
+    // ── F1: Entropy overlay ───────────────────────────────────────────────────
+    // Normalised per-column entropy [0,1], GridCols buckets, built in BuildGrid.
+    private float[] _entropyBuckets = [];
+
+    // ── F2: Range selection ───────────────────────────────────────────────────
+    // Normalised [0,1] drag coordinates. Null = no active selection.
+    private double? _selStartNorm;
+    private double? _selEndNorm;
+    private Point   _dragStartPos;
+    private bool    _isDragging;
+
+    // Callback: notifies StringTimelinePanel when a range is committed (or cleared).
+    public Action<long?, long?>? RangeSelected { get; set; }
+
+    // ── F3: Caret sync ────────────────────────────────────────────────────────
+    // Normalised caret position [0,1]. -1 = not set.
+    private double _caretNorm = -1;
+
+    /// <summary>Update caret line from HexEditor position. Thread-safe (posts to UI thread).</summary>
+    public void SetCaretOffset(long offset)
+    {
+        if (_bufferLength <= 0) return;
+        double norm = Math.Clamp((double)offset / _bufferLength, 0.0, 1.0);
+        // Guard: skip repaint if position hasn't moved by at least one cell width.
+        if (Math.Abs(norm - _caretNorm) < 1.0 / GridCols) return;
+        _caretNorm = norm;
+        InvalidateVisual();
+    }
 
     // ── Tooltip — Popup tracked on MouseMove ──────────────────────────────────
     // We use a Popup instead of ToolTip: ToolTip.PlacementMode.Mouse only positions
@@ -371,13 +420,15 @@ internal sealed class StringTimelineView : FrameworkElement
 
         var snapshot     = _vm?.GetAllRunsSnapshot() ?? [];
         var bufferLength = _vm?.LastBufferLength ?? 0;
+        var entropyMap   = _vm?.EntropyMap;
 
         if (snapshot.Length == 0 || bufferLength <= 0)
         {
             _bufferLength = bufferLength;
             Array.Fill(_grid, GridCell.Empty);
-            _densityMap = [];
-            _rowCount   = 0;
+            _densityMap     = [];
+            _entropyBuckets = [];
+            _rowCount       = 0;
             Array.Clear(_hitCols);
             InvalidateMeasure();
             InvalidateVisual();
@@ -386,7 +437,7 @@ internal sealed class StringTimelineView : FrameworkElement
 
         _bufferLength = bufferLength;
 
-        Task.Run(() => BuildGrid(snapshot, bufferLength, cts.Token), cts.Token)
+        Task.Run(() => BuildGrid(snapshot, bufferLength, entropyMap, cts.Token), cts.Token)
             .ContinueWith(t =>
             {
                 if (t.IsCanceled || t.IsFaulted || cts.IsCancellationRequested) return;
@@ -394,10 +445,11 @@ internal sealed class StringTimelineView : FrameworkElement
                 {
                     if (cts.IsCancellationRequested) return;
                     var r = t.Result;
-                    _grid       = r.Grid;
-                    _densityMap = r.DensityMap;
-                    _rowCount   = r.RowCount;
-                    _hitCols    = r.HitCols;
+                    _grid           = r.Grid;
+                    _densityMap     = r.DensityMap;
+                    _entropyBuckets = r.EntropyBuckets;
+                    _rowCount       = r.RowCount;
+                    _hitCols        = r.HitCols;
                     InvalidateMeasure();
                     InvalidateVisual();
                 }, System.Windows.Threading.DispatcherPriority.Render);
@@ -432,6 +484,11 @@ internal sealed class StringTimelineView : FrameworkElement
             _refreshDebounce.Stop();
             _refreshDebounce.Start();
         }
+        else if (e.PropertyName is nameof(StringExtractionViewModel.PinnedRunsSnapshot))
+        {
+            // Pinned markers change without a full scan — just redraw.
+            InvalidateVisual();
+        }
     }
 
     private void OnSizeChanged(object _, SizeChangedEventArgs e)
@@ -459,16 +516,18 @@ internal sealed class StringTimelineView : FrameworkElement
     private sealed class GridResult(
         GridCell[] grid,
         float[] densityMap,
+        float[] entropyBuckets,
         int rowCount,
         List<(StringRun run, int row, double xNorm, double rwNorm)>[] hitCols)
     {
-        public GridCell[]  Grid       { get; } = grid;
-        public float[]     DensityMap { get; } = densityMap;
-        public int         RowCount   { get; } = rowCount;
+        public GridCell[]  Grid           { get; } = grid;
+        public float[]     DensityMap     { get; } = densityMap;
+        public float[]     EntropyBuckets { get; } = entropyBuckets;
+        public int         RowCount       { get; } = rowCount;
         public List<(StringRun run, int row, double xNorm, double rwNorm)>[] HitCols { get; } = hitCols;
     }
 
-    private static GridResult BuildGrid(StringRun[] runs, long bufferLength, CancellationToken ct)
+    private static GridResult BuildGrid(StringRun[] runs, long bufferLength, byte[]? entropyMap, CancellationToken ct)
     {
         var grid    = new GridCell[MaxRows * GridCols];
         Array.Fill(grid, GridCell.Empty);
@@ -481,7 +540,7 @@ internal sealed class StringTimelineView : FrameworkElement
         foreach (var run in runs)
         {
             if (ct.IsCancellationRequested)
-                return new GridResult(grid, [], 0, hitCols);
+                return new GridResult(grid, [], [], 0, hitCols);
 
             double xNorm  = run.Offset * invBuffer;
             double rwNorm = Math.Max(MinRunNorm, run.Length * invBuffer);
@@ -517,7 +576,28 @@ internal sealed class StringTimelineView : FrameworkElement
             for (int i = 0; i < HeatBuckets; i++) densityMap[i] = density[i] / dmax;
         }
 
-        return new GridResult(grid, densityMap, rowCount, hitCols);
+        // F1: build per-column entropy buckets [0,1] from the raw entropy byte map.
+        // Each bucket averages the entropy bytes that fall in its [start, end) range.
+        float[] entropyBuckets = [];
+        if (entropyMap is { Length: > 0 })
+        {
+            entropyBuckets = new float[GridCols];
+            var bucketSum   = new double[GridCols];
+            var bucketCount = new int[GridCols];
+            double invLen = 1.0 / entropyMap.Length;
+            for (int i = 0; i < entropyMap.Length; i++)
+            {
+                int bucket = Math.Clamp((int)(i * invLen * GridCols), 0, GridCols - 1);
+                bucketSum[bucket]   += entropyMap[i];
+                bucketCount[bucket] += 1;
+            }
+            for (int i = 0; i < GridCols; i++)
+                entropyBuckets[i] = bucketCount[i] > 0
+                    ? (float)(bucketSum[i] / bucketCount[i] / 255.0)
+                    : 0f;
+        }
+
+        return new GridResult(grid, densityMap, entropyBuckets, rowCount, hitCols);
     }
 
     // ── Layout ────────────────────────────────────────────────────────────────
@@ -549,7 +629,77 @@ internal sealed class StringTimelineView : FrameworkElement
         double pixelW = w;
         DrawRuler(dc, w, pixelW, pixelsPerDip);
         DrawDensityHeatmap(dc, h, pixelW);
+        DrawPinnedMarkers(dc, pixelW);
+        DrawEntropyOverlay(dc, pixelW);
         DrawGrid(dc, h, pixelW);
+        DrawSelectionOverlay(dc, h, pixelW);
+        DrawCaretLine(dc, h, pixelW);
+    }
+
+    // F1: entropy sparkline in the EntropyBandH strip above string rows.
+    // Draws a filled polyline: zero baseline at ContentOffsetY, peak at ContentOffsetY-EntropyBandH.
+    private void DrawEntropyOverlay(DrawingContext dc, double pixelW)
+    {
+        if (_entropyBuckets.Length == 0) return;
+        double colW    = pixelW / GridCols;
+        double bandTop = RulerHeight + HeatBandH;        // top of entropy band
+        double bandBot = bandTop + EntropyBandH;          // = ContentOffsetY
+        var geometry   = new StreamGeometry();
+        using (var ctx = geometry.Open())
+        {
+            ctx.BeginFigure(new Point(0, bandBot), isFilled: true, isClosed: true);
+            for (int i = 0; i < _entropyBuckets.Length; i++)
+            {
+                double x = i * colW;
+                double y = bandBot - _entropyBuckets[i] * EntropyBandH;
+                ctx.LineTo(new Point(x, y), isStroked: true, isSmoothJoin: false);
+            }
+            ctx.LineTo(new Point(pixelW, bandBot), isStroked: false, isSmoothJoin: false);
+        }
+        geometry.Freeze();
+        dc.DrawGeometry(EntropyFillBrush, EntropyPen, geometry);
+    }
+
+    // F2: semi-transparent purple rect over the selected offset range.
+    private void DrawSelectionOverlay(DrawingContext dc, double h, double pixelW)
+    {
+        if (_selStartNorm is not { } s || _selEndNorm is not { } e) return;
+        double x1 = Math.Min(s, e) * pixelW;
+        double x2 = Math.Max(s, e) * pixelW;
+        if (x2 - x1 < 1) return;
+        dc.DrawRectangle(SelFillBrush, SelBorderPen, new Rect(x1, RulerHeight, x2 - x1, h - RulerHeight));
+    }
+
+    // F3: 1px vertical white line at the current HexEditor caret position.
+    private void DrawCaretLine(DrawingContext dc, double h, double pixelW)
+    {
+        if (_caretNorm < 0) return;
+        double x = Math.Clamp(_caretNorm * pixelW, 0, pixelW - 1);
+        dc.DrawLine(CaretPen, new Point(x, RulerHeight), new Point(x, h));
+    }
+
+    // F4: gold downward-pointing triangles at pinned run positions in the heat band.
+    private void DrawPinnedMarkers(DrawingContext dc, double pixelW)
+    {
+        var pins = _vm?.PinnedRunsSnapshot;
+        if (pins is null || _bufferLength <= 0) return;
+        double invBuf = 1.0 / _bufferLength;
+        double bandMid = RulerHeight + HeatBandH / 2.0;
+        const double TriH = 5.0;
+        const double TriW = 5.0;
+        foreach (var run in pins)
+        {
+            double x = Math.Clamp(run.Offset * invBuf * pixelW, 0, pixelW - 1);
+            var tri = new StreamGeometry();
+            using (var ctx = tri.Open())
+            {
+                ctx.BeginFigure(new Point(x, bandMid + TriH / 2), isFilled: true, isClosed: true);
+                ctx.LineTo(new Point(x - TriW / 2, bandMid - TriH / 2), isStroked: true, isSmoothJoin: false);
+                ctx.LineTo(new Point(x + TriW / 2, bandMid - TriH / 2), isStroked: true, isSmoothJoin: false);
+            }
+            tri.Freeze();
+            dc.DrawGeometry(PinBrush, null, tri);
+        }
     }
 
     private void DrawDensityHeatmap(DrawingContext dc, double h, double pixelW)
@@ -641,7 +791,32 @@ internal sealed class StringTimelineView : FrameworkElement
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        var hit = HitTestRun(e.GetPosition(this));
+        var pos = e.GetPosition(this);
+
+        // F2: start drag once threshold is exceeded; update while dragging.
+        if (e.LeftButton == MouseButtonState.Pressed)
+        {
+            double pixelW = ActualWidth;
+            if (!_isDragging)
+            {
+                double dx = pos.X - _dragStartPos.X;
+                double dy = pos.Y - _dragStartPos.Y;
+                if (Math.Sqrt(dx * dx + dy * dy) >= DragThreshPx)
+                {
+                    _isDragging   = true;
+                    _selStartNorm = Math.Clamp(_dragStartPos.X / pixelW, 0.0, 1.0);
+                }
+            }
+            if (_isDragging)
+            {
+                _selEndNorm = Math.Clamp(pos.X / pixelW, 0.0, 1.0);
+                _tooltipPopup.IsOpen = false;
+                InvalidateVisual();
+                return;
+            }
+        }
+
+        var hit = HitTestRun(pos);
         if (hit is not null)
         {
             UpdateTooltipContent(hit);
@@ -664,13 +839,60 @@ internal sealed class StringTimelineView : FrameworkElement
         base.OnMouseLeave(e);
         _tooltipRun          = null;
         _tooltipPopup.IsOpen = false;
+        // Cancel a drag that left the element without releasing.
+        if (_isDragging)
+        {
+            _isDragging = false;
+            ReleaseMouseCapture();
+        }
     }
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
-        var run = HitTestRun(e.GetPosition(this));
-        if (run is not null) RunSelected?.Invoke(run);
+        var pos = e.GetPosition(this);
+
+        // F2: begin drag for range selection. Threshold checked in MouseUp.
+        _dragStartPos = pos;
+        _isDragging   = false;
+        CaptureMouse();
+    }
+
+    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+    {
+        base.OnMouseLeftButtonUp(e);
+        ReleaseMouseCapture();
+        var pos = e.GetPosition(this);
+
+        if (_isDragging)
+        {
+            // Commit the selection range.
+            _isDragging = false;
+            if (_selStartNorm.HasValue && _selEndNorm.HasValue && _bufferLength > 0)
+            {
+                double lo = Math.Min(_selStartNorm.Value, _selEndNorm.Value);
+                double hi = Math.Max(_selStartNorm.Value, _selEndNorm.Value);
+                long startOff = (long)(lo * _bufferLength);
+                long endOff   = (long)(hi * _bufferLength);
+                RangeSelected?.Invoke(startOff, endOff);
+            }
+            InvalidateVisual();
+        }
+        else
+        {
+            // Simple click: clear selection, then hit-test for run selection.
+            bool hadSel = _selStartNorm.HasValue;
+            _selStartNorm = null;
+            _selEndNorm   = null;
+            if (hadSel)
+            {
+                RangeSelected?.Invoke(null, null);
+                InvalidateVisual();
+            }
+
+            var run = HitTestRun(pos);
+            if (run is not null) RunSelected?.Invoke(run);
+        }
     }
 
     private StringRun? HitTestRun(Point pos)
@@ -678,7 +900,7 @@ internal sealed class StringTimelineView : FrameworkElement
         if (_bufferLength <= 0 || ActualWidth <= 0 || _rowCount == 0) return null;
         if (pos.Y < ContentOffsetY) return null;
 
-        double pixelW  = ActualWidth * _zoom;
+        double pixelW  = ActualWidth;   // ActualWidth == baseW * zoom after MeasureOverride
         double cellW   = pixelW / GridCols;
         // Check the clicked column and its immediate neighbours for tolerance.
         int    colHit  = Math.Clamp((int)(pos.X / cellW), 0, GridCols - 1);
@@ -899,8 +1121,12 @@ internal sealed class StringTimelinePanel : Border
     public void Attach(StringExtractionViewModel vm, Action<StringRun> onSelected)
     {
         _view.Attach(vm);
-        _view.RunSelected = onSelected;
+        _view.RunSelected  = onSelected;
+        _view.RangeSelected = (start, end) => vm.SetOffsetRangeFilter(start, end);
     }
+
+    // Called by the host panel when the HexEditor caret moves.
+    public void SetCaretOffset(long offset) => _view.SetCaretOffset(offset);
 
     public void Refresh() => _view.Refresh();
 }
