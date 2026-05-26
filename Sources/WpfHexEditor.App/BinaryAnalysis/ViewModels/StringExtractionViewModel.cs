@@ -401,11 +401,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private void OnHexEditorSelectionChanged(object? sender, EventArgs e)
     {
-        if (_lastBufferPath is not null &&
-            string.Equals(_context?.HexEditor.CurrentFilePath, _lastBufferPath, StringComparison.OrdinalIgnoreCase))
-        {
-            if (!_isOutdated) IsOutdated = true;
-        }
+        // NOTE: IsOutdated is NOT set here. Caret movement does not make the scan stale —
+        // only an actual file change (OnFileChanged, FileSystemWatcher) should. Setting it
+        // here caused a false OUTDATED badge on the very first click after every scan.
 
         if (!_syncCaretToGrid) return;
 

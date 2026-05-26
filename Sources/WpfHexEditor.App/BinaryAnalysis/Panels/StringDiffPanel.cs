@@ -8,9 +8,14 @@
 //               handlers that fired on every subsequent DataContext swap).
 //               Status filter: CollectionViewSource + Predicate — O(n) filter, no re-diff.
 //               Row coloring: DataGrid.RowStyle DataTrigger — zero allocations at render time.
+//               Text search: applied as an extra predicate on the same CollectionView.
+//               Sort: ICollectionView.SortDescriptions, multi-column (shift+click header).
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -112,8 +117,9 @@ internal sealed class StringDiffPanel : UserControl
     private ComboBox  _snapACombo  = null!;
     private ComboBox  _snapBCombo  = null!;
     private TextBlock _summaryText = null!;
+    private TextBox   _searchBox   = null!;
 
-    // Filter state — bitmask mirrors StringDiffStatus enum values
+    // Filter state — active status flags
     private HashSet<StringDiffStatus> _activeFilters = [
         StringDiffStatus.Added,
         StringDiffStatus.Removed,
@@ -136,8 +142,11 @@ internal sealed class StringDiffPanel : UserControl
     // Full diff result (before status filtering)
     private IReadOnlyList<StringDiffEntry> _lastDiffResult = [];
 
-    // CollectionView wrapping the DataGrid ItemsSource for in-place filter
+    // CollectionView wrapping the DataGrid ItemsSource for in-place filter + sort
     private ListCollectionView? _collectionView;
+
+    // Current text search term (lower-case, trimmed)
+    private string _searchTerm = string.Empty;
 
     public StringDiffPanel(StringExtractionViewModel vm)
     {
@@ -150,21 +159,25 @@ internal sealed class StringDiffPanel : UserControl
         var root = new Grid();
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.SetResourceReference(BackgroundProperty, "TE_Background");
 
         var snapshotBar = BuildSnapshotBar();
         var filterBar   = BuildFilterBar();
+        var searchBar   = BuildSearchBar();
         var grid        = BuildDataGrid();
         var legend      = BuildLegend();
 
         Grid.SetRow(snapshotBar, 0);
         Grid.SetRow(filterBar,   1);
-        Grid.SetRow(grid,        2);
-        Grid.SetRow(legend,      3);
+        Grid.SetRow(searchBar,   2);
+        Grid.SetRow(grid,        3);
+        Grid.SetRow(legend,      4);
         root.Children.Add(snapshotBar);
         root.Children.Add(filterBar);
+        root.Children.Add(searchBar);
         root.Children.Add(grid);
         root.Children.Add(legend);
         return root;
@@ -176,19 +189,36 @@ internal sealed class StringDiffPanel : UserControl
     {
         var toolbar = new Grid { Margin = new Thickness(4, 4, 4, 2) };
         toolbar.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Pixel) }); // separator
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 0: "Snapshot A:"
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // 1: combo A
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 2: swap btn
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Pixel) }); // 3: sep
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 4: "Snapshot B:"
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // 5: combo B
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 6: compare btn
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 7: export btn
+        toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });          // 8: summary
 
         _snapACombo = MakeSnapshotCombo();
         _snapBCombo = MakeSnapshotCombo();
         _snapACombo.SelectionChanged += OnSnapshotSelectionChanged;
         _snapBCombo.SelectionChanged += OnSnapshotSelectionChanged;
+
+        // Swap A↔B button
+        var swapBtn = new Button
+        {
+            Content          = "⇄",
+            ToolTip          = "Swap Snapshot A ↔ B",
+            Width            = 26,
+            Height           = 22,
+            FontSize         = 13,
+            Padding          = new Thickness(0),
+            Margin           = new Thickness(2, 0, 2, 0),
+            FocusVisualStyle = null,
+        };
+        swapBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        swapBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        swapBtn.Click += OnSwapSnapshots;
 
         var sep = new Border
         {
@@ -210,30 +240,60 @@ internal sealed class StringDiffPanel : UserControl
         compareBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
         compareBtn.Click += (_, _) => RunDiff();
 
+        var exportBtn = new Button
+        {
+            Content          = "↓ CSV",
+            ToolTip          = "Export visible rows to CSV",
+            Padding          = new Thickness(8, 3, 8, 3),
+            Margin           = new Thickness(4, 0, 0, 0),
+            FontSize         = 11,
+            FocusVisualStyle = null,
+        };
+        exportBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        exportBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        exportBtn.Click += (_, _) => ExportCsv();
+
         _summaryText = new TextBlock
         {
             FontSize          = 10,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin            = new Thickness(8, 0, 0, 0),
+            Margin            = new Thickness(8, 0, 4, 0),
         };
         _summaryText.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
 
         Grid.SetColumn(MakeLabel("Snapshot A:"), 0); toolbar.Children.Add(MakeLabel("Snapshot A:"));
-        Grid.SetColumn(_snapACombo,              1); toolbar.Children.Add(_snapACombo);
-        Grid.SetColumn(sep,                      3); toolbar.Children.Add(sep);
-        Grid.SetColumn(MakeLabel("Snapshot B:"), 4);
+        Grid.SetColumn(_snapACombo, 1);              toolbar.Children.Add(_snapACombo);
+        Grid.SetColumn(swapBtn,     2);              toolbar.Children.Add(swapBtn);
+        Grid.SetColumn(sep,         3);              toolbar.Children.Add(sep);
         var bLabel = MakeLabel("Snapshot B:");
-        Grid.SetColumn(bLabel, 4); toolbar.Children.Add(bLabel);
-        Grid.SetColumn(_snapBCombo,   5); toolbar.Children.Add(_snapBCombo);
-        Grid.SetColumn(compareBtn,    6); toolbar.Children.Add(compareBtn);
-        Grid.SetColumn(_summaryText,  7); toolbar.Children.Add(_summaryText);
+        Grid.SetColumn(bLabel,      4);              toolbar.Children.Add(bLabel);
+        Grid.SetColumn(_snapBCombo, 5);              toolbar.Children.Add(_snapBCombo);
+        Grid.SetColumn(compareBtn,  6);              toolbar.Children.Add(compareBtn);
+        Grid.SetColumn(exportBtn,   7);              toolbar.Children.Add(exportBtn);
+        Grid.SetColumn(_summaryText,8);              toolbar.Children.Add(_summaryText);
 
         return toolbar;
     }
 
     private void OnSnapshotSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        // Auto-compare as soon as both snapshots are selected.
+        if (_snapACombo.SelectedItem is not null && _snapBCombo.SelectedItem is not null)
+            RunDiff();
+    }
+
+    private void OnSwapSnapshots(object sender, RoutedEventArgs e)
+    {
+        // Temporarily unsubscribe to prevent double diff during swap.
+        _snapACombo.SelectionChanged -= OnSnapshotSelectionChanged;
+        _snapBCombo.SelectionChanged -= OnSnapshotSelectionChanged;
+
+        var tmp = _snapACombo.SelectedItem;
+        _snapACombo.SelectedItem = _snapBCombo.SelectedItem;
+        _snapBCombo.SelectedItem = tmp;
+
+        _snapACombo.SelectionChanged += OnSnapshotSelectionChanged;
+        _snapBCombo.SelectionChanged += OnSnapshotSelectionChanged;
+
         if (_snapACombo.SelectedItem is not null && _snapBCombo.SelectedItem is not null)
             RunDiff();
     }
@@ -288,6 +348,61 @@ internal sealed class StringDiffPanel : UserControl
         return btn;
     }
 
+    // ── Search bar ────────────────────────────────────────────────────────────
+
+    private UIElement BuildSearchBar()
+    {
+        var bar = new DockPanel { Margin = new Thickness(4, 0, 4, 2), LastChildFill = true };
+        bar.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
+
+        var lbl = new TextBlock
+        {
+            Text              = "🔍",
+            FontSize          = 10,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(0, 0, 4, 0),
+        };
+        lbl.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        DockPanel.SetDock(lbl, Dock.Left);
+
+        _searchBox = new TextBox
+        {
+            Height           = 20,
+            FontSize         = 10,
+            Padding          = new Thickness(4, 1, 4, 1),
+            BorderThickness  = new Thickness(1),
+        };
+        _searchBox.SetResourceReference(BackgroundProperty,  "TE_Background");
+        _searchBox.SetResourceReference(ForegroundProperty,  "TE_Foreground");
+        _searchBox.TextChanged += OnSearchChanged;
+
+        var clearBtn = new Button
+        {
+            Content          = "✕",
+            Width            = 20,
+            Height           = 20,
+            FontSize         = 9,
+            Padding          = new Thickness(0),
+            Margin           = new Thickness(2, 0, 0, 0),
+            FocusVisualStyle = null,
+        };
+        clearBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        clearBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        clearBtn.Click += (_, _) => _searchBox.Clear();
+        DockPanel.SetDock(clearBtn, Dock.Right);
+
+        bar.Children.Add(lbl);
+        bar.Children.Add(clearBtn);
+        bar.Children.Add(_searchBox);
+        return bar;
+    }
+
+    private void OnSearchChanged(object sender, TextChangedEventArgs e)
+    {
+        _searchTerm = _searchBox.Text.Trim().ToLowerInvariant();
+        ApplyFilter();
+    }
+
     // ── DataGrid ──────────────────────────────────────────────────────────────
 
     private DataGrid BuildDataGrid()
@@ -313,12 +428,14 @@ internal sealed class StringDiffPanel : UserControl
         grid.RowStyle          = BuildRowStyle();
 
         grid.Columns.Add(MakeStatusColumn());
-        grid.Columns.Add(MakeTextCol("Offset",    e => $"0x{e.Run.Offset:X8}", 90));
-        grid.Columns.Add(MakeTextCol("Encoding",  e => e.Run.Encoding.ToString(), 80));
-        grid.Columns.Add(MakeTextCol("Value",     e => e.Run.Value, 0));
+        grid.Columns.Add(MakeTextCol("Offset",   e => $"0x{e.Run.Offset:X8}",   90, "Offset"));
+        grid.Columns.Add(MakeTextCol("Encoding", e => e.Run.Encoding.ToString(), 80, "Encoding"));
+        grid.Columns.Add(MakeTextCol("Value",    e => e.Run.Value,               0,  "Value"));
         grid.Columns.Add(MakeOldValueColumn());
 
         grid.MouseDoubleClick += OnGridDoubleClick;
+        grid.KeyDown          += OnGridKeyDown;
+        grid.Sorting          += OnGridSorting;
         grid.ContextMenu       = BuildContextMenu();
         return grid;
     }
@@ -338,6 +455,8 @@ internal sealed class StringDiffPanel : UserControl
     private static Style BuildRowStyle()
     {
         var s = new Style(typeof(DataGridRow));
+        // Themed foreground for all rows — ensures text is readable in both Light/Dark themes.
+        s.Setters.Add(new Setter(DataGridRow.ForegroundProperty, new DynamicResourceExtension("TE_Foreground")));
         s.Triggers.Add(MakeRowTrigger(StringDiffStatus.Added,    DiffStatusBrushConverter.AddedRowBrush));
         s.Triggers.Add(MakeRowTrigger(StringDiffStatus.Removed,  DiffStatusBrushConverter.RemovedRowBrush));
         s.Triggers.Add(MakeRowTrigger(StringDiffStatus.Modified, DiffStatusBrushConverter.ModifiedRowBrush));
@@ -390,17 +509,22 @@ internal sealed class StringDiffPanel : UserControl
 
     // ── Text column ───────────────────────────────────────────────────────────
 
-    private static DataGridTemplateColumn MakeTextCol(string header, Func<StringDiffEntry, string> selector, double width)
+    private DataGridTemplateColumn MakeTextCol(string header, Func<StringDiffEntry, string> selector,
+                                               double width, string sortMemberPath)
     {
         var col = new DataGridTemplateColumn
         {
-            Header = new TextBlock { Text = header },
-            Width  = width > 0 ? new DataGridLength(width) : DataGridLength.Auto,
+            Header         = header,
+            Width          = width > 0 ? new DataGridLength(width) : DataGridLength.Auto,
+            SortMemberPath = sortMemberPath,
+            CanUserSort    = true,
         };
 
         var tb = new FrameworkElementFactory(typeof(TextBlock));
         tb.SetValue(TextBlock.FontSizeProperty,          11d);
         tb.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+        // Themed foreground — reads TE_Foreground from the active theme at render time.
+        tb.SetResourceReference(TextBlock.ForegroundProperty, "TE_Foreground");
         tb.SetBinding(TextBlock.TextProperty,
             new Binding { Converter = new DiffTextConverter(selector) });
 
@@ -410,27 +534,25 @@ internal sealed class StringDiffPanel : UserControl
 
     // ── Old Value column — italic placeholder for Added/Removed ──────────────
 
-    private static DataGridTemplateColumn MakeOldValueColumn()
+    private DataGridTemplateColumn MakeOldValueColumn()
     {
         var col = new DataGridTemplateColumn
         {
-            Header = new TextBlock { Text = "Old Value" },
-            Width  = DataGridLength.Auto,
+            Header         = "Old Value",
+            Width          = DataGridLength.Auto,
+            SortMemberPath = nameof(StringDiffEntry.OldValue),
+            CanUserSort    = true,
         };
 
         var tb = new FrameworkElementFactory(typeof(TextBlock));
         tb.SetValue(TextBlock.FontSizeProperty,          11d);
         tb.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-        // Text: "—" when null/empty, actual value otherwise
         tb.SetBinding(TextBlock.TextProperty,
             new Binding(nameof(StringDiffEntry.OldValue)) { Converter = DiffOldValueConverter.Instance });
-        // FontStyle: Italic for placeholder "—", Normal for real values
         tb.SetBinding(TextBlock.FontStyleProperty,
             new Binding(nameof(StringDiffEntry.OldValue)) { Converter = DiffOldValueStyleConverter.Instance });
-        // Foreground: dim for placeholder
-        var fgConverter = new DiffOldValueForegroundConverter();
         tb.SetBinding(TextBlock.ForegroundProperty,
-            new Binding(nameof(StringDiffEntry.OldValue)) { Converter = fgConverter });
+            new Binding(nameof(StringDiffEntry.OldValue)) { Converter = new DiffOldValueForegroundConverter() });
 
         col.CellTemplate = new DataTemplate { VisualTree = tb };
         return col;
@@ -470,21 +592,26 @@ internal sealed class StringDiffPanel : UserControl
                 Clipboard.SetText($"0x{entry.Run.Offset:X8}");
         };
 
+        var exportItem = new MenuItem { Header = "Export visible rows to CSV…" };
+        exportItem.Click += (_, _) => ExportCsv();
+
         menu.Items.Add(goToItem);
         menu.Items.Add(new Separator());
         menu.Items.Add(copyValueItem);
         menu.Items.Add(copyOldItem);
         menu.Items.Add(copyOffsetItem);
+        menu.Items.Add(new Separator());
+        menu.Items.Add(exportItem);
 
-        // Enable/disable items based on selection before opening.
         menu.Opened += (_, _) =>
         {
             var entry    = _grid.SelectedItem as StringDiffEntry;
             var hasEntry = entry is not null;
-            goToItem.IsEnabled      = hasEntry;
-            copyValueItem.IsEnabled = hasEntry;
-            copyOldItem.IsEnabled   = entry?.OldValue is { Length: > 0 };
+            goToItem.IsEnabled       = hasEntry;
+            copyValueItem.IsEnabled  = hasEntry;
+            copyOldItem.IsEnabled    = entry?.OldValue is { Length: > 0 };
             copyOffsetItem.IsEnabled = hasEntry;
+            exportItem.IsEnabled     = _lastDiffResult.Count > 0;
         };
 
         return menu;
@@ -494,6 +621,36 @@ internal sealed class StringDiffPanel : UserControl
     {
         if (_grid.SelectedItem is StringDiffEntry entry)
             _vm.NavigateToOffset(entry.Run);
+    }
+
+    private void OnGridKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter && _grid.SelectedItem is StringDiffEntry entry)
+        {
+            _vm.NavigateToOffset(entry.Run);
+            e.Handled = true;
+        }
+    }
+
+    // DataGridTemplateColumn does not participate in AutoSort — handle it manually.
+    // Uses ListCollectionView.CustomSort with a DiffEntryComparer keyed by column tag.
+    private void OnGridSorting(object sender, DataGridSortingEventArgs e)
+    {
+        if (_collectionView is null || e.Column.SortMemberPath is not { Length: > 0 } path)
+            return;
+
+        e.Handled = true;   // prevent DataGrid's default (no-op for TemplateColumns)
+
+        var nextDir = e.Column.SortDirection == ListSortDirection.Ascending
+            ? ListSortDirection.Descending
+            : ListSortDirection.Ascending;
+        e.Column.SortDirection = nextDir;
+
+        // Clear sort indicators on all other columns (single-column sort).
+        foreach (var col in _grid.Columns)
+            if (!ReferenceEquals(col, e.Column)) col.SortDirection = null;
+
+        _collectionView.CustomSort = new DiffEntryComparer(path, nextDir);
     }
 
     // ── Legend with live counters ─────────────────────────────────────────────
@@ -544,7 +701,7 @@ internal sealed class StringDiffPanel : UserControl
         _modifiedCount.Text = $"Modified {modified:N0}";
         _unchangedCount.Text = $"Unchanged {unchanged:N0}";
 
-        _summaryText.Text = $"+{added}  -{removed}  ~{modified}  ={unchanged}";
+        _summaryText.Text = $"|  +{added}  -{removed}  ~{modified}  ={unchanged}";
     }
 
     // ── Diff logic ────────────────────────────────────────────────────────────
@@ -568,13 +725,64 @@ internal sealed class StringDiffPanel : UserControl
         _grid.ItemsSource = _collectionView;
     }
 
-    private void ApplyFilter()
+    private void ApplyFilter() => _collectionView?.Refresh();
+
+    private bool FilterEntry(object item)
     {
-        _collectionView?.Refresh();
+        if (item is not StringDiffEntry e) return false;
+        if (!_activeFilters.Contains(e.Status)) return false;
+
+        // Text search: match against value, old value, offset, or encoding.
+        if (_searchTerm.Length > 0)
+        {
+            bool matchValue    = e.Run.Value.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+            bool matchOld      = e.OldValue?.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) == true;
+            bool matchOffset   = $"0x{e.Run.Offset:X8}".Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+            bool matchEncoding = e.Run.Encoding.ToString().Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+            if (!matchValue && !matchOld && !matchOffset && !matchEncoding)
+                return false;
+        }
+
+        return true;
     }
 
-    private bool FilterEntry(object item) =>
-        item is StringDiffEntry e && _activeFilters.Contains(e.Status);
+    // ── CSV export ────────────────────────────────────────────────────────────
+
+    private void ExportCsv()
+    {
+        if (_collectionView is null || _collectionView.Count == 0) return;
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title            = "Export Diff to CSV",
+            Filter           = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+            DefaultExt       = ".csv",
+            FileName         = $"StringDiff_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Status,Offset,Encoding,Value,OldValue");
+
+        foreach (var item in _collectionView)
+        {
+            if (item is not StringDiffEntry e) continue;
+            sb.Append(DiffStatusBrushConverter.StatusLabel(e.Status)).Append(',');
+            sb.Append($"0x{e.Run.Offset:X8}").Append(',');
+            sb.Append(CsvEscape(e.Run.Encoding.ToString())).Append(',');
+            sb.Append(CsvEscape(e.Run.Value)).Append(',');
+            sb.AppendLine(CsvEscape(e.OldValue ?? string.Empty));
+        }
+
+        File.WriteAllText(dlg.FileName, sb.ToString(), Encoding.UTF8);
+    }
+
+    private static string CsvEscape(string s)
+    {
+        if (s.Contains(',') || s.Contains('"') || s.Contains('\n'))
+            return '"' + s.Replace("\"", "\"\"") + '"';
+        return s;
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -606,6 +814,30 @@ internal sealed class StringDiffPanel : UserControl
         };
         tb.SetResourceReference(TextBlock.ForegroundProperty, "Panel_ToolbarForegroundBrush");
         return tb;
+    }
+}
+
+// ── Sort comparer ─────────────────────────────────────────────────────────────
+
+/// <summary>
+/// IComparer for <see cref="StringDiffEntry"/> rows. Supports sorting by flat column keys:
+/// "Status", "Offset", "Encoding", "Value", "OldValue".
+/// </summary>
+internal sealed class DiffEntryComparer(string key, System.ComponentModel.ListSortDirection dir) : System.Collections.IComparer
+{
+    public int Compare(object? x, object? y)
+    {
+        if (x is not StringDiffEntry a || y is not StringDiffEntry b) return 0;
+        int cmp = key switch
+        {
+            "Status"   => a.Status.CompareTo(b.Status),
+            "Offset"   => a.Run.Offset.CompareTo(b.Run.Offset),
+            "Encoding" => string.Compare(a.Run.Encoding.ToString(), b.Run.Encoding.ToString(), StringComparison.Ordinal),
+            "Value"    => string.Compare(a.Run.Value, b.Run.Value, StringComparison.OrdinalIgnoreCase),
+            "OldValue" => string.Compare(a.OldValue ?? string.Empty, b.OldValue ?? string.Empty, StringComparison.OrdinalIgnoreCase),
+            _          => 0,
+        };
+        return dir == System.ComponentModel.ListSortDirection.Descending ? -cmp : cmp;
     }
 }
 
