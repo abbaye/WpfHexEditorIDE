@@ -37,8 +37,11 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 {
     private readonly ISyntaxHighlighter                              _host;
     private readonly IReadOnlyList<EmbeddedLanguageZone>            _zones;
-    private readonly Dictionary<string, ISyntaxHighlighter> _subHighlighters = [];
+    private readonly Dictionary<string, ISyntaxHighlighter>         _subHighlighters = [];
     private readonly Func<LanguageDefinition, ISyntaxHighlighter>   _factory;
+    // Guards _subHighlighters: Highlight() (pipeline bg thread) and Reset() (pipeline bg thread)
+    // can run concurrently — Dictionary is not thread-safe.
+    private readonly object _subLock = new();
 
     // Cached line-offset lookup: lineIndex → character offset of line start in full text.
     // _lineOffsets[i+1] - _lineOffsets[i] = line-i span INCLUDING its line ending (\n or \r\n).
@@ -135,7 +138,9 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     public void Reset()
     {
         _host.Reset();
-        foreach (var h in _subHighlighters.Values) h.Reset();
+        ISyntaxHighlighter[] snapshot;
+        lock (_subLock) snapshot = [.. _subHighlighters.Values];
+        foreach (var h in snapshot) h.Reset();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -200,9 +205,12 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
     private ISyntaxHighlighter GetOrCreateSub(LanguageDefinition lang)
     {
-        if (!_subHighlighters.TryGetValue(lang.Id, out var sub))
-            _subHighlighters[lang.Id] = sub = _factory(lang);
-        return sub;
+        lock (_subLock)
+        {
+            if (!_subHighlighters.TryGetValue(lang.Id, out var sub))
+                _subHighlighters[lang.Id] = sub = _factory(lang);
+            return sub;
+        }
     }
 
     /// <summary>
