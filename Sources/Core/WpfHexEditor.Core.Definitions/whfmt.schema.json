@@ -666,6 +666,28 @@
           "items": { "type": "string" },
           "description": "Language IDs to inherit rules from (resolved by LanguageRegistry after full registration)"
         },
+        "embeddedLanguages": {
+          "type": "array",
+          "description": "Embedded language zones: regions of text whose syntax should be highlighted using a different language (e.g. <script> → javascript, <style> → css). Resolved by LanguageRegistry.ResolveEmbeddedLanguages() after full registration.",
+          "items": {
+            "type": "object",
+            "required": ["open", "close", "languageId"],
+            "properties": {
+              "open": {
+                "type": "string",
+                "description": "Opening delimiter (prefix match, case-insensitive). May include a tag start without the closing '>' to tolerate attributes (e.g. '<script')."
+              },
+              "close": {
+                "type": "string",
+                "description": "Closing delimiter (exact string, case-insensitive, e.g. '</script>')."
+              },
+              "languageId": {
+                "type": "string",
+                "description": "Language ID registered in LanguageRegistry that handles the content inside this zone (e.g. 'javascript', 'css', 'php')."
+              }
+            }
+          }
+        },
         "ideMetadata": {
           "$ref": "#/$defs/IdeMetadata",
           "description": "IDE-level metadata for the language: icons, diagram support, diff mode override, aliases."

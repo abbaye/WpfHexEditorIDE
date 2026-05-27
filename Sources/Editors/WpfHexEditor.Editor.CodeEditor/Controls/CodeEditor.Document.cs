@@ -750,6 +750,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
+            // Notify EmbeddedSyntaxHighlighter of the new full text so it can
+            // (re)classify embedded-language zones (e.g. <script>/</script> in HTML).
+            if (ActiveHighlighter is EmbeddedSyntaxHighlighter embedded)
+                embedded.SetFullText(text);
+
             _lineNumberCache.Clear();
             InvalidateMeasure();
             InvalidateVisual();   // Force re-render when content is loaded after initial layout pass

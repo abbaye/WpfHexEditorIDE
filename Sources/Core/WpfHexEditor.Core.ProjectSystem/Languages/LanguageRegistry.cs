@@ -230,7 +230,8 @@ public sealed class LanguageRegistry
 
     /// <summary>
     /// Resolves all <see cref="LanguageDefinition.Includes"/> chains and re-registers
-    /// each definition with its merged base-layer rules.
+    /// each definition with its merged base-layer rules, then resolves embedded language
+    /// references via <see cref="ResolveEmbeddedLanguages"/>.
     /// Call once after all built-in and user definitions have been registered.
     /// </summary>
     public void ResolveIncludes()
@@ -253,6 +254,61 @@ public sealed class LanguageRegistry
                     else if (_builtin.ContainsKey(ext))
                         _builtin[ext] = merged;
                 }
+            }
+
+            // Second pass: resolve embedded language zone references.
+            ResolveEmbeddedLanguages();
+        }
+    }
+
+    /// <summary>
+    /// Walks all registered definitions that declare
+    /// <see cref="LanguageDefinition.EmbeddedLanguages"/> and replaces the
+    /// unresolved stubs (where <c>ResolvedLanguage == null</c>) with concrete
+    /// <see cref="LanguageDefinition"/> references looked up from this registry.
+    /// Must be called inside <c>lock(_lock)</c> (already done by <see cref="ResolveIncludes"/>).
+    /// </summary>
+    private void ResolveEmbeddedLanguages()
+    {
+        // Collect definitions that have at least one unresolved zone.
+        var toUpdate = _byId.Values
+            .Where(d => d.EmbeddedLanguages.Any(z => z.ResolvedLanguage is null && z.LanguageId.Length > 0))
+            .ToList();
+
+        foreach (var definition in toUpdate)
+        {
+            var resolved = new List<EmbeddedLanguageZone>(definition.EmbeddedLanguages.Count);
+            bool changed = false;
+
+            foreach (var zone in definition.EmbeddedLanguages)
+            {
+                if (zone.ResolvedLanguage is not null)
+                {
+                    resolved.Add(zone);
+                    continue;
+                }
+
+                if (_byId.TryGetValue(zone.LanguageId, out var embeddedLang))
+                {
+                    resolved.Add(zone with { ResolvedLanguage = embeddedLang });
+                    changed = true;
+                }
+                else
+                {
+                    // Language not yet registered — keep stub; a second call after late
+                    // registration (e.g. plugin load) will resolve it.
+                    resolved.Add(zone);
+                }
+            }
+
+            if (!changed) continue;
+
+            var updated = definition.WithEmbeddedLanguages(resolved);
+            _byId[updated.Id] = updated;
+            foreach (var ext in updated.Extensions)
+            {
+                if (_user.ContainsKey(ext))         _user[ext]    = updated;
+                else if (_builtin.ContainsKey(ext)) _builtin[ext] = updated;
             }
         }
     }
@@ -320,6 +376,7 @@ public sealed class LanguageRegistry
             EnableCtrlClickNavigation = definition.EnableCtrlClickNavigation,
             IsDefault                 = definition.IsDefault,
             Includes                  = definition.Includes,
+            EmbeddedLanguages         = definition.EmbeddedLanguages,
             EditorHint                = definition.EditorHint,
             FoldingRules              = foldingRules,
             BreakpointRules           = breakpointRules,

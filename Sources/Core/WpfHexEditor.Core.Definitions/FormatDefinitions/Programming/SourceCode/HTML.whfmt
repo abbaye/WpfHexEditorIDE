@@ -3,7 +3,7 @@
   "diffMode": "semantic",
   "formatName": "HTML Source File",
   "formatId": "HTML",
-  "version": "2.13",
+  "version": "2.14",
   "extensions": [
     ".html",
     ".htm"
@@ -80,11 +80,6 @@
         "colorKey": "TE_String"
       },
       {
-        "type": "HtmlTag",
-        "pattern": "(?i)<(?:script|style)[\\s>][\\s\\S]*?</(?:script|style)>",
-        "colorKey": "TE_Keyword"
-      },
-      {
         "type": "Tag",
         "pattern": "(?<=</?)[A-Za-z][A-Za-z0-9-]*",
         "colorKey": "TE_Type"
@@ -136,6 +131,18 @@
         "triggerDirective": false
       }
     },
+    "embeddedLanguages": [
+      {
+        "open": "<script",
+        "close": "</script>",
+        "languageId": "javascript"
+      },
+      {
+        "open": "<style",
+        "close": "</style>",
+        "languageId": "css"
+      }
+    ],
     "previewSnippet": "<!DOCTYPE html>\n<html>\n<head><title>Test</title></head>\n<body>\n<div class=\"box\"><p>Hello</p></div>\n</body>\n</html>",
     "previewSamples": {
       "trimTrailingWhitespace": {

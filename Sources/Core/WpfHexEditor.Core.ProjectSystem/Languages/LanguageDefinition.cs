@@ -85,6 +85,16 @@ public sealed class LanguageDefinition
     public IReadOnlyList<string> Includes { get; init; } = [];
 
     /// <summary>
+    /// Embedded language zones declared in the whfmt <c>embeddedLanguages</c> array.
+    /// Each entry defines a delimited region (e.g. <c>&lt;script&gt;…&lt;/script&gt;</c>)
+    /// whose content should be highlighted using a different registered language.
+    /// Resolved to concrete <see cref="LanguageDefinition"/> references by
+    /// <see cref="LanguageRegistry.ResolveEmbeddedLanguages"/> after full registration.
+    /// Empty = no embedded-language zones (most languages).
+    /// </summary>
+    public IReadOnlyList<EmbeddedLanguageZone> EmbeddedLanguages { get; init; } = [];
+
+    /// <summary>
     /// Editor affinity inherited from "preferredEditor" in the parent .whfmt.
     /// "code-editor" | "text-editor" | null.
     /// </summary>
@@ -261,7 +271,94 @@ public sealed class LanguageDefinition
     /// </summary>
     public IReadOnlyDictionary<string, FormattingPreviewSample> PreviewSamples { get; init; }
         = new Dictionary<string, FormattingPreviewSample>();
+
+    /// <summary>
+    /// Returns a copy of this definition with <see cref="EmbeddedLanguages"/> replaced
+    /// by <paramref name="zones"/>. Used by <see cref="LanguageRegistry.ResolveEmbeddedLanguages"/>
+    /// to stamp in the resolved <see cref="EmbeddedLanguageZone.ResolvedLanguage"/> references.
+    /// </summary>
+    internal LanguageDefinition WithEmbeddedLanguages(IReadOnlyList<EmbeddedLanguageZone> zones) =>
+        new()
+        {
+            Id                        = Id,
+            Name                      = Name,
+            Extensions                = Extensions,
+            SyntaxRules               = SyntaxRules,
+            Snippets                  = Snippets,
+            FoldingStrategy           = FoldingStrategy,
+            LineCommentPrefix         = LineCommentPrefix,
+            BlockCommentStart         = BlockCommentStart,
+            BlockCommentEnd           = BlockCommentEnd,
+            EnableInlineHints         = EnableInlineHints,
+            EnableCtrlClickNavigation = EnableCtrlClickNavigation,
+            IsDefault                 = IsDefault,
+            Includes                  = Includes,
+            EmbeddedLanguages         = zones,
+            EditorHint                = EditorHint,
+            FoldingRules              = FoldingRules,
+            BreakpointRules           = BreakpointRules,
+            ColumnRulers              = ColumnRulers,
+            BracketPairs              = BracketPairs,
+            FormattingRules           = FormattingRules,
+            ColorLiteralPatterns      = ColorLiteralPatterns,
+            DiagnosticPrefix          = DiagnosticPrefix,
+            ScriptGlobals             = ScriptGlobals,
+            PreviewSnippet            = PreviewSnippet,
+            PreviewSamples            = PreviewSamples,
+            IsSourceFile              = IsSourceFile,
+            IsStructuredDataFile      = IsStructuredDataFile,
+            IsSolutionFile            = IsSolutionFile,
+            IsProjectFile             = IsProjectFile,
+            SupportsClassDiagram      = SupportsClassDiagram,
+            SupportsSourceOutline     = SupportsSourceOutline,
+            IsProjectLanguage         = IsProjectLanguage,
+            LanguageColor             = LanguageColor,
+            Aliases                   = Aliases,
+            IconGlyph                 = IconGlyph,
+            IdeDiffMode               = IdeDiffMode,
+            Completions               = Completions,
+            OutlineRules              = OutlineRules,
+            DiagnosticRules           = DiagnosticRules,
+        };
 }
+
+// ==========================================================
+// File: EmbeddedLanguageZone
+//       (embedded in LanguageDefinition.cs)
+// Description: A delimited region inside a host document whose content
+//              must be syntax-highlighted using a different language.
+//              Examples: <script>…</script> → javascript,
+//                        <style>…</style>   → css,
+//                        <?php…?>           → php,
+//                        ```js…```          → javascript (Markdown fence)
+// ==========================================================
+
+/// <summary>
+/// Describes a zone inside a host-language document whose content is
+/// handled by a different <see cref="LanguageDefinition"/>.
+/// </summary>
+/// <param name="Open">
+///   Opening delimiter prefix (case-insensitive, e.g. <c>"&lt;script"</c>).
+///   A prefix match is used so attributes on the opening tag are tolerated.
+/// </param>
+/// <param name="Close">
+///   Closing delimiter (case-insensitive exact match, e.g. <c>"&lt;/script&gt;"</c>).
+/// </param>
+/// <param name="LanguageId">
+///   Language ID as declared in the whfmt <c>embeddedLanguages[].languageId</c> field.
+///   Resolved to <see cref="ResolvedLanguage"/> by
+///   <see cref="LanguageRegistry.ResolveEmbeddedLanguages"/>.
+/// </param>
+/// <param name="ResolvedLanguage">
+///   The concrete <see cref="LanguageDefinition"/> for the embedded zone,
+///   populated by <see cref="LanguageRegistry.ResolveEmbeddedLanguages"/>.
+///   <see langword="null"/> until resolution or when the language ID is not registered.
+/// </param>
+public sealed record EmbeddedLanguageZone(
+    string              Open,
+    string              Close,
+    string              LanguageId,
+    LanguageDefinition? ResolvedLanguage = null);
 
 // ==========================================================
 // File: FormattingPreviewSample

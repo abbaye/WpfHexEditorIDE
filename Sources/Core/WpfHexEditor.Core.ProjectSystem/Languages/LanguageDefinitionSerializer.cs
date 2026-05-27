@@ -259,6 +259,8 @@ public static class LanguageDefinitionSerializer
             Completions           = MapCompletions(dto.Completions),
             OutlineRules          = MapOutlineRules(dto.OutlineRules),
             DiagnosticRules       = MapDiagnosticRules(dto.DiagnosticRules),
+            // Embedded language zones (e.g. <script>→js, <style>→css in HTML)
+            EmbeddedLanguages     = MapEmbeddedLanguages(dto.EmbeddedLanguages),
         };
     }
 
@@ -445,6 +447,16 @@ public static class LanguageDefinitionSerializer
 
         [JsonPropertyName("diagnosticRules")]
         public DiagnosticRuleDto[]?  DiagnosticRules  { get; set; }
+
+        [JsonPropertyName("embeddedLanguages")]
+        public EmbeddedLanguageDto[]? EmbeddedLanguages { get; set; }
+    }
+
+    private sealed class EmbeddedLanguageDto
+    {
+        [JsonPropertyName("open")]       public string? Open       { get; set; }
+        [JsonPropertyName("close")]      public string? Close      { get; set; }
+        [JsonPropertyName("languageId")] public string? LanguageId { get; set; }
     }
 
     private sealed class CompletionItemDto
@@ -834,4 +846,24 @@ public static class LanguageDefinitionSerializer
         "hint"    => WhfmtDiagnosticSeverity.Hint,
         _         => WhfmtDiagnosticSeverity.Info,
     };
+
+    private static IReadOnlyList<EmbeddedLanguageZone> MapEmbeddedLanguages(EmbeddedLanguageDto[]? dtos)
+    {
+        if (dtos is null or { Length: 0 }) return [];
+
+        var result = new List<EmbeddedLanguageZone>(dtos.Length);
+        foreach (var dto in dtos)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Open)       ||
+                string.IsNullOrWhiteSpace(dto.Close)      ||
+                string.IsNullOrWhiteSpace(dto.LanguageId)) continue;
+
+            result.Add(new EmbeddedLanguageZone(
+                Open:             dto.Open,
+                Close:            dto.Close,
+                LanguageId:       dto.LanguageId,
+                ResolvedLanguage: null)); // resolved later by LanguageRegistry
+        }
+        return result;
+    }
 }

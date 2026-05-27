@@ -1145,6 +1145,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _lastHighlightFirst = _firstVisibleLine;
                 _lastHighlightLast  = _lastVisibleLine;
+
+                // When the active highlighter supports embedded language zones,
+                // refresh its full-text cache so zone boundaries reflect edits.
+                if (hasDirty && ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embHighlighter)
+                    embHighlighter.SetFullText(GetText());
+
                 _highlightPipeline.ScheduleAsync(
                     _document.Lines,
                     _firstVisibleLine,
