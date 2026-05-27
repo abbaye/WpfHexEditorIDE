@@ -142,10 +142,11 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     /// <inheritdoc />
     public void Reset()
     {
+        // Reset only the host highlighter — it tracks block-comment state across full document lines.
+        // Sub-highlighters are reset immediately before each Highlight() call in BuildTokens(),
+        // because they receive isolated line slices (not the full document) and must start
+        // from a clean state each time.
         _host.Reset();
-        ISyntaxHighlighter[] snapshot;
-        lock (_subLock) snapshot = [.. _subHighlighters.Values];
-        foreach (var h in snapshot) h.Reset();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -182,9 +183,12 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
         foreach (var range in overlapping)
         {
-            // Start/end of embedded zone relative to this line (clamped to line bounds).
-            int zoneLineStart = Math.Max(0, range.ContentStart - lineStart);
-            int zoneLineEnd   = Math.Min(lineText.Length, range.ContentEnd - lineStart);
+            // Start/end of embedded zone relative to this line (clamped to [0, lineText.Length]).
+            // Both bounds must be clamped: ContentStart can be before lineStart (zone opened on a
+            // previous line) and ContentEnd can be beyond lineText.Length (zone closes on a future
+            // line, or the full-text coord includes \r\n chars absent from lineText).
+            int zoneLineStart = Math.Clamp(range.ContentStart - lineStart, 0, lineText.Length);
+            int zoneLineEnd   = Math.Clamp(range.ContentEnd   - lineStart, 0, lineText.Length);
 
             // Host segment before this zone.
             if (zoneLineStart > cursor)
@@ -194,6 +198,9 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
             if (zoneLineEnd > zoneLineStart)
             {
                 var sub = GetOrCreateSub(range.Language);
+                // Reset before each slice: sub-highlighters see isolated segments, not the full
+                // document, so _inBlockComment must not carry over from a previous line's slice.
+                sub.Reset();
                 AppendShifted(tokens, sub.Highlight(lineText[zoneLineStart..zoneLineEnd], -1), zoneLineStart);
             }
 
