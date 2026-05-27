@@ -35,12 +35,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 /// </summary>
 public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 {
+    // _host      — used by the background highlight pipeline (thread: pipeline Task.Run)
+    // _uiHost    — separate instance for the UI-thread render path (state-tracking calls in
+    //              OnRender / fast-path continuations). Two instances share no mutable state,
+    //              so _inBlockComment advances independently and there is no data race.
     private readonly ISyntaxHighlighter                              _host;
+    private readonly ISyntaxHighlighter                              _uiHost;
     private readonly IReadOnlyList<EmbeddedLanguageZone>            _zones;
     private readonly Dictionary<string, ISyntaxHighlighter>         _subHighlighters = [];
     private readonly Func<LanguageDefinition, ISyntaxHighlighter>   _factory;
-    // Guards _subHighlighters: Highlight() (pipeline bg thread) and Reset() (pipeline bg thread)
-    // can run concurrently — Dictionary is not thread-safe.
+    // Guards _subHighlighters — pipeline bg thread and potential concurrent Highlight() calls.
     private readonly object _subLock = new();
 
     // Immutable snapshot of the full-text analysis result.
@@ -68,13 +72,16 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     /// </param>
     public EmbeddedSyntaxHighlighter(
         ISyntaxHighlighter                           host,
+        ISyntaxHighlighter                           uiHost,
         IReadOnlyList<EmbeddedLanguageZone>          zones,
         Func<LanguageDefinition, ISyntaxHighlighter> highlighterFactory)
     {
         ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(uiHost);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(highlighterFactory);
         _host    = host;
+        _uiHost  = uiHost;
         _zones   = zones;
         _factory = highlighterFactory;
     }
@@ -110,6 +117,35 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
         Volatile.Write(ref _snapshot, new TextSnapshot(offsets.ToArray(), fullText.Length, ranges));
     }
 
+    // ── UI-thread render path ────────────────────────────────────────────────
+    // The OnRender path calls Highlight() for state-tracking continuity across lines.
+    // These must use _uiHost (not _host) to avoid racing with the pipeline bg thread.
+
+    /// <summary>Resets the UI-thread block-comment state (called at render-frame start).</summary>
+    internal void ResetForUiThread() => _uiHost.Reset();
+
+    /// <summary>
+    /// Highlights <paramref name="lineText"/> on the UI thread.
+    /// Uses the UI-thread-exclusive <c>_uiHost</c> so block-comment state never races
+    /// with the background pipeline's <c>_host</c>.
+    /// </summary>
+    internal IReadOnlyList<SyntaxHighlightToken> HighlightForUiThread(string lineText, int lineIndex)
+    {
+        var snap = Volatile.Read(ref _snapshot);
+        if (snap.Ranges.Count == 0 || lineIndex >= snap.LineOffsets.Length)
+            return _uiHost.Highlight(lineText, lineIndex);
+
+        int lineStart = snap.LineOffsets[lineIndex];
+        int lineEnd   = lineIndex + 1 < snap.LineOffsets.Length
+            ? snap.LineOffsets[lineIndex + 1]
+            : snap.FullTextLength;
+
+        var overlapping = FindOverlapping(snap, lineStart, lineEnd);
+        return overlapping.Count == 0
+            ? _uiHost.Highlight(lineText, lineIndex)
+            : BuildTokens(lineText, lineStart, overlapping, _uiHost);
+    }
+
     // ── ISyntaxHighlighter ───────────────────────────────────────────────────
 
     /// <inheritdoc />
@@ -135,8 +171,8 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
         if (overlapping.Count == 0)
             return _host.Highlight(lineText, lineIndex);
 
-        // Split line into segments and dispatch.
-        return BuildTokens(lineText, lineStart, overlapping);
+        // Split line into segments and dispatch (pipeline path uses _host).
+        return BuildTokens(lineText, lineStart, overlapping, _host);
     }
 
     /// <inheritdoc />
@@ -176,7 +212,8 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     private IReadOnlyList<SyntaxHighlightToken> BuildTokens(
         string lineText,
         int    lineStart,
-        IReadOnlyList<EmbeddedRange> overlapping)
+        IReadOnlyList<EmbeddedRange> overlapping,
+        ISyntaxHighlighter hostToUse)
     {
         var tokens = new System.Collections.Generic.List<SyntaxHighlightToken>();
         int cursor = 0; // position within lineText (0-based column)
@@ -192,7 +229,7 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
             // Host segment before this zone.
             if (zoneLineStart > cursor)
-                AppendShifted(tokens, _host.Highlight(lineText[cursor..zoneLineStart], -1), cursor);
+                AppendShifted(tokens, hostToUse.Highlight(lineText[cursor..zoneLineStart], -1), cursor);
 
             // Embedded segment.
             if (zoneLineEnd > zoneLineStart)
@@ -209,7 +246,7 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
         // Trailing host segment after last zone.
         if (cursor < lineText.Length)
-            AppendShifted(tokens, _host.Highlight(lineText[cursor..], -1), cursor);
+            AppendShifted(tokens, hostToUse.Highlight(lineText[cursor..], -1), cursor);
 
         return tokens;
     }

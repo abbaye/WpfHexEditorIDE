@@ -110,8 +110,9 @@ public sealed class CodeEditorFactory : IEditorFactory
 
         return new EmbeddedSyntaxHighlighter(
             hostHighlighter,
+            BuildBaseHighlighter(language), // separate UI-thread host — no shared _inBlockComment state
             resolved,
-            BuildBaseHighlighter); // factory for sub-language highlighters
+            BuildBaseHighlighter);
     }
 
     /// <summary>

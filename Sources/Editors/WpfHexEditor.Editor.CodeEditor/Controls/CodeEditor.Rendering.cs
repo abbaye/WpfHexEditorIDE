@@ -2492,7 +2492,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double dpi       = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             var    defaultFg = (Brush?)TryFindResource("CE_Foreground") ?? Brushes.White;
 
-            ExternalHighlighter?.Reset();
+            if (ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embUI) embUI.ResetForUiThread();
+            else ExternalHighlighter?.Reset();
 
             // Cache fresh tokens for the current logical line so continuation sub-rows
             // reuse the same UI-thread-resolved brushes instead of the pipeline-cached ones.
@@ -2516,7 +2517,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // brushes are resolved correctly and the block-comment state advances once.
                 if (ExternalHighlighter is { } ext && (subRow == 0 || logLine != lastCachedLine))
                 {
-                    lineTokensCache = ext.Highlight(lineText, logLine)
+                    var rawUi = ext is Helpers.EmbeddedSyntaxHighlighter embUiLine
+                        ? embUiLine.HighlightForUiThread(lineText, logLine)
+                        : ext.Highlight(lineText, logLine);
+                    lineTokensCache = rawUi
                         .Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
                         .ToList();
                     lastCachedLine = logLine;
@@ -2610,8 +2614,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             var urlPen = _cachedUrlPen;
 
-            // Reset external highlighter state before a full render pass.
-            ExternalHighlighter?.Reset();
+            // Reset external highlighter state before a full render pass (UI-thread path).
+            if (ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embReset) embReset.ResetForUiThread();
+            else ExternalHighlighter?.Reset();
 
             // Word wrap: delegate to dedicated method that iterates visual sub-rows.
             if (IsWordWrapEnabled && _charsPerVisualLine > 0 && _visLinePositions.Count > 0)
@@ -2698,7 +2703,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         // Advance stateful highlighter even when using the glyph cache,
                         // so block-comment tracking (_inBlockComment) stays correct for
                         // subsequent lines that may not be cached.
-                        ExternalHighlighter?.Highlight(line.Text, i);
+                        if (ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embAdv)
+                            embAdv.HighlightForUiThread(line.Text, i);
+                        else ExternalHighlighter?.Highlight(line.Text, i);
 
                         continue; // skip slow path
                     }
@@ -2725,7 +2732,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                         // Advance stateful block-comment tracking even when using stale cache
                         // so subsequent (non-cached) lines in the same frame have correct state.
-                        ExternalHighlighter?.Highlight(line.Text, i);
+                        if (ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embAdv)
+                            embAdv.HighlightForUiThread(line.Text, i);
+                        else ExternalHighlighter?.Highlight(line.Text, i);
                         RenderFoldCollapseLabel(dc, i, x, y);
                         continue;
                     }
@@ -2738,14 +2747,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                     if (ExternalHighlighter is { } ext)
                     {
+                        // Route all UI-thread Highlight() calls through the UI-thread-exclusive path
+                        // (_uiHost) so _inBlockComment never races with the pipeline bg thread (_host).
+                        var extUi = ext as Helpers.EmbeddedSyntaxHighlighter;
+
                         // OPT-A Fast path C: background pipeline has refreshed this line
                         // (IsCacheDirty=false) and fresh tokens are cached.  Use them directly
                         // instead of re-running the regex highlighter on the UI thread.
-                        // ext.Highlight() is still called (result discarded) to keep the stateful
-                        // block-comment tracker in sync for subsequent lines in this frame.
                         if (!line.IsCacheDirty && line.TokensCache is { Count: > 0 } freshTokens)
                         {
-                            ext.Highlight(line.Text, i); // state tracking only — result discarded
+                            // Advance UI-thread state tracker so subsequent lines are correct.
+                            if (extUi != null) extUi.HighlightForUiThread(line.Text, i);
+                            else ext.Highlight(line.Text, i);
                             rawTokens = freshTokens.Select(t => t with
                             {
                                 Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
@@ -2754,9 +2767,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         else
                         {
                             // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
-                            // This ensures correct colors even when the theme changes after file open,
-                            // and avoids the timing issue of baking brushes at file-open time.
-                            rawTokens = ext.Highlight(line.Text, i)
+                            rawTokens = (extUi != null
+                                ? extUi.HighlightForUiThread(line.Text, i)
+                                : ext.Highlight(line.Text, i))
                                 .Select(t => t with
                                 {
                                     Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
