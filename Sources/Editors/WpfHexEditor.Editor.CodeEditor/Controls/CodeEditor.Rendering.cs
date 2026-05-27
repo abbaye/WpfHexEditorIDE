@@ -2533,19 +2533,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     ? y + _glyphRenderer.Baseline
                     : y + _charHeight * 0.8;
 
-                // Base pass: paint the sub-line in the default foreground so characters not
-                // covered by any token remain visible — mirrors the non-wrap base pass.
+                // Base pass: draw only character gaps (spans NOT covered by any syntax token)
+                // in defaultFg. Drawing covered spans twice (base + token overdraw) causes
+                // ClearType sub-pixel blurring on long string literals in embedded zones.
                 if (ExternalHighlighter is not null && endCol > startCol)
                 {
-                    var subLine   = lineText.Substring(startCol, endCol - startCol);
-                    var baseToken = new Helpers.SyntaxHighlightToken(startCol, endCol - startCol, subLine, defaultFg);
-                    if (_glyphRenderer != null)
-                        _glyphRenderer.RenderToken(dc, baseToken, x, y, baselineY);
-                    else
+                    int wgCursor = startCol;
+                    foreach (var tok in rawTokens.OrderBy(t => t.StartColumn))
                     {
-                        var ftBase = new FormattedText(subLine, System.Globalization.CultureInfo.CurrentCulture,
-                            FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
-                        dc.DrawText(ftBase, new Point(x, y));
+                        int ts = Math.Max(startCol, tok.StartColumn);
+                        int te = Math.Min(endCol, tok.StartColumn + tok.Length);
+                        if (te <= ts) continue;
+                        if (ts > wgCursor)
+                        {
+                            var gap  = lineText.Substring(wgCursor, ts - wgCursor);
+                            double gx = _glyphRenderer?.SnapToPixelPublic(x + (wgCursor - startCol) * _charWidth)
+                                        ?? x + (wgCursor - startCol) * _charWidth;
+                            var gapTk = new Helpers.SyntaxHighlightToken(wgCursor, gap.Length, gap, defaultFg);
+                            if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, gapTk, gx, y, baselineY);
+                            else dc.DrawText(new FormattedText(gap, System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi), new Point(gx, y));
+                        }
+                        wgCursor = Math.Max(wgCursor, te);
+                    }
+                    if (wgCursor < endCol)
+                    {
+                        var tail = lineText.Substring(wgCursor, endCol - wgCursor);
+                        double tx = _glyphRenderer?.SnapToPixelPublic(x + (wgCursor - startCol) * _charWidth)
+                                    ?? x + (wgCursor - startCol) * _charWidth;
+                        var tailTk = new Helpers.SyntaxHighlightToken(wgCursor, tail.Length, tail, defaultFg);
+                        if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, tailTk, tx, y, baselineY);
+                        else dc.DrawText(new FormattedText(tail, System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi), new Point(tx, y));
                     }
                 }
 
@@ -2805,22 +2822,40 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         ? y + _glyphRenderer.Baseline
                         : y + _charHeight * 0.8;
 
-                    // Base pass (external highlighter only): draw the entire line in EditorForeground
-                    // so unmatched spans (identifiers, punctuation not covered by any regex rule)
-                    // remain visible in the default text color instead of being invisible.
+                    // Base pass (external highlighter only): draw only the character spans NOT
+                    // covered by any syntax token in EditorForeground, so identifiers/punctuation
+                    // remain visible without double-drawing covered spans.
+                    // Double-drawing the same characters (base + token overdraw) causes ClearType
+                    // sub-pixel blurring, especially on long string literals in embedded zones.
                     if (hasExternalHighlighter)
                     {
-                        var baseToken = new Helpers.SyntaxHighlightToken(
-                            0, line.Text.Length, line.Text, EditorForeground);
-                        if (_glyphRenderer != null)
-                            _glyphRenderer.RenderToken(dc, baseToken, x, y, baselineY);
-                        else
+                        var dpi2 = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+                        int gapCursor = 0;
+                        foreach (var tok in renderTokens.OrderBy(t => t.StartColumn))
                         {
-                            var ft = new FormattedText(
-                                line.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                                _typeface, _fontSize, EditorForeground,
-                                VisualTreeHelper.GetDpi(this).PixelsPerDip);
-                            dc.DrawText(ft, new Point(x, y));
+                            int tokStart = Math.Max(0, tok.StartColumn);
+                            int tokEnd   = Math.Min(line.Text.Length, tok.StartColumn + tok.Length);
+                            if (tokStart > gapCursor)
+                            {
+                                // Gap before this token — draw in default foreground.
+                                var gap   = line.Text.Substring(gapCursor, tokStart - gapCursor);
+                                var gapTk = new Helpers.SyntaxHighlightToken(gapCursor, gap.Length, gap, EditorForeground);
+                                double gapX = _glyphRenderer?.SnapToPixelPublic(x + _glyphRenderer.ComputeVisualX(line.Text, gapCursor))
+                                              ?? x + gapCursor * _charWidth;
+                                if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, gapTk, gapX, y, baselineY);
+                                else dc.DrawText(new FormattedText(gap, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, EditorForeground, dpi2), new Point(gapX, y));
+                            }
+                            gapCursor = Math.Max(gapCursor, tokEnd);
+                        }
+                        // Trailing gap after last token.
+                        if (gapCursor < line.Text.Length)
+                        {
+                            var tail   = line.Text[gapCursor..];
+                            var tailTk = new Helpers.SyntaxHighlightToken(gapCursor, tail.Length, tail, EditorForeground);
+                            double tailX = _glyphRenderer?.SnapToPixelPublic(x + _glyphRenderer.ComputeVisualX(line.Text, gapCursor))
+                                           ?? x + gapCursor * _charWidth;
+                            if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, tailTk, tailX, y, baselineY);
+                            else dc.DrawText(new FormattedText(tail, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, EditorForeground, dpi2), new Point(tailX, y));
                         }
                     }
 
