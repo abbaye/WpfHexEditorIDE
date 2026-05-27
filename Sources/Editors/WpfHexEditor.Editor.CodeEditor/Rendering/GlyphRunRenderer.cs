@@ -262,6 +262,10 @@ public sealed class GlyphRunRenderer
     /// </summary>
     internal double SnapToPixelPublic(double value) => SnapToPixel(value);
 
+    // WPF hard limit: GlyphRun.GlyphIndices.Count must be ≤ 65535.
+    // Tokens from minified files (JS/JSON/base64) can exceed this; we chunk.
+    private const int MaxGlyphsPerRun = 65_535;
+
     /// <summary>Builds and draws a GlyphRun for the given text string.</summary>
     private void RenderWithGlyphRun(DrawingContext dc, string text,
                                     double x, double baselineY,
@@ -284,7 +288,7 @@ public sealed class GlyphRunRenderer
                 }
 
                 if (!charMap.TryGetValue(ch, out ushort gi))
-                    charMap.TryGetValue('�', out gi);
+                    charMap.TryGetValue('?', out gi);
 
                 idxList.Add(gi);
                 advList.Add(SnapToPixel(gt.AdvanceWidths[gi] * _fontSize));
@@ -295,25 +299,45 @@ public sealed class GlyphRunRenderer
             StoreGlyphData(text, gt, _fontSize, glyphIndices, advanceWidths);
         }
 
-        var origin   = new Point(SnapToPixel(x), SnapToPixel(baselineY));
-        var glyphRun = new GlyphRun(
+        // Draw in chunks to respect the WPF 65 535-glyph-per-GlyphRun limit.
+        double curX    = SnapToPixel(x);
+        double baseline = SnapToPixel(baselineY);
+        int    total   = glyphIndices.Length;
+
+        for (int offset = 0; offset < total; offset += MaxGlyphsPerRun)
+        {
+            int count = Math.Min(MaxGlyphsPerRun, total - offset);
+
+            var chunkIdx = glyphIndices.AsSpan(offset, count).ToArray();
+            var chunkAdv = advanceWidths.AsSpan(offset, count).ToArray();
+
+            var glyphRun = MakeGlyphRun(gt, chunkIdx, chunkAdv, new Point(curX, baseline));
+            dc.DrawGlyphRun(brush, glyphRun);
+
+            // Advance X by the total width of this chunk.
+            double chunkWidth = 0;
+            foreach (double w in chunkAdv) chunkWidth += w;
+            curX += chunkWidth;
+        }
+    }
+
+    /// <summary>Creates a <see cref="GlyphRun"/> from pre-built index/advance arrays.</summary>
+    private GlyphRun MakeGlyphRun(GlyphTypeface gt, ushort[] indices, double[] advances, Point origin)
+        => new(
             gt,
             bidiLevel:       0,
             isSideways:      false,
             renderingEmSize: _fontSize,
             pixelsPerDip:    (float)_pixelsPerDip,
-            glyphIndices:    glyphIndices,
+            glyphIndices:    indices,
             baselineOrigin:  origin,
-            advanceWidths:   advanceWidths,
+            advanceWidths:   advances,
             glyphOffsets:    null,
             characters:      null,
             deviceFontName:  null,
             clusterMap:      null,
             caretStops:      null,
             language:        null);
-
-        dc.DrawGlyphRun(brush, glyphRun);
-    }
 
     private static double MeasureGlyphAdvanceWidth(GlyphTypeface gt, char ch, double fontSize)
     {
@@ -447,21 +471,14 @@ public sealed class GlyphRunRenderer
             StoreGlyphData(text, gt, _fontSize, idxArr, advArr);
         }
 
-        return new GlyphRun(
-            gt,
-            bidiLevel:       0,
-            isSideways:      false,
-            renderingEmSize: _fontSize,
-            pixelsPerDip:    (float)_pixelsPerDip,
-            glyphIndices:    idxArr,
-            baselineOrigin:  new Point(x, baselineY),
-            advanceWidths:   advArr,
-            glyphOffsets:    null,
-            characters:      null,
-            deviceFontName:  null,
-            clusterMap:      null,
-            caretStops:      null,
-            language:        null);
+        // GlyphRun hard limit: truncate to 65 535 glyphs (tokens this long are off-screen).
+        if (idxArr.Length > MaxGlyphsPerRun)
+        {
+            idxArr = idxArr[..MaxGlyphsPerRun];
+            advArr = advArr[..MaxGlyphsPerRun];
+        }
+
+        return MakeGlyphRun(gt, idxArr, advArr, new Point(x, baselineY));
     }
 
     #endregion
