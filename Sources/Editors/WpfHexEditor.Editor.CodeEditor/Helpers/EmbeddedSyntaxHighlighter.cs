@@ -43,12 +43,19 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     // can run concurrently — Dictionary is not thread-safe.
     private readonly object _subLock = new();
 
-    // Cached line-offset lookup: lineIndex → character offset of line start in full text.
-    // _lineOffsets[i+1] - _lineOffsets[i] = line-i span INCLUDING its line ending (\n or \r\n).
-    // Using full-text coordinates throughout avoids \r\n vs \n skew between lineText.Length and
-    // the offsets stored in EmbeddedRange (which are built from the raw full text).
-    private int[]? _lineOffsets;
-    private int    _fullTextLength;
+    // Immutable snapshot of the full-text analysis result.
+    // SetFullText (UI thread) builds a new instance and publishes it via Volatile.Write.
+    // Highlight / FindOverlapping (pipeline bg thread) reads it via Volatile.Read.
+    // Single-reference swap is the lightest thread-safe pattern — no lock on the hot path.
+    private sealed class TextSnapshot(int[] lineOffsets, int fullTextLength, IReadOnlyList<EmbeddedRange> ranges)
+    {
+        public readonly int[]                       LineOffsets    = lineOffsets;
+        public readonly int                         FullTextLength = fullTextLength;
+        public readonly IReadOnlyList<EmbeddedRange> Ranges        = ranges;
+    }
+
+    private static readonly TextSnapshot _emptySnapshot = new([], 0, []);
+    private TextSnapshot _snapshot = _emptySnapshot;
 
     /// <summary>
     /// Initialises the embedded highlighter.
@@ -85,26 +92,23 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     {
         if (string.IsNullOrEmpty(fullText))
         {
-            _lineOffsets  = [];
-            _cachedRanges = [];
+            Volatile.Write(ref _snapshot, _emptySnapshot);
             return;
         }
 
-        // Build line-start offsets.
+        // Build line-start offsets (full-text coords, including line endings).
         var offsets = new System.Collections.Generic.List<int> { 0 };
         for (int i = 0; i < fullText.Length; i++)
         {
             if (fullText[i] == '\n' && i + 1 < fullText.Length)
                 offsets.Add(i + 1);
         }
-        _lineOffsets   = offsets.ToArray();
-        _fullTextLength = fullText.Length;
 
-        // Pre-classify ranges for the new text.
-        _cachedRanges = EmbeddedRangeClassifier.ClassifyRanges(fullText, _zones);
+        var ranges = EmbeddedRangeClassifier.ClassifyRanges(fullText, _zones);
+
+        // Publish atomically — bg thread always sees a consistent (offsets, length, ranges) triple.
+        Volatile.Write(ref _snapshot, new TextSnapshot(offsets.ToArray(), fullText.Length, ranges));
     }
-
-    private IReadOnlyList<EmbeddedRange> _cachedRanges = [];
 
     // ── ISyntaxHighlighter ───────────────────────────────────────────────────
 
@@ -113,20 +117,21 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     {
         if (string.IsNullOrEmpty(lineText)) return [];
 
-        // No ranges or no offset data → fall back to host highlighter.
-        if (_cachedRanges.Count == 0 || _lineOffsets is null || lineIndex >= _lineOffsets.Length)
+        // Single volatile read — guaranteed consistent (offsets + ranges built together).
+        var snap = Volatile.Read(ref _snapshot);
+
+        // No ranges or line index out of range → fall back to host highlighter.
+        if (snap.Ranges.Count == 0 || lineIndex >= snap.LineOffsets.Length)
             return _host.Highlight(lineText, lineIndex);
 
-        int lineStart = _lineOffsets[lineIndex];
-        // Use full-text coordinates for lineEnd so the comparison against EmbeddedRange
-        // offsets (also in full-text coords) is consistent regardless of \r\n vs \n endings.
-        // The line span in the full text extends to the start of the next line (or EOF).
-        int lineEnd = lineIndex + 1 < _lineOffsets.Length
-            ? _lineOffsets[lineIndex + 1]
-            : _fullTextLength;
+        int lineStart = snap.LineOffsets[lineIndex];
+        // Full-text lineEnd: start of next line (includes \r\n), or EOF.
+        int lineEnd = lineIndex + 1 < snap.LineOffsets.Length
+            ? snap.LineOffsets[lineIndex + 1]
+            : snap.FullTextLength;
 
         // Find ranges that overlap this line.
-        var overlapping = FindOverlapping(lineStart, lineEnd);
+        var overlapping = FindOverlapping(snap, lineStart, lineEnd);
         if (overlapping.Count == 0)
             return _host.Highlight(lineText, lineIndex);
 
@@ -145,24 +150,23 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
-    private IReadOnlyList<EmbeddedRange> FindOverlapping(int lineStart, int lineEnd)
+    private static IReadOnlyList<EmbeddedRange> FindOverlapping(TextSnapshot snap, int lineStart, int lineEnd)
     {
+        var ranges = snap.Ranges;
         // Binary search to skip ranges that end before this line.
-        // _cachedRanges is sorted by ContentStart (and non-overlapping),
-        // so we can skip ahead to the first candidate whose ContentEnd > lineStart.
-        int lo = 0, hi = _cachedRanges.Count;
+        int lo = 0, hi = ranges.Count;
         while (lo < hi)
         {
             int mid = (lo + hi) >> 1;
-            if (_cachedRanges[mid].ContentEnd <= lineStart) lo = mid + 1;
+            if (ranges[mid].ContentEnd <= lineStart) lo = mid + 1;
             else hi = mid;
         }
 
         var result = new System.Collections.Generic.List<EmbeddedRange>();
-        for (int i = lo; i < _cachedRanges.Count; i++)
+        for (int i = lo; i < ranges.Count; i++)
         {
-            var r = _cachedRanges[i];
-            if (r.ContentStart >= lineEnd) break; // sorted — no further overlap possible
+            var r = ranges[i];
+            if (r.ContentStart >= lineEnd) break;
             result.Add(r);
         }
         return result;
