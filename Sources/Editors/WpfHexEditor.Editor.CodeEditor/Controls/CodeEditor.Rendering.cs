@@ -1148,8 +1148,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 // When the active highlighter supports embedded language zones,
                 // refresh its full-text cache so zone boundaries reflect edits.
+                // Guard: GetText() is O(n) — only call SetFullText when content actually changed.
                 if (hasDirty && ExternalHighlighter is Helpers.EmbeddedSyntaxHighlighter embHighlighter)
-                    embHighlighter.SetFullText(GetText());
+                {
+                    var currentText = GetText();
+                    if (!ReferenceEquals(currentText, _embeddedTextCache) && currentText != _embeddedTextCache)
+                    {
+                        _embeddedTextCache = currentText;
+                        embHighlighter.SetFullText(currentText);
+                    }
+                }
 
                 _highlightPipeline.ScheduleAsync(
                     _document.Lines,

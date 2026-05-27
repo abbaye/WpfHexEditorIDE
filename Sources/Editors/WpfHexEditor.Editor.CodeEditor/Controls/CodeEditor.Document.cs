@@ -753,7 +753,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Notify EmbeddedSyntaxHighlighter of the new full text so it can
             // (re)classify embedded-language zones (e.g. <script>/</script> in HTML).
             if (ActiveHighlighter is EmbeddedSyntaxHighlighter embedded)
+            {
+                _embeddedTextCache = text;
                 embedded.SetFullText(text);
+            }
 
             _lineNumberCache.Clear();
             InvalidateMeasure();

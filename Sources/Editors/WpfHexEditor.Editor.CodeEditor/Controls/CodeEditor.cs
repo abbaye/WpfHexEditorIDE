@@ -676,6 +676,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Last visible range that was submitted to the pipeline — avoids re-scheduling when unchanged.
         private int _lastHighlightFirst = -1;
         private int _lastHighlightLast  = -1;
+        // Last text passed to EmbeddedSyntaxHighlighter.SetFullText — avoids O(n) rebuild when unchanged.
+        private string? _embeddedTextCache;
 
         private int _firstVisibleLine = 0;  // Physical line index of first rendered line
         private int _lastVisibleLine = 0;   // Physical line index of last rendered line

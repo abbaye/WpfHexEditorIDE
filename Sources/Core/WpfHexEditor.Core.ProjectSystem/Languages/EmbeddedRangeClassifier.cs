@@ -149,7 +149,7 @@ public static class EmbeddedRangeClassifier
             ? Regex.Escape(open) + @"[^>]*>"
             : Regex.Escape(open);
 
-        string pattern = $@"(?is){openPattern}(?<content>[\s\S]*?){Regex.Escape(close)}";
+        string pattern = $@"{openPattern}(?<content>[\s\S]*?){Regex.Escape(close)}";
 
         var regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         _regexCache[key] = regex;

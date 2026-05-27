@@ -24,7 +24,6 @@
 //     Thread safety      — ranges are replaced atomically via volatile field.
 // ==========================================================
 
-using System.Collections.Concurrent;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Helpers;
@@ -38,7 +37,7 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 {
     private readonly ISyntaxHighlighter                              _host;
     private readonly IReadOnlyList<EmbeddedLanguageZone>            _zones;
-    private readonly ConcurrentDictionary<string, ISyntaxHighlighter> _subHighlighters = new();
+    private readonly Dictionary<string, ISyntaxHighlighter> _subHighlighters = [];
     private readonly Func<LanguageDefinition, ISyntaxHighlighter>   _factory;
 
     // Cached line-offset lookup: lineIndex → character offset of line start in full text.
@@ -75,11 +74,12 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
     /// Must be called whenever the document text changes.
     /// Pre-computes per-line character offsets used during <see cref="Highlight"/>.
     /// </summary>
-    public void SetFullText(string fullText)
+    internal void SetFullText(string fullText)
     {
         if (string.IsNullOrEmpty(fullText))
         {
-            _lineOffsets = [];
+            _lineOffsets  = [];
+            _cachedRanges = [];
             return;
         }
 
@@ -94,11 +94,9 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
         // Pre-classify ranges for the new text.
         _cachedRanges = EmbeddedRangeClassifier.ClassifyRanges(fullText, _zones);
-        _cachedText   = fullText;
     }
 
     private IReadOnlyList<EmbeddedRange> _cachedRanges = [];
-    private string                       _cachedText   = string.Empty;
 
     // ── ISyntaxHighlighter ───────────────────────────────────────────────────
 
@@ -134,11 +132,22 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
 
     private IReadOnlyList<EmbeddedRange> FindOverlapping(int lineStart, int lineEnd)
     {
-        var result = new System.Collections.Generic.List<EmbeddedRange>();
-        foreach (var r in _cachedRanges)
+        // Binary search to skip ranges that end before this line.
+        // _cachedRanges is sorted by ContentStart (and non-overlapping),
+        // so we can skip ahead to the first candidate whose ContentEnd > lineStart.
+        int lo = 0, hi = _cachedRanges.Count;
+        while (lo < hi)
         {
-            if (r.ContentEnd   <= lineStart) continue;
-            if (r.ContentStart >= lineEnd)   break;  // ranges are sorted
+            int mid = (lo + hi) >> 1;
+            if (_cachedRanges[mid].ContentEnd <= lineStart) lo = mid + 1;
+            else hi = mid;
+        }
+
+        var result = new System.Collections.Generic.List<EmbeddedRange>();
+        for (int i = lo; i < _cachedRanges.Count; i++)
+        {
+            var r = _cachedRanges[i];
+            if (r.ContentStart >= lineEnd) break; // sorted — no further overlap possible
             result.Add(r);
         }
         return result;
@@ -179,8 +188,12 @@ public sealed class EmbeddedSyntaxHighlighter : ISyntaxHighlighter
         return tokens;
     }
 
-    private ISyntaxHighlighter GetOrCreateSub(LanguageDefinition lang) =>
-        _subHighlighters.GetOrAdd(lang.Id, _ => _factory(lang));
+    private ISyntaxHighlighter GetOrCreateSub(LanguageDefinition lang)
+    {
+        if (!_subHighlighters.TryGetValue(lang.Id, out var sub))
+            _subHighlighters[lang.Id] = sub = _factory(lang);
+        return sub;
+    }
 
     /// <summary>
     /// Appends <paramref name="segment"/> tokens to <paramref name="list"/>,
