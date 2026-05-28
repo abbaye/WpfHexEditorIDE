@@ -2822,44 +2822,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         ? y + _glyphRenderer.Baseline
                         : y + _charHeight * 0.8;
 
-                    // Base pass (external highlighter only): draw only the character spans NOT
-                    // covered by any syntax token in EditorForeground, so identifiers/punctuation
-                    // remain visible without double-drawing covered spans.
-                    // Double-drawing the same characters (base + token overdraw) causes ClearType
-                    // sub-pixel blurring, especially on long string literals in embedded zones.
-                    if (hasExternalHighlighter)
+                    // Build the final ordered token list for this line.
+                    // For lines with an external highlighter, inject EditorForeground gap tokens
+                    // for any character spans not covered by syntax tokens so every character is
+                    // rendered exactly once through the same code path.  This avoids the ClearType
+                    // blur that results from drawing base-pass fragments and syntax tokens at
+                    // independently-snapped x positions for the same character.
+                    IReadOnlyList<Helpers.SyntaxHighlightToken> orderedTokens;
+                    if (hasExternalHighlighter && renderTokens.Count > 0)
                     {
-                        var dpi2 = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-                        int gapCursor = 0;
+                        var filled = new List<Helpers.SyntaxHighlightToken>(renderTokens.Count + 4);
+                        int gc = 0;
                         foreach (var tok in renderTokens.OrderBy(t => t.StartColumn))
                         {
-                            int tokStart = Math.Max(0, tok.StartColumn);
-                            int tokEnd   = Math.Min(line.Text.Length, tok.StartColumn + tok.Length);
-                            if (tokStart > gapCursor)
-                            {
-                                // Gap before this token — draw in default foreground.
-                                var gap   = line.Text.Substring(gapCursor, tokStart - gapCursor);
-                                var gapTk = new Helpers.SyntaxHighlightToken(gapCursor, gap.Length, gap, EditorForeground);
-                                double gapX = _glyphRenderer?.SnapToPixelPublic(x + _glyphRenderer.ComputeVisualX(line.Text, gapCursor))
-                                              ?? x + gapCursor * _charWidth;
-                                if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, gapTk, gapX, y, baselineY);
-                                else dc.DrawText(new FormattedText(gap, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, EditorForeground, dpi2), new Point(gapX, y));
-                            }
-                            gapCursor = Math.Max(gapCursor, tokEnd);
+                            int ts = Math.Max(0, tok.StartColumn);
+                            int te = Math.Min(line.Text.Length, tok.StartColumn + tok.Length);
+                            if (ts > gc)
+                                filled.Add(new Helpers.SyntaxHighlightToken(gc, ts - gc,
+                                    line.Text.Substring(gc, ts - gc), EditorForeground));
+                            if (te > ts)
+                                filled.Add(tok);
+                            gc = Math.Max(gc, te);
                         }
-                        // Trailing gap after last token.
-                        if (gapCursor < line.Text.Length)
-                        {
-                            var tail   = line.Text[gapCursor..];
-                            var tailTk = new Helpers.SyntaxHighlightToken(gapCursor, tail.Length, tail, EditorForeground);
-                            double tailX = _glyphRenderer?.SnapToPixelPublic(x + _glyphRenderer.ComputeVisualX(line.Text, gapCursor))
-                                           ?? x + gapCursor * _charWidth;
-                            if (_glyphRenderer != null) _glyphRenderer.RenderToken(dc, tailTk, tailX, y, baselineY);
-                            else dc.DrawText(new FormattedText(tail, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface, _fontSize, EditorForeground, dpi2), new Point(tailX, y));
-                        }
+                        if (gc < line.Text.Length)
+                            filled.Add(new Helpers.SyntaxHighlightToken(gc, line.Text.Length - gc,
+                                line.Text[gc..], EditorForeground));
+                        orderedTokens = filled;
+                    }
+                    else
+                    {
+                        orderedTokens = renderTokens;
                     }
 
-                    foreach (var token in renderTokens)
+                    foreach (var token in orderedTokens)
                     {
                         // Use tab-aware X so tokens on tab-indented lines are not shifted left.
                         // Snap to physical pixel: fractional charWidth × column accumulates sub-pixel
@@ -2902,34 +2897,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
 
                     // ── P1-CE-05: Build GlyphRun cache after first render ─────────────
-                    // Cache gap tokens + syntax tokens so the stale-cache path (DrawGlyphRun)
-                    // renders each character exactly once — matching the gap-only live pass.
+                    // orderedTokens already contains gap-fill tokens, so use it directly
+                    // for the cache build — every character is covered exactly once.
                     if (_glyphRenderer != null)
                     {
-                        IEnumerable<Helpers.SyntaxHighlightToken> allCacheTokens;
-                        if (hasExternalHighlighter)
-                        {
-                            // Build gap segments (chars not covered by any syntax token).
-                            var gapTokens = new List<Helpers.SyntaxHighlightToken>();
-                            int gc = 0;
-                            foreach (var tok in renderTokens.OrderBy(t => t.StartColumn))
-                            {
-                                int ts2 = Math.Max(0, tok.StartColumn);
-                                int te2 = Math.Min(line.Text.Length, tok.StartColumn + tok.Length);
-                                if (ts2 > gc)
-                                    gapTokens.Add(new Helpers.SyntaxHighlightToken(gc, ts2 - gc, line.Text.Substring(gc, ts2 - gc), EditorForeground));
-                                gc = Math.Max(gc, te2);
-                            }
-                            if (gc < line.Text.Length)
-                                gapTokens.Add(new Helpers.SyntaxHighlightToken(gc, line.Text.Length - gc, line.Text[gc..], EditorForeground));
-                            allCacheTokens = Enumerable.Concat(gapTokens, renderTokens);
-                        }
-                        else
-                        {
-                            allCacheTokens = renderTokens;
-                        }
-
-                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor, line.Text);
+                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(orderedTokens, SyntaxUrlColor, line.Text);
                         line.IsGlyphCacheDirty = false;
 
                         // Cache link zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
