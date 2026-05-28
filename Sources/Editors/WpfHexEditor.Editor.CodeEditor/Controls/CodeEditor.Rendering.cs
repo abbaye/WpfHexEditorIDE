@@ -2902,15 +2902,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
 
                     // ── P1-CE-05: Build GlyphRun cache after first render ─────────────
-                    // Cache for the base-pass token too when using external highlighter.
+                    // Cache gap tokens + syntax tokens so the stale-cache path (DrawGlyphRun)
+                    // renders each character exactly once — matching the gap-only live pass.
                     if (_glyphRenderer != null)
                     {
-                        var allCacheTokens = hasExternalHighlighter
-                            ? Enumerable.Concat(
-                                new[] { new Helpers.SyntaxHighlightToken(
-                                    0, line.Text.Length, line.Text, EditorForeground) },
-                                renderTokens)
-                            : (IEnumerable<Helpers.SyntaxHighlightToken>)renderTokens;
+                        IEnumerable<Helpers.SyntaxHighlightToken> allCacheTokens;
+                        if (hasExternalHighlighter)
+                        {
+                            // Build gap segments (chars not covered by any syntax token).
+                            var gapTokens = new List<Helpers.SyntaxHighlightToken>();
+                            int gc = 0;
+                            foreach (var tok in renderTokens.OrderBy(t => t.StartColumn))
+                            {
+                                int ts2 = Math.Max(0, tok.StartColumn);
+                                int te2 = Math.Min(line.Text.Length, tok.StartColumn + tok.Length);
+                                if (ts2 > gc)
+                                    gapTokens.Add(new Helpers.SyntaxHighlightToken(gc, ts2 - gc, line.Text.Substring(gc, ts2 - gc), EditorForeground));
+                                gc = Math.Max(gc, te2);
+                            }
+                            if (gc < line.Text.Length)
+                                gapTokens.Add(new Helpers.SyntaxHighlightToken(gc, line.Text.Length - gc, line.Text[gc..], EditorForeground));
+                            allCacheTokens = Enumerable.Concat(gapTokens, renderTokens);
+                        }
+                        else
+                        {
+                            allCacheTokens = renderTokens;
+                        }
 
                         line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor, line.Text);
                         line.IsGlyphCacheDirty = false;
