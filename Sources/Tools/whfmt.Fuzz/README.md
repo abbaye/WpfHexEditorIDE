@@ -13,7 +13,7 @@ Unlike naive byte-flippers, `whfmt.Fuzz` understands the *structure* of binary f
 - **`FuzzReport`** — field coverage, strategy distribution, and untested fields analysis
 - Weighted random strategy picker ensures coverage of the most dangerous fields first
 
-Powered by **799 whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
+Powered by **856+ whfmt format definitions** (schema v3.1) with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
 
 
 > **Full documentation**: [whfmt-Fuzz-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Fuzz/whfmt-Fuzz-guide.md) — API reference, architecture, integration guides, and usage examples.
@@ -21,6 +21,11 @@ Powered by **799 whfmt format definitions** with dedicated `fuzz` blocks for ZIP
 ---
 
 ## What's New
+
+### v1.1.2 — Catalog 1.5.0 alignment
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.5.0` — schema v3.1, PHP/Markdown embedded language injection, `CSS.whfmt` fix, 856+ definitions.
+- **No Fuzz API changes** — drop-in upgrade from 1.1.1.
 
 ### v1.1.1 — Catalog 1.3.2 alignment + extended mutations
 

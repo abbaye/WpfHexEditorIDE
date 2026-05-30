@@ -1,13 +1,18 @@
 # whfmt.Validate
 
-> **Binary file validator** — validate any file against 799 format definitions in seconds.
+> **Binary file validator** — validate any file against 856+ format definitions in seconds.
 
-`whfmt.Validate` is a **dotnet global tool** that detects file formats and validates them for structural integrity, checksum correctness, and forensic anomalies — all powered by the [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) library with 799 embedded `.whfmt` definitions.
+`whfmt.Validate` is a **dotnet global tool** that detects file formats and validates them for structural integrity, checksum correctness, and forensic anomalies — all powered by the [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) library with 856+ embedded `.whfmt` definitions (schema v3.1).
 
 
 > **Full documentation**: [whfmt-Validate-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Validate/whfmt-Validate-guide.md) — API reference, architecture, integration guides, and usage examples.
 
 ---
+
+## What's New in 1.0.2
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.5.0` — schema v3.1, PHP/Markdown embedded language injection, `CSS.whfmt` fix, 856+ definitions.
+- **No CLI changes** — drop-in upgrade from 1.0.1.
 
 ## What's New in 1.0.1
 

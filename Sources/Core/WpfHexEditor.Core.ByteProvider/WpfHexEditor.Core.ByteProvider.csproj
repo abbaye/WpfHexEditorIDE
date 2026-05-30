@@ -11,9 +11,9 @@
 
     <!-- NuGet metadata -->
     <PackageId>WpfHexEditor.Core.ByteProvider</PackageId>
-    <Version>1.3.0</Version>
-    <AssemblyVersion>1.3.0.0</AssemblyVersion>
-    <FileVersion>1.3.0</FileVersion>
+    <Version>1.3.1</Version>
+    <AssemblyVersion>1.3.1.0</AssemblyVersion>
+    <FileVersion>1.3.1</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditor.Core.ByteProvider</Product>
@@ -59,7 +59,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>1.3.0 — DI/AOP/Slice/Metrics tier: IByteProviderFactory + ByteProviderFactory (create-and-open in one call, DI-registrable); ByteProviderDecorator abstract base (forward-all pattern, subclass to intercept); ByteSlice zero-allocation span-like view (index, sub-slice, SequenceEqual, CopyTo); IByteProviderMetrics telemetry hooks wired into OpenFile/Close/Modify/Insert/Delete/Save/Search with NullByteProviderMetrics singleton as zero-overhead default; ByteProviderOptions.WithMetrics() fluent injection. 1.2.0 — IByteProvider public interface; ByteProviderOptions fluent config; MemoryMappedFileProvider auto-switch (&gt;512 MB); rich events (ByteModified, BytesInserted, BytesDeleted, SaveCompleted); ExportChangesetJson/ImportChangesetJson/checkpoints; ByteProviderDiff; KnownPatterns; async streaming (FindAllAsync, SearchStreamAsync, ReadLinesAsync, CopyToAsync); SearchRegex/SearchRegexAsync. 1.1.1 — Completed undo/redo unification (issue #107). 1.1.0 — IUndoAwareEditor contract + HexByteUndoEntry; regression test suite.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.3.1 — Null-coalescing simplifications in ByteProvider internals (minor allocations reduction); static analysis fixes. No public API changes — drop-in upgrade from 1.3.0. 1.3.0 — DI/AOP/Slice/Metrics tier: IByteProviderFactory + ByteProviderFactory; ByteProviderDecorator; ByteSlice; IByteProviderMetrics + NullByteProviderMetrics; ByteProviderOptions.WithMetrics(). 1.2.0 — IByteProvider; ByteProviderOptions; MemoryMappedFileProvider (&gt;512 MB); rich events; changeset; ByteProviderDiff; KnownPatterns; async streaming. 1.1.1 — Undo/redo unification. 1.1.0 — IUndoAwareEditor + HexByteUndoEntry; regression test suite.</PackageReleaseNotes>
 
     <!-- SourceLink: enables step-through debugging for NuGet consumers -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

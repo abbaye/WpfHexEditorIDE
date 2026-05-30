@@ -21,7 +21,7 @@ Every `BlockDefinition` in a `.whfmt` file becomes a **typed property**.
 Big-endian fields emit BSwap helpers automatically.  
 `--validate` adds `InvalidSignatureException`, `ChecksumMismatchException`, `TruncatedFileException`.
 
-Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790+ total; 799 binary formats available for code generation — text-format grammars excluded).
+Powered by **856+ binary format definitions** from `whfmt.FileFormatCatalog` 1.5.0 (schema v3.1).
 
 
 > **Full documentation**: [whfmt-CodeGen-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.CodeGen/whfmt-CodeGen-guide.md) — API reference, architecture, integration guides, and usage examples.
@@ -29,6 +29,11 @@ Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790
 ---
 
 ## What's New
+
+### v1.1.5 — Catalog 1.5.0 alignment
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.5.0` — schema v3.1, PHP/Markdown embedded language injection, `CSS.whfmt` fix, 856+ definitions.
+- **No CodeGen API changes** — drop-in upgrade from 1.1.4.
 
 ### v1.1.4 — Format lookup fix (9 formats)
 

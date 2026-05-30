@@ -4,13 +4,37 @@
 
 [![.NET](https://img.shields.io/badge/.NET-net8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.ByteProvider?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)  
-[![Version](https://img.shields.io/badge/version-1.1.1-blue)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
+[![Version](https://img.shields.io/badge/version-1.3.1-blue)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
 
 
 > **Full documentation**: [WpfHexEditor-Core-ByteProvider-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.ByteProvider/WpfHexEditor-Core-ByteProvider-guide.md) — API reference, architecture, integration guides, and usage examples.
 
 ---
+
+## What's New in 1.3.1
+
+- **Fix**: Null-coalescing simplifications across `ByteProvider` internals — minor allocation reduction on high-frequency read paths.
+- **Fix**: Static analysis warnings resolved (nullable annotations, unused variable cleanup).
+- **No public API changes** — drop-in upgrade from 1.3.0.
+
+## What's New in 1.3.0
+
+- **New**: `IByteProviderFactory` + `ByteProviderFactory` — create-and-open in one call, DI-registrable via `services.AddByteProviderFactory()`.
+- **New**: `ByteProviderDecorator` abstract base — forward-all AOP pattern; subclass to intercept reads, writes, or searches without touching `ByteProvider` directly.
+- **New**: `ByteSlice` — zero-allocation span-like view over a virtual range (`index`, `SubSlice`, `SequenceEqual`, `CopyTo`).
+- **New**: `IByteProviderMetrics` — telemetry hooks wired into Open/Close/Modify/Insert/Delete/Save/Search; `NullByteProviderMetrics` singleton for zero-overhead default.
+- **New**: `ByteProviderOptions.WithMetrics()` — fluent injection of custom metrics implementation.
+
+## What's New in 1.2.0
+
+- **New**: `IByteProvider` public interface — mock or decorate in tests without referencing the concrete class.
+- **New**: `ByteProviderOptions` fluent configuration (MMF threshold, undo depth, cache size).
+- **New**: `MemoryMappedFileProvider` — automatic MMF switch for files &gt; 512 MB.
+- **New**: Rich events — `ByteModified`, `BytesInserted`, `BytesDeleted`, `SaveCompleted`.
+- **New**: `ByteProviderDiff` — binary diff engine (`Compare` + `ApplyDiff`).
+- **New**: `KnownPatterns` — pre-built magic-byte arrays (PE, ELF, ZIP, PNG, PDF, SQLite…).
+- **New**: Async streaming — `FindAllAsync`, `ReadLinesAsync`, `CopyToAsync`, `SearchRegexAsync`.
 
 ## What's New in 1.1.1
 

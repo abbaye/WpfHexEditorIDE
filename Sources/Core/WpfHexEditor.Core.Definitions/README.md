@@ -11,6 +11,18 @@ dotnet add package whfmt.FileFormatCatalog
 
 ---
 
+## What's New in 1.5.0
+
+### Embedded Language Injection — PHP, Markdown, and more
+
+- **PHP-in-HTML**: `PHP.whfmt` `embeddedLanguages[]` entry wires `<?php … ?>` regions to PHP syntax highlighting in any host that uses the `EmbeddedRangeClassifier` runtime.
+- **Markdown fenced blocks**: `` ```lang `` / ```` ``` ```` fences are now declared as embedded zones in `Markdown.whfmt`, enabling per-language syntax coloring inside code blocks.
+- **Generic runtime contract**: any `.whfmt` can declare `syntaxDefinition.embeddedLanguages[]` with `startPattern` / `endPattern` / `language`. The runtime resolves them with zero additional changes per language.
+- **Fix**: `CSS.whfmt` — broken `Type` pattern corrected (was causing false positives on plain-text files with `:` tokens).
+- **No public API changes** — drop-in upgrade from 1.4.1.
+
+---
+
 ## What's New in 1.4.0
 
 ### Catalog: 856 definitions (+57 since 1.3.2)

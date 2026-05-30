@@ -4,6 +4,22 @@ Roslyn Source Generator that turns `.whfmt` binary format definitions into stron
 
 ---
 
+## What's New
+
+### v1.0.2 — Stability + schema v3.1 alignment
+
+- **Fix**: Generator now tolerates `embeddedLanguages[]` entries in `syntaxDefinition` blocks (schema v3.1) without crashing — fields not relevant to C# parsing are silently skipped.
+- **Fix**: Shared `ParserGenerator` / `SpanGenerator` sources updated in sync with `whfmt.CodeGen 1.1.5`.
+- **No generated-API changes** — all previously generated parsers remain source-compatible.
+
+### v1.0.1 — Initial public release
+
+- Roslyn `IIncrementalGenerator` wired to `AdditionalFiles` ending in `.whfmt`.
+- Generates `{FormatName}Parser` (BinaryReader-based) and `{FormatName}SpanParser` (zero-alloc `Span<byte>`) per input file.
+- MSBuild `.props` file exposes `WhfmtXxx` metadata as compiler-visible item metadata for `AnalyzerConfigOptionsProvider`.
+
+---
+
 ## Quick start
 
 ### 1. Install

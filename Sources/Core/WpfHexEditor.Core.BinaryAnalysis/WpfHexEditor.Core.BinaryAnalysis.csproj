@@ -10,9 +10,9 @@
 
     <!-- NuGet metadata -->
     <PackageId>WpfHexEditor.Core.BinaryAnalysis</PackageId>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditor.Core.BinaryAnalysis</Product>
@@ -48,7 +48,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>1.0.1 — Added Title metadata. ViewModelBase introduced + LINQ allocation fixes in shared code paths. Repository reorganized into group subfolders (no source-level changes). No public API changes. 1.0.0 — Initial public release: cross-platform binary analysis with zero WPF dependency.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.2 — Null-coalescing simplifications in service internals; redundant null-coalescing operators removed. No public API changes — drop-in upgrade from 1.0.1. 1.0.1 — Title metadata added; ViewModelBase + LINQ allocation fixes. 1.0.0 — Initial public release.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

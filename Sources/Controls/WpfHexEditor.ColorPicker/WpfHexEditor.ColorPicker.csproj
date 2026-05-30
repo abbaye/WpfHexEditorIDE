@@ -11,9 +11,9 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WpfColorPicker</PackageId>
-    <Version>2.0.2</Version>
-    <AssemblyVersion>2.0.2.0</AssemblyVersion>
-    <FileVersion>2.0.2</FileVersion>
+    <Version>2.0.3</Version>
+    <AssemblyVersion>2.0.3.0</AssemblyVersion>
+    <FileVersion>2.0.3</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfColorPicker</Product>
@@ -28,7 +28,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
-    <PackageReleaseNotes>2.0.2 — +10 new localizations (uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI) reaching 28 total via ColorPickerResources satellite assemblies; Phase 5 self-contained NuGet localization (subclass resources loading fix). 2.0.1 — HSV color wheel + RGB/HSL sliders + opacity + recent colors + eyedropper + DynamicResource theming.</PackageReleaseNotes>
+    <PackageReleaseNotes>2.0.3 — Localization StaticResource fixes: DynamicResource → StaticResource on localization keys across all color picker panels; localized dictionary wiring hardened. No public API changes — drop-in upgrade from 2.0.2. 2.0.2 — +10 new localizations (28 total); Phase 5 self-contained NuGet localization fix. 2.0.1 — HSV color wheel + RGB/HSL sliders + opacity + recent colors + eyedropper + DynamicResource theming.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>

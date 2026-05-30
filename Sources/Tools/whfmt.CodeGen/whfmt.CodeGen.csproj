@@ -14,14 +14,14 @@
     <ToolCommandName>whfmt-codegen</ToolCommandName>
 
     <PackageId>whfmt.CodeGen</PackageId>
-    <Version>1.1.4</Version>
-    <AssemblyVersion>1.1.4</AssemblyVersion>
-    <FileVersion>1.1.4</FileVersion>
+    <Version>1.1.5</Version>
+    <AssemblyVersion>1.1.5</AssemblyVersion>
+    <FileVersion>1.1.5</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.CodeGen</Product>
     <Title>whfmt.CodeGen — Binary Parser Generator (C# · F# · Rust · VB.NET)</Title>
-    <Description>Generate strongly-typed parsers from .whfmt binary format definitions — C#, zero-alloc Span&lt;byte&gt;, F#, Rust, or VB.NET. 789 binary formats supported (whfmt schema v3). Rich types: enums for valueMap, [Flags] enum for bitfields, List&lt;T&gt; for repeating, nullable for conditionals. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. Commands: gen, dump. Install: dotnet tool install -g whfmt.CodeGen</Description>
+    <Description>Generate strongly-typed parsers from .whfmt binary format definitions — C#, zero-alloc Span&lt;byte&gt;, F#, Rust, or VB.NET. 856+ binary formats supported (whfmt schema v3.1). Rich types: enums for valueMap, [Flags] enum for bitfields, List&lt;T&gt; for repeating, nullable for conditionals. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. Commands: gen, dump. Install: dotnet tool install -g whfmt.CodeGen</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>whfmt;codegen;parser;generator;binary;format;c#;dotnet-tool;net8</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
@@ -31,7 +31,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.1.4 — Fix: generate command no longer crashes with JsonReaderException on formats that have a companion Synalysis .grammar file (bmp, elf, flac, gif, jpeg, mp3, png, sqlite, zip). Lookup is now restricted to .whfmt resources; a clear InvalidOperationException is thrown if a non-JSON resource is mistakenly resolved. 1.1.3 — (previous). 1.1.2 — Catalog bump to whfmt.FileFormatCatalog 1.3.2 (Phase B audit + bug fixes, 799 definitions, schema v3 canonical). No CodeGen API changes. 1.1.1 — VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span / F# / Rust output, --project flag.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.5 — Catalog bump to whfmt.FileFormatCatalog 1.5.0 (schema v3.1, PHP/Markdown embedded language injection, CSS.whfmt fix, 856+ definitions). No CodeGen API changes — drop-in upgrade from 1.1.4. 1.1.4 — Fix JsonReaderException on Synalysis .grammar formats. 1.1.2 — Catalog 1.3.2. 1.1.1 — VB.NET output. 1.1.0 — dump command, rich types, typed exceptions.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.3.2" />
+    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.5.0" />
     <PackageReference Include="System.CommandLine"      Version="2.0.0-beta4.22272.1" />
     <!-- Local project references for pre-1.3.2-publication dev/test.
          MSBuild prefers ProjectReference at build time; the PackageReference

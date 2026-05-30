@@ -18,12 +18,12 @@
 
   <!-- NuGet packaging -->
   <PropertyGroup>
-    <PackageReleaseNotes>0.9.8.0 — Bounded UpdateOverlay retry chain (eliminates dispatcher flood); EagerContentKey bypass for migrated panels (LazyContentPlaceholder fix); active panel overlay alignment at startup; Threads + Parallel Stacks panels with full 28-locale localization; WorkspaceFindReplace panel redesign (29 keys × 28 locales); +10 new languages (uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI), reaching 28 total. 0.9.7.0 — Horizontal reorder for docked tool-panel tabs; tab-switch triple-fire eliminated (perf); toolbar StaticResource labels fix; Phase 5+6 full localization (17 languages).</PackageReleaseNotes>
+    <PackageReleaseNotes>0.9.9.0 — Welcome Screen redesign (#138): animated startup panel, recent files list, quick-action tiles, themed header; Diff tab + Timeline tab freeze fix (layout pass debounce on tab switch); default ActivePanelHighlight changed to Glow; localization StaticResource fixes across 5 panels. 0.9.8.0 — UpdateOverlay retry bounded; EagerContentKey bypass; overlay alignment fix; Threads + Parallel Stacks panels; WorkspaceFindReplace redesign; +10 languages (28 total). 0.9.7.0 — Tab horizontal reorder; tab-switch perf; StaticResource labels; full localization.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>WpfDocking</PackageId>
-    <Version>0.9.8.0</Version>
-    <AssemblyVersion>0.9.8.0</AssemblyVersion>
-    <FileVersion>0.9.8.0</FileVersion>
+    <Version>0.9.9.0</Version>
+    <AssemblyVersion>0.9.9.0</AssemblyVersion>
+    <FileVersion>0.9.9.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfDocking</Product>

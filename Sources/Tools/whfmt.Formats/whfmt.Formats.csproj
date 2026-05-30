@@ -12,9 +12,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>whfmt.Formats</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.5.0</Version>
     <Authors>abbaye</Authors>
-    <Description>856 .whfmt binary format definitions (Images, Audio, Video, Archives, …) shipped as AdditionalFiles. Pair with whfmt.SourceGenerator to get strongly-typed C# parsers at compile time.</Description>
+    <Description>856+ .whfmt binary format definitions (Images, Audio, Video, Archives, …) shipped as AdditionalFiles — schema v3.1 with embeddedLanguages[] support. Pair with whfmt.SourceGenerator to get strongly-typed C# parsers at compile time.</Description>
     <PackageTags>whfmt;binary;formats;parser;codegen;roslyn</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>

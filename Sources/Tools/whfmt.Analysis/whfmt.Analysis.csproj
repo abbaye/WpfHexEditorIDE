@@ -12,14 +12,14 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
 
     <PackageId>whfmt.Analysis</PackageId>
-    <Version>1.1.1</Version>
-    <AssemblyVersion>1.1.1</AssemblyVersion>
-    <FileVersion>1.1.1</FileVersion>
+    <Version>1.1.2</Version>
+    <AssemblyVersion>1.1.2</AssemblyVersion>
+    <FileVersion>1.1.2</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.Analysis</Product>
     <Title>whfmt.Analysis — Semantic Binary Diff</Title>
-    <Description>Field-level semantic diff between two binary files using whfmt format definitions. Groups entries, ignores noise fields (timestamps, checksums), and surfaces meaningful structural changes. Powered by 799 whfmt.FileFormatCatalog definitions (schema v3). Cross-platform net8.0.</Description>
+    <Description>Field-level semantic diff between two binary files using whfmt format definitions. Groups entries, ignores noise fields (timestamps, checksums), and surfaces meaningful structural changes. Powered by 856+ whfmt.FileFormatCatalog definitions (schema v3.1). Cross-platform net8.0.</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>whfmt;binary;diff;semantic;format;analysis;compare;net8</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
@@ -29,7 +29,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.1.1 — Catalog bump to whfmt.FileFormatCatalog 1.3.2 (Phase B audit + 2 bug fixes, 799 definitions, schema v3 canonical). No Analysis API changes. 1.1.0 — Format-aware diff over whfmt.diff blocks (keyFields, ignoreFields, groupBy). 1.0.0 — Initial release. FormatDiff.Compare() with field-level grouping, ignore lists, and JSON/text/HTML rendering.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.2 — Catalog bump to whfmt.FileFormatCatalog 1.5.0 (schema v3.1, PHP/Markdown embedded language injection, CSS.whfmt fix). No Analysis API changes — drop-in upgrade from 1.1.1. 1.1.1 — Catalog 1.3.2 (799 definitions, schema v3). 1.1.0 — Format-aware diff over whfmt.diff blocks. 1.0.0 — Initial release.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.3.2" />
+    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.5.0" />
     <!-- Local project references for pre-1.3.2-publication dev/test.
          MSBuild prefers ProjectReference at build time; the PackageReference
          above is what consumers see. Remove this block once 1.3.2 is live. -->

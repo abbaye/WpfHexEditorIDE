@@ -11,6 +11,11 @@
 
 ---
 
+## What's New in 1.0.2
+
+- **Fix**: Null-coalescing simplifications across service internals — minor cleanup, no behavior change.
+- **No public API changes** — drop-in upgrade from 1.0.1.
+
 ## What's New in 1.0.1
 
 - **`Title` metadata** added — was missing from the 1.0.0 package, NuGet UI now shows a proper title.

@@ -5,6 +5,12 @@ A modern, full-featured WPF Color Picker UserControl for .NET 8.
 
 > **Full documentation**: [WpfColorPicker-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Controls/WpfHexEditor.ColorPicker/WpfColorPicker-guide.md) — API reference, architecture, integration guides, and usage examples.
 
+## What's New in 2.0.3
+
+- **Fix**: `DynamicResource` → `StaticResource` on all localization keys across color picker panels — prevents `ResourceReferenceKeyNotFoundException` in standalone apps.
+- **Fix**: Localized dictionary wiring hardened — satellite keys now always resolve on first render regardless of control initialization order.
+- **No public API changes** — drop-in upgrade from 2.0.2.
+
 ## What's New in 2.0.2
 
 - **+10 UI localizations** added — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales (Phase 6 wave).

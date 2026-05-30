@@ -12,9 +12,9 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WpfCodeEditor</PackageId>
-    <Version>0.10.0.0</Version>
-    <AssemblyVersion>0.10.0.0</AssemblyVersion>
-    <FileVersion>0.10.0.0</FileVersion>
+    <Version>0.10.1.0</Version>
+    <AssemblyVersion>0.10.1.0</AssemblyVersion>
+    <FileVersion>0.10.1.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfCodeEditor</Product>
@@ -29,7 +29,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>0.10.0.0 — Embedded language injection: <script>/</script> blocks in HTML files are now syntax-highlighted as JavaScript, and <style>/</style> blocks as CSS. Runtime-generic: any language can declare embeddedLanguages[] zones in its .whfmt — PHP-in-HTML, Vue SFC, Svelte, Markdown fences are supported with zero additional runtime changes. New public types: EmbeddedSyntaxHighlighter, EmbeddedRangeClassifier (WpfHexEditor.Core.ProjectSystem). 0.9.9.0 — Phase 9 Inline Code Actions (Ctrl+. / lightbulb) with CodeActionRegistry + 3 mechanical fixers + Suppress-here; Refactor ▶ context menu + preview dialog + orchestrator (UI1-UI5); Phase 10B Duplication tab redesign (master/detail + side-by-side diff); Dynamic Snippets with variable expansion + user snippet store (#88); Phase 1 Debugger integration (Data Tips, Autos, edit-in-place, Run to Cursor); IDebugValueProvider + DebugValueHintsLayer contract; +10 new localizations (uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI). 0.9.8.0 — LSP semantic token colorization; zoom snap-to-pixel; IReferenceCountProvider inline hints; Ctrl+Click links/emails; minimap scroll fix; SourceLink + satellite assemblies now correctly bundled.</PackageReleaseNotes>
+    <PackageReleaseNotes>0.10.1.0 — SRP decomposition of CodeEditor internals into 6 focused partial files (rendering, folding, diagnostics, completion, LSP, commands) — no public API changes; ClearType blur fix: single unified orderedTokens pass eliminates dual-render gap causing sub-pixel misalignment on embedded language zone boundaries. 0.10.0.0 — Embedded language injection: HTML script/style blocks, PHP-in-HTML, Markdown fenced blocks via whfmt.FileFormatCatalog 1.5.0 embeddedLanguages[]. 0.9.9.0 — Inline Code Actions (Ctrl+.), Refactor menu, Duplication tab, Dynamic Snippets, Debugger Data Tips; +10 localizations (28 total). 0.9.8.0 — LSP semantic tokens; zoom snap-to-pixel; IReferenceCountProvider; Ctrl+Click links.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591;NU5100</NoWarn>

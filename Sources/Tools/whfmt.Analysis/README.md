@@ -12,7 +12,7 @@ Instead of comparing raw bytes, `whfmt.Analysis` understands the *structure* of 
 - **Structural diff** — block-level OnlyInA / OnlyInB / InBoth using MD5 hashes
 - Outputs rich text, JSON, CSV, Markdown, or dark-themed HTML reports
 
-Powered by **799 whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
+Powered by **856+ whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
 
 
 > **Full documentation**: [whfmt-Analysis-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Analysis/whfmt-Analysis-guide.md) — API reference, architecture, integration guides, and usage examples.
@@ -20,6 +20,11 @@ Powered by **799 whfmt format definitions** covering Archives, Images, Executabl
 ---
 
 ## What's New
+
+### v1.1.2 — Catalog 1.5.0 alignment
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.5.0` — schema v3.1, PHP/Markdown embedded language injection, `CSS.whfmt` fix, 856+ definitions.
+- **No Analysis API changes** — drop-in upgrade from 1.1.1.
 
 ### v1.1.1 — Catalog 1.3.2 alignment
 

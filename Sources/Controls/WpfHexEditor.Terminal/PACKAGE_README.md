@@ -6,6 +6,12 @@ A standalone WPF terminal emulator UserControl for .NET 8.
 dotnet add package WpfTerminal
 ```
 
+## What's New in 0.9.7.2
+
+- **Fix**: `RoslynServiceFactory` decoupled from `WpfTerminal` assembly — standalone consumers no longer have a compile-time dependency on Roslyn packages when using `WpfTerminal` without the full analysis suite.
+- **Fix**: Null-coalescing simplifications in terminal service internals — minor cleanup, no behavior change.
+- **No public API changes** — drop-in upgrade from 0.9.7.1.
+
 ## What's New in 0.9.7.1
 
 - **+10 UI localizations** added — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales total.

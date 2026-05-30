@@ -150,6 +150,31 @@ All bundled inside the package — zero external NuGet dependencies:
 
 ---
 
+## What's New in 0.10.1.0
+
+### Embedded Language Support — PHP, Markdown, and more
+
+Building on the injection runtime introduced in 0.10.0.0, this release extends embedded language support:
+
+- **New**: PHP-in-HTML — `<?php … ?>` zones are now syntax-highlighted as PHP inside `.html` / `.php` files.
+- **New**: Markdown fenced code blocks — `` ```lang ` `` / ` ``` `` fences render per-language syntax highlighting inline.
+- **New**: Any language can declare `embeddedLanguages[]` zones in its `.whfmt` — Vue SFC (`.vue`), Svelte (`.svelte`), YAML front-matter are ready with zero runtime changes.
+- **Fix**: ClearType blur on embedded zone boundaries — single unified `orderedTokens` pass replaces the dual-render (gap + token) pipeline that caused independently-snapped x positions and sub-pixel misalignment.
+
+### Internal
+
+- **Refactor**: CodeEditor source decomposed into 6 focused partial files (rendering, folding, diagnostics, completion, LSP, commands) — no public API changes.
+- **No public API changes** — drop-in upgrade from 0.10.0.0.
+
+## What's New in 0.10.0.0
+
+### Embedded Language Injection — HTML `<script>` and `<style>`
+
+- **New**: `<script>` / `</script>` blocks in HTML files are syntax-highlighted as JavaScript.
+- **New**: `<style>` / `</style>` blocks are syntax-highlighted as CSS.
+- **Generic runtime**: `EmbeddedRangeClassifier` + `EmbeddedSyntaxHighlighter` consume `embeddedLanguages[]` from any `.whfmt` — no per-language code required.
+- **New public types**: `EmbeddedSyntaxHighlighter`, `EmbeddedRangeClassifier` (namespace `WpfHexEditor.Core.ProjectSystem`).
+
 ## What's New in 0.9.9.0
 
 - **New**: **Phase 9 Inline Code Actions** (Ctrl+. / lightbulb) — `CodeActionRegistry` + 3 mechanical fixers (`WH0032`/`WH0062`/`WH0070`) + Suppress-here, plugged into the existing LSP code-action pipeline.
@@ -164,7 +189,7 @@ All bundled inside the package — zero external NuGet dependencies:
 
 - **New**: LSP semantic token colorization — richer syntax coloring driven by the language server.
 - **New**: Zoom snap-to-pixel — GlyphRunRenderer snaps to pixel grid at each zoom level, eliminating sub-pixel blur on all font sizes.
-- **New**: Roslyn inline hints upgrade — `IReferenceCountProvider` SDK contract decouples reference-count hints from the Roslyn implementation; exposed via `IDEHostContext`.
+- **New**: Roslyn inline hints upgrade — `IReferenceCountProvider` SDK contract decouples reference-count hints from the Roslyn implementation.
 - **New**: Ctrl+Click links and emails — `ClickableLinksEnabled` / `ClickableEmailsEnabled` DPs; Ctrl+Click opens URLs in the default browser and email addresses in the mail client. Backported to `TextEditor` via `ScanLinksInText`.
 - **Fix**: Minimap scroll — scroll position in `MinimapControl` now tracks viewport changes correctly.
 - **Fix**: Satellite assemblies now correctly bundled — all 17 language `.resources.dll` files are included in the NuGet package (`IncludeSatelliteAssembliesInPackage` target added).

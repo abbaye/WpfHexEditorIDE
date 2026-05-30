@@ -9,12 +9,20 @@ dotnet add package WpfDocking
 
 ---
 
+## What's New in 0.9.9.0
+
+- **New**: Welcome Screen redesign (#138) — animated startup panel with recent files list, quick-action tiles, and themed header. Replaces the blank canvas on first launch.
+- **Fix**: Diff tab + Timeline tab freeze — debounce guard on layout pass prevents triple-fire on tab switch; measurable improvement on complex layouts.
+- **Change**: Default `ActivePanelHighlight` changed from `None` to `Glow` — active panel has a subtle glow accent out of the box.
+- **Fix**: Localization `StaticResource` fixes across 5 panels (toolbar buttons + panel headers correctly resolve via `StaticResource` on first show).
+- **No public API changes** — drop-in upgrade from 0.9.8.0.
+
 ## What's New in 0.9.8.0
 
 - **Fix**: `UpdateOverlay` retry chain bounded (was firing on a dispatcher flood at startup); active-panel overlay alignment race fixed.
 - **Fix**: `EagerContentKey` bypasses `LazyContentPlaceholder` for migrated panels (resolves stale-placeholder bug after layout reload).
 - **Fix**: Active-panel overlay misaligned at startup — guarded with `Loaded` retry + sub-pixel rounding (`UseLayoutRounding`).
-- **Threads + Parallel Stacks panels** added (debugger integration) with full 28-locale localization.
+- **Threads + Parallel Stacks panels** added with full 28-locale localization.
 - **WorkspaceFindReplace panel redesigned** (29 keys × 28 locales).
 - **+10 UI localizations** — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales total.
 

@@ -1,14 +1,28 @@
 # whfmt.Formats
 
-**856 binary format definitions** (`.whfmt`) shipped as `AdditionalFiles` — ready to pair with [`whfmt.SourceGenerator`](https://www.nuget.org/packages/whfmt.SourceGenerator) for zero-CLI, compile-time C# parsers.
+**856+ binary format definitions** (`.whfmt`, schema v3.1) shipped as `AdditionalFiles` — ready to pair with [`whfmt.SourceGenerator`](https://www.nuget.org/packages/whfmt.SourceGenerator) for zero-CLI, compile-time C# parsers.
+
+## What's New
+
+### v1.5.0 — Schema v3.1 + PHP/Markdown embedded language zones
+
+- **Updated**: All `.whfmt` files are now schema v3.1 — `syntaxDefinition.embeddedLanguages[]` is supported.
+- **Updated**: `PHP.whfmt` declares `<?php … ?>` zones; `Markdown.whfmt` declares fenced code block zones (`` ```lang ``).
+- **Fix**: `CSS.whfmt` broken `Type` pattern corrected.
+- Version mirrors `whfmt.FileFormatCatalog` — same definitions, same version number, always in sync.
+
+### v1.0.1 — Initial content release
+
+- 856 `.whfmt` binary format definitions shipped as `AdditionalFiles`.
+- MSBuild `.props` wires `WhfmtNamespace` per-category for tidy generated namespaces.
 
 ## Quick start
 
 ### 1. Install both packages
 
 ```xml
-<PackageReference Include="whfmt.Formats"         Version="1.0.0" />
-<PackageReference Include="whfmt.SourceGenerator" Version="1.0.0" />
+<PackageReference Include="whfmt.Formats"         Version="1.5.0" />
+<PackageReference Include="whfmt.SourceGenerator" Version="1.0.2" />
 ```
 
 That's it. At compile time, every format in this package is passed to `whfmt.SourceGenerator` as an `AdditionalFile` and a strongly-typed C# parser class is emitted automatically.

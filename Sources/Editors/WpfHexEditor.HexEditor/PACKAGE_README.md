@@ -108,7 +108,7 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - Fill selection with value
 
 ### Format Detection
-- 799 built-in format definitions (.whfmt) — auto-detection on open
+- 856 built-in format definitions (.whfmt) — auto-detection on open
 - Format field overlay — semi-transparent colored blocks over detected structures
 - Syntax coloring driven by format rules
 - Shannon entropy, byte distribution, anomaly detection
@@ -143,6 +143,17 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 
 ---
 
+## What's New in 3.4.0
+
+- **New**: Entropy heatmap — per-byte Shannon entropy rendered as a color gradient directly on the hex grid. Toggle via the context menu or the `ShowEntropyHeatmap` dependency property; configure palette and block size from `HexEditorSettings`.
+- **New**: `HexEditorSettings` entropy options page — `EntropyBlockSize`, `EntropyColorLow`, `EntropyColorHigh`, theme-aware palette.
+- **Updated**: `whfmt.FileFormatCatalog` → **1.5.0** (856 format definitions, schema v3.1 with `embeddedLanguages[]` support).
+- **Fix**: Undo/redo fully wired in standalone mode — `Ctrl+Z` / `Ctrl+Y` no longer swallowed when the control is hosted outside a docking shell.
+- **Fix**: `IsDirty` correctly resets to `false` after undoing all changes back to the original state.
+- **No breaking API changes** — drop-in upgrade from 3.3.x.
+
+---
+
 ## What's New in 3.3.2
 
 - **Fix**: `HexEditorLocalizedDictionary` is now merged into `UserControl.Resources` — resolves `XamlParseException` at startup when localization `StaticResource` keys are used outside the `ContextMenu` tree (standalone and IDE mode both affected).
@@ -164,7 +175,7 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - **New**: `HexEditorSplitHost` — drop-in split-view host wrapping a primary + optional secondary `HexEditor`; synchronized scrolling, mutations, and breadcrumb.
 - **New**: `HexEditorSettings` — auto-generated settings panel `UserControl`; exposes every `HexEditor` `DependencyProperty` with live binding, color picker, JSON export/import.
 - **New**: `IParsedFieldsPanel` integration API — `ConnectParsedFieldsPanel()` / `DisconnectParsedFieldsPanel()`, `GetByteProvider()`, `FindSelect(position, length)`.
-- **New**: Themed `IdeMessageBox` / `IDialogService` — drop-in replacement for `MessageBox.Show`; injectable, themeable via `DynamicResource`, usable standalone in any WPF host.
+- **New**: Themed `MessageBox` / `IDialogService` — drop-in replacement for `MessageBox.Show`; injectable, themeable via `DynamicResource`, usable in any WPF host.
 - **New**: +10 localizations — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI (now 28 languages total).
 - **Fix**: Split-view secondary pane — breadcrumb bar now syncs correctly; all mutation types (insert, delete, replace) propagated to secondary.
 - **Fix**: Focus border hidden when split panel is closed.
@@ -238,7 +249,7 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.HexEditor | `HexEditor` UserControl — main entry point |
 | WpfHexEditor.Core | Byte providers, format detection, search, undo/redo |
 | WpfHexEditor.Core.BinaryAnalysis | Cross-platform binary analysis (no WPF dependency) |
-| WpfHexEditor.Core.Definitions | 799 embedded format definitions (.whfmt) |
+| WpfHexEditor.Core.Definitions | 856 embedded format definitions (.whfmt, schema v3.1) |
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
 | WpfHexEditor.ColorPicker | Color picker control (settings panel) |
 | WpfHexEditor.HexBox | Hex display rendering control |
