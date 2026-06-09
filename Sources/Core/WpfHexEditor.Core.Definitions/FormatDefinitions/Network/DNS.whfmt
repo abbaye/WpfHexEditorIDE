@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "DNS Wire Format Message",
   "formatId": "DNS",
@@ -229,6 +229,18 @@
     "DNS tunneling detection and forensic analysis",
     "Network monitoring and DNS anomaly detection"
   ],
+  "protocolDefinition": {
+    "transport": "both",
+    "defaultPort": 53,
+    "alternativePorts": [853, 443],
+    "layerModel": "application",
+    "layerStack": ["UDP/TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "QUERY",    "name": "Query",    "direction": "request",  "description": "DNS name resolution query" },
+      { "id": "RESPONSE", "name": "Response", "direction": "response", "description": "DNS resolution answer with RRsets" }
+    ],
+    "relatedProtocols": ["DNS_WIRE", "DNS_ZONE"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 82,
     "DocumentationLevel": "detailed",

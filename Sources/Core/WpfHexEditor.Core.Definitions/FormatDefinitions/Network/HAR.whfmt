@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "HTTP Archive (HAR)",
   "formatId": "HAR",
@@ -199,6 +199,14 @@
     "Security testing (session analysis, header inspection)",
     "Third-party support ticket submission with network trace"
   ],
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 443,
+    "alternativePorts": [80],
+    "layerModel": "application",
+    "layerStack": ["HTTP/HTTPS", "TLS", "TCP", "IPv4/IPv6"],
+    "relatedProtocols": ["JWT"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "DocumentationLevel": "detailed",

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "OSPF Routing Protocol Packet",
   "formatId": "OSPF",
@@ -292,6 +292,29 @@
     "Forensic reconstruction of network topology from captured traffic",
     "OSPF injection attack detection and analysis"
   ],
+  "protocolDefinition": {
+    "transport": "raw",
+    "defaultPort": 89,
+    "alternativePorts": [],
+    "layerModel": "network",
+    "layerStack": ["IP Protocol 89", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "HELLO",        "name": "Hello",             "direction": "both",    "description": "Neighbor discovery and keepalive" },
+      { "id": "DBD",          "name": "Database Desc.",    "direction": "both",    "description": "Summary of LSDB during adjacency formation" },
+      { "id": "LSR",          "name": "LS Request",        "direction": "both",    "description": "Request specific LSAs from neighbor" },
+      { "id": "LSU",          "name": "LS Update",         "direction": "both",    "description": "Send LSA advertisements" },
+      { "id": "LSACK",        "name": "LS Acknowledge",    "direction": "both",    "description": "Acknowledge received LSAs" }
+    ],
+    "stateTransitions": [
+      { "from": "DOWN",      "to": "INIT",      "event": "Hello received",  "description": "Neighbor detected" },
+      { "from": "INIT",      "to": "2-WAY",     "event": "Own RID in hello","description": "Bidirectional communication" },
+      { "from": "2-WAY",     "to": "EXSTART",   "event": "DR/BDR elected",  "description": "Master/slave negotiation begins" },
+      { "from": "EXSTART",   "to": "EXCHANGE",  "event": "DBD exchanged",   "description": "Database description exchange" },
+      { "from": "EXCHANGE",  "to": "LOADING",   "event": "LSR sent",        "description": "Missing LSAs being requested" },
+      { "from": "LOADING",   "to": "FULL",      "event": "LSDB synced",     "description": "Full adjacency established" }
+    ],
+    "relatedProtocols": ["BGP_UPDATE"]
+  },
   "QualityMetrics": {
     "LastUpdated": "2026-04-15",
     "CompletenessScore": 85,

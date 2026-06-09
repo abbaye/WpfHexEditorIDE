@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "FlatBuffers Binary",
   "formatId": "FLATBUF",
@@ -204,6 +204,13 @@
     "High-frequency trading and low-latency financial data",
     "IoT device firmware configuration and telemetry"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "FlatBuffers schema (.fbs)",
+    "selfDescribing": false,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["CAPNPROTO", "PROTOBUF"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 88,
     "DocumentationLevel": "detailed",

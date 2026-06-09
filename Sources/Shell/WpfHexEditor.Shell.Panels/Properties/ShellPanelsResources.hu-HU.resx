@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -178,6 +178,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Elemzési kontextus</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Ismert sebezhetőségek</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Protokoll</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Átvitel</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Átvitel</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>OSI-réteg</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Rétegverem</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Üzenettípusok</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>Állapotgép</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>IoT-profil</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Hasznos terhelés kódolása</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Témaminta</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Megtartás-támogatás</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Sorosítás</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Sémanyelv</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Tömörítés</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Streamelhető</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Kapcsolódó protokollok</value></data>
+
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Formátum-definíció hozzáadása</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt-definíciók (*.whfmt)|*.whfmt</value></data>

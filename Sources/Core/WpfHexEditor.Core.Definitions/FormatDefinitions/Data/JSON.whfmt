@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "JSON Data",
   "formatId": "JSON",
   "version": "2.14",
@@ -92,6 +92,13 @@
     "Data exchange between services",
     "NoSQL database storage (MongoDB, CouchDB)"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "JSON Schema (draft-07 / 2019-09 / 2020-12)",
+    "selfDescribing": true,
+    "payloadCompression": "gzip,brotli,deflate",
+    "wireCompatibleFormats": ["CBOR", "MSGPACK", "SMILE", "ION", "BSON"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 63,
     "DocumentationLevel": "standard",

@@ -577,6 +577,147 @@
                         </ScrollViewer>
                     </TabItem>
 
+                    <!-- Tab: Protocol (v3.2) — visible only when protocolDefinition or serializationProfile present -->
+                    <TabItem Visibility="{Binding HasProtocolTab, Converter={StaticResource BoolToVis}}">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{StaticResource WhfmtDetail_Tab_Protocol}"/>
+                                <!-- IoT badge -->
+                                <Border Margin="4,0,0,0" Padding="3,0" CornerRadius="3"
+                                        Background="{DynamicResource SE_AccentBrush}"
+                                        Visibility="{Binding HasIotProfile, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="IoT" FontSize="9" FontWeight="Bold"
+                                               Foreground="{DynamicResource SE_BackgroundBrush}"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="8,4,8,8">
+
+                                <!-- Transport / Port / Layer -->
+                                <StackPanel Visibility="{Binding HasProtocolTab, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_Transport}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_TransportLabel}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ProtocolDefinition.Transport}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_Port}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ProtocolDefinition.DefaultPort}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_Layer}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ProtocolDefinition.LayerModel}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Layer stack -->
+                                <StackPanel Visibility="{Binding HasLayerStack, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_LayerStack}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding ProtocolDefinition.LayerStack}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="10" Margin="0,0,0,2"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- Message Types -->
+                                <StackPanel Visibility="{Binding HasMessageTypes, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_MessageTypes}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding ProtocolDefinition.MessageTypes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="0,0,0,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}" FontSize="10" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource SE_AccentBrush}"/>
+                                                        <TextBlock Text="{Binding Direction, StringFormat=' ({0})'}" FontSize="10"
+                                                                   Foreground="{DynamicResource SE_MutedBrush}"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding Description}" FontSize="9" TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource SE_MutedBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- State Machine -->
+                                <StackPanel Visibility="{Binding HasStateTransitions, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_StateMachine}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding ProtocolDefinition.StateTransitions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                    <TextBlock Text="{Binding From}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                    <TextBlock Text=" → " FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                                    <TextBlock Text="{Binding To}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Event, StringFormat=' [{0}]'}" FontSize="10" Foreground="{DynamicResource SE_AccentBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- IoT Profile -->
+                                <StackPanel Visibility="{Binding HasIotProfile, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_IotProfile}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_IotEncoding}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ProtocolDefinition.IotProfile.PayloadEncoding}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_IotTopicModel}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ProtocolDefinition.IotProfile.TopicModel}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_IotRetain}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ProtocolDefinition.IotProfile.RetainSupport}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Serialization Profile -->
+                                <StackPanel Visibility="{Binding HasSerializationProfile, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                                    <TextBlock Text="{StaticResource WhfmtDetail_Protocol_Serialization}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_SerialSchema}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding SerializationProfile.SchemaLanguage}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_SerialCompression}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SerializationProfile.PayloadCompression}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource WhfmtDetail_Protocol_SerialStreamable}" FontSize="10" Foreground="{DynamicResource SE_MutedBrush}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SerializationProfile.Streamable}" FontSize="10" Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
                 </TabControl>
 
                 <!-- GridSplitter -->

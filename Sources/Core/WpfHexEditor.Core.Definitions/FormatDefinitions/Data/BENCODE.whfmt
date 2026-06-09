@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "BitTorrent Bencode",
   "formatId": "BENCODE",
@@ -165,6 +165,13 @@
     "Data exchange",
     "Archive"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "none",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "MSGPACK"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 82,
     "DocumentationLevel": "detailed",

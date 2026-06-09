@@ -1,100 +1,71 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "Z-Wave Radio Frame",
   "formatId": "Z_WAVE_FRAME",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Z-Wave radio frame used in Z-Wave home automation mesh networking. Operates in sub-GHz ISM bands (868/915 MHz). Frames contain source/destination node IDs, command class, and command data.",
   "extensions": [".zwave"],
   "category": "IoT",
   "diffMode": "binary",
-  "signatures": [
+  "detection": {
+    "signatures": [
+      { "value": "01", "offset": 0, "weight": 0.4, "label": "Z-Wave SOF (Start Of Frame) byte" }
+    ],
+    "minimumScore": 0.3,
+    "matchMode": "best"
+  },
+  "blocks": [
     {
-      "value": "01",
+      "id": "zwave_serial_header",
+      "label": "Serial API Frame Header",
       "offset": 0,
-      "label": "Z-Wave SOF (Start Of Frame) byte",
-      "weight": 0.4,
-      "strength": "Weak"
+      "size": 4,
+      "fields": [
+        { "id": "sof",           "offset": 0, "size": 1, "type": "uint8", "label": "SOF",           "description": "Start Of Frame byte: 0x01 = SOF, 0x06 = ACK, 0x15 = NAK, 0x18 = CAN", "displayFormat": "hex"  },
+        { "id": "length",        "offset": 1, "size": 1, "type": "uint8", "label": "Length",        "description": "Frame length including length byte but excluding SOF and checksum",  "displayFormat": "uint" },
+        { "id": "frame_type",    "offset": 2, "size": 1, "type": "uint8", "label": "Frame Type",    "description": "Frame type: 0x00=Request, 0x01=Response",                            "displayFormat": "hex"  },
+        { "id": "command_class", "offset": 3, "size": 1, "type": "uint8", "label": "Command Class", "description": "Z-Wave command class identifier (e.g., 0x26=SwitchMultilevel)",      "displayFormat": "hex"  }
+      ]
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 1, "name": "sof", "type": "uint8", "description": "Start Of Frame byte: 0x01 = SOF, 0x06 = ACK, 0x15 = NAK, 0x18 = CAN", "storeAs": "hex" },
-      { "offset": 1, "size": 1, "name": "length", "type": "uint8", "description": "Frame length including length byte but excluding SOF and checksum", "storeAs": "uint" },
-      { "offset": 2, "size": 1, "name": "frame_type", "type": "uint8", "description": "Frame type: 0x00=Request, 0x01=Response", "storeAs": "hex" },
-      { "offset": 3, "size": 1, "name": "command_class", "type": "uint8", "description": "Z-Wave command class identifier (e.g., 0x26=SwitchMultilevel, 0x25=SwitchBinary)", "storeAs": "hex" }
-    ]
-  },
   "inspector": {
-    "displayFields": ["sof", "length", "frame_type", "command_class"],
+    "displayFields": ["sof","length","frame_type","command_class"],
     "valueMaps": {
-      "sof": {
-        "01": "SOF — Start Of Frame",
-        "06": "ACK — Acknowledgment",
-        "15": "NAK — Negative Acknowledgment",
-        "18": "CAN — Cancel"
-      },
-      "frame_type": {
-        "00": "Request",
-        "01": "Response"
-      },
+      "sof": { "01": "SOF — Start Of Frame", "06": "ACK — Acknowledgment", "15": "NAK — Negative Acknowledgment", "18": "CAN — Cancel" },
+      "frame_type": { "00": "Request", "01": "Response" },
       "command_class": {
-        "20": "BASIC",
-        "25": "SWITCH_BINARY",
-        "26": "SWITCH_MULTILEVEL",
-        "27": "SWITCH_ALL",
-        "31": "SENSOR_MULTILEVEL",
-        "37": "SWITCH_COLOR",
-        "43": "THERMOSTAT_SETPOINT",
-        "5E": "ZWAVEPLUS_INFO",
-        "60": "MULTI_CHANNEL",
-        "62": "DOOR_LOCK",
-        "63": "USER_CODE",
-        "70": "CONFIGURATION",
-        "71": "NOTIFICATION",
-        "72": "MANUFACTURER_SPECIFIC",
-        "73": "POWERLEVEL",
-        "75": "PROTECTION",
-        "80": "BATTERY",
-        "84": "WAKE_UP",
-        "86": "VERSION",
-        "87": "INDICATOR",
-        "8E": "MULTI_CHANNEL_ASSOCIATION",
-        "98": "SECURITY",
-        "9F": "SECURITY_2"
+        "20":"BASIC","25":"SWITCH_BINARY","26":"SWITCH_MULTILEVEL","27":"SWITCH_ALL",
+        "31":"SENSOR_MULTILEVEL","37":"SWITCH_COLOR","43":"THERMOSTAT_SETPOINT",
+        "5E":"ZWAVEPLUS_INFO","60":"MULTI_CHANNEL","62":"DOOR_LOCK","63":"USER_CODE",
+        "70":"CONFIGURATION","71":"NOTIFICATION","72":"MANUFACTURER_SPECIFIC",
+        "73":"POWERLEVEL","75":"PROTECTION","80":"BATTERY","84":"WAKE_UP",
+        "86":"VERSION","87":"INDICATOR","8E":"MULTI_CHANNEL_ASSOCIATION",
+        "98":"SECURITY","9F":"SECURITY_2"
       }
     },
     "tooltips": {
-      "sof": "Single-byte frame control; ACK/NAK/CAN are complete frames without further fields",
+      "sof":    "Single-byte frame control; ACK/NAK/CAN are complete frames without further fields",
       "length": "Includes all bytes from type to checksum; checksum = XOR of all bytes from length to last payload byte",
       "command_class": "Z-Wave command classes version 7+ use extended encoding for classes >= 0xF0"
     }
   },
   "assertions": [
-    { "id": "ZWAVE_SOF_VALUE", "field": "sof", "operator": "in", "value": "01,06,15,18", "description": "First byte must be a valid Z-Wave frame control byte (SOF/ACK/NAK/CAN)" },
-    { "id": "ZWAVE_LENGTH_MIN", "field": "length", "operator": "greaterThanOrEqual", "value": "3", "description": "Frame length must be at least 3 (type + function ID + checksum)" },
-    { "id": "ZWAVE_FRAME_TYPE_VALID", "field": "frame_type", "operator": "in", "value": "00,01", "description": "Frame type must be 0x00 (Request) or 0x01 (Response)" }
+    { "id": "ZWAVE_SOF_VALUE",       "field": "sof",        "operator": "in",                "value": "01,06,15,18", "description": "First byte must be a valid Z-Wave frame control byte (SOF/ACK/NAK/CAN)" },
+    { "id": "ZWAVE_LENGTH_MIN",      "field": "length",     "operator": "greaterThanOrEqual","value": "3",           "description": "Frame length must be at least 3 (type + function ID + checksum)" },
+    { "id": "ZWAVE_FRAME_TYPE_VALID","field": "frame_type", "operator": "in",                "value": "00,01",       "description": "Frame type must be 0x00 (Request) or 0x01 (Response)" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "SOF Byte", "color": "#3498DB" },
-      { "offset": 1, "label": "Frame Length", "color": "#2ECC71" },
-      { "offset": 3, "label": "Command Class", "color": "#E74C3C" }
+      { "offset": 0, "label": "SOF Byte",       "color": "#3498DB" },
+      { "offset": 1, "label": "Frame Length",   "color": "#2ECC71" },
+      { "offset": 3, "label": "Command Class",  "color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "Z-Wave Frame Summary",
-      "fields": ["sof", "length", "frame_type", "command_class"],
-      "format": "text"
-    },
-    {
-      "name": "Z-Wave CSV Export",
-      "fields": ["sof", "length", "frame_type", "command_class"],
-      "format": "csv"
-    }
+    { "name": "Z-Wave Frame Summary", "fields": ["sof","length","frame_type","command_class"], "format": "text" },
+    { "name": "Z-Wave CSV Export",    "fields": ["sof","length","frame_type","command_class"], "format": "csv"  }
   ],
   "aiHints": [
     "Z-Wave uses a serial API protocol when communicating between host controller and Z-Wave chip (USB dongle)",
@@ -111,14 +82,27 @@
       "Z-Wave captures reveal home automation topology including lock, sensor, and switch node IDs"
     ]
   },
+  "protocolDefinition": {
+    "transport": "serial",
+    "layerModel": "datalink",
+    "layerStack": ["Z-Wave Serial API", "Z-Wave RF 868/915 MHz"],
+    "relatedProtocols": ["ZIGBEE_NWK", "MATTER_TLV"],
+    "iotProfile": {
+      "qosLevels": [0, 1],
+      "payloadEncoding": "binary",
+      "topicModel": "command-class",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "formatRelationships": [
     { "format": "ZIGBEE_NWK", "relationship": "alternative", "note": "Both Z-Wave and ZigBee target home automation; Z-Wave uses proprietary sub-GHz, ZigBee uses 2.4 GHz 802.15.4" },
-    { "format": "MATTER_TLV", "relationship": "related", "note": "Matter can bridge Z-Wave devices via software adapters" }
+    { "format": "MATTER_TLV", "relationship": "related",     "note": "Matter can bridge Z-Wave devices via software adapters" }
   ],
   "software": [
-    { "name": "Z-Wave JS", "role": "Node.js Z-Wave controller library used in Home Assistant for USB dongle control" },
-    { "name": "Zniffer", "role": "Z-Wave network analyzer application for capturing and decoding Z-Wave frames" },
-    { "name": "OpenZWave", "role": "Open-source Z-Wave controller library for Linux home automation" }
+    { "name": "Z-Wave JS",   "role": "Node.js Z-Wave controller library used in Home Assistant for USB dongle control" },
+    { "name": "Zniffer",     "role": "Z-Wave network analyzer application for capturing and decoding Z-Wave frames" },
+    { "name": "OpenZWave",   "role": "Open-source Z-Wave controller library for Linux home automation" }
   ],
   "useCases": [
     "Debugging Z-Wave device pairing failures and command delivery issues",
@@ -126,5 +110,10 @@
     "Forensic analysis of Z-Wave serial API captures from home automation controller logs"
   ],
   "technicalDetails": "Z-Wave serial API frames use SOF (0x01) + Length (1 byte) + Type (0x00/0x01) + Function ID (1 byte) + Parameters + Checksum (XOR). ACK (0x06), NAK (0x15), and CAN (0x18) are single-byte control frames. Z-Wave radio frames on air are different from the serial API frames; captures typically show the serial API between host CPU and Z-Wave chip. Command classes range from BASIC (0x20) to SECURITY_2 (0x9F), each defining specific IoT device capabilities.",
-  "completenessScore": 81
+  "completenessScore": 90,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

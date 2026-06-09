@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -178,6 +178,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>บริบทการวิเคราะห์</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>ช่องโหว่ที่ทราบ</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>โปรโตคอล</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>การขนส่ง</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>การขนส่ง</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>พอร์ต</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>เลเยอร์ OSI</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>สแต็กเลเยอร์</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>ประเภทข้อความ</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>เครื่องสถานะ</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>โปรไฟล์ IoT</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>การเข้ารหัสเพย์โหลด</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>แบบจำลองหัวข้อ</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>การรองรับการเก็บรักษา</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>การทำให้เป็นอนุกรม</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>ภาษาสคีมา</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>การบีบอัด</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>สตรีมได้</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>โปรโตคอลที่เกี่ยวข้อง</value></data>
+
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>เพิ่มนิยามรูปแบบ</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>นิยาม Whfmt (*.whfmt)|*.whfmt</value></data>

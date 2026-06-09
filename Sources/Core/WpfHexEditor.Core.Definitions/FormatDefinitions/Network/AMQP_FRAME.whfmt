@@ -1,0 +1,245 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "AMQP Frame",
+  "formatId": "AMQP_FRAME",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".amqp"
+  ],
+  "description": "AMQP 0-9-1 (Advanced Message Queuing Protocol) binary framing format. Each frame has a 7-byte header: 1-byte type, 2-byte channel, 4-byte payload size. The payload is followed by a 1-byte frame-end marker (0xCE). AMQP frames carry method calls, content headers, body chunks, and heartbeats.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/amqp"
+  ],
+  "UseCases": [
+    "RabbitMQ message broker traffic analysis",
+    "Message routing and exchange topology debugging",
+    "AMQP consumer acknowledgement flow inspection",
+    "Enterprise service bus integration testing"
+  ],
+  "references": [
+    "https://www.amqp.org/specification/0-9-1/amqp-org-download",
+    "https://www.rabbitmq.com/protocol.html",
+    "https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "AMQP 0-9-1 dissector with method decoding"
+    },
+    {
+      "name": "RabbitMQ",
+      "url": "https://www.rabbitmq.com/",
+      "role": "Open-source AMQP broker with management UI"
+    },
+    {
+      "name": "amqplib",
+      "url": "https://github.com/streadway/amqp",
+      "role": "Go AMQP client library"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "MQTT_PACKET",
+      "relationship": "MQTT is a lighter-weight publish-subscribe alternative to AMQP"
+    },
+    {
+      "format": "TLS_RECORD",
+      "relationship": "AMQPS (AMQP Secure) tunnels AMQP frames over TLS (port 5671)"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "414d5150",
+        "label": "AMQP protocol header magic: 'AMQP'",
+        "weight": 0.9
+      },
+      {
+        "offset": 0,
+        "value": "01",
+        "label": "Frame type: Method frame (0x01)",
+        "weight": 0.4
+      },
+      {
+        "offset": 0,
+        "value": "02",
+        "label": "Frame type: Content Header frame (0x02)",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 80,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.5,
+      "note": "Structured binary frames; message bodies have variable entropy"
+    },
+    "validation": "Frame types: 1=method, 2=content-header, 3=content-body, 8=heartbeat. Channel 0 is reserved for connection-level methods. Last byte of every frame must be 0xCE (frame-end). Connection always starts with 'AMQP' + version bytes (5 bytes total protocol header)."
+  },
+  "variables": [
+    {
+      "name": "amqpFrameType",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "Frame type: 1=Method, 2=ContentHeader, 3=ContentBody, 8=Heartbeat",
+      "valueMap": {
+        "1": "Method",
+        "2": "ContentHeader",
+        "3": "ContentBody",
+        "8": "Heartbeat"
+      }
+    },
+    {
+      "name": "amqpChannel",
+      "type": "uint16",
+      "offset": 1,
+      "length": 2,
+      "endian": "big",
+      "description": "Channel number (0=connection-level, 1-65535=application channels)"
+    },
+    {
+      "name": "amqpPayloadSize",
+      "type": "uint32",
+      "offset": 3,
+      "length": 4,
+      "endian": "big",
+      "description": "Payload size in bytes (not including frame header or frame-end byte)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FrameHeader",
+      "offset": 0,
+      "length": 7,
+      "description": "AMQP 7-byte frame header: type(1) + channel(2) + payload_size(4)",
+      "fields": [
+        { "name": "Type",        "variable": "amqpFrameType",    "offset": 0, "length": 1 },
+        { "name": "Channel",     "variable": "amqpChannel",      "offset": 1, "length": 2 },
+        { "name": "PayloadSize", "variable": "amqpPayloadSize",  "offset": 3, "length": 4 }
+      ]
+    },
+    {
+      "name": "Payload",
+      "offset": 7,
+      "length": -1,
+      "description": "Frame payload. Method frames: 2-byte class + 2-byte method + arguments. ContentHeader: 2-byte class + 2-byte weight + 8-byte body_size + property flags + properties. ContentBody: raw message bytes."
+    },
+    {
+      "name": "FrameEnd",
+      "offset": -1,
+      "length": 1,
+      "description": "Frame-end sentinel byte, must always be 0xCE"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Frame type must be 1, 2, 3, or 8",
+      "expression": "amqpFrameType == 1 || amqpFrameType == 2 || amqpFrameType == 3 || amqpFrameType == 8"
+    },
+    {
+      "id": "A2",
+      "description": "Heartbeat frames must use channel 0",
+      "expression": "amqpFrameType != 8 || amqpChannel == 0"
+    },
+    {
+      "id": "A3",
+      "description": "Connection-level methods must use channel 0",
+      "expression": "amqpChannel >= 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FrameHeader",
+    "structure": [
+      "FrameHeader",
+      "Payload",
+      "FrameEnd"
+    ],
+    "notes": "AMQP connection lifecycle: protocol header → Connection.Start → Connection.StartOk → Connection.Tune → Connection.TuneOk → Connection.Open → Connection.OpenOk → (channel opens) → Basic.Publish + ContentHeader + ContentBody → Basic.Deliver. Key class/method IDs: 10/10=Connection.Start, 10/11=Connection.StartOk, 10/50=Connection.Open, 20/10=Channel.Open, 60/40=Basic.Publish, 60/60=Basic.Deliver."
+  },
+  "inspector": {
+    "badge": "AMQP",
+    "primaryField": "amqpFrameType",
+    "groups": [
+      {
+        "name": "Frame",
+        "fields": [
+          "amqpFrameType",
+          "amqpChannel",
+          "amqpPayloadSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "AMQP Frame CSV",
+      "format": "csv",
+      "fields": [
+        "amqpFrameType",
+        "amqpChannel",
+        "amqpPayloadSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Unencrypted AMQP (port 5672) exposes message routing topology, queue names, and message content. Virtual host separation is logical only — broker compromise exposes all vhosts. AMQP lacks message-level encryption; payload confidentiality requires application-layer encryption.",
+    "suspiciousPatterns": [
+      "Connection.Start with unexpected mechanisms (non-PLAIN/AMQPLAIN in trusted environments)",
+      "Massive ContentBody frames carrying encrypted/compressed data (potential data exfiltration via message broker)",
+      "High-frequency Basic.Publish on channel 0 — protocol violation",
+      "Queue.Declare with auto-delete=false and exclusive=false creating persistent shadow queues"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "AMQP frames always have a 7-byte header and end with 0xCE. Method frames (type 1) have a 4-byte method header inside the payload: 2-byte class ID + 2-byte method ID. The message publishing flow is: Basic.Publish (method) + ContentHeader (body size + properties) + ContentBody (raw bytes, possibly multiple frames for large messages).",
+    "suggestedInspections": [
+      "Read frame type byte to determine what the frame carries",
+      "For method frames (type 1), read bytes 7-8 as class ID and bytes 9-10 as method ID",
+      "For heartbeat frames (type 8), verify payload size is 0 and frame-end is 0xCE",
+      "For content-body frames, accumulate bytes until total matches body size from ContentHeader"
+    ]
+  },
+  "TechnicalDetails": {
+    "frameHeaderSize": 7,
+    "frameEndByte": "0xCE",
+    "tcpPort": "5672 (plain), 5671 (TLS/AMQPS)",
+    "protocolHeader": "AMQP 0x00 0x09 0x01 (7 bytes total)",
+    "classIds": "10=Connection, 20=Channel, 40=Exchange, 50=Queue, 60=Basic, 90=Transaction"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 5672,
+    "alternativePorts": [5671],
+    "layerModel": "application",
+    "layerStack": ["TLS (optional)", "TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "METHOD",         "name": "Method Frame",        "direction": "both",    "description": "AMQP method invocation (class+method+args)" },
+      { "id": "CONTENT_HEADER", "name": "Content Header Frame","direction": "both",    "description": "Message properties and body size" },
+      { "id": "CONTENT_BODY",   "name": "Content Body Frame",  "direction": "both",    "description": "Message body chunk" },
+      { "id": "HEARTBEAT",      "name": "Heartbeat Frame",     "direction": "both",    "description": "Keep-alive on channel 0" }
+    ],
+    "stateTransitions": [
+      { "from": "INIT",       "to": "START",      "event": "Connection.Start",     "description": "Broker sends capabilities" },
+      { "from": "START",      "to": "TUNE",       "event": "Connection.StartOk",   "description": "Client authenticates" },
+      { "from": "TUNE",       "to": "OPEN",       "event": "Connection.TuneOk+Open","description": "Negotiate frame sizes and open vhost" },
+      { "from": "OPEN",       "to": "ESTABLISHED","event": "Connection.OpenOk",    "description": "Connection fully open" },
+      { "from": "ESTABLISHED","to": "CLOSED",     "event": "Connection.Close",     "description": "Graceful shutdown" }
+    ],
+    "relatedProtocols": ["MQTT_PACKET", "TLS_RECORD"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

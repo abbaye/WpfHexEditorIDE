@@ -1,0 +1,248 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "Thrift Binary Protocol",
+  "formatId": "THRIFT_BINARY",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".thrift"
+  ],
+  "description": "Apache Thrift binary protocol serialization format. Messages begin with a 4-byte header encoding version (0x8001 = version 1 strict) and method name length, or legacy non-strict format. Fields are encoded as type(1)+field_id(2)+value sequences. Used by Facebook and Apache projects for RPC serialization.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-thrift"
+  ],
+  "UseCases": [
+    "Apache Thrift RPC service protocol analysis",
+    "Cassandra native protocol inspection (Thrift-based legacy)",
+    "Facebook internal service communication forensics",
+    "Thrift message schema validation and field mapping"
+  ],
+  "references": [
+    "https://github.com/apache/thrift/blob/master/doc/specs/thrift-binary-protocol.md",
+    "https://thrift.apache.org/docs/idl.html",
+    "https://en.wikipedia.org/wiki/Apache_Thrift"
+  ],
+  "software": [
+    {
+      "name": "Apache Thrift",
+      "url": "https://thrift.apache.org/",
+      "role": "Reference Thrift compiler and runtime libraries"
+    },
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "Thrift protocol dissector for RPC analysis"
+    },
+    {
+      "name": "thirft-inspector",
+      "url": "https://github.com/adgear/thrift-inspector",
+      "role": "Thrift binary payload decoder and inspector"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "PROTOBUF",
+      "relationship": "Protocol Buffers is a competing schema-based binary serialization with Google origins"
+    },
+    {
+      "format": "AVRO",
+      "relationship": "Avro is a competing schema-first binary serialization with schema embedded in files"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "8001",
+        "label": "Thrift strict message header version 1 (0x8001)",
+        "weight": 0.8
+      },
+      {
+        "offset": 0,
+        "value": "80010001",
+        "label": "Strict header version 1, message type CALL (0x01)",
+        "weight": 0.9
+      },
+      {
+        "offset": 0,
+        "value": "80010002",
+        "label": "Strict header version 1, message type REPLY (0x02)",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.5,
+      "note": "Structured encoding; entropy depends on field values"
+    },
+    "validation": "Strict mode: first 2 bytes must be 0x8001 (version 1 magic). Bytes 2-3 are message type (1=CALL, 2=REPLY, 3=EXCEPTION, 4=ONEWAY). Legacy mode: first 4 bytes are method name length (positive, no magic). Field type bytes: 2=BOOL, 3=BYTE, 4=DOUBLE, 6=I16, 8=I32, 10=I64, 11=STRING/BINARY, 12=STRUCT, 13=MAP, 14=SET, 15=LIST."
+  },
+  "variables": [
+    {
+      "name": "thriftVersionMagic",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "big",
+      "description": "Strict mode version magic: 0x8001 = Thrift binary protocol version 1"
+    },
+    {
+      "name": "thriftMessageType",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "big",
+      "description": "Message type (strict mode): 0x0001=CALL, 0x0002=REPLY, 0x0003=EXCEPTION, 0x0004=ONEWAY",
+      "valueMap": {
+        "1": "CALL",
+        "2": "REPLY",
+        "3": "EXCEPTION",
+        "4": "ONEWAY"
+      }
+    },
+    {
+      "name": "thriftMethodNameLen",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Method name string length in bytes (strict mode at offset 4)"
+    },
+    {
+      "name": "thriftSeqId",
+      "type": "uint32",
+      "offset": -1,
+      "length": 4,
+      "endian": "big",
+      "description": "Sequence ID for matching RPC calls to responses (after method name)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "MessageHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "Strict mode 8-byte prefix: version_magic(2) + message_type(2) + name_length(4)",
+      "fields": [
+        { "name": "VersionMagic",   "variable": "thriftVersionMagic",   "offset": 0, "length": 2 },
+        { "name": "MessageType",    "variable": "thriftMessageType",     "offset": 2, "length": 2 },
+        { "name": "MethodNameLen",  "variable": "thriftMethodNameLen",   "offset": 4, "length": 4 }
+      ]
+    },
+    {
+      "name": "MethodName",
+      "offset": 8,
+      "length": -1,
+      "description": "UTF-8 method name string (length = thriftMethodNameLen bytes)"
+    },
+    {
+      "name": "SequenceId",
+      "offset": -1,
+      "length": 4,
+      "description": "4-byte big-endian sequence ID for RPC call-response correlation"
+    },
+    {
+      "name": "StructPayload",
+      "offset": -1,
+      "length": -1,
+      "description": "Thrift struct encoding: fields as type(1)+field_id(2)+value sequences, terminated by STOP byte (0x00)"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Strict mode version magic must be 0x8001",
+      "expression": "thriftVersionMagic == 32769"
+    },
+    {
+      "id": "A2",
+      "description": "Message type must be 1-4",
+      "expression": "thriftMessageType >= 1 && thriftMessageType <= 4"
+    },
+    {
+      "id": "A3",
+      "description": "Method name length must be reasonable (< 10000 characters)",
+      "expression": "thriftMethodNameLen < 10000"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "MessageHeader",
+    "structure": [
+      "MessageHeader",
+      "MethodName",
+      "SequenceId",
+      "StructPayload"
+    ],
+    "notes": "Thrift structs are terminated by field type 0x00 (STOP). Each non-STOP field is: type_byte(1) + field_id_int16(2) + value. Type 12 (STRUCT) nests recursively. Type 13 (MAP) = key_type(1)+value_type(1)+count(4)+entries. Type 15 (LIST)/14 (SET) = element_type(1)+count(4)+elements. The compact protocol (0x82) uses variable-length integers and is more space-efficient."
+  },
+  "inspector": {
+    "badge": "THRFT",
+    "primaryField": "thriftMessageType",
+    "groups": [
+      {
+        "name": "Message",
+        "fields": [
+          "thriftVersionMagic",
+          "thriftMessageType",
+          "thriftMethodNameLen",
+          "thriftSeqId"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Thrift Binary CSV",
+      "format": "csv",
+      "fields": [
+        "thriftVersionMagic",
+        "thriftMessageType",
+        "thriftMethodNameLen"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Thrift lacks built-in authentication. Service method names in CALL frames reveal internal API surface. Schema-less consumers may deserialize attacker-controlled nested structs (object injection). Large nested STRUCT or MAP payloads can cause stack overflow in recursive deserializers.",
+    "suspiciousPatterns": [
+      "EXCEPTION message type (0x03) with TApplicationException code 6 (INTERNAL_ERROR) — server-side deserialization crash",
+      "Abnormally deep nested STRUCT (type 0x0C) fields suggesting recursive bomb",
+      "CALL to undocumented method names not in the published IDL (API probing)",
+      "Large MAP or LIST (count field > 10000) in untrusted input (memory exhaustion)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Thrift binary strict mode starts with 0x80 0x01 (version magic). Bytes 2-3 are message type (0x01=CALL). Bytes 4-7 are method name length. After the method name is a 4-byte sequence ID. The struct payload follows: each field is type_byte + int16 field_id + value; 0x00 terminates.",
+    "suggestedInspections": [
+      "Check first 2 bytes for 0x8001 to confirm strict binary protocol",
+      "Read bytes 2-3 as message type: 1=call, 2=reply, 3=exception, 4=oneway",
+      "Read method name length at bytes 4-7 and extract the ASCII method name",
+      "Walk struct fields starting after seq_id: each field starts with type byte, followed by int16 field ID"
+    ]
+  },
+  "TechnicalDetails": {
+    "strictMagic": "0x8001",
+    "fieldTypes": "2=BOOL, 3=BYTE, 4=DOUBLE, 6=I16, 8=I32, 10=I64, 11=STRING/BINARY, 12=STRUCT, 13=MAP, 14=SET, 15=LIST",
+    "stopByte": "0x00",
+    "protocols": "Binary (this file), Compact (0x82), JSON, Multiplexed",
+    "transports": "Socket, Framed (4-byte size prefix), HTTP"
+  },
+  "serializationProfile": {
+    "schemaLanguage": "Thrift IDL (.thrift)",
+    "selfDescribing": false,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["PROTOBUF", "AVRO", "FLATBUF"],
+    "streamable": true
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

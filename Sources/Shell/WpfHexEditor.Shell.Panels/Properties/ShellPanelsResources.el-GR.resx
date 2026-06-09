@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -179,6 +179,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Πλαίσιο ανάλυσης</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Γνωστές ευπάθειες</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Πρωτόκολλο</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Μεταφορά</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Μεταφορά</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Θύρα</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>Επίπεδο OSI</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Στοίβα επιπέδων</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Τύποι μηνυμάτων</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>Μηχανή καταστάσεων</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>Προφίλ IoT</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Κωδικοποίηση φορτίου</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Μοντέλο θέματος</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Υποστήριξη διατήρησης</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Σειριοποίηση</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Γλώσσα σχήματος</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Συμπίεση</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Ροή δεδομένων</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Σχετικά πρωτόκολλα</value></data>
+
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Προσθήκη ορισμού μορφής</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Ορισμοί Whfmt (*.whfmt)|*.whfmt</value></data>
   <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Προσθήκη μορφής</value></data>

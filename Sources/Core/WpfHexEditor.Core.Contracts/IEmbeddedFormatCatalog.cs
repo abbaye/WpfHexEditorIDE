@@ -176,7 +176,20 @@ public sealed record EmbeddedFormatEntry(
     /// grammar entries have no JSON content — <see cref="IEmbeddedFormatCatalog.GetJson"/>
     /// returns <c>"{}"</c> for them so all <c>TryGetProperty</c> calls yield null gracefully.
     /// </summary>
-    bool IsGrammar = false);
+    bool IsGrammar = false,
+    // v3.2 — protocol/serialization Tier 1 scalars (null/false when absent)
+    /// <summary>Transport from <c>protocolDefinition.transport</c> (e.g. "tcp", "udp"). Null when absent. Added v3.2.</summary>
+    string? Transport = null,
+    /// <summary>Default IANA port from <c>protocolDefinition.defaultPort</c>. Null when absent. Added v3.2.</summary>
+    int? DefaultPort = null,
+    /// <summary>OSI layer model from <c>protocolDefinition.layerModel</c>. Null when absent. Added v3.2.</summary>
+    string? LayerModel = null,
+    /// <summary>True when this format declares a <c>protocolDefinition</c> block. Added v3.2.</summary>
+    bool HasProtocolDefinition = false,
+    /// <summary>True when <c>protocolDefinition.iotProfile</c> is present. Added v3.2.</summary>
+    bool HasIotProfile = false,
+    /// <summary>True when this format declares a <c>serializationProfile</c> block. Added v3.2.</summary>
+    bool HasSerializationProfile = false);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.

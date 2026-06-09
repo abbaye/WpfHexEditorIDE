@@ -1,0 +1,322 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "NTP Packet",
+  "formatId": "NTP_PACKET",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".ntp"
+  ],
+  "description": "Network Time Protocol (NTP v4, RFC 5905) packet format. The 48-byte fixed-size packet carries stratum, clock precision, reference timestamps, and a mode/version/LI byte. Used for sub-millisecond time synchronization across networks.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-ntp"
+  ],
+  "UseCases": [
+    "Network time synchronization accuracy analysis",
+    "NTP amplification DDoS forensics (monlist exploit)",
+    "NTP server stratum hierarchy mapping",
+    "PTP/NTP hybrid time infrastructure auditing"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc5905",
+    "https://www.ntp.org/documentation/",
+    "https://en.wikipedia.org/wiki/Network_Time_Protocol"
+  ],
+  "software": [
+    {
+      "name": "ntpdate",
+      "url": "https://linux.die.net/man/8/ntpdate",
+      "role": "NTP time synchronization client"
+    },
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "NTP dissector with timestamp decoding"
+    },
+    {
+      "name": "chronyc",
+      "url": "https://chrony-project.org/",
+      "role": "NTP/PPS monitoring and configuration client"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "DHCP",
+      "relationship": "DHCP option 42 distributes NTP server addresses to clients"
+    },
+    {
+      "format": "DNS",
+      "relationship": "NTP pool hostnames are resolved via DNS (pool.ntp.org)"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "1B",
+        "label": "LI=0, VN=3, Mode=3 (NTPv3 client)",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "23",
+        "label": "LI=0, VN=4, Mode=3 (NTPv4 client)",
+        "weight": 0.7
+      },
+      {
+        "offset": 0,
+        "value": "24",
+        "label": "LI=0, VN=4, Mode=4 (NTPv4 server)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 2.5,
+      "max": 5.0,
+      "note": "Structured fixed-length packet with timestamp fields; moderate entropy"
+    },
+    "validation": "First byte: LI(bits7-6) should be 0-3, VN(bits5-3) should be 3 or 4, Mode(bits2-0) should be 1-5. Packet size must be exactly 48 bytes for basic NTP (extensions add more). Stratum 0 = unspecified/invalid."
+  },
+  "variables": [
+    {
+      "name": "ntpFirstByte",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "LI(bits7-6) + VN(bits5-3) + Mode(bits2-0): LI=leap-indicator, VN=version, Mode=1(symact),2(symsv),3(client),4(server),5(broadcast)"
+    },
+    {
+      "name": "ntpStratum",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Clock stratum: 0=unspecified, 1=primary (GPS/atomic), 2-15=secondary, 16=unsynchronized"
+    },
+    {
+      "name": "ntpPoll",
+      "type": "int8",
+      "offset": 2,
+      "length": 1,
+      "description": "Poll interval exponent (log2 seconds): typically 6-10 (64s-1024s)"
+    },
+    {
+      "name": "ntpPrecision",
+      "type": "int8",
+      "offset": 3,
+      "length": 1,
+      "description": "Clock precision exponent (log2 seconds): -20 = ~1 microsecond"
+    },
+    {
+      "name": "ntpRootDelay",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Root delay in NTP short format (16.16 fixed-point, seconds)"
+    },
+    {
+      "name": "ntpReferenceId",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "Reference ID: for stratum 1 = ASCII code (GPS, PPS, LOCL); for stratum 2+ = IPv4 of reference source"
+    },
+    {
+      "name": "ntpReferenceTimestamp",
+      "type": "uint64",
+      "offset": 16,
+      "length": 8,
+      "endian": "big",
+      "description": "64-bit NTP timestamp: last clock update (32-bit seconds since 1900 + 32-bit fraction)"
+    },
+    {
+      "name": "ntpOriginTimestamp",
+      "type": "uint64",
+      "offset": 24,
+      "length": 8,
+      "endian": "big",
+      "description": "Originate timestamp: time client sent request (T1)"
+    },
+    {
+      "name": "ntpReceiveTimestamp",
+      "type": "uint64",
+      "offset": 32,
+      "length": 8,
+      "endian": "big",
+      "description": "Receive timestamp: time server received request (T2)"
+    },
+    {
+      "name": "ntpTransmitTimestamp",
+      "type": "uint64",
+      "offset": 40,
+      "length": 8,
+      "endian": "big",
+      "description": "Transmit timestamp: time server/client sent this packet (T3/T4)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Header",
+      "offset": 0,
+      "length": 4,
+      "description": "NTP 4-byte control header: LI+VN+Mode, stratum, poll, precision",
+      "fields": [
+        { "name": "LI_VN_Mode",  "variable": "ntpFirstByte",  "offset": 0, "length": 1 },
+        { "name": "Stratum",     "variable": "ntpStratum",    "offset": 1, "length": 1 },
+        { "name": "Poll",        "variable": "ntpPoll",       "offset": 2, "length": 1 },
+        { "name": "Precision",   "variable": "ntpPrecision",  "offset": 3, "length": 1 }
+      ]
+    },
+    {
+      "name": "ClockQuality",
+      "offset": 4,
+      "length": 8,
+      "description": "Root delay (4 bytes fixed-point) and root dispersion (4 bytes fixed-point)",
+      "fields": [
+        { "name": "RootDelay",       "variable": "ntpRootDelay",    "offset": 4, "length": 4 }
+      ]
+    },
+    {
+      "name": "ReferenceId",
+      "offset": 12,
+      "length": 4,
+      "description": "4-byte reference clock identifier (ASCII for stratum 1, IP for stratum 2+)",
+      "fields": [
+        { "name": "RefId", "variable": "ntpReferenceId", "offset": 12, "length": 4 }
+      ]
+    },
+    {
+      "name": "Timestamps",
+      "offset": 16,
+      "length": 32,
+      "description": "Four 8-byte NTP timestamps: reference, originate, receive, transmit",
+      "fields": [
+        { "name": "ReferenceTimestamp", "variable": "ntpReferenceTimestamp", "offset": 16, "length": 8 },
+        { "name": "OriginTimestamp",    "variable": "ntpOriginTimestamp",    "offset": 24, "length": 8 },
+        { "name": "ReceiveTimestamp",   "variable": "ntpReceiveTimestamp",   "offset": 32, "length": 8 },
+        { "name": "TransmitTimestamp",  "variable": "ntpTransmitTimestamp",  "offset": 40, "length": 8 }
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Mode must be 1-5 (valid NTP modes)",
+      "expression": "(ntpFirstByte & 0x07) >= 1 && (ntpFirstByte & 0x07) <= 5"
+    },
+    {
+      "id": "A2",
+      "description": "Version must be 3 or 4",
+      "expression": "((ntpFirstByte >> 3) & 0x07) >= 3 && ((ntpFirstByte >> 3) & 0x07) <= 4"
+    },
+    {
+      "id": "A3",
+      "description": "Stratum must be 0-16 (16 = unsynchronized)",
+      "expression": "ntpStratum <= 16"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "Header",
+    "structure": [
+      "Header",
+      "ClockQuality",
+      "ReferenceId",
+      "Timestamps"
+    ],
+    "notes": "NTP timestamps are 64-bit values: upper 32 bits = seconds since Jan 1, 1900; lower 32 bits = fractional seconds. Offset = ((T2-T1) + (T3-T4))/2. Round-trip delay = (T4-T1) - (T3-T2). Stratum 1 reference IDs: GPS, PPS, DCF, LOCL, ACTS. NTP era 0 wraps at Feb 7, 2036."
+  },
+  "inspector": {
+    "badge": "NTP",
+    "primaryField": "ntpStratum",
+    "groups": [
+      {
+        "name": "Control",
+        "fields": [
+          "ntpFirstByte",
+          "ntpStratum",
+          "ntpPoll",
+          "ntpPrecision"
+        ]
+      },
+      {
+        "name": "Reference",
+        "fields": [
+          "ntpRootDelay",
+          "ntpReferenceId"
+        ]
+      },
+      {
+        "name": "Timestamps",
+        "fields": [
+          "ntpReferenceTimestamp",
+          "ntpOriginTimestamp",
+          "ntpReceiveTimestamp",
+          "ntpTransmitTimestamp"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NTP CSV",
+      "format": "csv",
+      "fields": [
+        "ntpFirstByte",
+        "ntpStratum",
+        "ntpReferenceId",
+        "ntpTransmitTimestamp"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "NTP monlist command (mode 7 private) enables 600x amplification DDoS. Bogus NTP responses can shift client clocks and invalidate TLS certificates. NTPD servers running as root are a privilege escalation risk.",
+    "suspiciousPatterns": [
+      "Mode 7 (private) packets to public-facing NTP servers (monlist exploitation)",
+      "High-rate NTP responses without corresponding requests (NTP amplification reflector)",
+      "Reference ID containing non-standard ASCII codes (tampered stratum-1 spoof)",
+      "Transmit timestamp = 0 (kiss-o'-death packet used for rate limiting)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "NTP packets are always 48 bytes (ignoring extensions). The first byte encodes LI (bits 7-6), version (bits 5-3), and mode (bits 2-0). Four 8-byte timestamps occupy bytes 16-47. To convert an NTP timestamp to Unix time: subtract 2208988800 seconds (70-year offset) from the integer part.",
+    "suggestedInspections": [
+      "Decode first byte: extract LI (leap indicator), version number, and mode",
+      "Read stratum byte (offset 1) to determine clock source quality",
+      "Read reference ID (offset 12, 4 bytes): for stratum 1, interpret as 4-char ASCII; for stratum 2+, as IPv4 address",
+      "Calculate offset and delay using the 4 timestamps at offsets 16, 24, 32, 40"
+    ]
+  },
+  "TechnicalDetails": {
+    "packetSize": 48,
+    "timestampEpoch": "January 1, 1900 (NTP epoch)",
+    "unixOffset": 2208988800,
+    "modes": "1=SymActive, 2=SymPassive, 3=Client, 4=Server, 5=Broadcast, 6=Control, 7=Private(monlist)",
+    "referenceIds": "GPS, GOES, PPS, IRIG, DCF, MSF, WWV, LOCL, ACTS, USNO"
+  },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 123,
+    "alternativePorts": [],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "CLIENT_REQ", "name": "Client Request",  "direction": "request",  "description": "Mode 3 time synchronization query" },
+      { "id": "SERVER_REP", "name": "Server Reply",    "direction": "response", "description": "Mode 4 response with timestamps" },
+      { "id": "BROADCAST",  "name": "Broadcast",      "direction": "response", "description": "Mode 5 periodic time broadcast" }
+    ],
+    "relatedProtocols": ["DHCP", "DNS"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

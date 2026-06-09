@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Tag-Length-Value",
   "formatId": "TLV",
@@ -170,6 +170,13 @@
     "Data exchange",
     "Archive"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "none (generic TLV)",
+    "selfDescribing": false,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["ASN1_DER", "CBOR"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 80,
     "DocumentationLevel": "detailed",

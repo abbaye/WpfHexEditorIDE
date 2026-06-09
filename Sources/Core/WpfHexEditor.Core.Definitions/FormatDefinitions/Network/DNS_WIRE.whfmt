@@ -1,73 +1,62 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "DNS Wire Format Message",
   "formatId": "DNS_WIRE",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Raw DNS wire-format message as defined by RFC 1035. Used for both queries and responses over UDP (port 53) and TCP. No reliable binary magic; identified by structure and port context.",
   "extensions": [".dns"],
   "category": "Network",
   "diffMode": "binary",
-  "signatures": [],
-  "maxSignatureOffset": 0,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 2, "name": "txid", "type": "uint16be", "description": "Transaction ID for matching queries to responses", "storeAs": "hex" },
-      { "offset": 2, "size": 2, "name": "flags", "type": "uint16be", "description": "QR(1b) Opcode(4b) AA TC RD RA Z AD CD RCODE(4b)", "storeAs": "hex" },
-      { "offset": 4, "size": 2, "name": "qdcount", "type": "uint16be", "description": "Number of questions in the Question section", "storeAs": "uint" },
-      { "offset": 6, "size": 2, "name": "ancount", "type": "uint16be", "description": "Number of resource records in the Answer section", "storeAs": "uint" },
-      { "offset": 8, "size": 2, "name": "nscount", "type": "uint16be", "description": "Number of resource records in the Authority section", "storeAs": "uint" },
-      { "offset": 10, "size": 2, "name": "arcount", "type": "uint16be", "description": "Number of resource records in the Additional section", "storeAs": "uint" }
-    ]
+  "detection": {
+    "signatures": [],
+    "minimumScore": 0.3,
+    "matchMode": "best"
   },
+  "blocks": [
+    {
+      "id": "dns_header",
+      "label": "DNS Header",
+      "offset": 0,
+      "size": 12,
+      "fields": [
+        { "id": "txid",    "offset": 0,  "size": 2, "type": "uint16be", "label": "TXID",    "description": "Transaction ID for matching queries to responses",              "displayFormat": "hex"  },
+        { "id": "flags",   "offset": 2,  "size": 2, "type": "uint16be", "label": "Flags",   "description": "QR(1b) Opcode(4b) AA TC RD RA Z AD CD RCODE(4b)",             "displayFormat": "hex"  },
+        { "id": "qdcount", "offset": 4,  "size": 2, "type": "uint16be", "label": "QDCount", "description": "Number of questions in the Question section",                  "displayFormat": "uint" },
+        { "id": "ancount", "offset": 6,  "size": 2, "type": "uint16be", "label": "ANCount", "description": "Number of resource records in the Answer section",              "displayFormat": "uint" },
+        { "id": "nscount", "offset": 8,  "size": 2, "type": "uint16be", "label": "NSCount", "description": "Number of resource records in the Authority section",           "displayFormat": "uint" },
+        { "id": "arcount", "offset": 10, "size": 2, "type": "uint16be", "label": "ARCount", "description": "Number of resource records in the Additional section",          "displayFormat": "uint" }
+      ]
+    }
+  ],
   "inspector": {
-    "displayFields": ["txid", "flags", "qdcount", "ancount", "nscount", "arcount"],
+    "displayFields": ["txid","flags","qdcount","ancount","nscount","arcount"],
     "valueMaps": {
-      "flags_rcode": {
-        "0000": "NOERROR",
-        "0001": "FORMERR",
-        "0002": "SERVFAIL",
-        "0003": "NXDOMAIN",
-        "0005": "REFUSED"
-      },
-      "flags_opcode": {
-        "0": "QUERY",
-        "1": "IQUERY",
-        "2": "STATUS",
-        "4": "NOTIFY",
-        "5": "UPDATE"
-      }
+      "flags_rcode":  { "0000":"NOERROR","0001":"FORMERR","0002":"SERVFAIL","0003":"NXDOMAIN","0005":"REFUSED" },
+      "flags_opcode": { "0":"QUERY","1":"IQUERY","2":"STATUS","4":"NOTIFY","5":"UPDATE" }
     },
     "tooltips": {
-      "flags": "Bit 15: QR (0=query, 1=response); bits 14-11: opcode; bit 10: AA; bit 9: TC; bit 8: RD; bit 7: RA; bits 3-0: RCODE",
+      "flags":   "Bit 15: QR (0=query, 1=response); bits 14-11: opcode; bit 10: AA; bit 9: TC; bit 8: RD; bit 7: RA; bits 3-0: RCODE",
       "qdcount": "Typically 1 for standard queries; Question section follows at offset 12",
       "ancount": "Zero in query messages; populated in response messages"
     }
   },
   "assertions": [
-    { "id": "DNS_QDCOUNT_QUERY", "field": "qdcount", "operator": "range", "value": "0:65535", "description": "Question count must be a valid uint16 value" },
-    { "id": "DNS_FLAGS_OPCODE_VALID", "field": "flags", "operator": "maskIn", "value": "7800:0000,0800,1000,2000,2800", "description": "Opcode bits should represent a known DNS operation" },
-    { "id": "DNS_MIN_LENGTH", "field": "arcount", "operator": "greaterThanOrEqual", "value": "0", "description": "Additional record count must be non-negative (structural sanity check)" }
+    { "id": "DNS_QDCOUNT_QUERY",     "field": "qdcount", "operator": "range",  "value": "0:65535",          "description": "Question count must be a valid uint16 value" },
+    { "id": "DNS_FLAGS_OPCODE_VALID","field": "flags",   "operator": "maskIn", "value": "7800:0000,0800,1000,2000,2800", "description": "Opcode bits should represent a known DNS operation" },
+    { "id": "DNS_MIN_LENGTH",        "field": "arcount", "operator": "greaterThanOrEqual", "value": "0",   "description": "Additional record count must be non-negative" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "DNS Header", "color": "#3498DB" },
-      { "offset": 4, "label": "Section Counts", "color": "#2ECC71" },
-      { "offset": 12, "label": "Question Section Start", "color": "#E74C3C" }
+      { "offset": 0,  "label": "DNS Header",              "color": "#3498DB" },
+      { "offset": 4,  "label": "Section Counts",          "color": "#2ECC71" },
+      { "offset": 12, "label": "Question Section Start",  "color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "DNS Header Summary",
-      "fields": ["txid", "flags", "qdcount", "ancount", "nscount", "arcount"],
-      "format": "text"
-    },
-    {
-      "name": "DNS CSV Export",
-      "fields": ["txid", "qdcount", "ancount", "nscount", "arcount"],
-      "format": "csv"
-    }
+    { "name": "DNS Header Summary", "fields": ["txid","flags","qdcount","ancount","nscount","arcount"], "format": "text" },
+    { "name": "DNS CSV Export",     "fields": ["txid","qdcount","ancount","nscount","arcount"],          "format": "csv"  }
   ],
   "aiHints": [
     "DNS flags bit 15 (QR) distinguishes query (0) from response (1); same TXID links them",
@@ -84,14 +73,31 @@
       "NXDOMAIN floods may indicate domain generation algorithm (DGA) malware activity"
     ]
   },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 53,
+    "alternativePorts": [853, 443],
+    "layerModel": "application",
+    "layerStack": ["UDP/TCP", "IPv4/IPv6"],
+    "relatedProtocols": ["DNS", "PCAP"],
+    "messageTypes": [
+      { "id": "QUERY",    "name": "Query",    "direction": "request",  "description": "Client requests name resolution" },
+      { "id": "RESPONSE", "name": "Response", "direction": "response", "description": "Server replies with resource records or error" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",    "to": "PENDING",   "event": "send query",    "description": "Client awaits resolver response" },
+      { "from": "PENDING", "to": "RESOLVED",  "event": "receive answer","description": "Name resolved successfully" },
+      { "from": "PENDING", "to": "ERROR",     "event": "NXDOMAIN/SERVFAIL", "description": "Resolution failed" }
+    ]
+  },
   "formatRelationships": [
-    { "format": "PCAP", "relationship": "container", "note": "DNS messages typically captured in PCAP as UDP port 53 or TCP port 53 payloads" },
-    { "format": "DNS_ZONE", "relationship": "related", "note": "DNS zone files are the text representation of data transported in DNS wire format" }
+    { "format": "PCAP",     "relationship": "container", "note": "DNS messages typically captured in PCAP as UDP/TCP port 53 payloads" },
+    { "format": "DNS_ZONE", "relationship": "related",   "note": "DNS zone files are the text representation of data transported in DNS wire format" }
   ],
   "software": [
-    { "name": "Wireshark", "role": "DNS wire format dissector with full label decompression and EDNS0 parsing" },
-    { "name": "dig / drill", "role": "Command-line DNS query tools generating and receiving DNS wire messages" },
-    { "name": "BIND / Unbound", "role": "Primary DNS server implementations processing RFC 1035 wire format" }
+    { "name": "Wireshark",       "role": "DNS wire format dissector with full label decompression and EDNS0 parsing" },
+    { "name": "dig / drill",     "role": "Command-line DNS query tools generating and receiving DNS wire messages" },
+    { "name": "BIND / Unbound",  "role": "Primary DNS server implementations processing RFC 1035 wire format" }
   ],
   "useCases": [
     "Forensic analysis of DNS query/response pairs captured during incident investigation",
@@ -99,5 +105,10 @@
     "Debugging custom DNS resolver implementations against captured wire-format messages"
   ],
   "technicalDetails": "DNS wire format (RFC 1035) uses a 12-byte fixed header followed by variable-length Question, Answer, Authority, and Additional sections. Domain names are encoded as length-prefixed labels with pointer compression (0xC0 prefix). Resource records use a fixed 10-byte preamble (name, type, class, TTL, rdlength) followed by RDATA. EDNS0 (RFC 6891) extends capabilities via the OPT record type (41) in the Additional section.",
-  "completenessScore": 81
+  "completenessScore": 90,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

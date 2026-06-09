@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "Syslog File",
   "formatId": "SYSLOG_NET",
@@ -163,6 +163,18 @@
     "Incident response timeline reconstruction",
     "Compliance auditing (PCI-DSS, HIPAA, SOX)"
   ],
+  "protocolDefinition": {
+    "transport": "both",
+    "defaultPort": 514,
+    "alternativePorts": [6514],
+    "layerModel": "application",
+    "layerStack": ["UDP/TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "RFC3164", "name": "BSD Syslog",  "direction": "request", "description": "Legacy syslog format (RFC 3164)" },
+      { "id": "RFC5424", "name": "IETF Syslog", "direction": "request", "description": "Structured syslog format with SD elements (RFC 5424)" }
+    ],
+    "relatedProtocols": ["RADIUS_PACKET"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 70,
     "DocumentationLevel": "standard",

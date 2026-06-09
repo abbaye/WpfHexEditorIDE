@@ -1,48 +1,50 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "CoAP Datagram",
   "formatId": "COAP_DATAGRAM",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Constrained Application Protocol (CoAP) UDP datagram as defined by RFC 7252. Designed for constrained nodes and networks in IoT environments.",
   "extensions": [".coap"],
   "category": "Network",
   "diffMode": "binary",
-  "signatures": [
+  "detection": {
+    "signatures": [
+      { "value": "40", "offset": 0, "weight": 0.5, "label": "CoAP Confirmable (Ver=1, Type=CON)" }
+    ],
+    "minimumScore": 0.4,
+    "matchMode": "best"
+  },
+  "blocks": [
     {
-      "value": "40",
+      "id": "fixed_header",
+      "label": "Fixed Header",
       "offset": 0,
-      "label": "CoAP Confirmable (Ver=1, Type=CON)",
-      "weight": 0.5,
-      "strength": "Weak"
+      "size": 4,
+      "fields": [
+        { "id": "ver_type_tkl", "offset": 0, "size": 1, "type": "uint8", "label": "Ver/Type/TKL", "description": "Version (2 bits), Type (2 bits), Token Length (4 bits)", "displayFormat": "hex" },
+        { "id": "code",         "offset": 1, "size": 1, "type": "uint8", "label": "Code",         "description": "Request/Response code (class.detail encoding)",           "displayFormat": "hex" },
+        { "id": "message_id",   "offset": 2, "size": 2, "type": "uint16be", "label": "Message ID", "description": "16-bit message ID for deduplication and ACK matching",  "displayFormat": "uint" }
+      ]
+    },
+    {
+      "id": "token",
+      "label": "Token",
+      "offset": 4,
+      "size": 8,
+      "fields": [
+        { "id": "token", "offset": 4, "size": 8, "type": "bytes", "label": "Token", "description": "Variable-length token (0-8 bytes per TKL field)", "displayFormat": "hex" }
+      ]
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 1, "name": "ver_type_tkl", "type": "uint8", "description": "Version (2 bits), Type (2 bits), Token Length (4 bits)", "storeAs": "hex" },
-      { "offset": 1, "size": 1, "name": "code", "type": "uint8", "description": "Request/Response code (class.detail encoding)", "storeAs": "hex" },
-      { "offset": 2, "size": 2, "name": "message_id", "type": "uint16be", "description": "16-bit message ID for deduplication and ACK matching", "storeAs": "uint" },
-      { "offset": 4, "size": 8, "name": "token", "type": "bytes", "description": "Variable-length token (0-8 bytes per TKL field)", "storeAs": "hex" }
-    ]
-  },
   "inspector": {
     "displayFields": ["ver_type_tkl", "code", "message_id", "token"],
     "valueMaps": {
       "code": {
-        "00": "Empty",
-        "01": "GET",
-        "02": "POST",
-        "03": "PUT",
-        "04": "DELETE",
-        "41": "2.01 Created",
-        "42": "2.02 Deleted",
-        "44": "2.04 Changed",
-        "45": "2.05 Content",
-        "80": "4.00 Bad Request",
-        "84": "4.04 Not Found",
-        "A0": "5.00 Internal Server Error"
+        "00": "Empty",    "01": "GET",    "02": "POST",   "03": "PUT",   "04": "DELETE",
+        "41": "2.01 Created", "42": "2.02 Deleted", "44": "2.04 Changed", "45": "2.05 Content",
+        "80": "4.00 Bad Request", "84": "4.04 Not Found", "A0": "5.00 Internal Server Error"
       }
     },
     "tooltips": {
@@ -52,28 +54,20 @@
     }
   },
   "assertions": [
-    { "id": "COAP_VER", "field": "ver_type_tkl", "operator": "maskEquals", "value": "C0:40", "description": "Version bits (7-6) must be 01 (0x40 masked with 0xC0)" },
-    { "id": "COAP_MSGID_NONZERO", "field": "message_id", "operator": "notEquals", "value": "0", "description": "Message ID should be non-zero for CON/NON messages" },
-    { "id": "COAP_TKL_RANGE", "field": "ver_type_tkl", "operator": "maskRange", "value": "0F:0:8", "description": "Token length (bits 3-0) must be between 0 and 8" }
+    { "id": "COAP_VER",          "field": "ver_type_tkl", "operator": "maskEquals", "value": "C0:40", "description": "Version bits (7-6) must be 01" },
+    { "id": "COAP_MSGID_NONZERO","field": "message_id",   "operator": "notEquals",  "value": "0",     "description": "Message ID should be non-zero for CON/NON messages" },
+    { "id": "COAP_TKL_RANGE",    "field": "ver_type_tkl", "operator": "maskRange",  "value": "0F:0:8","description": "Token length must be 0-8" }
   ],
   "navigation": {
     "bookmarks": [
       { "offset": 0, "label": "Fixed Header", "color": "#3498DB" },
-      { "offset": 2, "label": "Message ID", "color": "#2ECC71" },
-      { "offset": 4, "label": "Token Start", "color": "#E74C3C" }
+      { "offset": 2, "label": "Message ID",   "color": "#2ECC71" },
+      { "offset": 4, "label": "Token Start",  "color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "CoAP Summary",
-      "fields": ["ver_type_tkl", "code", "message_id", "token"],
-      "format": "text"
-    },
-    {
-      "name": "CoAP CSV Export",
-      "fields": ["message_id", "code", "token"],
-      "format": "csv"
-    }
+    { "name": "CoAP Summary",     "fields": ["ver_type_tkl","code","message_id","token"], "format": "text" },
+    { "name": "CoAP CSV Export",  "fields": ["message_id","code","token"],                "format": "csv"  }
   ],
   "aiHints": [
     "CoAP uses a 4-bit version field; valid packets always have version=1 (bits 7-6 = 01)",
@@ -91,14 +85,40 @@
       "Observe mode (RFC 7641) subscriptions can indicate long-lived monitoring relationships"
     ]
   },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 5683,
+    "alternativePorts": [5684],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "relatedProtocols": ["MQTT_PACKET", "HTTP"],
+    "messageTypes": [
+      { "id": "CON", "name": "Confirmable",     "direction": "both",     "description": "Requires ACK from recipient" },
+      { "id": "NON", "name": "Non-Confirmable", "direction": "both",     "description": "Fire-and-forget, no ACK required" },
+      { "id": "ACK", "name": "Acknowledgement", "direction": "response", "description": "Confirms receipt of a CON message" },
+      { "id": "RST", "name": "Reset",           "direction": "response", "description": "Indicates inability to process CON" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",    "to": "WAITING_ACK", "event": "send CON",    "description": "Sender starts retransmission timer" },
+      { "from": "WAITING_ACK", "to": "IDLE",   "event": "receive ACK", "description": "Transaction complete" },
+      { "from": "WAITING_ACK", "to": "IDLE",   "event": "timeout",     "description": "Max retransmits exhausted" }
+    ],
+    "iotProfile": {
+      "qosLevels": [0, 1],
+      "payloadEncoding": "cbor",
+      "topicModel": "resource-uri",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "formatRelationships": [
     { "format": "MQTT_PACKET", "relationship": "alternative", "note": "Both are IoT messaging protocols; CoAP is REST-based over UDP, MQTT is pub/sub over TCP" },
-    { "format": "PCAP", "relationship": "container", "note": "CoAP datagrams are typically captured within PCAP/PCAPNG files" }
+    { "format": "PCAP",        "relationship": "container",   "note": "CoAP datagrams are typically captured within PCAP/PCAPNG files" }
   ],
   "software": [
-    { "name": "libcoap", "role": "Reference C implementation for CoAP clients and servers" },
-    { "name": "Wireshark", "role": "Protocol dissector for CoAP over UDP capture analysis" },
-    { "name": "Eclipse Californium", "role": "Java CoAP framework used in IoT gateways" }
+    { "name": "libcoap",            "role": "Reference C implementation for CoAP clients and servers" },
+    { "name": "Wireshark",          "role": "Protocol dissector for CoAP over UDP capture analysis" },
+    { "name": "Eclipse Californium","role": "Java CoAP framework used in IoT gateways" }
   ],
   "useCases": [
     "Debugging IoT device firmware communicating via CoAP REST APIs",
@@ -106,5 +126,10 @@
     "Forensic inspection of UDP captures from smart home or industrial IoT devices"
   ],
   "technicalDetails": "CoAP (RFC 7252) is a specialized web transfer protocol for constrained nodes. The 4-byte fixed header encodes version, message type, token length, request/response code, and a 16-bit message ID. Options use a delta-encoded TLV format. The payload separator is 0xFF. CoAP supports observe (pub/sub), block transfers, and resource discovery.",
-  "completenessScore": 82
+  "completenessScore": 91,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

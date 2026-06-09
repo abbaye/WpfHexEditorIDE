@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "JSON Web Token (JWT)",
   "formatId": "JWT",
@@ -165,6 +165,14 @@
     "Stateless session management in web applications",
     "Microservice-to-microservice authentication"
   ],
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 443,
+    "alternativePorts": [80],
+    "layerModel": "application",
+    "layerStack": ["HTTPS/HTTP", "TLS", "TCP"],
+    "relatedProtocols": ["HAR"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "DocumentationLevel": "detailed",

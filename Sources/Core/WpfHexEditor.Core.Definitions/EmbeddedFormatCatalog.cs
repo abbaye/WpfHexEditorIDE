@@ -420,6 +420,27 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             }
         }
 
+        // v3.2 — protocolDefinition Tier 1 scalars
+        string? transport     = null;
+        int?    defaultPort   = null;
+        string? layerModel    = null;
+        bool    hasProtoDef   = false;
+        bool    hasIotProfile = false;
+        bool    hasSerial     = false;
+
+        if (root.TryGetProperty("protocolDefinition", out var proto) && proto.ValueKind == JsonValueKind.Object)
+        {
+            hasProtoDef = true;
+            transport   = GetString(proto, "transport");
+            layerModel  = GetString(proto, "layerModel");
+            if (proto.TryGetProperty("defaultPort", out var dp) && dp.ValueKind == JsonValueKind.Number && dp.TryGetInt32(out var dpInt))
+                defaultPort = dpInt;
+            hasIotProfile = proto.TryGetProperty("iotProfile", out _);
+        }
+
+        if (root.TryGetProperty("serializationProfile", out _))
+            hasSerial = true;
+
         return new EmbeddedFormatEntry(
             resourceKey, name, category, description, extensions,
             quality, version, author, platform, preferredEditor,
@@ -427,7 +448,11 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             mimeTypes.Count > 0 ? mimeTypes : null,
             signatures.Count > 0 ? signatures : null,
             formatId,
-            matchMode, minimumScore, minFileSize, entropyMin, entropyMax);
+            matchMode, minimumScore, minFileSize, entropyMin, entropyMax,
+            IsGrammar: false,
+            Transport: transport, DefaultPort: defaultPort, LayerModel: layerModel,
+            HasProtocolDefinition: hasProtoDef, HasIotProfile: hasIotProfile,
+            HasSerializationProfile: hasSerial);
     }
 
     private static string? GetString(JsonElement root, string property)

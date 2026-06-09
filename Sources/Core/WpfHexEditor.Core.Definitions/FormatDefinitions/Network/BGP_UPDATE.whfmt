@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "BGP Update Message",
   "formatId": "BGP_UPDATE",
@@ -229,6 +229,27 @@
     "Network incident investigation for routing anomalies",
     "Academic BGP measurement research (RouteViews, RIPE RIS)"
   ],
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 179,
+    "alternativePorts": [],
+    "layerModel": "application",
+    "layerStack": ["TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "OPEN",         "name": "OPEN",         "direction": "both",    "description": "Session establishment with BGP capabilities" },
+      { "id": "UPDATE",       "name": "UPDATE",        "direction": "both",    "description": "Route advertisement and withdrawal" },
+      { "id": "NOTIFICATION", "name": "NOTIFICATION",  "direction": "both",    "description": "Error notification causing session teardown" },
+      { "id": "KEEPALIVE",    "name": "KEEPALIVE",     "direction": "both",    "description": "Session keep-alive (holdtime management)" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",        "to": "CONNECT",     "event": "Start",         "description": "BGP finite state machine start" },
+      { "from": "CONNECT",     "to": "OPENSENT",    "event": "TCP success",   "description": "TCP session established, OPEN sent" },
+      { "from": "OPENSENT",    "to": "OPENCONFIRM", "event": "OPEN received", "description": "Peer OPEN accepted" },
+      { "from": "OPENCONFIRM", "to": "ESTABLISHED", "event": "KEEPALIVE",     "description": "Session fully established, UPDATEs can flow" },
+      { "from": "ESTABLISHED", "to": "IDLE",        "event": "NOTIFICATION",  "description": "Error or hold timer expiry resets session" }
+    ],
+    "relatedProtocols": ["BGPSEC_UPDATE", "OSPF"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 90,
     "DocumentationLevel": "detailed",

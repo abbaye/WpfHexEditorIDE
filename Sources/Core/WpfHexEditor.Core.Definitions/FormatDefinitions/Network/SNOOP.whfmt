@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Snoop Capture",
   "formatId": "SNOOP",
@@ -194,6 +194,12 @@
     "Network forensics on Solaris/SunOS systems",
     "Protocol debugging in legacy SPARC/Solaris environments"
   ],
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "datalink",
+    "layerStack": ["Solaris snoop capture", "Ethernet", "IPv4/IPv6"],
+    "relatedProtocols": ["PCAP", "NETTL"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 62,
     "DocumentationLevel": "detailed",

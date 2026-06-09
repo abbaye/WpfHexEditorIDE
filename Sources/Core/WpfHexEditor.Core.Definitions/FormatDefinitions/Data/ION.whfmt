@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Amazon Ion Binary",
   "formatId": "ION",
@@ -212,6 +212,13 @@
     "Typed data storage replacing JSON where type fidelity matters",
     "Timestamp and binary data embedding without Base64 overhead"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Ion Schema Language",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "CBOR"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 90,
     "DocumentationLevel": "detailed",

@@ -59,6 +59,9 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     private IReadOnlyList<FormatRelationship>   _relationshipsDisplay  = [];
     private string                              _navigationStructure   = string.Empty;
     private string                              _navigationNotes       = string.Empty;
+    // v3.2 — Protocol tab
+    private ProtocolDefinition?                 _protocolDefinition;
+    private SerializationProfile?               _serializationProfile;
 
     // ------------------------------------------------------------------
     // Display properties
@@ -146,6 +149,17 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     public bool HasDocumentation =>
         HasSoftware || HasUseCases || HasRelationships ||
         HasNavigationStructure || HasNavigationNotes;
+
+    // Tab: Protocol (v3.2)
+    public ProtocolDefinition?   ProtocolDefinition   { get => _protocolDefinition;   set { SetField(ref _protocolDefinition, value);   OnPropertyChanged(nameof(HasProtocolTab)); OnPropertyChanged(nameof(HasIotProfile)); OnPropertyChanged(nameof(HasMessageTypes)); OnPropertyChanged(nameof(HasStateTransitions)); OnPropertyChanged(nameof(HasLayerStack)); } }
+    public SerializationProfile? SerializationProfile { get => _serializationProfile; set { SetField(ref _serializationProfile, value); OnPropertyChanged(nameof(HasProtocolTab)); OnPropertyChanged(nameof(HasSerializationProfile)); } }
+
+    public bool HasProtocolTab        => _protocolDefinition is not null || _serializationProfile is not null;
+    public bool HasIotProfile         => _protocolDefinition?.IotProfile is not null;
+    public bool HasMessageTypes       => _protocolDefinition?.MessageTypes.Count > 0;
+    public bool HasStateTransitions   => _protocolDefinition?.StateTransitions.Count > 0;
+    public bool HasLayerStack         => _protocolDefinition?.LayerStack.Count > 0;
+    public bool HasSerializationProfile => _serializationProfile is not null;
 
     // ------------------------------------------------------------------
     // Commands (set by the parent ViewModel after construction)
@@ -296,6 +310,18 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
                 NavigationNotes      = string.Empty;
             }
 
+            // v3.2 — protocol / serialization
+            if (entry is not null)
+            {
+                ProtocolDefinition   = entry.GetProtocolDefinition(embCatalog);
+                SerializationProfile = entry.GetSerializationProfile(embCatalog);
+            }
+            else
+            {
+                ProtocolDefinition   = null;
+                SerializationProfile = null;
+            }
+
             OnPropertyChanged(nameof(HasReferences));
             OnPropertyChanged(nameof(HasAssertions));
             OnPropertyChanged(nameof(HasAiHints));
@@ -421,6 +447,8 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         RelationshipsDisplay = [];
         NavigationStructure  = string.Empty;
         NavigationNotes      = string.Empty;
+        ProtocolDefinition   = null;
+        SerializationProfile = null;
         OnPropertyChanged(nameof(HasReferences));
         OnPropertyChanged(nameof(HasAssertions));
         OnPropertyChanged(nameof(HasAiHints));

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "BLE Packet",
   "formatId": "BLE_PACKET",
   "version": "1.0.1",
@@ -247,9 +247,22 @@
     "maxPduPayload": "37 bytes (advertising), 251 bytes (data, BLE 4.2+)",
     "frequency": "2.4 GHz ISM band, 40 channels (3 advertising + 37 data)"
   },
+  "protocolDefinition": {
+    "transport": "bluetooth",
+    "layerModel": "datalink",
+    "layerStack": ["BLE Link Layer", "BLE Physical Layer 2.4 GHz"],
+    "relatedProtocols": ["BLE_ADVERTISEMENT", "MATTER_TLV"],
+    "iotProfile": {
+      "qosLevels": [0],
+      "payloadEncoding": "binary",
+      "topicModel": "gatt-attribute",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "QualityMetrics": {
-    "CompletenessScore": 84,
-    "LastUpdated": "2026-04-16",
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-06-09",
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }

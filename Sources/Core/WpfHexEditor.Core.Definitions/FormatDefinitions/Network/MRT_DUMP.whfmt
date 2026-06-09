@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "MRT BGP Route Dump",
   "formatId": "MRT_DUMP",
@@ -204,6 +204,12 @@
     "Historical routing anomaly investigation",
     "Network security monitoring and threat intelligence"
   ],
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "application",
+    "layerStack": ["BGP over TCP", "IPv4/IPv6"],
+    "relatedProtocols": ["BGP_UPDATE", "BGPSEC_UPDATE"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "DocumentationLevel": "detailed",

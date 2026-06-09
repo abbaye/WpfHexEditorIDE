@@ -1,0 +1,305 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "DHCP Packet",
+  "formatId": "DHCP",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".dhcp"
+  ],
+  "description": "Dynamic Host Configuration Protocol (DHCP, RFC 2131) packet format. DHCP is built on BOOTP and uses a fixed 236-byte base header followed by a 4-byte magic cookie (0x63825363) and variable-length options (RFC 2132). Used for automatic IP address assignment.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-dhcp"
+  ],
+  "UseCases": [
+    "IP address lease assignment analysis in enterprise networks",
+    "DHCP server configuration auditing",
+    "Rogue DHCP server detection and DHCP starvation analysis",
+    "IoT device network provisioning inspection"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc2131",
+    "https://datatracker.ietf.org/doc/html/rfc2132",
+    "https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "DHCP dissector with full options decoding"
+    },
+    {
+      "name": "dhcpdump",
+      "url": "https://linux.die.net/man/8/dhcpdump",
+      "role": "DHCP packet capture and display tool"
+    },
+    {
+      "name": "isc-dhcp-server",
+      "url": "https://www.isc.org/dhcp/",
+      "role": "Reference DHCP server implementation"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "DNS",
+      "relationship": "DHCP option 6 provides DNS server addresses for dynamic DNS registration"
+    },
+    {
+      "format": "NTP_PACKET",
+      "relationship": "DHCP option 42 distributes NTP server addresses to clients"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "01",
+        "label": "op=1 (BOOTREQUEST/DISCOVER/REQUEST)",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "02",
+        "label": "op=2 (BOOTREPLY/OFFER/ACK)",
+        "weight": 0.5
+      },
+      {
+        "offset": 236,
+        "value": "63825363",
+        "label": "DHCP magic cookie 0x63825363",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 5.0,
+      "note": "Structured fixed header with mostly zero-padded fields; options vary"
+    },
+    "validation": "First byte must be 1 (request) or 2 (reply). Bytes at offset 236-239 must be the DHCP magic cookie 0x63825363. htype at offset 1 must be 1 (Ethernet) for standard configurations. hlen at offset 2 must match htype (6 for Ethernet)."
+  },
+  "variables": [
+    {
+      "name": "dhcpOp",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "Message opcode: 1=BOOTREQUEST (client→server), 2=BOOTREPLY (server→client)"
+    },
+    {
+      "name": "dhcpHtype",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Hardware address type: 1=Ethernet 10Mb"
+    },
+    {
+      "name": "dhcpHlen",
+      "type": "uint8",
+      "offset": 2,
+      "length": 1,
+      "description": "Hardware address length: 6 for Ethernet MAC"
+    },
+    {
+      "name": "dhcpXid",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Transaction ID — random value chosen by client for matching requests to replies"
+    },
+    {
+      "name": "dhcpCiaddr",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "Client IP address (filled by client if it already has an IP)"
+    },
+    {
+      "name": "dhcpYiaddr",
+      "type": "uint32",
+      "offset": 16,
+      "length": 4,
+      "endian": "big",
+      "description": "Your (client) IP address — offered or acknowledged address from server"
+    },
+    {
+      "name": "dhcpChaddr",
+      "type": "bytes",
+      "offset": 28,
+      "length": 16,
+      "description": "Client hardware address (MAC address, first 6 bytes; rest padded with zeros)"
+    },
+    {
+      "name": "dhcpMagicCookie",
+      "type": "uint32",
+      "offset": 236,
+      "length": 4,
+      "endian": "big",
+      "description": "DHCP magic cookie: must be 0x63825363 to distinguish DHCP from plain BOOTP"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FixedHeader",
+      "offset": 0,
+      "length": 236,
+      "description": "236-byte BOOTP/DHCP fixed header: op, htype, hlen, hops, xid, secs, flags, addresses, sname, file",
+      "fields": [
+        { "name": "Op",      "variable": "dhcpOp",     "offset": 0,  "length": 1 },
+        { "name": "Htype",   "variable": "dhcpHtype",  "offset": 1,  "length": 1 },
+        { "name": "Hlen",    "variable": "dhcpHlen",   "offset": 2,  "length": 1 },
+        { "name": "Xid",     "variable": "dhcpXid",    "offset": 4,  "length": 4 },
+        { "name": "Ciaddr",  "variable": "dhcpCiaddr", "offset": 12, "length": 4 },
+        { "name": "Yiaddr",  "variable": "dhcpYiaddr", "offset": 16, "length": 4 },
+        { "name": "Chaddr",  "variable": "dhcpChaddr", "offset": 28, "length": 16 }
+      ]
+    },
+    {
+      "name": "MagicCookie",
+      "offset": 236,
+      "length": 4,
+      "description": "DHCP magic cookie 0x63825363 — signals start of DHCP options",
+      "fields": [
+        { "name": "Cookie", "variable": "dhcpMagicCookie", "offset": 236, "length": 4 }
+      ]
+    },
+    {
+      "name": "Options",
+      "offset": 240,
+      "length": -1,
+      "description": "DHCP options in TLV format: 1-byte tag, 1-byte length, N-byte value. Key options: 53=DHCP message type, 1=subnet mask, 3=router, 6=DNS, 51=lease time, 54=server ID, 255=end."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Op must be 1 (request) or 2 (reply)",
+      "expression": "dhcpOp == 1 || dhcpOp == 2"
+    },
+    {
+      "id": "A2",
+      "description": "Magic cookie must be 0x63825363",
+      "expression": "dhcpMagicCookie == 1666417267"
+    },
+    {
+      "id": "A3",
+      "description": "Hlen must be 6 for Ethernet hardware type",
+      "expression": "dhcpHtype != 1 || dhcpHlen == 6"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FixedHeader",
+    "structure": [
+      "FixedHeader",
+      "MagicCookie",
+      "Options"
+    ],
+    "notes": "DHCP exchange: DISCOVER (broadcast) → OFFER (unicast/broadcast) → REQUEST (broadcast) → ACK (unicast/broadcast). Option 53 values: 1=DISCOVER, 2=OFFER, 3=REQUEST, 4=DECLINE, 5=ACK, 6=NAK, 7=RELEASE, 8=INFORM. Option 255 (0xFF) terminates the options list. Sent over UDP port 67 (server) / 68 (client)."
+  },
+  "inspector": {
+    "badge": "DHCP",
+    "primaryField": "dhcpOp",
+    "groups": [
+      {
+        "name": "Core",
+        "fields": [
+          "dhcpOp",
+          "dhcpXid",
+          "dhcpCiaddr",
+          "dhcpYiaddr"
+        ]
+      },
+      {
+        "name": "Hardware",
+        "fields": [
+          "dhcpHtype",
+          "dhcpHlen",
+          "dhcpChaddr"
+        ]
+      },
+      {
+        "name": "Magic",
+        "fields": [
+          "dhcpMagicCookie"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DHCP CSV",
+      "format": "csv",
+      "fields": [
+        "dhcpOp",
+        "dhcpXid",
+        "dhcpCiaddr",
+        "dhcpYiaddr",
+        "dhcpChaddr"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Rogue DHCP servers can redirect all network traffic by advertising malicious default gateway and DNS servers. DHCP starvation (Gobbler attack) exhausts the IP pool. DHCP snooping on managed switches mitigates rogue server attacks.",
+    "suspiciousPatterns": [
+      "DHCPOFFER from unexpected server IP (rogue DHCP server)",
+      "DHCPDISCOVER flood with random MAC addresses in chaddr (DHCP starvation / Gobbler)",
+      "DHCPACK assigning IPs outside the legitimate pool range",
+      "Option 3 (router) or 6 (DNS) pointing to external/unknown addresses"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DHCP packets have a 236-byte fixed header followed by a 4-byte magic cookie (0x63825363) and variable-length options. The transaction ID (xid) at bytes 4-7 links requests to replies. The 'yiaddr' at bytes 16-19 is the offered/assigned IP. Option 53 identifies the DHCP message subtype.",
+    "suggestedInspections": [
+      "Verify magic cookie at offset 236-239 equals 0x63825363",
+      "Read op byte to determine direction (1=client request, 2=server reply)",
+      "Extract xid and match across DISCOVER/OFFER/REQUEST/ACK sequence",
+      "Parse options starting at offset 240: look for option 53 (message type), 1 (subnet), 3 (router), 6 (DNS), 51 (lease time)"
+    ]
+  },
+  "TechnicalDetails": {
+    "fixedHeaderSize": 236,
+    "magicCookieOffset": 236,
+    "magicCookieValue": "0x63825363",
+    "udpPorts": "67 (server), 68 (client)",
+    "keyOptions": "1=SubnetMask, 3=Router, 6=DNS, 15=DomainName, 42=NTPServer, 50=RequestedIP, 51=LeaseTime, 53=MessageType, 54=ServerID, 58=RenewalTime, 59=RebindingTime, 61=ClientID, 255=End"
+  },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 67,
+    "alternativePorts": [68],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4"],
+    "messageTypes": [
+      { "id": "DISCOVER", "name": "DHCPDISCOVER", "direction": "request",  "description": "Client broadcast seeking a DHCP server" },
+      { "id": "OFFER",    "name": "DHCPOFFER",    "direction": "response", "description": "Server offers an IP address" },
+      { "id": "REQUEST",  "name": "DHCPREQUEST",  "direction": "request",  "description": "Client accepts/renews an offer" },
+      { "id": "ACK",      "name": "DHCPACK",      "direction": "response", "description": "Server confirms lease assignment" },
+      { "id": "NAK",      "name": "DHCPNAK",      "direction": "response", "description": "Server rejects request (expired/invalid)" },
+      { "id": "RELEASE",  "name": "DHCPRELEASE",  "direction": "request",  "description": "Client returns its IP address" },
+      { "id": "INFORM",   "name": "DHCPINFORM",   "direction": "request",  "description": "Client requests config without address" }
+    ],
+    "stateTransitions": [
+      { "from": "INIT",       "to": "SELECTING",  "event": "DHCPDISCOVER broadcast", "description": "Client searches for servers" },
+      { "from": "SELECTING",  "to": "REQUESTING", "event": "DHCPOFFER received",     "description": "Client selects an offer" },
+      { "from": "REQUESTING", "to": "BOUND",      "event": "DHCPACK received",       "description": "Lease confirmed, IP assigned" },
+      { "from": "BOUND",      "to": "RENEWING",   "event": "T1 timer expires",       "description": "Client attempts unicast renewal" },
+      { "from": "RENEWING",   "to": "BOUND",      "event": "DHCPACK renewal",        "description": "Lease renewed successfully" },
+      { "from": "RENEWING",   "to": "REBINDING",  "event": "T2 timer expires",       "description": "Broadcast renewal attempt" },
+      { "from": "REBINDING",  "to": "INIT",       "event": "Lease expires",          "description": "No renewal — must start over" }
+    ],
+    "relatedProtocols": ["DNS", "NTP_PACKET"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 94,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "MQTT Packet",
   "formatId": "MQTT_PACKET",
   "version": "1.0",
@@ -259,9 +259,37 @@
     "defaultPort": "1883 (TCP), 8883 (TLS)",
     "qosLevels": "0 (at most once), 1 (at least once), 2 (exactly once)"
   },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 1883,
+    "alternativePorts": [8883],
+    "layerModel": "application",
+    "layerStack": ["TCP", "IPv4/IPv6"],
+    "relatedProtocols": ["COAP_DATAGRAM", "AMQP"],
+    "messageTypes": [
+      { "id": "CONNECT",     "name": "CONNECT",     "direction": "request",  "description": "Client connection request with credentials" },
+      { "id": "CONNACK",     "name": "CONNACK",     "direction": "response", "description": "Broker connection acknowledgement" },
+      { "id": "PUBLISH",     "name": "PUBLISH",     "direction": "both",     "description": "Topic message publication (QoS 0/1/2)" },
+      { "id": "SUBSCRIBE",   "name": "SUBSCRIBE",   "direction": "request",  "description": "Client subscribes to one or more topics" },
+      { "id": "PINGREQ",     "name": "PINGREQ",     "direction": "request",  "description": "Keep-alive ping from client" },
+      { "id": "DISCONNECT",  "name": "DISCONNECT",  "direction": "request",  "description": "Client graceful disconnect" }
+    ],
+    "stateTransitions": [
+      { "from": "DISCONNECTED","to": "CONNECTING",  "event": "TCP connect",   "description": "TCP connection established" },
+      { "from": "CONNECTING",  "to": "CONNECTED",   "event": "CONNACK RC=0",  "description": "Broker accepted connection" },
+      { "from": "CONNECTED",   "to": "DISCONNECTED","event": "DISCONNECT",    "description": "Graceful disconnect" }
+    ],
+    "iotProfile": {
+      "qosLevels": [0, 1, 2],
+      "payloadEncoding": "binary",
+      "topicModel": "topic-hierarchy",
+      "retainSupport": true,
+      "sleepyDeviceSupport": false
+    }
+  },
   "QualityMetrics": {
-    "CompletenessScore": 85,
-    "LastUpdated": "2026-04-16",
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-06-09",
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }

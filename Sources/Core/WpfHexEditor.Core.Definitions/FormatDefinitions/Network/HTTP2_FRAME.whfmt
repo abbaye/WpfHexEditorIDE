@@ -1,0 +1,277 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "HTTP/2 Frame",
+  "formatId": "HTTP2_FRAME",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".h2"
+  ],
+  "description": "HTTP/2 binary framing layer (RFC 7540). Each frame starts with a 9-byte header: 3-byte length, 1-byte type, 1-byte flags, and 4-byte stream identifier (MSB reserved). Frames carry HTTP headers (HPACK-compressed), data, settings, and flow-control signals.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/http2"
+  ],
+  "UseCases": [
+    "Browser-server multiplexed HTTP/2 session analysis",
+    "HTTP/2 server push and stream priority debugging",
+    "gRPC transport layer inspection (gRPC uses HTTP/2)",
+    "HTTP/2 HPACK header compression research"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc7540",
+    "https://datatracker.ietf.org/doc/html/rfc7541",
+    "https://en.wikipedia.org/wiki/HTTP/2"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "HTTP/2 frame dissector and HPACK decoder"
+    },
+    {
+      "name": "curl",
+      "url": "https://curl.se/",
+      "role": "HTTP/2 client with verbose frame output (--http2)"
+    },
+    {
+      "name": "nghttp2",
+      "url": "https://nghttp2.org/",
+      "role": "HTTP/2 C library and debugging tools"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "TLS_RECORD",
+      "relationship": "HTTP/2 is typically transported over TLS 1.2+ (ALPN h2)"
+    },
+    {
+      "format": "WEBSOCKET_FRAME",
+      "relationship": "WebSocket can be tunneled over HTTP/2 streams (RFC 8441)"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 3,
+        "value": "01",
+        "label": "Frame type HEADERS (0x01)",
+        "weight": 0.4
+      },
+      {
+        "offset": 3,
+        "value": "00",
+        "label": "Frame type DATA (0x00)",
+        "weight": 0.3
+      },
+      {
+        "offset": 3,
+        "value": "04",
+        "label": "Frame type SETTINGS (0x04)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 80,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.5,
+      "note": "Header frames have compressed data; data frames entropy matches payload"
+    },
+    "validation": "Frame length (3 bytes BE) must not exceed SETTINGS_MAX_FRAME_SIZE (default 16384). Stream ID MSB is reserved and must be 0. Type 0-9 are defined; unknown types are ignored."
+  },
+  "variables": [
+    {
+      "name": "h2Length",
+      "type": "uint24",
+      "offset": 0,
+      "length": 3,
+      "endian": "big",
+      "description": "Payload length in bytes (0 to 2^24-1, default max 16384)"
+    },
+    {
+      "name": "h2Type",
+      "type": "uint8",
+      "offset": 3,
+      "length": 1,
+      "description": "Frame type: 0=DATA, 1=HEADERS, 2=PRIORITY, 3=RST_STREAM, 4=SETTINGS, 5=PUSH_PROMISE, 6=PING, 7=GOAWAY, 8=WINDOW_UPDATE, 9=CONTINUATION",
+      "valueMap": {
+        "0": "DATA",
+        "1": "HEADERS",
+        "2": "PRIORITY",
+        "3": "RST_STREAM",
+        "4": "SETTINGS",
+        "5": "PUSH_PROMISE",
+        "6": "PING",
+        "7": "GOAWAY",
+        "8": "WINDOW_UPDATE",
+        "9": "CONTINUATION"
+      }
+    },
+    {
+      "name": "h2Flags",
+      "type": "uint8",
+      "offset": 4,
+      "length": 1,
+      "description": "Frame flags (semantics depend on type): END_STREAM(0x01), END_HEADERS(0x04), PADDED(0x08), PRIORITY(0x20)"
+    },
+    {
+      "name": "h2StreamId",
+      "type": "uint32",
+      "offset": 5,
+      "length": 4,
+      "endian": "big",
+      "description": "Stream identifier (31-bit, MSB reserved=0). 0 = connection-level frame"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FrameHeader",
+      "offset": 0,
+      "length": 9,
+      "description": "HTTP/2 9-byte frame header: length(3) + type(1) + flags(1) + stream_id(4)",
+      "fields": [
+        {
+          "name": "Length",
+          "variable": "h2Length",
+          "offset": 0,
+          "length": 3
+        },
+        {
+          "name": "Type",
+          "variable": "h2Type",
+          "offset": 3,
+          "length": 1
+        },
+        {
+          "name": "Flags",
+          "variable": "h2Flags",
+          "offset": 4,
+          "length": 1
+        },
+        {
+          "name": "StreamId",
+          "variable": "h2StreamId",
+          "offset": 5,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "FramePayload",
+      "offset": 9,
+      "length": -1,
+      "description": "Frame payload (variable, h2Length bytes). Content depends on type: HEADERS=HPACK block, DATA=application data, SETTINGS=key-value pairs, WINDOW_UPDATE=increment."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Frame length must not exceed SETTINGS_MAX_FRAME_SIZE (default 16384)",
+      "expression": "h2Length <= 16777215"
+    },
+    {
+      "id": "A2",
+      "description": "Stream ID MSB (reserved bit) must be 0",
+      "expression": "(h2StreamId & 0x80000000) == 0"
+    },
+    {
+      "id": "A3",
+      "description": "Connection-level frames (SETTINGS, PING, GOAWAY) must use stream ID 0",
+      "expression": "h2Type < 4 || h2Type == 6 || h2Type == 7 || h2StreamId >= 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FrameHeader",
+    "structure": [
+      "FrameHeader",
+      "FramePayload"
+    ],
+    "notes": "HTTP/2 streams are multiplexed within a single TCP connection. Client-initiated streams use odd IDs; server-initiated (push) use even IDs. Stream 0 is connection-level. SETTINGS frame (type 4) with ACK flag (0x01) is the settings acknowledgement. Connection preface: client sends PRI * HTTP/2.0\\r\\n\\r\\nSM\\r\\n\\r\\n then SETTINGS."
+  },
+  "inspector": {
+    "badge": "H2",
+    "primaryField": "h2Type",
+    "groups": [
+      {
+        "name": "Frame",
+        "fields": [
+          "h2Length",
+          "h2Type",
+          "h2Flags",
+          "h2StreamId"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HTTP2 Frame CSV",
+      "format": "csv",
+      "fields": [
+        "h2Length",
+        "h2Type",
+        "h2Flags",
+        "h2StreamId"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "HTTP/2 multiplexing can obscure individual request timing. HPACK dynamic table injection (CRIME-like) attacks are mitigated by TLS compression being off. Header frames reveal all request metadata including Authorization tokens.",
+    "suspiciousPatterns": [
+      "RST_STREAM flood (type 3) — rapid stream resets indicate HTTP/2 Rapid Reset DoS (CVE-2023-44487)",
+      "Unexpected PUSH_PROMISE (type 5) from client — only server should send push",
+      "GOAWAY with high last-stream-id suggesting premature connection termination",
+      "Oversized SETTINGS or WINDOW_UPDATE increment near Int32.MAX (flow-control abuse)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "HTTP/2 frames always start with a 9-byte header. The 3-byte length field (big-endian) gives the payload size. Type byte identifies the frame purpose. Flags are type-specific. Stream 0 is connection-level. Streams are half-closed by END_STREAM flag.",
+    "suggestedInspections": [
+      "Decode frame type and flags to understand the frame's role in the stream lifecycle",
+      "For HEADERS frames, look for HPACK compressed block starting after optional padding",
+      "For SETTINGS frames, parse 6-byte key-value pairs (2-byte ID + 4-byte value)",
+      "Check for RST_STREAM flood patterns indicating Rapid Reset attack"
+    ]
+  },
+  "TechnicalDetails": {
+    "frameHeaderSize": 9,
+    "maxFrameSize": "Default 16384 (2^14), max 16777215 (2^24-1)",
+    "streamIdRange": "1-2147483647 (client odd, server even)",
+    "hpackCompression": "RFC 7541 — static table (61 entries) + dynamic table",
+    "initialWindowSize": "65535 bytes (stream and connection)"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 443,
+    "alternativePorts": [80],
+    "layerModel": "application",
+    "layerStack": ["TLS 1.2/1.3", "TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "DATA",         "name": "DATA",         "direction": "both",    "description": "Application data payload" },
+      { "id": "HEADERS",      "name": "HEADERS",      "direction": "both",    "description": "HPACK compressed header block" },
+      { "id": "SETTINGS",     "name": "SETTINGS",     "direction": "both",    "description": "Connection/stream parameters" },
+      { "id": "PING",         "name": "PING",         "direction": "both",    "description": "Round-trip latency measurement" },
+      { "id": "GOAWAY",       "name": "GOAWAY",       "direction": "both",    "description": "Graceful connection close" },
+      { "id": "RST_STREAM",   "name": "RST_STREAM",   "direction": "both",    "description": "Immediate stream termination" },
+      { "id": "WINDOW_UPDATE","name": "WINDOW_UPDATE","direction": "both",    "description": "Flow-control window increment" },
+      { "id": "PUSH_PROMISE", "name": "PUSH_PROMISE", "direction": "response","description": "Server-initiated push header" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",        "to": "OPEN",        "event": "HEADERS sent/recv",  "description": "Stream opened by headers frame" },
+      { "from": "OPEN",        "to": "HALF_CLOSED", "event": "END_STREAM flag",    "description": "One side finished sending" },
+      { "from": "HALF_CLOSED", "to": "CLOSED",      "event": "END_STREAM + ACK",  "description": "Both sides finished" },
+      { "from": "OPEN",        "to": "CLOSED",      "event": "RST_STREAM",         "description": "Immediate stream reset" }
+    ],
+    "relatedProtocols": ["TLS_RECORD", "WEBSOCKET_FRAME"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

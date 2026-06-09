@@ -1,33 +1,36 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "Bluetooth LE Advertisement Packet",
   "formatId": "BLE_ADVERTISEMENT",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Bluetooth Low Energy (BLE) advertisement packet PDU as defined by the Bluetooth Core Specification. Broadcast by BLE peripherals on advertising channels 37, 38, 39 (2.4 GHz).",
   "extensions": [".btle", ".ble"],
   "category": "IoT",
   "diffMode": "binary",
-  "signatures": [
+  "detection": {
+    "signatures": [
+      { "value": "00", "offset": 0, "weight": 0.3, "label": "BLE ADV_IND PDU type (connectable undirected advertising)" }
+    ],
+    "minimumScore": 0.2,
+    "matchMode": "best"
+  },
+  "blocks": [
     {
-      "value": "00",
+      "id": "ble_pdu_header",
+      "label": "PDU Header",
       "offset": 0,
-      "label": "BLE ADV_IND PDU type (connectable undirected advertising)",
-      "weight": 0.3,
-      "strength": "Weak"
+      "size": 8,
+      "fields": [
+        { "id": "pdu_header",  "offset": 0, "size": 1, "type": "uint8", "label": "PDU Header",  "description": "PDU type (bits 3-0): 0x00=ADV_IND, 0x01=ADV_DIRECT_IND, 0x02=ADV_NONCONN_IND, 0x04=SCAN_RSP, 0x06=ADV_SCAN_IND", "displayFormat": "hex"  },
+        { "id": "length",      "offset": 1, "size": 1, "type": "uint8", "label": "Length",      "description": "PDU payload length in bytes (6-37)",                                "displayFormat": "uint" },
+        { "id": "adv_address", "offset": 2, "size": 6, "type": "bytes", "label": "Adv Address", "description": "Advertiser MAC address (6 bytes, little-endian)",                   "displayFormat": "hex"  }
+      ]
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 1, "name": "pdu_header", "type": "uint8", "description": "PDU type (bits 3-0): 0x00=ADV_IND, 0x01=ADV_DIRECT_IND, 0x02=ADV_NONCONN_IND, 0x04=SCAN_RSP, 0x06=ADV_SCAN_IND", "storeAs": "hex" },
-      { "offset": 1, "size": 1, "name": "length", "type": "uint8", "description": "PDU payload length in bytes (6-37)", "storeAs": "uint" },
-      { "offset": 2, "size": 6, "name": "adv_address", "type": "bytes", "description": "Advertiser MAC address (6 bytes, little-endian)", "storeAs": "hex" }
-    ]
-  },
   "inspector": {
-    "displayFields": ["pdu_header", "length", "adv_address"],
+    "displayFields": ["pdu_header","length","adv_address"],
     "valueMaps": {
       "pdu_type": {
         "00": "ADV_IND — Connectable undirected advertising",
@@ -40,34 +43,26 @@
       }
     },
     "tooltips": {
-      "pdu_header": "Bits 3-0: PDU type; bit 6: TxAdd (0=public, 1=random); bit 7: RxAdd (0=public, 1=random)",
+      "pdu_header":  "Bits 3-0: PDU type; bit 6: TxAdd (0=public, 1=random); bit 7: RxAdd (0=public, 1=random)",
       "adv_address": "6-byte MAC address; TxAdd=1 indicates random/resolvable private address",
-      "length": "Payload length includes AdvA (6) + AdvData (0-31); max 37 bytes total"
+      "length":      "Payload length includes AdvA (6) + AdvData (0-31); max 37 bytes total"
     }
   },
   "assertions": [
-    { "id": "BLE_LENGTH_RANGE", "field": "length", "operator": "range", "value": "6:37", "description": "BLE advertisement PDU payload must be 6-37 bytes" },
-    { "id": "BLE_PDU_TYPE_VALID", "field": "pdu_header", "operator": "maskIn", "value": "0F:00,01,02,03,04,05,06", "description": "PDU type bits (3-0) must be a known BLE advertisement type" },
-    { "id": "BLE_ADDR_NONZERO", "field": "adv_address", "operator": "notEquals", "value": "000000000000", "description": "Advertiser MAC address must not be all-zero" }
+    { "id": "BLE_LENGTH_RANGE",    "field": "length",     "operator": "range",  "value": "6:37",            "description": "BLE advertisement PDU payload must be 6-37 bytes" },
+    { "id": "BLE_PDU_TYPE_VALID",  "field": "pdu_header", "operator": "maskIn", "value": "0F:00,01,02,03,04,05,06", "description": "PDU type bits (3-0) must be a known BLE advertisement type" },
+    { "id": "BLE_ADDR_NONZERO",    "field": "adv_address","operator": "notEquals","value": "000000000000",  "description": "Advertiser MAC address must not be all-zero" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "PDU Header", "color": "#3498DB" },
-      { "offset": 1, "label": "PDU Length", "color": "#2ECC71" },
-      { "offset": 2, "label": "Advertiser MAC", "color": "#E74C3C" }
+      { "offset": 0, "label": "PDU Header",    "color": "#3498DB" },
+      { "offset": 1, "label": "PDU Length",    "color": "#2ECC71" },
+      { "offset": 2, "label": "Advertiser MAC","color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "BLE Advertisement Summary",
-      "fields": ["pdu_header", "length", "adv_address"],
-      "format": "text"
-    },
-    {
-      "name": "BLE CSV Export",
-      "fields": ["pdu_header", "length", "adv_address"],
-      "format": "csv"
-    }
+    { "name": "BLE Advertisement Summary", "fields": ["pdu_header","length","adv_address"], "format": "text" },
+    { "name": "BLE CSV Export",            "fields": ["pdu_header","length","adv_address"], "format": "csv"  }
   ],
   "aiHints": [
     "BLE advertisement data (AdvData) follows the 6-byte AdvA and is structured as AD structures: length(1) + type(1) + data",
@@ -84,14 +79,32 @@
       "BLE beacon data (iBeacon UUID/major/minor) can uniquely identify retail or medical tracking infrastructure"
     ]
   },
+  "protocolDefinition": {
+    "transport": "bluetooth",
+    "layerModel": "datalink",
+    "layerStack": ["BLE Link Layer", "BLE Physical Layer (2.4 GHz ISM)"],
+    "relatedProtocols": ["MATTER_TLV", "PCAP"],
+    "messageTypes": [
+      { "id": "ADV_IND",        "name": "ADV_IND",        "direction": "outgoing", "description": "Connectable undirected advertising — main device discovery beacon" },
+      { "id": "SCAN_RSP",       "name": "SCAN_RSP",       "direction": "outgoing", "description": "Scan response, sent on SCAN_REQ from scanner" },
+      { "id": "CONNECT_IND",    "name": "CONNECT_IND",    "direction": "incoming", "description": "Connection request from central device" }
+    ],
+    "iotProfile": {
+      "qosLevels": [0],
+      "payloadEncoding": "binary",
+      "topicModel": "broadcast",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "formatRelationships": [
-    { "format": "PCAP", "relationship": "container", "note": "BLE advertisements captured in PCAP with Bluetooth LE link type (251/256)" },
-    { "format": "MATTER_TLV", "relationship": "related", "note": "Matter commissioning uses BLE advertisements (Matter Commissionable Node) for device discovery" }
+    { "format": "PCAP",       "relationship": "container", "note": "BLE advertisements captured in PCAP with Bluetooth LE link type (251/256)" },
+    { "format": "MATTER_TLV", "relationship": "related",   "note": "Matter commissioning uses BLE advertisements (Matter Commissionable Node) for device discovery" }
   ],
   "software": [
-    { "name": "Wireshark", "role": "BLE advertisement dissector with AD structure and manufacturer data decoding" },
-    { "name": "btlejuice / btlejack", "role": "BLE capture and analysis tools for sniffing advertisement traffic" },
-    { "name": "nRF Sniffer for Bluetooth LE", "role": "Nordic Semiconductor Wireshark plugin for live BLE capture using nRF dongle" }
+    { "name": "Wireshark",               "role": "BLE advertisement dissector with AD structure and manufacturer data decoding" },
+    { "name": "btlejuice / btlejack",    "role": "BLE capture and analysis tools for sniffing advertisement traffic" },
+    { "name": "nRF Sniffer for BLE",     "role": "Nordic Semiconductor Wireshark plugin for live BLE capture using nRF dongle" }
   ],
   "useCases": [
     "Forensic analysis of BLE device tracking using static or semi-static MAC addresses",
@@ -99,5 +112,10 @@
     "Debugging BLE commissioning flows for Matter/HomeKit/Tile devices"
   ],
   "technicalDetails": "BLE advertisement PDUs consist of a 2-byte header (PDU type, TxAdd/RxAdd flags, reserved, length) followed by AdvertiserA (6 bytes MAC) and AdvData (0-31 bytes). AdvData is structured as a sequence of AD structures, each with a 1-byte length, 1-byte type, and (length-1) bytes of data. BLE uses three primary advertising channels (37=2402 MHz, 38=2426 MHz, 39=2480 MHz) that avoid Wi-Fi interference. BLE 5 extended advertisements support up to 254 bytes via secondary channels.",
-  "completenessScore": 82
+  "completenessScore": 91,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

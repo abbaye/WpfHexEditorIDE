@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -178,6 +178,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analysekontekst</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Kendte sårbarheder</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Protokol</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>OSI-lag</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Lag-stak</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Meddelelsestyper</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>Tilstandsmaskine</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>IoT-profil</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Nyttlastkodning</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Emnemodel</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Opbevaringsstøtte</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Serialisering</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Skemasprog</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Komprimering</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Streambar</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Relaterede protokoller</value></data>
+
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Tilføj formatdefinition</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt-definitioner (*.whfmt)|*.whfmt</value></data>

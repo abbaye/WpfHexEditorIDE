@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache ORC",
   "formatId": "ORC",
@@ -200,6 +200,13 @@
     "Columnar compression for OLAP workloads",
     "ETL intermediate format for Hadoop pipelines"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Hive DDL / ORC schema",
+    "selfDescribing": true,
+    "payloadCompression": "zlib,snappy,lzo,zstd,lz4",
+    "wireCompatibleFormats": ["PARQUET", "ARROW_IPC", "AVRO"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 84,
     "LastUpdated": "2026-04-15"

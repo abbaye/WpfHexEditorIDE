@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -178,6 +178,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analyysikonteksti</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Tunnetut haavoittuvuudet</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Protokolla</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Kuljetus</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Kuljetus</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Portti</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>OSI-taso</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Tasopino</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Viestityypit</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>Tila-automaatti</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>IoT-profiili</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Hyötykuorman koodaus</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Aihe-malli</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Säilytystuki</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Sarjallistaminen</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Skeemakieli</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Pakkaus</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Suoratoistettava</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Liittyvät protokollat</value></data>
+
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Lisää formaattimääritys</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt-määritykset (*.whfmt)|*.whfmt</value></data>

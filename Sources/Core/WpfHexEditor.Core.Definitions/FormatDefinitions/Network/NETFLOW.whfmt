@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "NetFlow v5/v9 Capture",
   "formatId": "NETFLOW",
@@ -270,6 +270,18 @@
     "ISP peering and transit traffic accounting",
     "BGP routing and AS path analysis"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 2055,
+    "alternativePorts": [9555, 9995],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "V1_FLOW", "name": "NetFlow v1", "direction": "request", "description": "Original NetFlow v1 flow record (12 flows/PDU)" },
+      { "id": "V5_FLOW", "name": "NetFlow v5", "direction": "request", "description": "NetFlow v5 with AS and interface info" }
+    ],
+    "relatedProtocols": ["NETFLOW_V5", "NETFLOW_V9", "IPFIX", "SFLOW"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 88,
     "DocumentationLevel": "detailed",

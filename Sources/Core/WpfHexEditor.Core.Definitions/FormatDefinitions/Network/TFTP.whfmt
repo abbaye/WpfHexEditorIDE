@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "TFTP Packet (Trivial File Transfer Protocol)",
   "formatId": "TFTP",
@@ -287,6 +287,29 @@
     "Diskless workstation booting",
     "Forensic analysis of network provisioning traffic"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 69,
+    "alternativePorts": [],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "RRQ",   "name": "Read Request",   "direction": "request",  "description": "Client requests file download" },
+      { "id": "WRQ",   "name": "Write Request",  "direction": "request",  "description": "Client requests file upload" },
+      { "id": "DATA",  "name": "Data",           "direction": "both",     "description": "512-byte data block (or final partial block)" },
+      { "id": "ACK",   "name": "Acknowledge",    "direction": "both",     "description": "Block acknowledgement" },
+      { "id": "ERROR", "name": "Error",          "direction": "both",     "description": "Error code and message" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",       "to": "RRQ_SENT",  "event": "RRQ",          "description": "Read request sent" },
+      { "from": "RRQ_SENT",   "to": "RECEIVING", "event": "DATA block 1", "description": "Transfer started" },
+      { "from": "RECEIVING",  "to": "DONE",      "event": "DATA < 512",   "description": "Final block received" },
+      { "from": "IDLE",       "to": "WRQ_SENT",  "event": "WRQ",          "description": "Write request sent" },
+      { "from": "WRQ_SENT",   "to": "SENDING",   "event": "ACK block 0",  "description": "Server ready, transfer started" },
+      { "from": "SENDING",    "to": "DONE",       "event": "ACK final",   "description": "All blocks acknowledged" }
+    ],
+    "relatedProtocols": ["DNS", "SYSLOG"]
+  },
   "QualityMetrics": {
     "LastUpdated": "2026-04-15",
     "CompletenessScore": 85,

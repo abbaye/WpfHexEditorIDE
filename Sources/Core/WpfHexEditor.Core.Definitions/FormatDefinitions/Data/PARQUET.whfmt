@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Parquet",
   "formatId": "PARQUET",
@@ -212,6 +212,13 @@
     "Machine learning training dataset storage",
     "Cloud data warehouse (AWS Athena, BigQuery, Snowflake)"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Apache Thrift schema",
+    "selfDescribing": true,
+    "payloadCompression": "snappy,gzip,lzo,brotli,zstd,lz4",
+    "wireCompatibleFormats": ["ARROW_IPC", "ORC", "AVRO", "FEATHER"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "LastUpdated": "2026-04-15"

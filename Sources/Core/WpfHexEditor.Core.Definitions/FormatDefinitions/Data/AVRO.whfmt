@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Avro",
   "formatId": "AVRO",
@@ -197,6 +197,13 @@
     "Event sourcing and audit log storage",
     "Data pipeline schema versioning with Confluent Schema Registry"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Avro Schema (JSON)",
+    "selfDescribing": true,
+    "payloadCompression": "deflate,snappy,bzip2,xz,zstandard",
+    "wireCompatibleFormats": ["PROTOBUF", "MSGPACK"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "LastUpdated": "2026-04-15"

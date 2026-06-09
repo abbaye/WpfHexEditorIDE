@@ -1,71 +1,64 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "Thread Network TLV",
   "formatId": "THREAD_TLV",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Thread network protocol TLV (Type-Length-Value) encoding used in Thread management frames. Thread is an IPv6-based mesh networking protocol for IoT devices, used in Matter commissioning.",
   "extensions": [".thread"],
   "category": "IoT",
   "diffMode": "binary",
-  "signatures": [],
-  "maxSignatureOffset": 0,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 1, "name": "tlv_type", "type": "uint8", "description": "TLV type identifier (0x00-0xFE = standard; 0xFF = extended type)", "storeAs": "hex" },
-      { "offset": 1, "size": 1, "name": "tlv_length", "type": "uint8", "description": "Length of TLV value in bytes (0xFF = extended length follows)", "storeAs": "uint" },
-      { "offset": 2, "size": 4, "name": "tlv_value", "type": "bytes", "description": "TLV value payload (variable length, up to tlv_length bytes)", "storeAs": "hex" }
-    ]
+  "detection": {
+    "signatures": [],
+    "minimumScore": 0.2,
+    "matchMode": "best"
   },
+  "blocks": [
+    {
+      "id": "tlv_block",
+      "label": "TLV Record",
+      "offset": 0,
+      "size": 6,
+      "fields": [
+        { "id": "tlv_type",   "offset": 0, "size": 1, "type": "uint8", "label": "Type",   "description": "TLV type identifier (0x00-0xFE = standard; 0xFF = extended type)", "displayFormat": "hex"  },
+        { "id": "tlv_length", "offset": 1, "size": 1, "type": "uint8", "label": "Length", "description": "Length of TLV value in bytes (0xFF = extended length follows)",    "displayFormat": "uint" },
+        { "id": "tlv_value",  "offset": 2, "size": 4, "type": "bytes", "label": "Value",  "description": "TLV value payload (variable length, up to tlv_length bytes)",        "displayFormat": "hex"  }
+      ]
+    }
+  ],
   "inspector": {
-    "displayFields": ["tlv_type", "tlv_length", "tlv_value"],
+    "displayFields": ["tlv_type","tlv_length","tlv_value"],
     "valueMaps": {
       "tlv_type": {
-        "01": "Channel",
-        "03": "PAN ID",
-        "05": "Extended PAN ID",
-        "08": "Network Name",
-        "0E": "Network Master Key",
-        "0F": "Network Key Sequence Counter",
-        "10": "Mesh Local Prefix",
-        "11": "Steering Data",
-        "12": "Border Agent Locator",
-        "13": "Commissioner ID",
-        "14": "Commissioner Session ID",
-        "15": "Security Policy",
+        "01": "Channel",            "03": "PAN ID",             "05": "Extended PAN ID",
+        "08": "Network Name",       "0E": "Network Master Key", "0F": "Network Key Sequence Counter",
+        "10": "Mesh Local Prefix",  "11": "Steering Data",      "12": "Border Agent Locator",
+        "13": "Commissioner ID",    "14": "Commissioner Session ID", "15": "Security Policy",
         "17": "Active Timestamp"
       }
     },
     "tooltips": {
-      "tlv_type": "Thread MeshCoP (Mesh Commissioning Protocol) TLV types 0x00-0xFF",
+      "tlv_type":   "Thread MeshCoP (Mesh Commissioning Protocol) TLV types 0x00-0xFF",
       "tlv_length": "0xFF indicates a 2-byte extended length field follows before the value",
-      "tlv_value": "Value encoding depends on TLV type; see Thread spec section 8"
+      "tlv_value":  "Value encoding depends on TLV type; see Thread spec section 8"
     }
   },
   "assertions": [
-    { "id": "THREAD_TLV_MIN_SIZE", "field": "tlv_length", "operator": "greaterThanOrEqual", "value": "0", "description": "TLV length must be a valid uint8 (always satisfied — sanity check)" },
-    { "id": "THREAD_NOT_ALL_ZERO", "field": "tlv_type", "operator": "notEquals", "value": "FF", "description": "Standard TLV type should not be 0xFF (reserved for extended TLV)" },
-    { "id": "THREAD_TLV_VALID_TYPE", "field": "tlv_type", "operator": "range", "value": "0:254", "description": "TLV type must be in valid Thread MeshCoP range (0x00-0xFE for standard)" }
+    { "id": "THREAD_TLV_MIN_SIZE",   "field": "tlv_length", "operator": "greaterThanOrEqual","value": "0",   "description": "TLV length must be a valid uint8 (always satisfied — sanity check)" },
+    { "id": "THREAD_NOT_ALL_ZERO",   "field": "tlv_type",   "operator": "notEquals",         "value": "FF",  "description": "Standard TLV type should not be 0xFF (reserved for extended TLV)" },
+    { "id": "THREAD_TLV_VALID_TYPE", "field": "tlv_type",   "operator": "range",             "value": "0:254","description": "TLV type must be in valid Thread MeshCoP range (0x00-0xFE for standard)" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "First TLV Type", "color": "#3498DB" },
+      { "offset": 0, "label": "First TLV Type",   "color": "#3498DB" },
       { "offset": 1, "label": "First TLV Length", "color": "#2ECC71" },
-      { "offset": 2, "label": "First TLV Value", "color": "#E74C3C" }
+      { "offset": 2, "label": "First TLV Value",  "color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "Thread TLV Summary",
-      "fields": ["tlv_type", "tlv_length", "tlv_value"],
-      "format": "text"
-    },
-    {
-      "name": "Thread TLV CSV",
-      "fields": ["tlv_type", "tlv_length"],
-      "format": "csv"
-    }
+    { "name": "Thread TLV Summary", "fields": ["tlv_type","tlv_length","tlv_value"], "format": "text" },
+    { "name": "Thread TLV CSV",     "fields": ["tlv_type","tlv_length"],              "format": "csv"  }
   ],
   "aiHints": [
     "Thread TLV streams are self-describing; parse sequentially as type(1) + length(1) + value(length) tuples",
@@ -82,14 +75,27 @@
       "Border Agent commissioning traffic on TCP port 49191 may expose dataset TLVs"
     ]
   },
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "network",
+    "layerStack": ["IEEE 802.15.4 MAC", "IEEE 802.15.4 PHY"],
+    "relatedProtocols": ["MATTER_TLV", "ZIGBEE_NWK"],
+    "iotProfile": {
+      "qosLevels": [0, 1],
+      "payloadEncoding": "tlv-binary",
+      "topicModel": "mesh-broadcast",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "formatRelationships": [
-    { "format": "MATTER_TLV", "relationship": "related", "note": "Matter commissioning uses Thread for its network transport; Matter TLV and Thread TLV are distinct schemas" },
-    { "format": "ZIGBEE_NWK", "relationship": "alternative", "note": "Both Thread and ZigBee operate on IEEE 802.15.4 but use incompatible upper layers" }
+    { "format": "MATTER_TLV",  "relationship": "related",     "note": "Matter commissioning uses Thread for its network transport; Matter TLV and Thread TLV are distinct schemas" },
+    { "format": "ZIGBEE_NWK",  "relationship": "alternative", "note": "Both Thread and ZigBee operate on IEEE 802.15.4 but use incompatible upper layers" }
   ],
   "software": [
-    { "name": "OpenThread", "role": "Reference Thread stack implementation (Google/ARM) used in most Thread devices" },
+    { "name": "OpenThread",      "role": "Reference Thread stack implementation (Google/ARM) used in most Thread devices" },
     { "name": "ot-commissioner", "role": "Thread commissioner tool for network provisioning using MeshCoP TLVs" },
-    { "name": "Wireshark", "role": "Thread/IEEE 802.15.4 dissector with MeshCoP TLV decoding" }
+    { "name": "Wireshark",       "role": "Thread/IEEE 802.15.4 dissector with MeshCoP TLV decoding" }
   ],
   "useCases": [
     "Debugging Thread network commissioning failures by inspecting MeshCoP TLV exchanges",
@@ -97,5 +103,10 @@
     "Forensic analysis of Thread dataset TLVs captured during Matter commissioning events"
   ],
   "technicalDetails": "Thread TLV encoding follows a simple T(1 byte) + L(1 byte) + V(L bytes) structure for type codes 0x00-0xFE. Extended TLV uses T=0xFF followed by 2-byte type and 2-byte length. Thread uses TLVs extensively in its Mesh Link Establishment (MLE), MeshCoP commissioning, and network management protocols. The Thread Operational Dataset is a set of TLVs defining the complete network configuration including channel, PAN ID, extended PAN ID, network name, master key, and mesh-local prefix.",
-  "completenessScore": 80
+  "completenessScore": 90,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

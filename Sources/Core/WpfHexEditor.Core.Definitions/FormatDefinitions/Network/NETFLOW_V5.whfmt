@@ -1,74 +1,66 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "NetFlow v5 Export Packet",
   "formatId": "NETFLOW_V5",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Cisco NetFlow version 5 fixed-record flow export packet. Each packet contains a 24-byte header and up to 30 fixed-length 48-byte flow records describing IPv4 traffic flows.",
   "extensions": [".nf5"],
   "category": "Network",
   "diffMode": "binary",
-  "signatures": [
+  "detection": {
+    "signatures": [
+      { "value": "0005", "offset": 0, "weight": 0.9, "label": "NetFlow v5 version field" }
+    ],
+    "minimumScore": 0.7,
+    "matchMode": "best"
+  },
+  "blocks": [
     {
-      "value": "0005",
+      "id": "nf5_header",
+      "label": "Packet Header",
       "offset": 0,
-      "label": "NetFlow v5 version field",
-      "weight": 0.9,
-      "strength": "Moderate"
+      "size": 24,
+      "fields": [
+        { "id": "version",           "offset": 0,  "size": 2, "type": "uint16be", "label": "Version",           "description": "NetFlow export version, must be 5",                                       "displayFormat": "uint" },
+        { "id": "count",             "offset": 2,  "size": 2, "type": "uint16be", "label": "Count",             "description": "Number of flow records in this packet (1-30)",                           "displayFormat": "uint" },
+        { "id": "sys_uptime",        "offset": 4,  "size": 4, "type": "uint32be", "label": "SysUptime",         "description": "Milliseconds since router boot at time of export",                       "displayFormat": "uint" },
+        { "id": "unix_secs",         "offset": 8,  "size": 4, "type": "uint32be", "label": "UnixSecs",          "description": "Unix epoch seconds at export time",                                       "displayFormat": "uint" },
+        { "id": "unix_nsecs",        "offset": 12, "size": 4, "type": "uint32be", "label": "UnixNsecs",         "description": "Residual nanoseconds of unix_secs for sub-second precision",             "displayFormat": "uint" },
+        { "id": "flow_sequence",     "offset": 16, "size": 4, "type": "uint32be", "label": "FlowSequence",      "description": "Running count of flows exported; used to detect packet loss",           "displayFormat": "uint" },
+        { "id": "engine_type",       "offset": 20, "size": 1, "type": "uint8",    "label": "EngineType",        "description": "Type of flow-switching engine (0=RP, 1=VIP/linecard)",                  "displayFormat": "uint" },
+        { "id": "engine_id",         "offset": 21, "size": 1, "type": "uint8",    "label": "EngineID",          "description": "Slot number of the flow-switching engine",                                "displayFormat": "uint" },
+        { "id": "sampling_interval", "offset": 22, "size": 2, "type": "uint16be", "label": "SamplingInterval",  "description": "Bits 15-14: sampling mode; bits 13-0: sampling interval value",         "displayFormat": "hex"  }
+      ]
     }
   ],
-  "maxSignatureOffset": 2,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 2, "name": "version", "type": "uint16be", "description": "NetFlow export version, must be 5", "storeAs": "uint" },
-      { "offset": 2, "size": 2, "name": "count", "type": "uint16be", "description": "Number of flow records in this packet (1-30)", "storeAs": "uint" },
-      { "offset": 4, "size": 4, "name": "sys_uptime", "type": "uint32be", "description": "Milliseconds since router boot at time of export", "storeAs": "uint" },
-      { "offset": 8, "size": 4, "name": "unix_secs", "type": "uint32be", "description": "Unix epoch seconds at export time", "storeAs": "uint" },
-      { "offset": 12, "size": 4, "name": "unix_nsecs", "type": "uint32be", "description": "Residual nanoseconds of unix_secs for sub-second precision", "storeAs": "uint" },
-      { "offset": 16, "size": 4, "name": "flow_sequence", "type": "uint32be", "description": "Running count of flows exported; used to detect packet loss", "storeAs": "uint" },
-      { "offset": 20, "size": 1, "name": "engine_type", "type": "uint8", "description": "Type of flow-switching engine (0=RP, 1=VIP/linecard)", "storeAs": "uint" },
-      { "offset": 21, "size": 1, "name": "engine_id", "type": "uint8", "description": "Slot number of the flow-switching engine", "storeAs": "uint" },
-      { "offset": 22, "size": 2, "name": "sampling_interval", "type": "uint16be", "description": "Bits 15-14: sampling mode (0=none, 1=pkts, 2=random); bits 13-0: sampling interval value", "storeAs": "hex" }
-    ]
-  },
   "inspector": {
-    "displayFields": ["version", "count", "unix_secs", "flow_sequence", "engine_type", "engine_id", "sampling_interval"],
+    "displayFields": ["version","count","unix_secs","flow_sequence","engine_type","engine_id","sampling_interval"],
     "valueMaps": {
-      "engine_type": {
-        "0": "Route Processor (RP)",
-        "1": "VIP / Linecard"
-      }
+      "engine_type": { "0": "Route Processor (RP)", "1": "VIP / Linecard" }
     },
     "tooltips": {
-      "count": "Maximum 30 flow records per packet; each record is 48 bytes starting at offset 24",
-      "flow_sequence": "Difference between consecutive packets reveals dropped flow records",
+      "count":             "Maximum 30 flow records per packet; each record is 48 bytes starting at offset 24",
+      "flow_sequence":     "Difference between consecutive packets reveals dropped flow records",
       "sampling_interval": "High bits encode mode: 01=deterministic, 10=random; low 14 bits are the interval"
     }
   },
   "assertions": [
-    { "id": "NFV5_VERSION", "field": "version", "operator": "equals", "value": "5", "description": "Version field must be exactly 5 for NetFlow v5" },
-    { "id": "NFV5_COUNT_RANGE", "field": "count", "operator": "range", "value": "1:30", "description": "Flow record count must be between 1 and 30 per packet" },
-    { "id": "NFV5_UNIX_SECS_VALID", "field": "unix_secs", "operator": "greaterThan", "value": "1000000000", "description": "Export timestamp should be a plausible Unix epoch (post-2001)" }
+    { "id": "NFV5_VERSION",      "field": "version",  "operator": "equals",            "value": "5",          "description": "Version field must be exactly 5 for NetFlow v5" },
+    { "id": "NFV5_COUNT_RANGE",  "field": "count",    "operator": "range",             "value": "1:30",       "description": "Flow record count must be between 1 and 30 per packet" },
+    { "id": "NFV5_UNIX_SECS",    "field": "unix_secs","operator": "greaterThan",       "value": "1000000000","description": "Export timestamp should be a plausible Unix epoch (post-2001)" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "Packet Header", "color": "#3498DB" },
-      { "offset": 8, "label": "Export Timestamp", "color": "#2ECC71" },
-      { "offset": 24, "label": "First Flow Record", "color": "#E74C3C" }
+      { "offset": 0,  "label": "Packet Header",    "color": "#3498DB" },
+      { "offset": 8,  "label": "Export Timestamp", "color": "#2ECC71" },
+      { "offset": 24, "label": "First Flow Record","color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "NetFlow v5 Header",
-      "fields": ["version", "count", "unix_secs", "flow_sequence", "engine_type", "engine_id"],
-      "format": "text"
-    },
-    {
-      "name": "NetFlow v5 CSV",
-      "fields": ["unix_secs", "count", "flow_sequence", "engine_type"],
-      "format": "csv"
-    }
+    { "name": "NetFlow v5 Header", "fields": ["version","count","unix_secs","flow_sequence","engine_type","engine_id"], "format": "text" },
+    { "name": "NetFlow v5 CSV",    "fields": ["unix_secs","count","flow_sequence","engine_type"],                        "format": "csv"  }
   ],
   "aiHints": [
     "NetFlow v5 is limited to IPv4 unicast flows; IPv6, MPLS, and multicast require v9 or IPFIX",
@@ -85,14 +77,22 @@
       "Timestamps can be used for timeline reconstruction in incident response"
     ]
   },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 2055,
+    "alternativePorts": [9995, 9996],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4"],
+    "relatedProtocols": ["NETFLOW_V9", "IPFIX"]
+  },
   "formatRelationships": [
     { "format": "NETFLOW_V9", "relationship": "predecessor", "note": "NetFlow v9 replaced v5 with template-based extensible records and IPv6 support" },
-    { "format": "IPFIX", "relationship": "predecessor", "note": "IPFIX standardized the NetFlow concept via RFC 7011 building on v9 templates" }
+    { "format": "IPFIX",      "relationship": "predecessor", "note": "IPFIX standardized the NetFlow concept via RFC 7011 building on v9 templates" }
   ],
   "software": [
-    { "name": "nfdump / nfcapd", "role": "Standard Unix NetFlow v5 collector and analysis suite" },
-    { "name": "SolarWinds NTA", "role": "Commercial NetFlow analyzer with v5/v9/IPFIX collection" },
-    { "name": "Cisco IOS", "role": "Router platform originating NetFlow v5 export via ip flow-export" }
+    { "name": "nfdump / nfcapd",  "role": "Standard Unix NetFlow v5 collector and analysis suite" },
+    { "name": "SolarWinds NTA",   "role": "Commercial NetFlow analyzer with v5/v9/IPFIX collection" },
+    { "name": "Cisco IOS",        "role": "Router platform originating NetFlow v5 export via ip flow-export" }
   ],
   "useCases": [
     "Legacy network traffic accounting on Cisco IOS routers with fixed IPv4 flows",
@@ -100,5 +100,10 @@
     "Long-term flow archiving where fixed record size simplifies storage planning"
   ],
   "technicalDetails": "NetFlow v5 is a fixed-format protocol where each flow record is exactly 48 bytes describing an IPv4 flow (src/dst addr, ports, protocol, interface, ToS, TCP flags, packets, bytes, timestamps, AS numbers, mask lengths, next-hop). The 24-byte header precedes up to 30 records. The format cannot represent IPv6, MPLS, or multicast flows, which necessitated the template-based NetFlow v9.",
-  "completenessScore": 84
+  "completenessScore": 90,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "RADIUS Authentication Packet",
   "formatId": "RADIUS_PACKET",
@@ -275,6 +275,26 @@
     "Network access control (NAC) policy enforcement",
     "Forensic analysis of authentication events and credential exposure"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 1812,
+    "alternativePorts": [1813, 1645, 1646],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "ACCESS_REQUEST",  "name": "Access-Request",  "direction": "request",  "description": "Authentication request from NAS" },
+      { "id": "ACCESS_ACCEPT",   "name": "Access-Accept",   "direction": "response", "description": "Authentication granted" },
+      { "id": "ACCESS_REJECT",   "name": "Access-Reject",   "direction": "response", "description": "Authentication denied" },
+      { "id": "ACCOUNTING",      "name": "Accounting-Request","direction": "request", "description": "Session accounting data" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",      "to": "PENDING", "event": "Access-Request sent", "description": "NAS sends credentials" },
+      { "from": "PENDING",   "to": "OPEN",    "event": "Access-Accept",       "description": "User authenticated" },
+      { "from": "PENDING",   "to": "IDLE",    "event": "Access-Reject",       "description": "Authentication failed" },
+      { "from": "OPEN",      "to": "IDLE",    "event": "Acct-Stop",           "description": "Session terminated" }
+    ],
+    "relatedProtocols": ["ISAKMP"]
+  },
   "QualityMetrics": {
     "LastUpdated": "2026-04-15",
     "CompletenessScore": 86,

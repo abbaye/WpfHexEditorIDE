@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "HP-UX nettl Trace",
   "formatId": "NETTL",
@@ -202,6 +202,12 @@
     "Network forensics on HP-UX/PA-RISC systems",
     "Diagnosing historical network issues from HP-UX systems"
   ],
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "datalink",
+    "layerStack": ["HP-UX network trace", "Ethernet", "IPv4"],
+    "relatedProtocols": ["PCAP", "SNOOP"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 58,
     "DocumentationLevel": "detailed",

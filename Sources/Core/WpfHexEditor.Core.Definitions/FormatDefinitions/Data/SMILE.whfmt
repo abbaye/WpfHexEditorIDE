@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Smile Binary JSON",
   "formatId": "SMILE",
@@ -199,6 +199,13 @@
     "Compact JSON replacement for high-throughput systems",
     "Network protocol binary payloads"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Jackson / JSON Schema",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "MSGPACK", "CBOR"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 87,
     "LastUpdated": "2026-04-16"

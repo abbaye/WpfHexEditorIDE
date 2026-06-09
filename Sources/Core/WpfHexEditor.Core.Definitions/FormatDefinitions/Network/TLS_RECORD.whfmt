@@ -1,0 +1,261 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "TLS Record",
+  "formatId": "TLS_RECORD",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".tls"
+  ],
+  "description": "TLS/SSL record protocol framing (RFC 8446 TLS 1.3, RFC 5246 TLS 1.2). Each record begins with a 5-byte header: 1-byte content type, 2-byte protocol version, and 2-byte length. The payload carries handshake messages, application data, alerts, or change-cipher-spec.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/tls"
+  ],
+  "UseCases": [
+    "TLS handshake analysis and certificate chain inspection",
+    "TLS version negotiation and cipher suite debugging",
+    "HTTPS traffic forensics and session key export",
+    "TLS 1.3 0-RTT early data analysis"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc8446",
+    "https://datatracker.ietf.org/doc/html/rfc5246",
+    "https://tls13.xargs.org/"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "TLS dissector with SSLKEYLOGFILE decryption support"
+    },
+    {
+      "name": "OpenSSL",
+      "url": "https://www.openssl.org/",
+      "role": "TLS implementation and debugging (s_client, s_server)"
+    },
+    {
+      "name": "tshark",
+      "url": "https://www.wireshark.org/docs/man-pages/tshark.html",
+      "role": "CLI TLS stream extraction and key-log decryption"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "HTTP2_FRAME",
+      "relationship": "HTTP/2 (ALPN h2) is commonly transported inside TLS records"
+    },
+    {
+      "format": "ISAKMP",
+      "relationship": "IKEv2 uses TLS for EAP-TLS authentication within IPsec"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "16",
+        "label": "Content type: Handshake (0x16)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "17",
+        "label": "Content type: Application Data (0x17)",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "15",
+        "label": "Content type: Alert (0x15)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 85,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 5.5,
+      "max": 8.0,
+      "note": "Application data records are highly entropic due to encryption"
+    },
+    "validation": "Content type must be 20 (change_cipher_spec), 21 (alert), 22 (handshake), or 23 (application_data). Version bytes 0x0303 = TLS 1.2, 0x0304 = TLS 1.3 (outer); 0x0301/0x0302 indicate TLS 1.0/1.1 (legacy). Record length max 16384 + 2048 overhead."
+  },
+  "variables": [
+    {
+      "name": "tlsContentType",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "Record content type: 20=change_cipher_spec, 21=alert, 22=handshake, 23=application_data",
+      "valueMap": {
+        "20": "change_cipher_spec",
+        "21": "alert",
+        "22": "handshake",
+        "23": "application_data"
+      }
+    },
+    {
+      "name": "tlsVersion",
+      "type": "uint16",
+      "offset": 1,
+      "length": 2,
+      "endian": "big",
+      "description": "Legacy record version: 0x0301=TLS1.0, 0x0302=TLS1.1, 0x0303=TLS1.2, 0x0304=TLS1.3",
+      "valueMap": {
+        "769": "TLS 1.0",
+        "770": "TLS 1.1",
+        "771": "TLS 1.2",
+        "772": "TLS 1.3"
+      }
+    },
+    {
+      "name": "tlsLength",
+      "type": "uint16",
+      "offset": 3,
+      "length": 2,
+      "endian": "big",
+      "description": "Record payload length in bytes (max 16384 plaintext + 2048 padding/MAC overhead)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "RecordHeader",
+      "offset": 0,
+      "length": 5,
+      "description": "TLS record 5-byte header: content_type(1) + version(2) + length(2)",
+      "fields": [
+        {
+          "name": "ContentType",
+          "variable": "tlsContentType",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "Version",
+          "variable": "tlsVersion",
+          "offset": 1,
+          "length": 2
+        },
+        {
+          "name": "Length",
+          "variable": "tlsLength",
+          "offset": 3,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "RecordPayload",
+      "offset": 5,
+      "length": -1,
+      "description": "Record payload: plaintext (pre-encryption) or ciphertext with auth tag. Handshake records contain nested handshake message header (type+length+body)."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Content type must be 20, 21, 22, or 23",
+      "expression": "tlsContentType >= 20 && tlsContentType <= 23"
+    },
+    {
+      "id": "A2",
+      "description": "Record length must not exceed 18432 bytes (16384 + 2048)",
+      "expression": "tlsLength <= 18432"
+    },
+    {
+      "id": "A3",
+      "description": "Version must be a recognized TLS version",
+      "expression": "tlsVersion >= 769 && tlsVersion <= 772"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "RecordHeader",
+    "structure": [
+      "RecordHeader",
+      "RecordPayload"
+    ],
+    "notes": "TLS 1.3 uses 0x0303 in the record version field for compatibility but includes a supported_versions extension in ClientHello/ServerHello. Handshake messages may span multiple records. The first handshake record from a client is always ClientHello (handshake type 0x01)."
+  },
+  "inspector": {
+    "badge": "TLS",
+    "primaryField": "tlsContentType",
+    "groups": [
+      {
+        "name": "Record",
+        "fields": [
+          "tlsContentType",
+          "tlsVersion",
+          "tlsLength"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TLS Record CSV",
+      "format": "csv",
+      "fields": [
+        "tlsContentType",
+        "tlsVersion",
+        "tlsLength"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "TLS records protect most internet traffic. Decryption requires the session master secret or (EC)DHE private key. SSLKEYLOGFILE export from browsers/curl enables Wireshark decryption. Alert records reveal session errors and potential downgrade/injection attempts.",
+    "suspiciousPatterns": [
+      "alert(close_notify) immediately after ClientHello — connection teardown without handshake (scan probe)",
+      "Version downgrade to TLS 1.0/1.1 — deprecated, vulnerable to BEAST/POODLE",
+      "Large number of handshake records without application data — TLS handshake amplification",
+      "Record length exactly 0 or exceeding 18432 — malformed or fuzzing probe"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "TLS records use a 5-byte header. Content type 22 (0x16) introduces handshake messages; within a handshake record, another 4-byte sub-header encodes the handshake message type (1 byte) and length (3 bytes). ClientHello starts with 0x01, ServerHello with 0x02, Certificate with 0x0B.",
+    "suggestedInspections": [
+      "Read content type to classify the record (handshake / app data / alert)",
+      "For handshake records, parse the inner 4-byte message header for type and length",
+      "Check version bytes: 0x0303 is TLS 1.2/1.3 wire format; real version in supported_versions extension",
+      "For alert records, decode alert level (1=warning, 2=fatal) and description byte"
+    ]
+  },
+  "TechnicalDetails": {
+    "recordHeaderSize": 5,
+    "maxPlaintextSize": 16384,
+    "maxCiphertextSize": 18432,
+    "handshakeTypes": "01=ClientHello, 02=ServerHello, 0B=Certificate, 0C=ServerKeyExchange, 0E=ServerHelloDone, 10=ClientKeyExchange, 0F=CertificateVerify, 14=Finished",
+    "alertDescriptions": "0=close_notify, 10=unexpected_message, 14=bad_record_mac, 28=handshake_failure, 2A=bad_certificate, 47=illegal_parameter, 70=protocol_version"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 443,
+    "alternativePorts": [8443, 636, 993, 995, 465],
+    "layerModel": "application",
+    "layerStack": ["TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "CLIENT_HELLO",  "name": "ClientHello",  "direction": "request",  "description": "Client negotiation offer: cipher suites + extensions" },
+      { "id": "SERVER_HELLO",  "name": "ServerHello",  "direction": "response", "description": "Server cipher/version selection" },
+      { "id": "CERTIFICATE",   "name": "Certificate",  "direction": "response", "description": "X.509 certificate chain" },
+      { "id": "FINISHED",      "name": "Finished",     "direction": "both",     "description": "Handshake transcript MAC — session keys active" },
+      { "id": "APP_DATA",      "name": "ApplicationData","direction": "both",   "description": "Encrypted application payload" },
+      { "id": "ALERT",         "name": "Alert",        "direction": "both",     "description": "Error notification or graceful close" }
+    ],
+    "stateTransitions": [
+      { "from": "INIT",        "to": "HELLO_SENT",    "event": "ClientHello",           "description": "Client starts TLS negotiation" },
+      { "from": "HELLO_SENT",  "to": "CERT_RECEIVED", "event": "ServerHello+Cert",       "description": "Server responds with its identity" },
+      { "from": "CERT_RECEIVED","to": "HANDSHAKE_DONE","event": "Finished exchange",     "description": "Session keys derived, handshake complete" },
+      { "from": "HANDSHAKE_DONE","to": "DATA",         "event": "Application data",      "description": "Encrypted data exchange begins" },
+      { "from": "DATA",        "to": "CLOSED",        "event": "close_notify alert",     "description": "Graceful TLS session termination" }
+    ],
+    "relatedProtocols": ["HTTP2_FRAME", "ISAKMP"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 94,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Protocol Buffers",
   "formatId": "PROTOBUF",
@@ -166,6 +166,13 @@
     "Data exchange",
     "Archive"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Protocol Buffers schema (.proto)",
+    "selfDescribing": false,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["FLATBUF", "AVRO", "CAPNPROTO", "THRIFT"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 82,
     "DocumentationLevel": "detailed",

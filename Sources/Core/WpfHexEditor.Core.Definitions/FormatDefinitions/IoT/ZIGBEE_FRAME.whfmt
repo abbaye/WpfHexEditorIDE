@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "ZigBee Frame",
   "formatId": "ZIGBEE_FRAME",
   "version": "1.0.1",
@@ -245,9 +245,22 @@
     "addressModes": "None, 16-bit short, 64-bit extended",
     "securitySuites": "AES-CCM-128 (AES-128 with CBC-MAC)"
   },
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "datalink",
+    "layerStack": ["IEEE 802.15.4 MAC", "IEEE 802.15.4 PHY 2.4 GHz"],
+    "relatedProtocols": ["ZIGBEE_NWK", "PCAP"],
+    "iotProfile": {
+      "qosLevels": [0],
+      "payloadEncoding": "binary",
+      "topicModel": "cluster-endpoint",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "QualityMetrics": {
-    "CompletenessScore": 84,
-    "LastUpdated": "2026-04-16",
+    "CompletenessScore": 87,
+    "LastUpdated": "2026-06-09",
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }

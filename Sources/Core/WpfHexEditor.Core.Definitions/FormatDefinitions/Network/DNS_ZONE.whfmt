@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "DNS Zone File",
   "formatId": "DNS_ZONE",
@@ -206,6 +206,17 @@
     "Domain certificate authority authorization (CAA records)",
     "Reverse DNS lookup zones (PTR records)"
   ],
+  "protocolDefinition": {
+    "transport": "both",
+    "defaultPort": 53,
+    "alternativePorts": [853],
+    "layerModel": "application",
+    "layerStack": ["UDP/TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "ZONE_TRANSFER", "name": "AXFR/IXFR", "direction": "response", "description": "Full or incremental zone transfer over TCP" }
+    ],
+    "relatedProtocols": ["DNS_WIRE", "DNS"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 75,
     "DocumentationLevel": "detailed",

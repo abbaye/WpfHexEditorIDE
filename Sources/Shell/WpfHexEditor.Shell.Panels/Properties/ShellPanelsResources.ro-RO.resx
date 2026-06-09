@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -178,6 +178,25 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Context analiză</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Vulnerabilități cunoscute</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Protocol</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>Strat OSI</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Stivă de straturi</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Tipuri de mesaje</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>Mașină de stări</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>Profil IoT</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Codificare sarcină utilă</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Model subiect</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Suport de reținere</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Serializare</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Limbaj schemă</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Compresie</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Transmisibil</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Protocoale înrudite</value></data>
+
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Adăugare definiție format</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Definiții Whfmt (*.whfmt)|*.whfmt</value></data>

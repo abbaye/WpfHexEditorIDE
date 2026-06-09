@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "MessagePack",
   "formatId": "MSGPACK",
@@ -190,6 +190,13 @@
     "Fluentd log record format",
     "Mobile and IoT API payloads where bandwidth is constrained"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "MessagePack schema (msgpack-schema)",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "CBOR", "UBJSON", "SMILE"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 83,
     "LastUpdated": "2026-04-15"

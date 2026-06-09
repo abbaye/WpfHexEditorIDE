@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "Newline Delimited JSON",
   "formatId": "NDJSON",
@@ -223,6 +223,13 @@
     "HTTP streaming API responses (server-sent events)",
     "Large-scale data pipeline processing with Apache Spark/Beam"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "JSON Schema",
+    "selfDescribing": true,
+    "payloadCompression": "gzip",
+    "wireCompatibleFormats": ["JSON", "AVRO"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 72,
     "DocumentationLevel": "detailed",

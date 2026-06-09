@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Universal Binary JSON (UBJSON)",
   "formatId": "UBJSON",
@@ -188,6 +188,13 @@
     "Game save data and configuration files",
     "IoT sensor data encoding"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "JSON Schema",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "CBOR", "MSGPACK", "SMILE"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 83,
     "LastUpdated": "2026-04-16"

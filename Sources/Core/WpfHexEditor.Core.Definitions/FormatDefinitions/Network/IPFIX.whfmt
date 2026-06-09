@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "IPFIX",
   "formatId": "IPFIX",
@@ -156,6 +156,19 @@
     "Debugging",
     "Security analysis"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 4739,
+    "alternativePorts": [4740],
+    "layerModel": "application",
+    "layerStack": ["UDP/TCP/SCTP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "TEMPLATE_SET",     "name": "Template Set",     "direction": "request",  "description": "Field type definitions for data records" },
+      { "id": "OPTIONS_SET",      "name": "Options Template",  "direction": "request",  "description": "Metadata and scope definitions" },
+      { "id": "DATA_SET",         "name": "Data Set",          "direction": "request",  "description": "Flow measurement records" }
+    ],
+    "relatedProtocols": ["NETFLOW_V9", "SFLOW"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 56,
     "DocumentationLevel": "detailed",

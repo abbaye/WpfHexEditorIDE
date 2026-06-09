@@ -1,0 +1,245 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "OPC-UA Binary Message",
+  "formatId": "OPCUA_BINARY",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".opcua"
+  ],
+  "description": "OPC Unified Architecture (OPC-UA) binary protocol message (UA TCP, OPC Foundation Spec Part 6). Each message begins with a 4-byte message type (e.g. 'HEL', 'OPN', 'MSG', 'CLO') followed by a 1-byte reserved byte ('F') and a 4-byte message size. Used in industrial automation, IoT, and SCADA systems.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-opcua-binary"
+  ],
+  "UseCases": [
+    "Industrial SCADA and PLC data access over OPC-UA",
+    "Factory floor sensor data aggregation and historian integration",
+    "OPC-UA security audit: certificate, security mode, and policy analysis",
+    "Industry 4.0 digital twin data exchange inspection"
+  ],
+  "references": [
+    "https://reference.opcfoundation.org/Core/Part6/v104/docs/",
+    "https://opcfoundation.org/developer-tools/specifications-unified-architecture",
+    "https://en.wikipedia.org/wiki/OPC_Unified_Architecture"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "OPC-UA dissector with node ID and security policy decoding"
+    },
+    {
+      "name": "open62541",
+      "url": "https://open62541.org/",
+      "role": "Open-source OPC-UA C library for clients and servers"
+    },
+    {
+      "name": "UAExpert",
+      "url": "https://www.unified-automation.com/products/development-tools/uaexpert.html",
+      "role": "OPC-UA client for browsing address space and monitoring data"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "MODBUS_TCP",
+      "relationship": "Modbus TCP is the legacy predecessor; OPC-UA provides richer semantics and security"
+    },
+    {
+      "format": "MQTT_PACKET",
+      "relationship": "OPC-UA PubSub can use MQTT as transport for publisher-subscriber scenarios"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "48454c46",
+        "label": "Message type: HELF (Hello)",
+        "weight": 0.8
+      },
+      {
+        "offset": 0,
+        "value": "4d534746",
+        "label": "Message type: MSGF (secure message final chunk)",
+        "weight": 0.7
+      },
+      {
+        "offset": 0,
+        "value": "4f504e46",
+        "label": "Message type: OPNF (OpenSecureChannel request final)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.0,
+      "note": "Encrypted messages are high entropy; unencrypted HEL/ACK are structured"
+    },
+    "validation": "First 3 bytes must be a valid message type ASCII code ('HEL', 'ACK', 'ERR', 'RHE', 'OPN', 'CLO', 'MSG'). Byte 3 must be 'F' (final), 'C' (chunk), or 'A' (abort). Bytes 4-7 are the message size (LE uint32) including the 8-byte header."
+  },
+  "variables": [
+    {
+      "name": "opcuaMsgType",
+      "type": "bytes",
+      "offset": 0,
+      "length": 3,
+      "description": "3-byte ASCII message type: HEL=Hello, ACK=Acknowledge, ERR=Error, OPN=OpenSecureChannel, CLO=CloseSecureChannel, MSG=Message"
+    },
+    {
+      "name": "opcuaChunkType",
+      "type": "uint8",
+      "offset": 3,
+      "length": 1,
+      "description": "Chunk type: 'F'(0x46)=Final, 'C'(0x43)=Chunk (intermediate), 'A'(0x41)=Abort"
+    },
+    {
+      "name": "opcuaMessageSize",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "Total message size in bytes including this 8-byte header"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "MessageHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "OPC-UA TCP message header: msgtype(3) + chunktype(1) + size(4)",
+      "fields": [
+        { "name": "MessageType", "variable": "opcuaMsgType",     "offset": 0, "length": 3 },
+        { "name": "ChunkType",   "variable": "opcuaChunkType",   "offset": 3, "length": 1 },
+        { "name": "MessageSize", "variable": "opcuaMessageSize", "offset": 4, "length": 4 }
+      ]
+    },
+    {
+      "name": "HelloBody",
+      "offset": 8,
+      "length": -1,
+      "description": "HEL body: protocol_version(4) + receive_buffer_size(4) + send_buffer_size(4) + max_message_size(4) + max_chunk_count(4) + endpoint_url(var)"
+    },
+    {
+      "name": "SecureChannelBody",
+      "offset": 8,
+      "length": -1,
+      "description": "OPN/MSG/CLO: secure_channel_id(4) + security_header + sequence_header(8) + service_payload"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Message size must be at least 8 (header only)",
+      "expression": "opcuaMessageSize >= 8"
+    },
+    {
+      "id": "A2",
+      "description": "Chunk type must be F, C, or A",
+      "expression": "opcuaChunkType == 70 || opcuaChunkType == 67 || opcuaChunkType == 65"
+    },
+    {
+      "id": "A3",
+      "description": "HEL messages must use Final chunk type",
+      "expression": "opcuaChunkType == 70"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "MessageHeader",
+    "structure": [
+      "MessageHeader",
+      "HelloBody",
+      "SecureChannelBody"
+    ],
+    "notes": "OPC-UA TCP connection lifecycle: HEL → ACK → OPN (OpenSecureChannel) → CreateSession → ActivateSession → (data exchange MSG frames) → CLO. Security modes: None, Sign, SignAndEncrypt. Security policies: None, Basic128Rsa15, Basic256, Basic256Sha256, Aes128Sha256RsaOaep. Default port: 4840."
+  },
+  "inspector": {
+    "badge": "OPCUA",
+    "primaryField": "opcuaMsgType",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "opcuaMsgType",
+          "opcuaChunkType",
+          "opcuaMessageSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OPC-UA CSV",
+      "format": "csv",
+      "fields": [
+        "opcuaMsgType",
+        "opcuaChunkType",
+        "opcuaMessageSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "OPC-UA with security mode None transmits all data in cleartext including credentials and sensor values. Anonymous user token authentication allows any client to connect. Certificate-based security is the recommended mode but often disabled in legacy installations.",
+    "suspiciousPatterns": [
+      "OPN with security policy 'None' and security mode 'None' (no authentication or encryption)",
+      "Anonymous user token in ActivateSession (no credential verification)",
+      "Rapid OPN/CLO cycles indicating connection scanning or session exhaustion",
+      "Write service calls to critical node IDs (process setpoints) from unexpected source IPs"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OPC-UA binary messages start with an 8-byte header. The first 3 bytes are ASCII: HEL=connection setup, ACK=server's HEL response, OPN=secure channel open, MSG=data service, CLO=close. Byte 3 is chunk type (F=final). Bytes 4-7 are message size in little-endian. HEL contains buffer sizes and endpoint URL. MSG frames carry service requests/responses encoded in OPC-UA binary encoding.",
+    "suggestedInspections": [
+      "Read first 3 bytes as ASCII to identify message type",
+      "Check byte 3 for chunk type (F=0x46=complete message, C=0x43=intermediate chunk)",
+      "For HEL, read protocol version (bytes 8-11 LE) and endpoint URL (variable-length string at offset 28)",
+      "For MSG, read secure channel ID (bytes 8-11) and request ID (bytes 16-19) to correlate responses"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "tcpPort": 4840,
+    "tlsPort": 4843,
+    "msgTypes": "HEL=Hello, ACK=Acknowledge, ERR=Error, OPN=OpenSecureChannel, CLO=CloseSecureChannel, MSG=Message",
+    "securityPolicies": "None, Basic128Rsa15 (deprecated), Basic256 (deprecated), Basic256Sha256, Aes128Sha256RsaOaep, Aes256Sha256RsaPss"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 4840,
+    "alternativePorts": [4843, 4880],
+    "layerModel": "application",
+    "layerStack": ["TLS (optional)", "TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "HEL", "name": "Hello",              "direction": "request",  "description": "Client greeting with buffer sizes and endpoint" },
+      { "id": "ACK", "name": "Acknowledge",         "direction": "response", "description": "Server accepts connection parameters" },
+      { "id": "OPN", "name": "OpenSecureChannel",   "direction": "both",    "description": "Secure channel establishment" },
+      { "id": "MSG", "name": "Message",             "direction": "both",    "description": "Service request or response" },
+      { "id": "CLO", "name": "CloseSecureChannel",  "direction": "both",    "description": "Graceful secure channel close" },
+      { "id": "ERR", "name": "Error",               "direction": "both",    "description": "Protocol error notification" }
+    ],
+    "stateTransitions": [
+      { "from": "INIT",      "to": "CONNECTED",  "event": "HEL+ACK",            "description": "Transport connection established" },
+      { "from": "CONNECTED", "to": "SECURED",    "event": "OPN response",       "description": "Secure channel opened" },
+      { "from": "SECURED",   "to": "SESSION",    "event": "ActivateSession",    "description": "User authenticated, session active" },
+      { "from": "SESSION",   "to": "CLOSED",     "event": "CLO or TCP close",   "description": "Session terminated" }
+    ],
+    "iotProfile": {
+      "qosLevels": [0, 1],
+      "payloadEncoding": "binary",
+      "topicModel": "node-id-address-space",
+      "retainSupport": false,
+      "sleepyDeviceSupport": false
+    }
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

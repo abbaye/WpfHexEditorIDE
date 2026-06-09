@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "semantic",
   "formatName": "YAML",
   "formatId": "YAML",
@@ -179,6 +179,13 @@
     "Kubernetes",
     "CI/CD"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "JSON Schema / YAML schema",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["JSON", "TOML", "CSON"],
+    "streamable": true
+  },
   "QualityMetrics": {
     "CompletenessScore": 80,
     "DocumentationLevel": "detailed",

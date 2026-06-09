@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "CoAP Message",
   "formatId": "COAP_MESSAGE",
   "version": "1.0",
@@ -256,9 +256,24 @@
     "payloadMarker": "0xFF",
     "maxMessageSize": "Typically 1024 bytes for constrained networks"
   },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 5683,
+    "alternativePorts": [5684],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "relatedProtocols": ["COAP_DATAGRAM", "MQTT_PACKET"],
+    "iotProfile": {
+      "qosLevels": [0, 1],
+      "payloadEncoding": "cbor",
+      "topicModel": "resource-uri",
+      "retainSupport": false,
+      "sleepyDeviceSupport": true
+    }
+  },
   "QualityMetrics": {
-    "CompletenessScore": 84,
-    "LastUpdated": "2026-04-16",
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-06-09",
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }

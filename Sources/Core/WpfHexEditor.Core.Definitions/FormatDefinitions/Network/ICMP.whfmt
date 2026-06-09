@@ -1,0 +1,269 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "ICMP Packet",
+  "formatId": "ICMP",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".icmp"
+  ],
+  "description": "Internet Control Message Protocol (ICMP, RFC 792) packet format. Used for network diagnostics (ping, traceroute) and error reporting. The 8-byte header encodes type, code, checksum, and a type-specific identifier+sequence or pointer field.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-icmp"
+  ],
+  "UseCases": [
+    "Network reachability testing (ping / echo request-response)",
+    "Traceroute hop-by-hop path discovery",
+    "MTU discovery via Fragmentation Needed messages",
+    "Network scanner and ICMP-based reconnaissance analysis"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc792",
+    "https://datatracker.ietf.org/doc/html/rfc4443",
+    "https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "ICMP/ICMPv6 dissector with type/code decoding"
+    },
+    {
+      "name": "ping",
+      "url": "https://linux.die.net/man/8/ping",
+      "role": "ICMP echo request/reply tool built into all OSes"
+    },
+    {
+      "name": "nmap",
+      "url": "https://nmap.org/",
+      "role": "Network scanner using ICMP probes for host discovery"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "PCAP",
+      "relationship": "ICMP packets are commonly captured in PCAP files within IP packets"
+    },
+    {
+      "format": "RADIOTAP",
+      "relationship": "Wireless captures include ICMP packets within IEEE 802.11 data frames"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "08",
+        "label": "ICMP Echo Request (type 8)",
+        "weight": 0.7
+      },
+      {
+        "offset": 0,
+        "value": "00",
+        "label": "ICMP Echo Reply (type 0)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "03",
+        "label": "ICMP Destination Unreachable (type 3)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 5.5,
+      "note": "ICMP headers are low entropy; data section often contains timestamp or padding"
+    },
+    "validation": "Type must be a recognized ICMP type (0-18 for IPv4 ICMP). Code field must match the type's valid code range. Checksum covers the entire ICMP message."
+  },
+  "variables": [
+    {
+      "name": "icmpType",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "ICMP message type: 0=Echo Reply, 3=Destination Unreachable, 5=Redirect, 8=Echo Request, 11=Time Exceeded",
+      "valueMap": {
+        "0":  "Echo Reply",
+        "3":  "Destination Unreachable",
+        "4":  "Source Quench",
+        "5":  "Redirect",
+        "8":  "Echo Request",
+        "9":  "Router Advertisement",
+        "10": "Router Solicitation",
+        "11": "Time Exceeded",
+        "12": "Parameter Problem",
+        "13": "Timestamp Request",
+        "14": "Timestamp Reply"
+      }
+    },
+    {
+      "name": "icmpCode",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Sub-type code (type-specific): for type 3: 0=net unreachable, 1=host unreachable, 3=port unreachable, 4=fragmentation needed"
+    },
+    {
+      "name": "icmpChecksum",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "big",
+      "description": "One's complement checksum over the entire ICMP message"
+    },
+    {
+      "name": "icmpRestOfHeader",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Type-specific 4 bytes: Echo=identifier(2)+sequence(2), Unreach=unused(2)+next-hop-MTU(2), Redirect=gateway IP"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ICMPHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "8-byte ICMP header: type(1)+code(1)+checksum(2)+rest-of-header(4)",
+      "fields": [
+        {
+          "name": "Type",
+          "variable": "icmpType",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "Code",
+          "variable": "icmpCode",
+          "offset": 1,
+          "length": 1
+        },
+        {
+          "name": "Checksum",
+          "variable": "icmpChecksum",
+          "offset": 2,
+          "length": 2
+        },
+        {
+          "name": "RestOfHeader",
+          "variable": "icmpRestOfHeader",
+          "offset": 4,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "DataSection",
+      "offset": 8,
+      "length": -1,
+      "description": "Optional data section: Echo requests/replies contain payload (often timestamp+padding). Error messages contain original IP header + 8 bytes of original datagram."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "ICMP checksum must be valid (all-ones sum over message)",
+      "expression": "icmpChecksum >= 0"
+    },
+    {
+      "id": "A2",
+      "description": "Type must be a defined ICMP type (0-18)",
+      "expression": "icmpType <= 18"
+    },
+    {
+      "id": "A3",
+      "description": "Code must be 0 for Echo Request/Reply (types 0 and 8)",
+      "expression": "(icmpType != 0 && icmpType != 8) || icmpCode == 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ICMPHeader",
+    "structure": [
+      "ICMPHeader",
+      "DataSection"
+    ],
+    "notes": "ICMP is encapsulated directly in IPv4 (protocol number 1). ICMPv6 (RFC 4443) uses IPv6 next-header 58 with a different type numbering. For Echo (type 8/0), bytes 4-5 are Identifier, bytes 6-7 are Sequence Number. For Time Exceeded (type 11), the data section contains the original IP header + 64 bits of original datagram."
+  },
+  "inspector": {
+    "badge": "ICMP",
+    "primaryField": "icmpType",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "icmpType",
+          "icmpCode",
+          "icmpChecksum",
+          "icmpRestOfHeader"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ICMP CSV",
+      "format": "csv",
+      "fields": [
+        "icmpType",
+        "icmpCode",
+        "icmpChecksum",
+        "icmpRestOfHeader"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "ICMP can be used for covert channels (ICMP tunneling) and reconnaissance. Fragmentation Needed messages with forged MTU values enable PMTUD blackhole attacks. ICMP flood (Smurf attack) is a classic DDoS amplification technique.",
+    "suspiciousPatterns": [
+      "Large ICMP payload data containing structured binary content (ICMP tunnel channel)",
+      "High-rate Echo Request flood from single source (ping flood DoS)",
+      "ICMP Redirect messages not from the default gateway (route poisoning)",
+      "ICMP Destination Unreachable type 4 code 4 with forged MTU (PMTUD attack)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ICMP packets are 8 bytes minimum. The type byte determines the message class; code provides a subtype. For Echo Request (type 8) and Reply (type 0), bytes 4-5 = identifier, 6-7 = sequence number. Error messages (type 3, 11) include the original IP header in the data section.",
+    "suggestedInspections": [
+      "Read type byte to classify the message (echo, unreachable, redirect, time-exceeded)",
+      "For unreachable (type 3), decode code byte for specific reason and check next-hop MTU at bytes 6-7",
+      "For echo (type 8/0), extract identifier and sequence number from bytes 4-7",
+      "Verify checksum covers type + code + checksum (zeroed) + rest of message"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "ipProtocol": 1,
+    "echoIdOffset": 4,
+    "echoSeqOffset": 6,
+    "typeCodes": "3/0=net-unreach, 3/1=host-unreach, 3/3=port-unreach, 3/4=frag-needed, 5/0=redirect-net, 5/1=redirect-host, 11/0=TTL-exceeded, 11/1=frag-reassembly-exceeded"
+  },
+  "protocolDefinition": {
+    "transport": "raw",
+    "defaultPort": null,
+    "alternativePorts": [],
+    "layerModel": "network",
+    "layerStack": ["IPv4 (protocol 1)", "Ethernet/WiFi"],
+    "messageTypes": [
+      { "id": "ECHO_REQUEST",   "name": "Echo Request",             "direction": "request",  "description": "Ping probe" },
+      { "id": "ECHO_REPLY",     "name": "Echo Reply",               "direction": "response", "description": "Ping response" },
+      { "id": "UNREACH",        "name": "Destination Unreachable",  "direction": "response", "description": "Packet delivery failure notification" },
+      { "id": "TIME_EXCEEDED",  "name": "Time Exceeded",            "direction": "response", "description": "TTL expired (traceroute hop)" },
+      { "id": "REDIRECT",       "name": "Redirect",                 "direction": "response", "description": "Route optimization hint from gateway" }
+    ],
+    "relatedProtocols": ["PCAP", "RADIOTAP"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

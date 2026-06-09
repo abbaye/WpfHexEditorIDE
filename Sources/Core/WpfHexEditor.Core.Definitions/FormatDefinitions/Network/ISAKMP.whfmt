@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "IKE/ISAKMP Key Exchange",
   "formatId": "ISAKMP",
@@ -277,6 +277,24 @@
     "Network forensics of VPN traffic",
     "Security protocol analysis and IDS rule development"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 500,
+    "alternativePorts": [4500],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "SA_INIT",   "name": "IKE_SA_INIT",   "direction": "request",  "description": "IKEv2 initial SA negotiation" },
+      { "id": "AUTH",      "name": "IKE_AUTH",      "direction": "request",  "description": "Authentication and child SA creation" },
+      { "id": "INFORMATIONAL", "name": "INFORMATIONAL", "direction": "both", "description": "Error notification and delete messages" }
+    ],
+    "stateTransitions": [
+      { "from": "INITIAL",     "to": "INIT_SENT",   "event": "IKE_SA_INIT req",  "description": "Initiator sends SA proposals" },
+      { "from": "INIT_SENT",   "to": "AUTH_SENT",   "event": "IKE_SA_INIT resp", "description": "Responder replied, auth begins" },
+      { "from": "AUTH_SENT",   "to": "ESTABLISHED", "event": "IKE_AUTH resp",    "description": "IKE SA and IPsec SA established" }
+    ],
+    "relatedProtocols": ["BGPSEC_UPDATE"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 85,
     "LastUpdated": "2026-04-15"

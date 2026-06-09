@@ -51,6 +51,42 @@ public sealed record AiHints(
     IReadOnlyList<string> SuggestedInspections,
     IReadOnlyList<string> KnownVulnerabilities);
 
+// v3.2 — Protocol / IoT / Serialization model types
+
+/// <summary>A single message type declared in <c>protocolDefinition.messageTypes[]</c>.</summary>
+public sealed record ProtocolMessageType(string Id, string Name, string Direction, string? Description);
+
+/// <summary>A state-machine transition declared in <c>protocolDefinition.stateTransitions[]</c>.</summary>
+public sealed record StateTransition(string From, string To, string Event, string? Description);
+
+/// <summary>IoT profile declared in <c>protocolDefinition.iotProfile</c>.</summary>
+public sealed record IotProfile(
+    IReadOnlyList<int> QosLevels,
+    string? PayloadEncoding,
+    string? TopicModel,
+    bool RetainSupport,
+    bool SleepyDeviceSupport);
+
+/// <summary>Full protocol definition extracted from <c>protocolDefinition</c>.</summary>
+public sealed record ProtocolDefinition(
+    string? Transport,
+    int? DefaultPort,
+    IReadOnlyList<int> AlternativePorts,
+    string? LayerModel,
+    IReadOnlyList<string> LayerStack,
+    IReadOnlyList<ProtocolMessageType> MessageTypes,
+    IReadOnlyList<StateTransition> StateTransitions,
+    IReadOnlyList<string> RelatedProtocols,
+    IotProfile? IotProfile);
+
+/// <summary>Serialization profile extracted from <c>serializationProfile</c>.</summary>
+public sealed record SerializationProfile(
+    string? SchemaLanguage,
+    bool SelfDescribing,
+    string? PayloadCompression,
+    IReadOnlyList<string> WireCompatibleFormats,
+    bool Streamable);
+
 /// <summary>Technical metadata extracted from a format's <c>TechnicalDetails</c> block.</summary>
 public sealed record TechnicalDetails(
     string? Endianness,
@@ -76,7 +112,10 @@ public sealed record FormatMetadata(
     IReadOnlyList<AssertionRule> Assertions,
     IReadOnlyList<InspectorGroup> InspectorGroups,
     IReadOnlyList<ExportTemplate> ExportTemplates,
-    TechnicalDetails? TechnicalDetails)
+    TechnicalDetails? TechnicalDetails,
+    // v3.2 additions
+    ProtocolDefinition? ProtocolDefinition = null,
+    SerializationProfile? SerializationProfile = null)
 {
     /// <summary>Shortcut — true when forensic risk is high or critical.</summary>
     public bool IsHighRisk => Forensic?.IsHighRisk == true;
@@ -117,14 +156,16 @@ public static class FormatMetadataExtensions
         var root = doc.RootElement;
 
         return new FormatMetadata(
-            Entry:           entry,
-            Forensic:        ParseForensic(root),
-            AiHints:         ParseAiHints(root),
-            Bookmarks:       ParseBookmarks(root),
-            Assertions:      ParseAssertions(root),
-            InspectorGroups: ParseInspectorGroups(root),
-            ExportTemplates: ParseExportTemplates(root),
-            TechnicalDetails: ParseTechnicalDetails(root));
+            Entry:                entry,
+            Forensic:             ParseForensic(root),
+            AiHints:              ParseAiHints(root),
+            Bookmarks:            ParseBookmarks(root),
+            Assertions:           ParseAssertions(root),
+            InspectorGroups:      ParseInspectorGroups(root),
+            ExportTemplates:      ParseExportTemplates(root),
+            TechnicalDetails:     ParseTechnicalDetails(root),
+            ProtocolDefinition:   ParseProtocolDefinition(root),
+            SerializationProfile: ParseSerializationProfile(root));
     }
 
     // ------------------------------------------------------------------
@@ -277,6 +318,30 @@ public static class FormatMetadataExtensions
     }
 
     // ------------------------------------------------------------------
+    // Protocol definition (v3.2)
+    // ------------------------------------------------------------------
+
+    /// <summary>
+    /// Extracts the <c>protocolDefinition</c> block. Returns <see langword="null"/> when absent.
+    /// </summary>
+    public static ProtocolDefinition? GetProtocolDefinition(
+        this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+    {
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
+        return ParseProtocolDefinition(doc.RootElement);
+    }
+
+    /// <summary>
+    /// Extracts the <c>serializationProfile</c> block. Returns <see langword="null"/> when absent.
+    /// </summary>
+    public static SerializationProfile? GetSerializationProfile(
+        this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+    {
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
+        return ParseSerializationProfile(doc.RootElement);
+    }
+
+    // ------------------------------------------------------------------
     // Internal parsers — operate on a already-open JsonElement
     // (called by both GetAllMetadata and the individual public methods)
     // ------------------------------------------------------------------
@@ -368,6 +433,90 @@ public static class FormatMetadataExtensions
             SampleRate:         StrN(td, "sampleRate"),
             Container:          StrN(td, "container"),
             DataStructure:      StrN(td, "dataStructure"));
+    }
+
+    // ------------------------------------------------------------------
+    // v3.2 parsers
+    // ------------------------------------------------------------------
+
+    internal static ProtocolDefinition? ParseProtocolDefinition(JsonElement root)
+    {
+        if (!root.TryGetProperty("protocolDefinition", out var p) || p.ValueKind != JsonValueKind.Object)
+            return null;
+
+        int? defaultPort = null;
+        if (p.TryGetProperty("defaultPort", out var dp) && dp.TryGetInt32(out var dpi))
+            defaultPort = dpi;
+
+        var altPorts = new List<int>();
+        if (p.TryGetProperty("alternativePorts", out var ap) && ap.ValueKind == JsonValueKind.Array)
+            foreach (var item in ap.EnumerateArray())
+                if (item.TryGetInt32(out var pi)) altPorts.Add(pi);
+
+        var layerStack = new List<string>();
+        if (p.TryGetProperty("layerStack", out var ls) && ls.ValueKind == JsonValueKind.Array)
+            foreach (var item in ls.EnumerateArray())
+                if (item.GetString() is { } s) layerStack.Add(s);
+
+        var related = new List<string>();
+        if (p.TryGetProperty("relatedProtocols", out var rp) && rp.ValueKind == JsonValueKind.Array)
+            foreach (var item in rp.EnumerateArray())
+                if (item.GetString() is { } s) related.Add(s);
+
+        var msgTypes = new List<ProtocolMessageType>();
+        if (p.TryGetProperty("messageTypes", out var mt) && mt.ValueKind == JsonValueKind.Array)
+            foreach (var item in mt.EnumerateArray())
+                msgTypes.Add(new ProtocolMessageType(Str(item, "id"), Str(item, "name"), Str(item, "direction"), StrN(item, "description")));
+
+        var transitions = new List<StateTransition>();
+        if (p.TryGetProperty("stateTransitions", out var st) && st.ValueKind == JsonValueKind.Array)
+            foreach (var item in st.EnumerateArray())
+                transitions.Add(new StateTransition(Str(item, "from"), Str(item, "to"), Str(item, "event"), StrN(item, "description")));
+
+        IotProfile? iotProfile = null;
+        if (p.TryGetProperty("iotProfile", out var ip) && ip.ValueKind == JsonValueKind.Object)
+        {
+            var qos = new List<int>();
+            if (ip.TryGetProperty("qosLevels", out var ql) && ql.ValueKind == JsonValueKind.Array)
+                foreach (var item in ql.EnumerateArray())
+                    if (item.TryGetInt32(out var qi)) qos.Add(qi);
+
+            iotProfile = new IotProfile(
+                QosLevels:           qos,
+                PayloadEncoding:     StrN(ip, "payloadEncoding"),
+                TopicModel:          StrN(ip, "topicModel"),
+                RetainSupport:       ip.TryGetProperty("retainSupport",       out var rs) && rs.ValueKind == JsonValueKind.True,
+                SleepyDeviceSupport: ip.TryGetProperty("sleepyDeviceSupport", out var sd) && sd.ValueKind == JsonValueKind.True);
+        }
+
+        return new ProtocolDefinition(
+            Transport:        StrN(p, "transport"),
+            DefaultPort:      defaultPort,
+            AlternativePorts: altPorts,
+            LayerModel:       StrN(p, "layerModel"),
+            LayerStack:       layerStack,
+            MessageTypes:     msgTypes,
+            StateTransitions: transitions,
+            RelatedProtocols: related,
+            IotProfile:       iotProfile);
+    }
+
+    internal static SerializationProfile? ParseSerializationProfile(JsonElement root)
+    {
+        if (!root.TryGetProperty("serializationProfile", out var sp) || sp.ValueKind != JsonValueKind.Object)
+            return null;
+
+        var wireCompat = new List<string>();
+        if (sp.TryGetProperty("wireCompatibleFormats", out var wc) && wc.ValueKind == JsonValueKind.Array)
+            foreach (var item in wc.EnumerateArray())
+                if (item.GetString() is { } s) wireCompat.Add(s);
+
+        return new SerializationProfile(
+            SchemaLanguage:       StrN(sp, "schemaLanguage"),
+            SelfDescribing:       sp.TryGetProperty("selfDescribing",     out var sd) && sd.ValueKind == JsonValueKind.True,
+            PayloadCompression:   StrN(sp, "payloadCompression"),
+            WireCompatibleFormats: wireCompat,
+            Streamable:           sp.TryGetProperty("streamable",         out var sm) && sm.ValueKind == JsonValueKind.True);
     }
 
     // ------------------------------------------------------------------

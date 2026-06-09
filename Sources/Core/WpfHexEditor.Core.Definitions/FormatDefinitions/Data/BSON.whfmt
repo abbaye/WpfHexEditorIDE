@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "BSON (Binary JSON)",
   "formatId": "BSON",
@@ -181,6 +181,13 @@
     "Data exchange",
     "Archive"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "BSON schema",
+    "selfDescribing": true,
+    "payloadCompression": null,
+    "wireCompatibleFormats": ["BSON_FILE", "JSON", "MSGPACK"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 82,
     "DocumentationLevel": "detailed",

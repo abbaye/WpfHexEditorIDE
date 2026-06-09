@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Arrow Feather",
   "formatId": "FEATHER",
@@ -197,6 +197,13 @@
     "Arrow Flight data transfer format",
     "ML feature store snapshots with zero-copy access"
   ],
+  "serializationProfile": {
+    "schemaLanguage": "Apache Arrow schema",
+    "selfDescribing": true,
+    "payloadCompression": "lz4,zstd",
+    "wireCompatibleFormats": ["ARROW_IPC", "PARQUET"],
+    "streamable": false
+  },
   "QualityMetrics": {
     "CompletenessScore": 84,
     "LastUpdated": "2026-04-15"

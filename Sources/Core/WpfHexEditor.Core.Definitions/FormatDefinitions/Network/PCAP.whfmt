@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Wireshark PCAP Capture",
   "formatId": "PCAP",
@@ -254,6 +254,12 @@
     "Network performance troubleshooting",
     "Security research and malware traffic analysis"
   ],
+  "protocolDefinition": {
+    "transport": "raw",
+    "layerModel": "datalink",
+    "layerStack": ["libpcap capture", "Ethernet/802.11", "IPv4/IPv6"],
+    "relatedProtocols": ["PCAPNG", "NETMON", "SNOOP"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 88,
     "DocumentationLevel": "detailed",

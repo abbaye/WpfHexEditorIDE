@@ -1,0 +1,274 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "Modbus TCP Frame",
+  "formatId": "MODBUS_TCP",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".modbus"
+  ],
+  "description": "Modbus TCP application data unit (ADU) format. The 7-byte MBAP header (transaction ID, protocol ID, length, unit ID) precedes the PDU which starts with a 1-byte function code. Used in industrial automation, SCADA systems, and IoT devices for register read/write operations.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-modbus"
+  ],
+  "UseCases": [
+    "Industrial PLC and SCADA system communication analysis",
+    "Smart energy meter register reading over TCP",
+    "Building management system (BMS) device control inspection",
+    "ICS/OT network security monitoring and anomaly detection"
+  ],
+  "references": [
+    "https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf",
+    "https://modbus.org/docs/Modbus_Messaging_Implementation_Guide_V1_0b.pdf",
+    "https://en.wikipedia.org/wiki/Modbus"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "Modbus TCP dissector with register map display"
+    },
+    {
+      "name": "ModRSsim2",
+      "url": "http://modrssim2.sourceforge.net/",
+      "role": "Modbus slave/server simulator for testing"
+    },
+    {
+      "name": "pymodbus",
+      "url": "https://github.com/riptideio/pymodbus",
+      "role": "Python Modbus client/server library"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "OPCUA_BINARY",
+      "relationship": "OPC-UA is the modern successor to Modbus/OPC for industrial automation"
+    },
+    {
+      "format": "MQTT_PACKET",
+      "relationship": "Modbus data is often bridged to MQTT for cloud IIoT platforms"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 2,
+        "value": "0000",
+        "label": "Protocol ID = 0 (Modbus)",
+        "weight": 0.7
+      },
+      {
+        "offset": 7,
+        "value": "03",
+        "label": "Function code 3: Read Holding Registers",
+        "weight": 0.5
+      },
+      {
+        "offset": 7,
+        "value": "01",
+        "label": "Function code 1: Read Coils",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 1.5,
+      "max": 4.5,
+      "note": "Highly structured with mostly zero-padded protocol header"
+    },
+    "validation": "Protocol ID (bytes 2-3) must be 0x0000 for Modbus. Length field (bytes 4-5) must equal actual payload length from unit ID to end. Function codes 0x80+ indicate exception responses."
+  },
+  "variables": [
+    {
+      "name": "mbapTransactionId",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "big",
+      "description": "Transaction identifier — echoed in response to match requests to replies"
+    },
+    {
+      "name": "mbapProtocolId",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "big",
+      "description": "Protocol identifier: always 0x0000 for Modbus"
+    },
+    {
+      "name": "mbapLength",
+      "type": "uint16",
+      "offset": 4,
+      "length": 2,
+      "endian": "big",
+      "description": "Number of remaining bytes in this frame (unit ID + PDU)"
+    },
+    {
+      "name": "mbapUnitId",
+      "type": "uint8",
+      "offset": 6,
+      "length": 1,
+      "description": "Unit identifier — device address (0xFF for TCP, 1-247 for serial gateway)"
+    },
+    {
+      "name": "pduFunctionCode",
+      "type": "uint8",
+      "offset": 7,
+      "length": 1,
+      "description": "PDU function code: 01=ReadCoils, 02=ReadDiscreteInputs, 03=ReadHoldingRegisters, 04=ReadInputRegisters, 05=WriteSingleCoil, 06=WriteSingleRegister, 15=WriteMultipleCoils, 16=WriteMultipleRegisters, 0x80+=Exception",
+      "valueMap": {
+        "1":   "Read Coils",
+        "2":   "Read Discrete Inputs",
+        "3":   "Read Holding Registers",
+        "4":   "Read Input Registers",
+        "5":   "Write Single Coil",
+        "6":   "Write Single Register",
+        "15":  "Write Multiple Coils",
+        "16":  "Write Multiple Registers",
+        "22":  "Mask Write Register",
+        "23":  "Read/Write Multiple Registers",
+        "43":  "Read Device Identification"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "MBAPHeader",
+      "offset": 0,
+      "length": 7,
+      "description": "Modbus Application Protocol header: transaction_id(2) + protocol_id(2) + length(2) + unit_id(1)",
+      "fields": [
+        { "name": "TransactionId", "variable": "mbapTransactionId", "offset": 0, "length": 2 },
+        { "name": "ProtocolId",    "variable": "mbapProtocolId",    "offset": 2, "length": 2 },
+        { "name": "Length",        "variable": "mbapLength",        "offset": 4, "length": 2 },
+        { "name": "UnitId",        "variable": "mbapUnitId",        "offset": 6, "length": 1 }
+      ]
+    },
+    {
+      "name": "PDU",
+      "offset": 7,
+      "length": -1,
+      "description": "Protocol Data Unit: function_code(1) + data (request params or response data). Exception response has error_code(1) + exception_code(1)."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Protocol ID must be 0x0000 for Modbus TCP",
+      "expression": "mbapProtocolId == 0"
+    },
+    {
+      "id": "A2",
+      "description": "Function code must be valid (1-23 or 43)",
+      "expression": "(pduFunctionCode >= 1 && pduFunctionCode <= 23) || pduFunctionCode == 43 || pduFunctionCode >= 128"
+    },
+    {
+      "id": "A3",
+      "description": "MBAP length must be at least 2 (unit ID + function code)",
+      "expression": "mbapLength >= 2"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "MBAPHeader",
+    "structure": [
+      "MBAPHeader",
+      "PDU"
+    ],
+    "notes": "Modbus TCP uses TCP port 502. The MBAP header is always 7 bytes. The PDU starts at offset 7. Function codes 0x80-0xFF are exception responses (original_fc | 0x80). Register addresses are 0-based in the protocol but 1-based in user-facing numbering (register 1 = address 0). Coil/discrete inputs: bit addressing. Holding/input registers: 16-bit word addressing."
+  },
+  "inspector": {
+    "badge": "MBTCP",
+    "primaryField": "pduFunctionCode",
+    "groups": [
+      {
+        "name": "MBAP",
+        "fields": [
+          "mbapTransactionId",
+          "mbapProtocolId",
+          "mbapLength",
+          "mbapUnitId"
+        ]
+      },
+      {
+        "name": "PDU",
+        "fields": [
+          "pduFunctionCode"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Modbus TCP CSV",
+      "format": "csv",
+      "fields": [
+        "mbapTransactionId",
+        "mbapUnitId",
+        "pduFunctionCode",
+        "mbapLength"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Modbus TCP has no authentication or encryption by default — any device on the network can send write commands to PLCs. Function code 16 (Write Multiple Registers) to critical process setpoints is a direct OT/ICS attack vector. Legacy systems rarely have Modbus-aware firewalls.",
+    "suspiciousPatterns": [
+      "Write commands (FC 05/06/15/16) to critical register ranges from unexpected source IPs",
+      "FC 43 (Read Device Identification) used for ICS device fingerprinting",
+      "Abnormally high transaction rate (polling flood / DoS against slow PLC)",
+      "Unit ID 0 (broadcast) write commands affecting all gateway-connected devices"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Modbus TCP frames start with a 7-byte MBAP header. The protocol ID at bytes 2-3 is always 0x0000. The length field at bytes 4-5 counts from unit ID to end. The PDU starts at byte 7 with the function code. Exception responses set bit 7 of the function code (e.g., FC3 error = 0x83) followed by a 1-byte exception code.",
+    "suggestedInspections": [
+      "Verify protocol ID is 0x0000 (Modbus)",
+      "Check function code at byte 7: values 0x80+ indicate exception responses",
+      "For FC 3/4 responses, byte 8 = byte count, then pairs of 16-bit register values",
+      "Track transaction IDs to match requests with responses"
+    ]
+  },
+  "TechnicalDetails": {
+    "mbapHeaderSize": 7,
+    "tcpPort": 502,
+    "maxPduSize": 253,
+    "maxAduSize": 260,
+    "registerTypes": "Coils (0x), Discrete Inputs (1x), Input Registers (3x), Holding Registers (4x)",
+    "exceptionCodes": "01=IllegalFunction, 02=IllegalDataAddress, 03=IllegalDataValue, 04=ServerDeviceFailure"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 502,
+    "alternativePorts": [503],
+    "layerModel": "application",
+    "layerStack": ["TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "READ_COILS",     "name": "Read Coils (FC01)",               "direction": "both",    "description": "Read 1-2000 coil status bits" },
+      { "id": "READ_HOLD_REG",  "name": "Read Holding Registers (FC03)",   "direction": "both",    "description": "Read 1-125 holding registers" },
+      { "id": "WRITE_SINGLE",   "name": "Write Single Register (FC06)",    "direction": "both",    "description": "Write a single 16-bit register" },
+      { "id": "WRITE_MULTI",    "name": "Write Multiple Registers (FC16)", "direction": "both",    "description": "Write 1-123 holding registers" },
+      { "id": "EXCEPTION",      "name": "Exception Response",              "direction": "response","description": "Error response (FC | 0x80)" }
+    ],
+    "stateTransitions": [
+      { "from": "IDLE",     "to": "WAITING", "event": "Request sent",    "description": "Master sent function code request" },
+      { "from": "WAITING",  "to": "IDLE",    "event": "Response received","description": "Slave responded (normal or exception)" }
+    ],
+    "iotProfile": {
+      "qosLevels": [0],
+      "payloadEncoding": "binary",
+      "topicModel": "register-address",
+      "retainSupport": false,
+      "sleepyDeviceSupport": false
+    }
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 94,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,5 +1,5 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "sFlow",
   "formatId": "SFLOW",
@@ -158,6 +158,18 @@
     "Debugging",
     "Security analysis"
   ],
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 6343,
+    "alternativePorts": [],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "FLOW_SAMPLE",    "name": "Flow Sample",    "direction": "request", "description": "Sampled packet header data" },
+      { "id": "COUNTER_SAMPLE", "name": "Counter Sample", "direction": "request", "description": "Interface statistics counters" }
+    ],
+    "relatedProtocols": ["NETFLOW_V5", "NETFLOW_V9", "IPFIX"]
+  },
   "QualityMetrics": {
     "CompletenessScore": 56,
     "DocumentationLevel": "detailed",

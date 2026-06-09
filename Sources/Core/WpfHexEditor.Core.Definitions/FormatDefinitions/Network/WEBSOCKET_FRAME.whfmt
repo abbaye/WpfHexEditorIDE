@@ -1,0 +1,269 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "formatName": "WebSocket Frame",
+  "formatId": "WEBSOCKET_FRAME",
+  "version": "1.0.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".wsf"
+  ],
+  "description": "WebSocket framing protocol (RFC 6455). Each frame has a 2-10 byte header: FIN+RSV+opcode byte, MASK+payload-length byte, optional extended length (2 or 8 bytes), and optional 4-byte masking key. Client-to-server frames are always masked.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/websocket"
+  ],
+  "UseCases": [
+    "Real-time browser application traffic analysis (chat, gaming, finance)",
+    "WebSocket security testing and fuzzing",
+    "IoT device WebSocket communication inspection",
+    "gRPC-Web and GraphQL subscription transport debugging"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc6455",
+    "https://datatracker.ietf.org/doc/html/rfc8441",
+    "https://en.wikipedia.org/wiki/WebSocket"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "WebSocket frame dissector with unmasking support"
+    },
+    {
+      "name": "wscat",
+      "url": "https://github.com/websockets/wscat",
+      "role": "WebSocket client and server for testing"
+    },
+    {
+      "name": "Burp Suite",
+      "url": "https://portswigger.net/burp",
+      "role": "WebSocket interception and replay proxy"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "HTTP2_FRAME",
+      "relationship": "WebSocket can be tunneled over HTTP/2 streams via RFC 8441 CONNECT"
+    },
+    {
+      "format": "TLS_RECORD",
+      "relationship": "WSS (WebSocket Secure) runs WebSocket inside TLS records"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "81",
+        "label": "FIN=1 + opcode=1 (text frame, final fragment)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "82",
+        "label": "FIN=1 + opcode=2 (binary frame, final fragment)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "88",
+        "label": "FIN=1 + opcode=8 (close frame)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 78,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 7.5,
+      "note": "Text frames have low-medium entropy; binary and masked frames are higher"
+    },
+    "validation": "First byte: FIN(bit7), RSV1-3(bits6-4 must be 0 unless extensions), opcode(bits3-0). Second byte: MASK(bit7), payload_len(bits6-0). Payload_len=126 → 2-byte extended; =127 → 8-byte extended. Client frames always masked (MASK=1)."
+  },
+  "variables": [
+    {
+      "name": "wsFirstByte",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "FIN(bit7)+RSV1-3(bits6-4)+opcode(bits3-0): 0x1=continuation, 0x1=text, 0x2=binary, 0x8=close, 0x9=ping, 0xA=pong"
+    },
+    {
+      "name": "wsSecondByte",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "MASK(bit7) + payload_len(bits6-0): if 126=2-byte extended, if 127=8-byte extended"
+    },
+    {
+      "name": "wsOpcode",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived opcode from first byte bits 3-0",
+      "valueMap": {
+        "0": "CONTINUATION",
+        "1": "TEXT",
+        "2": "BINARY",
+        "8": "CLOSE",
+        "9": "PING",
+        "10": "PONG"
+      }
+    },
+    {
+      "name": "wsMasked",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived MASK bit from second byte bit 7 (1=masked, client frames always 1)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FrameHeader",
+      "offset": 0,
+      "length": 2,
+      "description": "Minimum 2-byte WebSocket header: FIN+opcode byte and MASK+length byte",
+      "fields": [
+        {
+          "name": "FIN_Opcode",
+          "variable": "wsFirstByte",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "Mask_Length",
+          "variable": "wsSecondByte",
+          "offset": 1,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "ExtendedLength",
+      "offset": 2,
+      "length": -1,
+      "description": "Optional extended payload length: 2 bytes if payload_len=126, 8 bytes if payload_len=127"
+    },
+    {
+      "name": "MaskingKey",
+      "offset": -1,
+      "length": 4,
+      "description": "4-byte masking key (present only when MASK bit is 1, i.e., all client frames)"
+    },
+    {
+      "name": "PayloadData",
+      "offset": -1,
+      "length": -1,
+      "description": "Frame payload, XOR-masked with masking key if MASK=1. Text frames contain UTF-8. Binary frames are application-defined."
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "RSV1-RSV3 bits must be 0 unless negotiated extensions are active",
+      "expression": "(wsFirstByte & 0x70) == 0"
+    },
+    {
+      "id": "A2",
+      "description": "Opcode must be a defined value (0-2 or 8-10)",
+      "expression": "wsOpcode <= 2 || (wsOpcode >= 8 && wsOpcode <= 10)"
+    },
+    {
+      "id": "A3",
+      "description": "Control frames (close/ping/pong) must not be fragmented (FIN=1)",
+      "expression": "wsOpcode < 8 || (wsFirstByte & 0x80) != 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FrameHeader",
+    "structure": [
+      "FrameHeader",
+      "ExtendedLength",
+      "MaskingKey",
+      "PayloadData"
+    ],
+    "notes": "WebSocket connections start with an HTTP Upgrade handshake. After the 101 Switching Protocols response, the connection becomes a full-duplex WebSocket channel. Client-to-server data is always XOR-masked. Fragmented messages use opcode=0 (continuation) with FIN=0 for intermediate and FIN=1 for the last fragment."
+  },
+  "inspector": {
+    "badge": "WS",
+    "primaryField": "wsOpcode",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "wsFirstByte",
+          "wsSecondByte",
+          "wsOpcode",
+          "wsMasked"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WebSocket Frame CSV",
+      "format": "csv",
+      "fields": [
+        "wsFirstByte",
+        "wsSecondByte",
+        "wsOpcode",
+        "wsMasked"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "WebSocket bypasses same-origin policy for persistent connections. CSRF via WebSocket is possible without proper origin validation. Unencrypted WS (ws://) exposes all application data. Close frame reason codes (2-byte body) may leak internal server errors.",
+    "suspiciousPatterns": [
+      "Rapid ping flood — DoS via excessive ping frames",
+      "Binary frames with high entropy in unmasked server data — possible encrypted C2 channel",
+      "Close frames with unusual status codes (4000-4999 = application-defined, may indicate exploits)",
+      "Fragmented frames containing polyglot payloads targeting servers that reassemble improperly"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WebSocket frames start with 2 mandatory bytes. Bit 7 of byte 1 is FIN (last fragment). Bits 3-0 are the opcode. Bit 7 of byte 2 is the MASK flag. Bits 6-0 are the payload length (or 126/127 for extended). Client frames have a 4-byte masking key after the extended length.",
+    "suggestedInspections": [
+      "Extract FIN and opcode from first byte to understand fragmentation and message type",
+      "Check MASK bit (byte 2, bit 7) — if set, read 4-byte key and XOR payload to decode",
+      "Handle extended length: 126 → read 2-byte BE uint16; 127 → read 8-byte BE uint64",
+      "For close frames, decode the 2-byte status code and optional UTF-8 reason"
+    ]
+  },
+  "TechnicalDetails": {
+    "minHeaderSize": 2,
+    "maxHeaderSize": 14,
+    "opcodes": "0=Continuation, 1=Text, 2=Binary, 8=Close, 9=Ping, 10=Pong",
+    "maskingAlgorithm": "payload[i] XOR maskingKey[i % 4]",
+    "maxPayloadSize": "2^63-1 bytes (127-length extended)"
+  },
+  "protocolDefinition": {
+    "transport": "tcp",
+    "defaultPort": 80,
+    "alternativePorts": [443, 8080, 8443],
+    "layerModel": "application",
+    "layerStack": ["HTTP Upgrade", "TLS (optional)", "TCP", "IPv4/IPv6"],
+    "messageTypes": [
+      { "id": "TEXT",   "name": "Text Frame",   "direction": "both",    "description": "UTF-8 text payload (opcode 1)" },
+      { "id": "BINARY", "name": "Binary Frame", "direction": "both",    "description": "Arbitrary binary payload (opcode 2)" },
+      { "id": "CLOSE",  "name": "Close Frame",  "direction": "both",    "description": "Connection close with optional status code" },
+      { "id": "PING",   "name": "Ping Frame",   "direction": "both",    "description": "Keep-alive health check" },
+      { "id": "PONG",   "name": "Pong Frame",   "direction": "both",    "description": "Response to ping frame" }
+    ],
+    "stateTransitions": [
+      { "from": "HTTP",       "to": "OPEN",    "event": "101 Upgrade",       "description": "HTTP→WebSocket protocol upgrade" },
+      { "from": "OPEN",       "to": "CLOSING", "event": "Close frame sent",  "description": "Initiating graceful close" },
+      { "from": "CLOSING",    "to": "CLOSED",  "event": "Close frame echo",  "description": "Both sides acknowledged close" }
+    ],
+    "relatedProtocols": ["HTTP2_FRAME", "TLS_RECORD"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

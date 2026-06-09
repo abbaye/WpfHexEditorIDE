@@ -271,6 +271,24 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analysis Context</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Known Vulnerabilities</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- v3.2 Protocol tab -->
+  <data name="WhfmtDetail_Tab_Protocol" xml:space="preserve"><value>Protocol</value></data>
+  <data name="WhfmtDetail_Protocol_Transport" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_TransportLabel" xml:space="preserve"><value>Transport</value></data>
+  <data name="WhfmtDetail_Protocol_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="WhfmtDetail_Protocol_Layer" xml:space="preserve"><value>OSI Layer</value></data>
+  <data name="WhfmtDetail_Protocol_LayerStack" xml:space="preserve"><value>Layer Stack</value></data>
+  <data name="WhfmtDetail_Protocol_MessageTypes" xml:space="preserve"><value>Message Types</value></data>
+  <data name="WhfmtDetail_Protocol_StateMachine" xml:space="preserve"><value>State Machine</value></data>
+  <data name="WhfmtDetail_Protocol_IotProfile" xml:space="preserve"><value>IoT Profile</value></data>
+  <data name="WhfmtDetail_Protocol_IotEncoding" xml:space="preserve"><value>Payload Encoding</value></data>
+  <data name="WhfmtDetail_Protocol_IotTopicModel" xml:space="preserve"><value>Topic Model</value></data>
+  <data name="WhfmtDetail_Protocol_IotRetain" xml:space="preserve"><value>Retain Support</value></data>
+  <data name="WhfmtDetail_Protocol_Serialization" xml:space="preserve"><value>Serialization</value></data>
+  <data name="WhfmtDetail_Protocol_SerialSchema" xml:space="preserve"><value>Schema Language</value></data>
+  <data name="WhfmtDetail_Protocol_SerialCompression" xml:space="preserve"><value>Compression</value></data>
+  <data name="WhfmtDetail_Protocol_SerialStreamable" xml:space="preserve"><value>Streamable</value></data>
+  <data name="WhfmtDetail_Protocol_RelatedProtocols" xml:space="preserve"><value>Related Protocols</value></data>
   <!-- Whfmt add/delete format dialogs -->
   <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Add Format Definition</value></data>
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt definitions (*.whfmt)|*.whfmt</value></data>

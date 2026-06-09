@@ -1,70 +1,61 @@
-{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+﻿{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
   "formatName": "NetFlow v9 Export Packet",
   "formatId": "NETFLOW_V9",
-  "version": "1.0",
+  "version": "1.1",
   "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-06-09",
   "description": "Cisco NetFlow version 9 export packet format as defined by RFC 3954. Template-based flow export protocol used for network traffic analysis and accounting.",
   "extensions": [".nf9", ".netflow"],
   "category": "Network",
   "diffMode": "binary",
-  "signatures": [
+  "detection": {
+    "signatures": [
+      { "value": "0009", "offset": 0, "weight": 0.9, "label": "NetFlow v9 version field" }
+    ],
+    "minimumScore": 0.7,
+    "matchMode": "best"
+  },
+  "blocks": [
     {
-      "value": "0009",
+      "id": "nf9_header",
+      "label": "Packet Header",
       "offset": 0,
-      "label": "NetFlow v9 version field",
-      "weight": 0.9,
-      "strength": "Moderate"
+      "size": 20,
+      "fields": [
+        { "id": "version",          "offset": 0,  "size": 2, "type": "uint16be", "label": "Version",         "description": "NetFlow export format version, must be 9",                                "displayFormat": "uint" },
+        { "id": "count",            "offset": 2,  "size": 2, "type": "uint16be", "label": "Count",           "description": "Number of FlowSet records in this packet",                               "displayFormat": "uint" },
+        { "id": "sys_uptime",       "offset": 4,  "size": 4, "type": "uint32be", "label": "SysUptime",       "description": "Milliseconds since router boot",                                         "displayFormat": "uint" },
+        { "id": "unix_secs",        "offset": 8,  "size": 4, "type": "uint32be", "label": "UnixSecs",        "description": "Unix timestamp of export time (seconds)",                                "displayFormat": "uint" },
+        { "id": "package_sequence", "offset": 12, "size": 4, "type": "uint32be", "label": "PackageSequence", "description": "Incremental sequence counter for packet loss detection",                "displayFormat": "uint" },
+        { "id": "source_id",        "offset": 16, "size": 4, "type": "uint32be", "label": "SourceID",        "description": "Observation domain identifier distinguishing flow sources",             "displayFormat": "uint" }
+      ]
     }
   ],
-  "maxSignatureOffset": 2,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 2, "name": "version", "type": "uint16be", "description": "NetFlow export format version, must be 9", "storeAs": "uint" },
-      { "offset": 2, "size": 2, "name": "count", "type": "uint16be", "description": "Number of FlowSet records in this packet", "storeAs": "uint" },
-      { "offset": 4, "size": 4, "name": "sys_uptime", "type": "uint32be", "description": "Milliseconds since router boot", "storeAs": "uint" },
-      { "offset": 8, "size": 4, "name": "unix_secs", "type": "uint32be", "description": "Unix timestamp of export time (seconds)", "storeAs": "uint" },
-      { "offset": 12, "size": 4, "name": "package_sequence", "type": "uint32be", "description": "Incremental sequence counter for packet loss detection", "storeAs": "uint" },
-      { "offset": 16, "size": 4, "name": "source_id", "type": "uint32be", "description": "Observation domain identifier distinguishing flow sources", "storeAs": "uint" }
-    ]
-  },
   "inspector": {
-    "displayFields": ["version", "count", "sys_uptime", "unix_secs", "package_sequence", "source_id"],
-    "valueMaps": {
-      "version": {
-        "9": "NetFlow v9"
-      }
-    },
+    "displayFields": ["version","count","sys_uptime","unix_secs","package_sequence","source_id"],
+    "valueMaps": { "version": { "9": "NetFlow v9" } },
     "tooltips": {
-      "count": "Includes both template and data FlowSets; collector must process all",
+      "count":            "Includes both template and data FlowSets; collector must process all",
       "package_sequence": "Missing sequence numbers indicate dropped packets between exporter and collector",
-      "source_id": "Allows multiple exporters to share a single collector endpoint"
+      "source_id":        "Allows multiple exporters to share a single collector endpoint"
     }
   },
   "assertions": [
-    { "id": "NFV9_VERSION", "field": "version", "operator": "equals", "value": "9", "description": "Version field must be exactly 9 for NetFlow v9" },
-    { "id": "NFV9_COUNT_NONZERO", "field": "count", "operator": "greaterThan", "value": "0", "description": "Packet must contain at least one FlowSet record" },
-    { "id": "NFV9_UNIX_SECS_RANGE", "field": "unix_secs", "operator": "greaterThan", "value": "1000000000", "description": "Export timestamp should be a plausible Unix epoch value (post-2001)" }
+    { "id": "NFV9_VERSION",       "field": "version",  "operator": "equals",      "value": "9",          "description": "Version field must be exactly 9 for NetFlow v9" },
+    { "id": "NFV9_COUNT_NONZERO", "field": "count",    "operator": "greaterThan", "value": "0",          "description": "Packet must contain at least one FlowSet record" },
+    { "id": "NFV9_UNIX_SECS",     "field": "unix_secs","operator": "greaterThan", "value": "1000000000","description": "Export timestamp should be a plausible Unix epoch value (post-2001)" }
   ],
   "navigation": {
     "bookmarks": [
-      { "offset": 0, "label": "Packet Header", "color": "#3498DB" },
-      { "offset": 8, "label": "Export Timestamp", "color": "#2ECC71" },
-      { "offset": 20, "label": "FlowSets Start", "color": "#E74C3C" }
+      { "offset": 0,  "label": "Packet Header",    "color": "#3498DB" },
+      { "offset": 8,  "label": "Export Timestamp", "color": "#2ECC71" },
+      { "offset": 20, "label": "FlowSets Start",   "color": "#E74C3C" }
     ]
   },
   "exportTemplates": [
-    {
-      "name": "NetFlow v9 Header Summary",
-      "fields": ["version", "count", "unix_secs", "package_sequence", "source_id"],
-      "format": "text"
-    },
-    {
-      "name": "NetFlow v9 CSV",
-      "fields": ["unix_secs", "count", "package_sequence", "source_id"],
-      "format": "csv"
-    }
+    { "name": "NetFlow v9 Header Summary", "fields": ["version","count","unix_secs","package_sequence","source_id"], "format": "text" },
+    { "name": "NetFlow v9 CSV",            "fields": ["unix_secs","count","package_sequence","source_id"],           "format": "csv"  }
   ],
   "aiHints": [
     "NetFlow v9 uses a template-based system; Template FlowSets (FlowSet ID 0) define field layouts before Data FlowSets",
@@ -81,14 +72,22 @@
       "Flow records can be used to reconstruct communication patterns and timing for incident response"
     ]
   },
+  "protocolDefinition": {
+    "transport": "udp",
+    "defaultPort": 9995,
+    "alternativePorts": [2055, 4739],
+    "layerModel": "application",
+    "layerStack": ["UDP", "IPv4/IPv6"],
+    "relatedProtocols": ["NETFLOW_V5", "IPFIX"]
+  },
   "formatRelationships": [
-    { "format": "IPFIX", "relationship": "predecessor", "note": "IPFIX (RFC 7011) standardized and extended the NetFlow v9 template-based model" },
-    { "format": "NETFLOW_V5", "relationship": "successor", "note": "NetFlow v9 replaced the fixed v5 record format with extensible templates" }
+    { "format": "IPFIX",      "relationship": "predecessor", "note": "IPFIX (RFC 7011) standardized and extended the NetFlow v9 template-based model" },
+    { "format": "NETFLOW_V5", "relationship": "successor",   "note": "NetFlow v9 replaced the fixed v5 record format with extensible templates" }
   ],
   "software": [
-    { "name": "nfdump", "role": "NetFlow v9 collector and analysis tool for Unix platforms" },
-    { "name": "ntopng", "role": "Real-time network traffic analysis with NetFlow v9 collection" },
-    { "name": "Cisco IOS/IOS-XE", "role": "Primary origin router platform for NetFlow v9 export" }
+    { "name": "nfdump",          "role": "NetFlow v9 collector and analysis tool for Unix platforms" },
+    { "name": "ntopng",          "role": "Real-time network traffic analysis with NetFlow v9 collection" },
+    { "name": "Cisco IOS/IOS-XE","role": "Primary origin router platform for NetFlow v9 export" }
   ],
   "useCases": [
     "Network traffic accounting and billing based on flow-level byte/packet counts",
@@ -96,5 +95,10 @@
     "Capacity planning by analyzing per-source-id flow volume trends"
   ],
   "technicalDetails": "NetFlow v9 (RFC 3954) exports flow data in a packet containing a 20-byte header followed by one or more FlowSets. Template FlowSets (ID=0) define the field layout for subsequent Data FlowSets. Options Template FlowSets (ID=1) carry exporter metadata. Data FlowSets reference a previously sent template by FlowSet ID (>=256). The template-based design allows arbitrary fields unlike the fixed NetFlow v5 format.",
-  "completenessScore": 83
+  "completenessScore": 90,
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-06-09",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
 }
