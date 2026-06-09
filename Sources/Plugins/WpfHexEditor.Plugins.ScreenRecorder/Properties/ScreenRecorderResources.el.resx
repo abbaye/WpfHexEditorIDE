@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Διαγραφή επιλεγμένων</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Εισαγωγή κενού καρέ</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Αντιγραφή καρέ</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Ορισμός καθυστέρησης...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Καθολική καθυστέρηση (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Δεν έχει επιλεγεί καρέ</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Πατήστε F9 για να καταγράψετε το πρώτο καρέ ή εισάγετε εικόνες</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Ιδιότητες</value></data>

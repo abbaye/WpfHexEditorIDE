@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Изтриване на избраното</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Вмъкване на празен кадър</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Дублиране на кадър</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Задаване на закъснение...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Глобално закъснение (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Не е избран кадър</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Натиснете F9 за заснемане на първия кадър или импортирайте изображения</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Свойства</value></data>

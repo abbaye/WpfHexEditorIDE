@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Ta bort markerade</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Infoga tom bild</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Duplicera bild</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Ange fördröjning...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Global fördröjning (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Ingen bild vald</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Tryck F9 för att fånga din första bildruta, eller importera bilder</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Egenskaper</value></data>

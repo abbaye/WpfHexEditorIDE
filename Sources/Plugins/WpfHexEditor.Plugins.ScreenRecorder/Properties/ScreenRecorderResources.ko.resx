@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>선택 항목 삭제</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>빈 프레임 삽입</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>프레임 복제</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>지연 시간 설정...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>전역 지연 (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>선택된 프레임 없음</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>F9를 눌러 첫 번째 프레임을 캡처하거나 이미지를 가져오세요</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>속성</value></data>

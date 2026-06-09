@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Slett valgte</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Sett inn tomt bilde</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Dupliser bilde</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Angi forsinkelse...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Global forsinkelse (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Ingen bilde valgt</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Trykk F9 for å ta det første bildet, eller importer bilder</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Egenskaper</value></data>

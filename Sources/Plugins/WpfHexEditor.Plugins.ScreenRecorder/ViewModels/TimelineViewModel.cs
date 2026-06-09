@@ -58,6 +58,9 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     public ICommand InsertBlankCommand    { get; }
     public ICommand DuplicateFrameCommand { get; }
 
+    // Injected by TimelineStrip (needs OpenFileDialog — view concern).
+    public ICommand? InsertImageCommand   { get; set; }
+
     // Injected by ScreenRecorderViewModel after construction.
     public ICommand? PlayCommand         { get; set; }
     public ICommand? StopPlaybackCommand { get; set; }
@@ -139,6 +142,20 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
         frame.DuplicateCommand   = DuplicateFrameCommand;
         frame.InsertBlankCommand = InsertBlankCommand;
         frame.DeleteCommand      = DeleteSelectedCommand;
+    }
+
+    public void InsertFramesAt(IReadOnlyList<FrameCardViewModel> frames, int insertIndex)
+    {
+        if (frames.Count == 0) return;
+        PushUndo();
+        insertIndex = Math.Clamp(insertIndex, 0, Frames.Count);
+        for (var i = 0; i < frames.Count; i++)
+        {
+            WireContextMenuCommands(frames[i]);
+            Frames.Insert(insertIndex + i, frames[i]);
+        }
+        RenumberFrames();
+        SelectedFrame = frames[^1];
     }
 
     public void MoveFrame(int fromIndex, int toIndex)

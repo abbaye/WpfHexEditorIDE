@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>מחק נבחרים</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>הכנס פריים ריק</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>שכפל פריים</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>הגדר השהייה...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>השהייה גלובלית (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>לא נבחר פריים</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>לחץ F9 לצילום הפריים הראשון, או ייבא תמונות</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>מאפיינים</value></data>

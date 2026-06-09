@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Selectie verwijderen</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Leeg frame invoegen</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Frame dupliceren</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Vertraging instellen...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Globale vertraging (ms):</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Geen frame geselecteerd</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Druk op F9 om uw eerste frame vast te leggen of importeer afbeeldingen</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Eigenschappen</value></data>

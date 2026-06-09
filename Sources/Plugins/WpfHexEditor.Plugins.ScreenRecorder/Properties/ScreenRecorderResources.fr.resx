@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Supprimer la sélection</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Insérer une image vide</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insérer une image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Dupliquer l'image</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Définir le délai...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Délai global (ms) :</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Aucune image sélectionnée</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Appuyez sur F9 pour capturer votre première image, ou importez des images</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Déposez des fichiers image ici pour ajouter des frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Propriétés</value></data>

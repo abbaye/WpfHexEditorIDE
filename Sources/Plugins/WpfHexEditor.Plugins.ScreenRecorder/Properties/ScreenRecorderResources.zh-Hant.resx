@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>刪除選取項目</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>插入空白畫格</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>複製畫格</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>設定延遲...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>全域延遲 (ms)：</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>未選取任何畫格</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>按 F9 擷取第一個畫格，或匯入影像</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>屬性</value></data>

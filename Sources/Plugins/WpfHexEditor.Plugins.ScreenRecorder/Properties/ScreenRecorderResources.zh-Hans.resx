@@ -86,6 +86,7 @@
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>删除所选</value></data>
   <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>插入空白帧</value></data>
+  <data name="ScreenRecorder_InsertImage" xml:space="preserve"><value>Insert Image</value></data>
   <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>复制帧</value></data>
   <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>设置延迟...</value></data>
   <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>全局延迟 (ms)：</value></data>
@@ -99,6 +100,7 @@
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>未选择帧</value></data>
   <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>按 F9 捕获第一帧，或导入图像</value></data>
+  <data name="ScreenRecorder_DropImagesToAdd" xml:space="preserve"><value>Drop image files here to add frames</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>属性</value></data>
