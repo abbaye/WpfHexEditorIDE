@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "PlayStation TIM Image",
   "formatId": "TIM_PS",
   "version": "1.0",
@@ -123,3 +123,5 @@
   "technicalDetails": "Sony PlayStation 1 native texture format stored in and loaded directly into VRAM. The VRAM is a 1024×512 grid of 16-bit cells. TIM coordinates (org_x, org_y) specify the VRAM destination. 4bpp and 8bpp images use a CLUT for color lookup; the CLUT itself is also stored in VRAM at its own coordinates. 15-bit mode uses A1BGR5 (Sony PlayStation colour format). 24-bit mode stores RGB888 in pairs of VRAM cells. Extremely common in PS1 game data; essential format for PS1 asset extraction.",
   "completenessScore": 80
 }
+
+

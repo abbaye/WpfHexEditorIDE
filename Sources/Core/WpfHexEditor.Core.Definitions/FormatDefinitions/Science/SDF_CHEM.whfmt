@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Structure Data File (Chemical)",
   "formatId": "SDF_CHEM",
@@ -242,3 +242,5 @@
     "coordinatePrecision": "f10.4 (4 decimal places)"
   }
 }
+
+

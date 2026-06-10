@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Mobipocket eBook",
   "formatId": "MOBI",
@@ -506,3 +506,5 @@
   "technicalDetails": "MOBI is based on the Palm Database (PDB) format. The PDB header at offset 0 contains a 32-byte book name. At offset 60-67 are the type ('BOOK') and creator ('MOBI') fields that identify the format. Record 0 contains the PalmDOC header followed by the MOBI header and optional EXTH metadata block with author, publisher, and ASIN fields.",
   "completenessScore": 85
 }
+
+

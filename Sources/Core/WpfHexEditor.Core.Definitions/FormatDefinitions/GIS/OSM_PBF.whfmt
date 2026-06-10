@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "OpenStreetMap PBF Binary",
   "formatId": "OSM_PBF",
   "version": "1.0",
@@ -126,3 +126,5 @@
   "technicalDetails": "OSM PBF is defined at https://wiki.openstreetmap.org/wiki/PBF_Format. The format uses Google Protocol Buffers (proto2) with two schema files: fileformat.proto (BlobHeader, Blob) and osmformat.proto (HeaderBlock, PrimitiveBlock). The file begins with a 4-byte big-endian integer giving the size of the first BlobHeader protobuf. BlobHeader has fields: type (string), indexdata (optional bytes), datasize (int32). The Blob that follows has zlib_data (bytes) or raw (bytes) containing a decompressed HeaderBlock or PrimitiveBlock. Dense node encoding uses delta compression for IDs, latitudes, and longitudes stored as integers (nanodegree precision: 1e-9 degrees). OSM PBF is designed for parallel processing: each OSMData blob is independently decompressible.",
   "completenessScore": 82
 }
+
+

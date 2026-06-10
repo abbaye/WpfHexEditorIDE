@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Geography Markup Language",
   "formatId": "GML",
   "version": "1.0",
@@ -121,3 +121,5 @@
   "technicalDetails": "GML is defined by OGC and ISO 19136. The GML 3.2.1 XML Schema is published at http://schemas.opengis.net/gml/3.2.1/gml.xsd. Feature data is organized as a tree of feature instances, each with a gml:id (mandatory in GML 3.2), geometry properties (using gml:Point, gml:LineString, gml:Polygon, gml:MultiGeometry), and thematic attributes. Coordinate reference systems are specified via the srsName attribute on geometry elements using OGC URN syntax (urn:ogc:def:crs:EPSG::XXXX) or HTTP URIs. GML 3.2 introduces the Abstract Feature and Object model, topology types (gml:Node, gml:Edge), coverages, and observations. For performance, GML Profiles (SF0, SF1, SF2) restrict the schema to commonly implemented subsets.",
   "completenessScore": 81
 }
+
+

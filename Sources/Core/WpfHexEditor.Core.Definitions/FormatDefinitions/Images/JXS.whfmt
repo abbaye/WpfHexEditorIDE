@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JPEG XS",
   "formatId": "JXS",
   "version": "1.0",
@@ -96,3 +96,5 @@
   "technicalDetails": "JPEG XS (ISO/IEC 21122) is a lightweight wavelet-based codec using a packet wavelet transform (PackDWT) with simple entropy coding. Unlike JPEG 2000, it avoids complex arithmetic coding in favor of low-complexity bit-plane coding to achieve near-hardware speeds. The codestream begins with SOC (0xFF10) followed immediately by a CAP marker (0xFF50) declaring profile and level. Image geometry is in the SIZ marker (0xFF51). The wavelet transforms image components into subbands which are packed/coded tile by tile. Precinct-level processing enables line-by-line (subline) operation for minimum latency. Profiles include Light, Main, and High; levels constrain 4K/8K resolutions and bitrates.",
   "completenessScore": 80
 }
+
+

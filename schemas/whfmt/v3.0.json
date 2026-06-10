@@ -1,0 +1,1213 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
+  "schemaVersion": "3.0",
+  "title": "WpfHexEditor Format Definition (.whfmt)",
+  "description": "Schema for .whfmt v3.2 — adds protocolDefinition (transport/port/layerStack/messageTypes/stateTransitions + iotProfile for IoT protocols) and serializationProfile (schemaLanguage/compression/streamable) for Network, IoT, and Data format categories. Fully additive over v3.1 — all new fields are optional, existing consumers unaffected (ADR-040). PascalCase legacy keys remain accepted at load time via WhfmtVersionMigrator (ADR-038 D2 — zero deletions, ABI preserved). See Sources/Docs/whfmt-v3/ for the architecture and usage guide.",
+  "type": "object",
+  "required": ["formatName"],
+  "$comment": "detection and blocks are required for binary formats but optional for source-code language definitions (preferredEditor: code-editor). PascalCase variants (QualityMetrics/MimeTypes/Software/UseCases/TechnicalDetails) are deprecated v2 aliases — accepted but normalized to camelCase at runtime.",
+  "properties": {
+    "formatName": {
+      "type": "string",
+      "description": "Human-readable format name (e.g., 'ZIP Archive', 'PNG Image')"
+    },
+    "formatId": {
+      "type": "string",
+      "description": "Unique format identifier (optional; defaults to file stem)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Alternate display name alias (used by some source-code .whfmt files)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of this definition (e.g., '1.0', '2.0')"
+    },
+    "extensions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "File extensions associated with this format (e.g., ['.zip', '.jar'])"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the format"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author of this definition file"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category (auto-set from folder structure: Archives, Images, Audio, Video, etc.)"
+    },
+    "mimeTypes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "MIME types associated with this format"
+    },
+    "software": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Software that can open/create this format"
+    },
+    "useCases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Common use cases for this format"
+    },
+    "preferredEditor": {
+      "type": "string",
+      "enum": ["code-editor", "structure-editor", "hex-editor", "text-editor", "tbl-editor", "tile-editor"],
+      "description": "Preferred editor factory ID for files matching this format"
+    },
+    "diffMode": {
+      "type": "string",
+      "enum": ["text", "semantic", "binary"],
+      "description": "Preferred diff algorithm for DiffViewer"
+    },
+
+    "syntaxDefinition": {
+      "$ref": "#/$defs/SyntaxDefinition",
+      "description": "Source-code language definition block (code-editor .whfmt only). Contains syntax rules, formatting defaults, and preview snippets."
+    },
+
+    "detection": { "$ref": "#/$defs/DetectionRule" },
+    "variables": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Initial variables and their values for the script interpreter"
+    },
+    "blocks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/BlockDefinition" },
+      "description": "List of block definitions to render"
+    },
+    "functions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional functions documentation (for reference)"
+    },
+    "references": { "$ref": "#/$defs/FormatReferences" },
+    "qualityMetrics": { "$ref": "#/$defs/QualityMetrics" },
+    "formatRelationships": { "$ref": "#/$defs/FormatRelationships" },
+    "technicalDetails": { "$ref": "#/$defs/TechnicalDetails" },
+
+    "versionDetection": { "$ref": "#/$defs/FormatVersionDetection" },
+    "versionedBlocks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/BlockDefinition" }
+      },
+      "description": "Version-specific block sets keyed by version string from versionDetection"
+    },
+    "checksums": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ChecksumDefinition" },
+      "description": "Checksum validation rules evaluated after block interpretation"
+    },
+    "assertions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/AssertionDefinition" },
+      "description": "Assertion rules — failures populate the Forensic Alerts panel"
+    },
+    "forensic": { "$ref": "#/$defs/ForensicDefinition" },
+    "navigation": { "$ref": "#/$defs/NavigationDefinition" },
+    "inspector": { "$ref": "#/$defs/InspectorDefinition" },
+    "exportTemplates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ExportTemplate" },
+      "description": "Export templates for extracting structured data"
+    },
+    "aiHints": { "$ref": "#/$defs/AiHints" },
+
+    "diff": {
+      "$ref": "#/$defs/DiffDefinition",
+      "description": "v2.5: Semantic diff configuration — declares key fields, ignored fields, and grouping for field-level diffing between two files of this format."
+    },
+    "repair": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RepairRule" },
+      "description": "v2.5: Repair rules — each rule describes how to fix a known corruption triggered by a failed assertion or checksum."
+    },
+    "fuzz": {
+      "$ref": "#/$defs/FuzzDefinition",
+      "description": "v2.5: Fuzzing strategy — declares field-level mutation strategies and checksum preservation for format-aware fuzzing."
+    },
+    "migration": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/MigrationDefinition" },
+      "description": "v2.5: Migration rules — describes how to convert files between format versions."
+    },
+
+    "imports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ref": { "type": "string", "description": "Format name or path to import (e.g. 'structs/PE_OptionalHeader')" },
+          "as":  { "type": "string", "description": "Alias used in structRef nested blocks (e.g. 'PEOpt')" }
+        },
+        "required": ["ref", "as"],
+        "additionalProperties": false
+      },
+      "description": "Cross-format struct imports. Each entry makes a named block list available via structRef."
+    },
+
+    "protocolDefinition": {
+      "$ref": "#/$defs/ProtocolDefinition",
+      "description": "v3.2: Protocol metadata for Network and IoT formats — transport layer, port, OSI layer, message types, state machine, and optional IoT profile. Not applicable to file-container formats (Archives, Images, etc.)."
+    },
+
+    "serializationProfile": {
+      "$ref": "#/$defs/SerializationProfile",
+      "description": "v3.2: Serialization metadata for Data formats — schema language, self-describing flag, compression, streamability, and wire-compatible formats."
+    }
+  },
+  "$defs": {
+    "OffsetOrExpression": {
+      "description": "An offset value: integer, 'var:name', or 'calc:expression'",
+      "oneOf": [
+        { "type": "integer" },
+        { "type": "string" }
+      ]
+    },
+
+    "DetectionRule": {
+      "type": "object",
+      "description": "Detection rule for identifying file formats",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "pattern": "^[0-9A-Fa-f]*$",
+          "description": "Legacy single hex signature (e.g., '504B0304' for ZIP)"
+        },
+        "signatures": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SignatureEntry" },
+          "description": "v2.0: Multiple alternative signatures (OR logic)"
+        },
+        "matchMode": {
+          "type": "string",
+          "enum": ["any", "all"],
+          "default": "any",
+          "description": "How to combine multi-signature matches"
+        },
+        "entropyHint": { "$ref": "#/$defs/EntropyHint" },
+        "minimumScore": {
+          "type": "number",
+          "minimum": 0, "maximum": 1,
+          "default": 0.70,
+          "description": "Minimum weighted confidence score (0.0–1.0)"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Offset where signature should appear"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this signature is required for detection"
+        },
+        "strength": {
+          "type": "string",
+          "enum": ["None", "Weak", "Medium", "Strong", "Unique"],
+          "default": "Medium",
+          "description": "Strength of the signature for confidence scoring"
+        },
+        "isTextFormat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this format is text-based"
+        },
+        "contentPatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Content validation regex patterns for text formats"
+        },
+        "minConfidenceThreshold": {
+          "type": "number",
+          "minimum": 0, "maximum": 1,
+          "default": 0.7,
+          "description": "Minimum confidence for auto-selection"
+        },
+        "validation": {
+          "type": "object",
+          "description": "Additional validation constraints for detection",
+          "properties": {
+            "minFileSize": { "type": "integer", "minimum": 0, "description": "Minimum file size in bytes required for this format" },
+            "note": { "type": "string", "description": "Human-readable note about detection heuristics" }
+          }
+        }
+      }
+    },
+
+    "SignatureEntry": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "Hex bytes to match (e.g., 'FF FB')"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "File offset where the signature must appear"
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable label for this variant"
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0, "maximum": 1,
+          "default": 0.9,
+          "description": "Confidence weight contribution"
+        }
+      }
+    },
+
+    "EntropyHint": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "number", "minimum": 0, "maximum": 8 },
+        "max": { "type": "number", "minimum": 0, "maximum": 8, "default": 8.0 }
+      },
+      "description": "Expected Shannon entropy range for valid files"
+    },
+
+    "BlockDefinition": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["signature", "field", "group", "header", "data", "metadata", "conditional", "loop", "action", "computeFromVariables", "repeating", "union", "nested", "pointer"],
+          "description": "Block type"
+        },
+        "name": { "type": "string", "description": "Name/description of this block" },
+        "offset": { "$ref": "#/$defs/OffsetOrExpression" },
+        "offsetFrom": { "type": "string", "description": "Variable name for base offset" },
+        "offsetAdd": { "$ref": "#/$defs/OffsetOrExpression" },
+        "length": { "$ref": "#/$defs/OffsetOrExpression" },
+        "until": { "type": "string", "description": "Sentinel hex pattern to scan until (e.g. '00' for null terminator). When set, length is optional." },
+        "maxLength": { "type": "integer", "minimum": 1, "description": "Safety cap in bytes when using until and pattern is not found (default: 65536)." },
+        "untilInclusive": { "type": "boolean", "description": "When true, the sentinel pattern bytes are included in the field length (default: false)." },
+        "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "description": "Background color (#RRGGBB)" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.3 },
+        "description": { "type": "string" },
+        "valueType": {
+          "type": "string",
+          "description": "Value type: uint8, uint16, uint32, uint64, int8, int16, int32, int64, ascii8, utf8, utf16le, utf16be, float32, float64, guid, dosdate, dostime, filetime, unixtime32, unixtime64, ipv4, ipv6, sha1, sha256, md5, varint, bcd, string, boolean"
+        },
+        "storeAs": { "type": "string", "description": "Variable name to store this field's value" },
+        "hidden": { "type": "boolean", "description": "If true, parsed but not shown in UI" },
+        "endianness": { "type": "string", "enum": ["little", "big"] },
+        "bitfields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/BitfieldDefinition" }
+        },
+        "valueMap": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Lookup table mapping raw values to human-readable names"
+        },
+        "mappedValueStoreAs": { "type": "string" },
+        "validationRules": { "$ref": "#/$defs/FieldValidationRules" },
+
+        "condition": {
+          "description": "Condition for conditional/loop blocks (object or string expression)",
+          "oneOf": [
+            { "$ref": "#/$defs/ConditionDefinition" },
+            { "type": "string" }
+          ]
+        },
+        "then": { "type": "array", "items": { "$ref": "#/$defs/BlockDefinition" } },
+        "else": { "type": "array", "items": { "$ref": "#/$defs/BlockDefinition" } },
+        "trueLabel": { "type": "string" },
+        "falseLabel": { "type": "string" },
+
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/BlockDefinition" },
+          "description": "Sub-field definitions for repeating/union blocks"
+        },
+        "entrySize": { "$ref": "#/$defs/OffsetOrExpression" },
+        "indexVar": { "type": "string", "description": "Variable for current iteration index (0-based)" },
+        "colorCycle": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "description": "Hex colors to cycle through for repeating entries"
+        },
+
+        "unionCondition": { "type": "string", "description": "Variable for union variant selection" },
+        "variants": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/UnionVariant" }
+        },
+
+        "structRef": { "type": "string", "description": "External struct reference for nested blocks" },
+        "targetVar": { "type": "string", "description": "Target offset variable for pointer blocks" },
+        "label": { "type": "string", "description": "Display label for pointer blocks" },
+
+        "count": { "$ref": "#/$defs/OffsetOrExpression" },
+        "maxIterations": { "type": "integer", "minimum": 1, "default": 1000 },
+        "body": { "type": "array", "items": { "$ref": "#/$defs/BlockDefinition" } },
+
+        "expression": { "type": "string", "description": "Expression for computeFromVariables blocks" },
+        "action": { "type": "string", "enum": ["increment", "decrement", "setVariable"] },
+        "variable": { "type": "string" },
+        "value": {}
+      }
+    },
+
+    "UnionVariant": {
+      "type": "object",
+      "properties": {
+        "length": { "$ref": "#/$defs/OffsetOrExpression" },
+        "valueType": { "type": "string" },
+        "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.3 },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/BlockDefinition" } },
+        "description": { "type": "string" }
+      }
+    },
+
+    "BitfieldDefinition": {
+      "type": "object",
+      "required": ["name", "bits"],
+      "properties": {
+        "name": { "type": "string" },
+        "bits": {
+          "type": "string",
+          "pattern": "^\\d+(-\\d+)?$",
+          "description": "Bit range: '7-6' for bits 7 down to 6, or '3' for single bit"
+        },
+        "storeAs": { "type": "string" },
+        "description": { "type": "string" },
+        "valueMap": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "ConditionDefinition": {
+      "type": "object",
+      "properties": {
+        "field": { "type": "string", "description": "'offset:N' or 'var:name'" },
+        "operator": { "type": "string", "enum": ["equals", "notEquals", "greaterThan", "lessThan", "expression"] },
+        "value": { "type": "string" },
+        "length": { "type": "integer", "default": 1 }
+      }
+    },
+
+    "FieldValidationRules": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "expectedValues": { "type": "array", "items": {} },
+        "pattern": { "type": "string" }
+      }
+    },
+
+    "FormatReferences": {
+      "type": "object",
+      "properties": {
+        "specifications": { "type": "array", "items": { "type": "string" } },
+        "webLinks": { "type": "array", "items": { "type": "string", "format": "uri" } }
+      }
+    },
+
+    "QualityMetrics": {
+      "type": "object",
+      "properties": {
+        "completenessScore": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "documentationLevel": { "type": "string", "enum": ["basic", "standard", "detailed", "comprehensive"] },
+        "blocksDefined": { "type": "integer" },
+        "validationRules": { "type": "integer" },
+        "lastUpdated": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "priorityFormat": { "type": "boolean" },
+        "autoRefined": { "type": "boolean" }
+      }
+    },
+
+    "FormatRelationships": {
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "extensions": { "type": "array", "items": { "type": "string" } },
+        "relatedFormats": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string", "description": "Narrative note about format relationships or ecosystem context" }
+      }
+    },
+
+    "TechnicalDetails": {
+      "type": "object",
+      "properties": {
+        "primaryExtension": { "type": "string" },
+        "definedFields": { "type": "integer" },
+        "compressionMethod": { "type": "string" },
+        "compression": { "type": "string", "description": "Alias for compressionMethod" },
+        "archivesFormat": { "type": "boolean" },
+        "imagesFormat": { "type": "boolean" },
+        "executablesFormat": { "type": "boolean" },
+        "audioFormat": { "type": "boolean" },
+        "videoFormat": { "type": "boolean" },
+        "documentFormat": { "type": "boolean" },
+        "textFormat": { "type": "boolean", "description": "True if this is a text-based (non-binary) format" },
+        "encoding": { "type": "string", "description": "Default character encoding (e.g., 'UTF-8', 'ASCII')" },
+        "schema": { "type": "string", "description": "Schema file or specification name that governs this format" },
+        "hasHeader": { "type": "boolean", "description": "True if the format has a fixed-size header" },
+        "selfReferential": { "type": "boolean", "description": "True if this format can describe itself" },
+        "bitDepth": { "type": "integer" },
+        "colorSpace": { "type": "string" },
+        "sampleRate": { "type": "integer" },
+        "container": { "type": "string" },
+        "platform": { "type": "string" },
+        "supportsEncryption": { "type": "boolean" }
+      }
+    },
+
+    "FormatVersionDetection": {
+      "type": "object",
+      "required": ["field", "map"],
+      "properties": {
+        "field": { "type": "string", "description": "Variable name whose value drives version selection" },
+        "map": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Maps raw field values to version labels"
+        }
+      }
+    },
+
+    "ChecksumDefinition": {
+      "type": "object",
+      "required": ["name", "algorithm"],
+      "properties": {
+        "name": { "type": "string" },
+        "algorithm": { "type": "string", "enum": ["crc32", "crc16", "md5", "sha1", "sha256", "adler32"] },
+        "dataRange": {
+          "type": "object",
+          "properties": {
+            "offsetVar": { "type": "string" },
+            "lengthVar": { "type": "string" },
+            "fixedOffset": { "type": "integer" },
+            "fixedLength": { "type": "integer" }
+          }
+        },
+        "storedAt": {
+          "type": "object",
+          "properties": {
+            "offsetVar": { "type": "string" },
+            "fixedOffset": { "type": "integer" },
+            "length": { "type": "integer" },
+            "endianness": { "type": "string", "enum": ["little", "big"] }
+          }
+        },
+        "storedType": { "type": "string" },
+        "expectedValue": { "type": "string" },
+        "severity": { "type": "string", "enum": ["error", "warning", "info"], "default": "warning" }
+      }
+    },
+
+    "AssertionDefinition": {
+      "type": "object",
+      "required": ["name", "expression"],
+      "properties": {
+        "name": { "type": "string" },
+        "expression": { "type": "string", "description": "Boolean expression evaluated against parsed variables" },
+        "severity": { "type": "string", "enum": ["error", "warning", "info"], "default": "warning" },
+        "message": { "type": "string", "description": "Human-readable failure message" }
+      }
+    },
+
+    "ForensicDefinition": {
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "description": "Forensic category (executable, document, archive, image, etc.)" },
+        "riskLevel": { "type": "string", "enum": ["low", "medium", "high"], "default": "low" },
+        "suspiciousPatterns": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ForensicPattern" }
+        },
+        "knownMaliciousPatterns": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ForensicPattern" }
+        },
+        "knownExploitVectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Free-text descriptions of known exploit vectors or attack surfaces for this format"
+        }
+      }
+    },
+
+    "ForensicPattern": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "condition": { "type": "string" },
+        "entropyThreshold": { "type": "number", "minimum": 0, "maximum": 8 },
+        "severity": { "type": "string", "enum": ["error", "warning", "info"], "default": "warning" },
+        "description": { "type": "string" }
+      }
+    },
+
+    "NavigationDefinition": {
+      "type": "object",
+      "properties": {
+        "bookmarks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/NavigationBookmark" }
+        },
+        "pointers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/NavigationPointer" }
+        }
+      }
+    },
+
+    "NavigationBookmark": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "description": "Display name (e.g., 'Entry Point')" },
+        "offsetVar": { "type": "string", "description": "Variable whose value is the target offset (dynamic)" },
+        "offset": { "type": "integer", "minimum": 0, "description": "Fixed byte offset for the bookmark (static)" },
+        "icon": { "type": "string", "description": "Segoe MDL2 glyph character" },
+        "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+      }
+    },
+
+    "NavigationPointer": {
+      "type": "object",
+      "required": ["name", "offsetVar"],
+      "properties": {
+        "name": { "type": "string" },
+        "offsetVar": { "type": "string" }
+      }
+    },
+
+    "InspectorDefinition": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "fields"],
+            "properties": {
+              "title": { "type": "string" },
+              "icon": { "type": "string" },
+              "collapsed": { "type": "boolean", "default": false },
+              "highlight": { "type": "boolean", "default": false },
+              "fields": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "badge": { "type": "string", "description": "Variable name for badge chip text" },
+        "primaryField": { "type": "string" },
+        "showQualityScore": { "type": "boolean", "default": false }
+      }
+    },
+
+    "ExportTemplate": {
+      "type": "object",
+      "required": ["name", "format"],
+      "properties": {
+        "name": { "type": "string" },
+        "format": { "type": "string", "enum": ["json", "csv", "c-struct", "python-bytes", "xml"] },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string", "description": "Repeating block source (prefix: 'repeating:')" },
+        "columns": { "type": "array", "items": { "type": "string" } },
+        "structName": { "type": "string" }
+      }
+    },
+
+    "AiHints": {
+      "type": "object",
+      "properties": {
+        "analysisContext": { "type": "string", "maxLength": 200, "description": "Brief analysis context for LLM prompts" },
+        "knownVulnerabilities": { "type": "array", "items": { "type": "string" } },
+        "suggestedInspections": { "type": "array", "items": { "type": "string" } },
+        "forensicContext": { "type": "string" }
+      }
+    },
+
+    "SyntaxDefinition": {
+      "type": "object",
+      "description": "Source-code language definition (code-editor .whfmt only). Groups all syntax coloring, folding, formatting, and preview data for one language.",
+      "properties": {
+        "id":                  { "type": "string",  "description": "Unique language identifier (e.g., 'csharp', 'python')" },
+        "name":                { "type": "string",  "description": "Display name (e.g., 'C# Source File')" },
+        "extensions":          { "type": "array", "items": { "type": "string" }, "description": "File extensions handled by this language" },
+        "diagnosticPrefix":    { "type": "string",  "description": "Prefix shown before diagnostic messages in the Error List (e.g., 'CS', 'PY')" },
+        "lineCommentPrefix":   { "type": "string",  "description": "Single-line comment token (e.g., '//', '#', '--')" },
+        "blockCommentStart":   { "type": "string",  "description": "Block comment open token (e.g., '/*')" },
+        "blockCommentEnd":     { "type": "string",  "description": "Block comment close token (e.g., '*/')" },
+        "bracketPairs":        { "type": "array",   "description": "Matching bracket pairs for bracket colorization and auto-close" },
+        "columnRulers":        { "type": "array", "items": { "type": "integer" }, "description": "Column positions where vertical ruler lines are drawn" },
+        "rules":               { "type": "array",   "description": "Ordered list of syntax tokenization rules" },
+        "foldingRules":        { "type": "object",  "description": "Code folding strategy configuration" },
+        "breakpointRules":     { "type": "object",  "description": "Rules controlling where breakpoints can be placed" },
+        "formattingRules": {
+          "$ref": "#/$defs/FormattingRules",
+          "description": "Language-specific formatting defaults. Keys map 1-to-1 to CodeEditorDefaults override properties."
+        },
+        "previewSnippet": {
+          "type": "string",
+          "description": "Representative multi-line code snippet (\\n-separated) shown in the Formatting options live preview panel."
+        },
+        "previewSamples": {
+          "$ref": "#/$defs/PreviewSamples",
+          "description": "Per-rule Before/After code fragments shown as tooltips on Formatting option checkboxes."
+        },
+        "includes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Language IDs to inherit rules from (resolved by LanguageRegistry after full registration)"
+        },
+        "embeddedLanguages": {
+          "type": "array",
+          "description": "Embedded language zones: regions of text whose syntax should be highlighted using a different language (e.g. <script> → javascript, <style> → css). Resolved by LanguageRegistry.ResolveEmbeddedLanguages() after full registration.",
+          "items": {
+            "type": "object",
+            "required": ["open", "close", "languageId"],
+            "properties": {
+              "open": {
+                "type": "string",
+                "description": "Opening delimiter (prefix match, case-insensitive). May include a tag start without the closing '>' to tolerate attributes (e.g. '<script')."
+              },
+              "close": {
+                "type": "string",
+                "description": "Closing delimiter (exact string, case-insensitive, e.g. '</script>')."
+              },
+              "languageId": {
+                "type": "string",
+                "description": "Language ID registered in LanguageRegistry that handles the content inside this zone (e.g. 'javascript', 'css', 'php')."
+              }
+            }
+          }
+        },
+        "ideMetadata": {
+          "$ref": "#/$defs/IdeMetadata",
+          "description": "IDE-level metadata for the language: icons, diagram support, diff mode override, aliases."
+        },
+        "scriptGlobals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScriptGlobalEntry" },
+          "description": "Script host global objects injected into the script context (e.g. for .csx files). Used by ScriptGlobalsCompletionProvider."
+        }
+      }
+    },
+
+    "FormattingRules": {
+      "type": "object",
+      "description": "Formatting defaults for source-code languages. All properties are optional — absent keys mean the CodeEditor uses its own built-in defaults.",
+      "properties": {
+        "indentSize":               { "type": "integer", "minimum": 1, "maximum": 16, "description": "Number of spaces per indent level (or tab width when useTabs is true)" },
+        "useTabs":                  { "type": "boolean", "description": "Use hard tabs instead of spaces for indentation" },
+        "trimTrailingWhitespace":   { "type": "boolean", "description": "Remove trailing spaces/tabs on each line" },
+        "insertFinalNewline":       { "type": "boolean", "description": "Ensure file ends with exactly one newline character" },
+        "lineEnding":               { "type": "string", "enum": ["lf", "crlf", "cr"], "description": "Normalised line ending written on Save" },
+        "spaceAfterKeywords":       { "type": "boolean", "description": "Insert space between control keywords (if/for/while) and opening paren" },
+        "spaceInsideParens":        { "type": "boolean", "description": "Insert spaces inside parentheses: f( x ) vs f(x)" },
+        "maxConsecutiveBlankLines": { "type": "integer", "minimum": 0, "maximum": 10, "description": "Maximum consecutive blank lines allowed between statements" },
+        "blankLineBeforeMethod":    { "type": "boolean", "description": "Ensure one blank line before every method/function declaration" },
+        "blankLineAfterImports":    { "type": "boolean", "description": "Ensure one blank line after the import/using block" },
+        "spaceAroundBinaryOperators": { "type": "boolean", "description": "Insert spaces around binary operators: a + b vs a+b" },
+        "spaceAfterComma":          { "type": "boolean", "description": "Insert space after each comma in argument/parameter lists" },
+        "organizeImports":          { "type": "boolean", "description": "Sort import/using directives alphabetically when formatting" },
+        "separateSystemImports":    { "type": "boolean", "description": "Place System.* imports in a separate group above user imports (C# / Java)" },
+        "quoteStyle":               { "type": "string", "enum": ["single", "double", "backtick"], "description": "Preferred string literal quote character" },
+        "maxLineLength":            { "type": "integer", "minimum": 40, "maximum": 300, "description": "Soft line-length limit (shown as a column ruler)" },
+        "indentCaseLabels":         { "type": "boolean", "description": "Indent case/when labels one level inside switch blocks" },
+        "braceStyle": {
+          "type": "string",
+          "enum": ["allmanStyle", "kernelAndRitchie", "sameLine"],
+          "description": "Opening-brace placement style: allmanStyle (new line), kernelAndRitchie (K&R), sameLine"
+        },
+        "spaceBeforeOpenBrace":     { "type": "boolean", "description": "Insert a space before '{' when brace is on the same line as the header" },
+        "keywordParenKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords after which a space is inserted before '(' (overrides CodeEditor built-in list)"
+        },
+        "importKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords that introduce import/using directives (used for blankLineAfterImports detection)"
+        },
+        "methodDeclKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords that start method/function declarations (used for blankLineBeforeMethod detection)"
+        },
+        "supportedRules": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subset of formattingRules keys that apply to this language. When present, the Formatting options page hides or disables rules not in this list. IDs match the JSON property names in this formattingRules block (e.g., 'spaceAfterKeywords', 'organizeImports')."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "PreviewSamples": {
+      "type": "object",
+      "description": "Map of formattingRule key → Before/After snippet pair. Used to populate tooltips on the Formatting options page.",
+      "additionalProperties": {
+        "$ref": "#/$defs/PreviewSamplePair"
+      }
+    },
+
+    "PreviewSamplePair": {
+      "type": "object",
+      "description": "A single Before/After code fragment illustrating the effect of one formatting rule.",
+      "required": ["before", "after"],
+      "properties": {
+        "before": { "type": "string", "description": "Code fragment as it appears BEFORE the rule is applied" },
+        "after":  { "type": "string", "description": "Code fragment as it appears AFTER the rule is applied" }
+      },
+      "additionalProperties": false
+    },
+
+    "IdeMetadata": {
+      "type": "object",
+      "description": "IDE-level metadata for a source-code language. Drives icons, panel availability, diff-mode override, and DiffModeDetector configuration.",
+      "properties": {
+        "isSourceFile":          { "type": "boolean", "description": "True if files of this language are source code (not config/data)" },
+        "isStructuredDataFile":  { "type": "boolean", "description": "True if the language is a structured data format (JSON, YAML, TOML…)" },
+        "supportsClassDiagram":  { "type": "boolean", "description": "True if the ClassDiagram plugin can analyse files of this language" },
+        "supportsSourceOutline": { "type": "boolean", "description": "True if the DocumentStructure SourceOutline provider supports this language" },
+        "isProjectLanguage":     { "type": "boolean", "description": "True if the language can be a primary project language (shown in New Project dialog)" },
+        "languageColor":         { "type": "string", "pattern": "^#[0-9A-Fa-f]{3,8}$", "description": "GitHub-style language badge color (#RRGGBB or #RRGGBBAA)" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Alternative names / short IDs (e.g. 'c#', 'cs') used for look-up in LanguageRegistry"
+        },
+        "iconGlyph":   { "type": "string", "description": "Segoe MDL2 / custom font glyph character for the language icon" },
+        "diffMode": {
+          "type": "string",
+          "enum": ["text", "semantic", "binary"],
+          "description": "Per-language diff algorithm override for DiffModeDetector (overrides top-level diffMode for source files)"
+        }
+      }
+    },
+
+    "ScriptGlobalEntry": {
+      "type": "object",
+      "description": "A host-injected global object available inside script files (e.g. .csx). Drives ScriptGlobalsCompletionProvider.",
+      "required": ["name", "type"],
+      "properties": {
+        "name":          { "type": "string", "description": "Variable name as it appears in the script scope" },
+        "type":          { "type": "string", "description": "CLR type name (interface or class, e.g. 'IHexEditorService')" },
+        "documentation": { "type": "string", "description": "One-line summary shown in IntelliSense" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScriptMemberEntry" },
+          "description": "Members exposed by this global object"
+        }
+      }
+    },
+
+    "ScriptMemberEntry": {
+      "type": "object",
+      "description": "A single member (property, method, or event) on a ScriptGlobalEntry.",
+      "required": ["name", "type", "kind"],
+      "properties": {
+        "name":          { "type": "string", "description": "Member name" },
+        "type":          { "type": "string", "description": "Return type or property type" },
+        "kind": {
+          "type": "string",
+          "enum": ["property", "method", "event"],
+          "description": "Member kind"
+        },
+        "documentation": { "type": "string", "description": "One-line summary shown in IntelliSense" },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "properties": {
+              "name":          { "type": "string" },
+              "type":          { "type": "string" },
+              "documentation": { "type": "string" }
+            }
+          },
+          "description": "Method parameters (only for kind: method)"
+        }
+      }
+    },
+
+    "DiffDefinition": {
+      "type": "object",
+      "description": "v2.5: Semantic diff configuration for field-level comparison between two files of this format.",
+      "properties": {
+        "keyFields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Variable names of fields that are semantically significant — included in diff output."
+        },
+        "ignoreFields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Variable names to exclude from diff (e.g. timestamps, padding, checksums that will differ by design)."
+        },
+        "groupBy": {
+          "type": "string",
+          "description": "Variable name used to group repeating entries (e.g. 'entry_name' for ZIP entries, 'chunk_type' for PNG chunks)."
+        },
+        "orderBy": {
+          "type": "string",
+          "description": "Variable name used to sort entries before comparison (for stable ordering of unordered collections)."
+        },
+        "note": {
+          "type": "string",
+          "description": "Human-readable note about the diff strategy for this format."
+        }
+      }
+    },
+
+    "RepairRule": {
+      "type": "object",
+      "required": ["name", "trigger", "action"],
+      "description": "v2.5: A single repair rule that describes how to fix a known corruption in a file of this format.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable rule name (e.g. 'FixCRC32', 'RebuildCentralDir')."
+        },
+        "trigger": {
+          "type": "string",
+          "description": "Name of the assertion or checksum that, when it fails, activates this rule."
+        },
+        "action": {
+          "type": "string",
+          "enum": ["recompute_checksum", "zero_field", "truncate", "pad", "set_value", "rebuild_index"],
+          "description": "Action to apply: recompute_checksum=recalculate and write back; zero_field=fill with zeros; truncate=clip file at offset; pad=add zero bytes to reach expected size; set_value=write a fixed value; rebuild_index=re-derive an index structure."
+        },
+        "target": {
+          "type": "string",
+          "description": "Variable name pointing to the byte offset to write the repaired value."
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": ["crc32", "crc16", "md5", "sha1", "sha256", "adler32"],
+          "description": "Checksum algorithm (only for action=recompute_checksum)."
+        },
+        "dataRange": {
+          "type": "object",
+          "properties": {
+            "offsetVar":   { "type": "string" },
+            "lengthVar":   { "type": "string" },
+            "fixedOffset": { "type": "integer" },
+            "fixedLength": { "type": "integer" }
+          },
+          "description": "Byte range to compute the checksum over (only for action=recompute_checksum)."
+        },
+        "value": {
+          "description": "Fixed value to write (only for action=set_value). Can be integer or hex string.",
+          "oneOf": [{ "type": "integer" }, { "type": "string" }]
+        },
+        "length": {
+          "type": "integer",
+          "description": "Number of bytes to write for zero_field, pad, or set_value actions."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["error", "warning", "info"],
+          "default": "warning",
+          "description": "Severity of the issue this rule corrects."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable explanation of what this rule repairs."
+        }
+      }
+    },
+
+    "FuzzDefinition": {
+      "type": "object",
+      "description": "v2.5: Format-aware fuzzing configuration. Declares per-field mutation strategies and global options.",
+      "properties": {
+        "strategies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/FuzzStrategy" },
+          "description": "Ordered list of field-level mutation strategies."
+        },
+        "preserveChecksums": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true, all checksum fields are recomputed after each mutation so the file remains structurally consistent."
+        },
+        "maxMutationsPerFile": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Maximum number of mutations applied per generated variant (1 = single-mutation corpus)."
+        },
+        "note": {
+          "type": "string",
+          "description": "Human-readable note about the fuzzing strategy for this format."
+        }
+      }
+    },
+
+    "FuzzStrategy": {
+      "type": "object",
+      "required": ["field", "mutation"],
+      "description": "v2.5: A single field-level mutation strategy for fuzzing.",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Variable name of the field to mutate."
+        },
+        "mutation": {
+          "type": "string",
+          "enum": [
+            "boundary_values",
+            "enum_sweep",
+            "corrupt_signature",
+            "bit_flip",
+            "zero_field",
+            "overflow",
+            "random_bytes",
+            "truncate",
+            "duplicate"
+          ],
+          "description": "Mutation type: boundary_values=min/max/±1 of declared range; enum_sweep=all values from valueMap; corrupt_signature=overwrite magic bytes; bit_flip=random bit inversions; zero_field=fill with zeros; overflow=exceed declared length; random_bytes=random content; truncate=shorten field; duplicate=repeat field data."
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1.0,
+          "description": "Probability this strategy is applied per variant (0.0–1.0). Allows sparse mutations."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "default": 1.0,
+          "description": "Relative weight when randomly selecting among strategies."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable explanation of why this field is interesting to fuzz."
+        }
+      }
+    },
+
+    "MigrationDefinition": {
+      "type": "object",
+      "required": ["from", "to", "changes"],
+      "description": "v2.5: Describes how to migrate a file from one version of this format to another.",
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Source version label (must match a key in versionDetection.map)."
+        },
+        "to": {
+          "type": "string",
+          "description": "Target version label."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable summary of what changes between these versions."
+        },
+        "changes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/MigrationChange" },
+          "description": "Ordered list of field-level changes to apply."
+        }
+      }
+    },
+
+    "MigrationChange": {
+      "type": "object",
+      "required": ["field", "changeType"],
+      "description": "v2.5: A single field-level change in a migration rule.",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Variable name of the affected field."
+        },
+        "changeType": {
+          "type": "string",
+          "enum": ["set_value", "insert", "delete", "resize", "reorder"],
+          "description": "Change type: set_value=overwrite with new value; insert=add new field; delete=remove field; resize=change field length; reorder=move field to different offset."
+        },
+        "value": {
+          "description": "New value to write (for set_value). Integer or hex string.",
+          "oneOf": [{ "type": "integer" }, { "type": "string" }]
+        },
+        "length": {
+          "type": "integer",
+          "description": "New length in bytes (for insert or resize)."
+        },
+        "atOffset": {
+          "type": "string",
+          "description": "Variable name pointing to target offset (for insert)."
+        },
+        "fillByte": {
+          "type": "string",
+          "description": "Hex byte to fill new space with (for insert, default '00')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable explanation of this change."
+        }
+      }
+    },
+
+    "ProtocolMessageType": {
+      "type": "object",
+      "required": ["id", "name"],
+      "description": "v3.2: A distinct message type within a protocol (e.g. CONNECT, PUBLISH for MQTT).",
+      "properties": {
+        "id":          { "type": "string", "description": "Internal identifier (e.g. 'connect', 'publish')" },
+        "name":        { "type": "string", "description": "Human-readable name (e.g. 'CONNECT')" },
+        "direction":   { "type": "string", "enum": ["client→server", "server→client", "bidirectional"], "description": "Message flow direction" },
+        "description": { "type": "string", "description": "What this message type does" },
+        "discriminant": {
+          "type": "object",
+          "description": "Field + mask + value that identifies this message type in the binary stream",
+          "properties": {
+            "field": { "type": "string", "description": "Variable name of the discriminant field (storeAs name)" },
+            "mask":  { "type": "string", "description": "Hex bitmask to apply before comparison (e.g. '0xF0')" },
+            "value": { "type": "string", "description": "Expected hex value after masking (e.g. '0x10')" }
+          }
+        }
+      }
+    },
+
+    "StateTransition": {
+      "type": "object",
+      "required": ["from", "event", "to"],
+      "description": "v3.2: A single state transition in the protocol state machine.",
+      "properties": {
+        "from":        { "type": "string", "description": "Source state name (e.g. 'INIT')" },
+        "event":       { "type": "string", "description": "Triggering message type id or event name" },
+        "to":          { "type": "string", "description": "Target state name (e.g. 'CONNECTED')" },
+        "description": { "type": "string", "description": "Human-readable description of this transition" }
+      }
+    },
+
+    "IotProfile": {
+      "type": "object",
+      "description": "v3.2: IoT-specific profile nested inside protocolDefinition. Only meaningful for IoT protocols.",
+      "properties": {
+        "qosLevels": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 7 },
+          "description": "Supported QoS levels (e.g. [0,1,2] for MQTT)"
+        },
+        "payloadEncoding": {
+          "type": "string",
+          "enum": ["json", "cbor", "tlv", "binary", "text", "xml", "protobuf"],
+          "description": "Primary payload encoding used by this protocol"
+        },
+        "topicModel": {
+          "type": "string",
+          "enum": ["pub-sub", "request-reply", "event", "observe", "broadcast"],
+          "description": "Communication pattern"
+        },
+        "retainSupport":        { "type": "boolean", "description": "Protocol supports message retention (e.g. MQTT retain flag)" },
+        "sleepyDeviceSupport":  { "type": "boolean", "description": "Protocol supports intermittently-connected (sleepy) devices" }
+      }
+    },
+
+    "ProtocolDefinition": {
+      "type": "object",
+      "description": "v3.2: Protocol-level metadata for Network and IoT format definitions.",
+      "properties": {
+        "transport": {
+          "type": "string",
+          "enum": ["udp", "tcp", "both", "websocket", "dtls", "raw", "serial", "bluetooth"],
+          "description": "Transport layer used by this protocol"
+        },
+        "defaultPort": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "Well-known IANA port number"
+        },
+        "alternativePorts": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 65535 },
+          "description": "Alternative ports (e.g. TLS variants)"
+        },
+        "layerModel": {
+          "type": "string",
+          "enum": ["application", "presentation", "session", "transport", "network", "datalink", "physical"],
+          "description": "OSI layer this format operates at"
+        },
+        "layerStack": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered protocol stack from lowest to highest (e.g. ['Ethernet','IP','UDP','DNS'])"
+        },
+        "messageTypes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ProtocolMessageType" },
+          "description": "Distinct message types carried by this protocol"
+        },
+        "stateTransitions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StateTransition" },
+          "description": "Protocol state machine transitions (handshake, session lifecycle)"
+        },
+        "relatedProtocols": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "formatId values of related protocols (e.g. ['DNS_ZONE','DNSSEC'])"
+        },
+        "iotProfile": {
+          "$ref": "#/$defs/IotProfile",
+          "description": "IoT-specific sub-profile. Only set for IoT category protocols."
+        }
+      }
+    },
+
+    "SerializationProfile": {
+      "type": "object",
+      "description": "v3.2: Serialization metadata for Data format definitions.",
+      "properties": {
+        "schemaLanguage": {
+          "type": "string",
+          "enum": ["protobuf", "avro", "thrift", "json-schema", "capnproto", "flatbuffers", "asn1", "none"],
+          "description": "External schema language used to define payload structure"
+        },
+        "selfDescribing": {
+          "type": "boolean",
+          "description": "True if the serialized payload includes its own schema (e.g. Avro with embedded schema)"
+        },
+        "payloadCompression": {
+          "type": "string",
+          "enum": ["none", "gzip", "snappy", "lz4", "zstd", "brotli"],
+          "description": "Compression applied to the payload (if any)"
+        },
+        "wireCompatibleFormats": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "formatId values of formats with compatible wire encoding"
+        },
+        "streamable": {
+          "type": "boolean",
+          "description": "True if records can be streamed without reading the entire file (e.g. NDJSON, Avro)"
+        }
+      }
+    }
+  }
+}
+
+

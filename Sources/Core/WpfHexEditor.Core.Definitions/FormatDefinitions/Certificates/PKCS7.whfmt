@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PKCS#7 Certificate Bundle",
   "formatId": "PKCS7",
@@ -254,3 +254,5 @@
     "RFC": "RFC 5652 (CMS), RFC 2315 (PKCS#7 legacy)"
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ClarisWorks / AppleWorks Document",
   "formatId": "CWK",
@@ -205,3 +205,4 @@
     "notes": "Big-endian (Motorola byte order) consistent with classic Mac OS. Resource fork may contain additional metadata on HFS/HFS+ volumes."
   }
 }
+

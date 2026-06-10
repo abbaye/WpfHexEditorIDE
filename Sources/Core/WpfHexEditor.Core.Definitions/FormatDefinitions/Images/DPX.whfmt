@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Digital Picture Exchange",
   "formatId": "DPX",
   "version": "1.0",
@@ -118,3 +118,5 @@
   "technicalDetails": "SMPTE 268M (v1.0 1994, v2.0 2003). Cinema/VFX uncompressed image exchange. 10-bit log (Cineon density encoding) or 12/16-bit linear. 768-byte generic file header + 384-byte SMPTE motion picture header. Supports SMPTE timecode, film keycode, aspect ratio, transfer characteristics, and colorimetry metadata. Big-endian is the cinema standard. One file per frame; sequences use zero-padded numeric filenames. Used in virtually all high-end film and VFX pipelines worldwide.",
   "completenessScore": 86
 }
+
+

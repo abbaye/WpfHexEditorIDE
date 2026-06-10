@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "mzML Mass Spectrometry Data",
   "formatId": "MZML",
   "version": "1.0",
@@ -123,3 +123,5 @@
   "technicalDetails": "mzML 1.1 is defined by the HUPO-PSI and published at http://www.psidev.info/mzML. The XML schema is at https://raw.githubusercontent.com/HUPO-PSI/mzML/master/schema/mzML1.1.2.xsd. The root element is <mzML> with attributes id, version, and xmlns. Core elements: <fileDescription> (contact/source file), <referenceableParamGroupList> (reusable CV param groups), <instrumentConfigurationList> (hardware), <dataProcessingList> (software transformations), <run> (the actual data). The <run> element contains <spectrumList> and <chromatogramList>. Each <spectrum> has <cvParam> elements from PSI-MS CV and <binaryDataArrayList> containing m/z and intensity arrays. Binary data is base64-encoded, optionally zlib-compressed, stored as 32 or 64-bit IEEE 754 floats. The indexed mzML variant appends an <indexList> and <indexListOffset> to enable O(1) spectrum lookup by byte offset.",
   "completenessScore": 81
 }
+
+

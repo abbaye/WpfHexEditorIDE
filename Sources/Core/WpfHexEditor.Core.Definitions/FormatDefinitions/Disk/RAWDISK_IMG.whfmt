@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Raw Sector-by-Sector Disk Image",
   "formatId": "RAWDISK_IMG",
   "version": "1.0",
@@ -109,3 +109,5 @@
   "technicalDetails": "Raw disk images are byte-for-byte copies of storage devices with no added metadata. For MBR-partitioned disks, sector 0 (bytes 0-511) contains bootstrap code (446 bytes), four 16-byte partition entries, and the 2-byte 0xAA55 signature. Each partition entry: status(1), CHS_start(3), type(1), CHS_end(3), LBA_start(4, LE), size_sectors(4, LE). GPT adds a GPT header at LBA 1 (offset 512) with a 128-entry partition array at LBA 2 (offset 1024), each entry 128 bytes.",
   "completenessScore": 83
 }
+
+

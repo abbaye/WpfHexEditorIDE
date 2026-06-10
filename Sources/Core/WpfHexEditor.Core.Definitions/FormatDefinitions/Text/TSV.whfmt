@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Tab-Separated Values",
   "formatId": "TSV",
   "version": "1.0",
@@ -121,3 +121,5 @@
   "technicalDetails": "TSV encodes tabular data as UTF-8 (or ASCII) plain text. Fields are delimited by U+0009 HORIZONTAL TAB. Records are delimited by U+000A LINE FEED (or U+000D U+000A CRLF on Windows). The format has no universally standardized MIME type, header convention, or quoting rules, making strict interoperability dependent on application-level agreements.",
   "completenessScore": 81
 }
+
+

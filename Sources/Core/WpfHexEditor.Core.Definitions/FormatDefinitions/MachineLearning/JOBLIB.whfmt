@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Joblib / scikit-learn Serialized Model",
   "formatId": "JOBLIB",
@@ -228,3 +228,5 @@
     "securityNote": "Pickle RCE is well-documented: CVE-2019-10160 and numerous academic papers on ML supply chain attacks"
   }
 }
+
+

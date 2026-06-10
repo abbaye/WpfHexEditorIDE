@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Keras/HDF5 Model",
   "formatId": "KERAS_H5",
@@ -325,3 +325,5 @@
     "note": "Inferred fuzz strategies for KERAS_H5. Hand-tune weights/rates per format if needed."
   }
 }
+
+

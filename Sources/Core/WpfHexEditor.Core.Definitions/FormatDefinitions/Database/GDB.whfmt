@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "InterBase/Firebird Database (Legacy)",
   "formatId": "GDB",
@@ -144,3 +144,5 @@
   "TechnicalDetails": { "PageSizes": [1024, 2048, 4096, 8192, 16384], "DetectionMethod": "Extension-based" },
   "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }
+
+

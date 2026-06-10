@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "LZ4 Block Format",
   "formatId": "LZ4_BLOCK",
   "version": "1.0",
@@ -91,3 +91,5 @@
   "technicalDetails": "LZ4 block format is a pure compression algorithm without framing. A compressed block is a sequence of sequences, each consisting of: a 1-byte token (high nibble = literal length 0-14, low nibble = match length offset 0-14; value 15 indicates additional length bytes follow), literal data bytes (literal_length bytes), a 2-byte little-endian match offset, and optional extra match length bytes if match nibble was 15. The decompressor copies literal bytes directly, then copies match_length+4 bytes from the position (current_output_pos - match_offset). The minimum match length is 4. Maximum match distance is 65535. LZ4 frame format wraps blocks with magic (0x184D2204), FLG/BD descriptors, optional content size and dictionary ID, block size-prefixed blocks, and optional checksums using XXHash32.",
   "completenessScore": 80
 }
+
+

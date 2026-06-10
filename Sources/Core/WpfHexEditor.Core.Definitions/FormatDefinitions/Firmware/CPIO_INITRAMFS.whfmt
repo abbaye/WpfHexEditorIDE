@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "CPIO Initramfs Archive (newc)",
   "formatId": "CPIO_INITRAMFS",
   "version": "1.0",
@@ -134,3 +134,5 @@
   "technicalDetails": "The CPIO newc (SVR4 portable format, also called 'odc' in some contexts) uses a 110-byte fixed ASCII header per entry. All numeric fields are stored as 8 uppercase hexadecimal ASCII characters without any prefix or delimiter. The filename immediately follows the header at offset 110, null-terminated, and padded with null bytes to align the next boundary at a multiple of 4 bytes from the header start. File data follows the padded filename and is itself padded to a 4-byte boundary. The '070702' variant adds a 32-bit CRC of the file data in the check field; Linux kernels support both variants but most tools generate '070701'. The archive is terminated by a synthetic 'TRAILER!!!' entry (magic='070701', all fields zero, namesize=0x0000000B for the 11-byte name including null). Multiple concatenated CPIO archives (microcode + main rootfs) are supported by the Linux kernel since version 2.6.39.",
   "completenessScore": 83
 }
+
+

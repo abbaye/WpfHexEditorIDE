@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Java Properties File",
   "formatId": "PROPERTIES",
@@ -163,3 +163,5 @@
     "notes": "Since Java 9, UTF-8 is the default encoding for .properties files when using ResourceBundle. Classic files use ISO 8859-1 with \\uXXXX Unicode escapes. No BOM should be present. The java.util.Properties class parses this format."
   }
 }
+
+

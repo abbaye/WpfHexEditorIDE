@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "TLS Session Ticket",
   "formatId": "TLS_SESSION",
@@ -240,3 +240,5 @@
     "note": "Inferred fuzz strategies for TLS_SESSION. Hand-tune weights/rates per format if needed."
   }
 }
+
+

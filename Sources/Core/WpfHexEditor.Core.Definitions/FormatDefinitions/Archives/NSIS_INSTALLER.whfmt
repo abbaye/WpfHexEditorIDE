@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "NSIS Installer",
   "formatId": "NSIS_INSTALLER",
   "version": "1.0",
@@ -86,3 +86,5 @@
   "technicalDetails": "NSIS installers are standard Windows PE executables. The stub (first executable section) is the NSIS runtime that reads and extracts the embedded data block. The NSIS data block follows the PE sections in the file and begins with a first header: 4-byte CRC32 signature, 4-byte magic (0xDEADBEEF), flags, and pointers to the data sections. The compressed payload uses zlib, bzip2, or LZMA compression. The payload contains: the script bytecode (install.nsi compiled form), the file data blocks, and an uninstaller stub. Each file entry in the archive has a target path, attributes, and optional CRC. NSIS script bytecode implements a simple stack-based VM for installer logic including registry operations, file extraction, process execution, and UI dialogs.",
   "completenessScore": 80
 }
+
+

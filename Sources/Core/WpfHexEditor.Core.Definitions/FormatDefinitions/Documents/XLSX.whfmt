@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Excel Workbook",
   "formatId": "XLSX",
@@ -566,3 +566,5 @@
   "technicalDetails": "XLSX (ECMA-376 / ISO 29500) is a ZIP container with SpreadsheetML XML parts. Workbook.xml references sheets; each sheet in xl/worksheets/ stores cell data with row/column coordinates. Shared strings are pooled in sharedStrings.xml for compression.",
   "completenessScore": 88
 }
+
+

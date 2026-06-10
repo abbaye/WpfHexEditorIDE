@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "formatName": "NetFlow v5 Export Packet",
   "formatId": "NETFLOW_V5",
   "version": "1.1",
@@ -107,3 +107,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

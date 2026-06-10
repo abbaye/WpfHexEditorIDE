@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "XYZ Chemical Format",
   "formatId": "XYZ",
@@ -165,3 +165,5 @@
     "ExtendedXYZ": "Comment line key=value for unit cell and per-atom properties (ASE/OVITO)"
   }
 }
+
+

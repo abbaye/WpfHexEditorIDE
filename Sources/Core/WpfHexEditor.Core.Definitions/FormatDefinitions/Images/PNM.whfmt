@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Portable Anymap",
   "formatId": "PNM",
   "version": "1.0",
@@ -126,3 +126,5 @@
   "technicalDetails": "PNM encompasses three related Netpbm formats identified by a two-character magic: P1/P4 = Portable BitMap (monochrome), P2/P5 = Portable GrayMap (grayscale), P3/P6 = Portable PixMap (full color). P1-P3 are plain ASCII with decimal pixel values separated by whitespace. P4-P6 are binary-packed raw data following the text header. The header consists of: magic, optional comment lines (#...), width, height, and maxval (1-65535, absent for P1/P4). A single whitespace byte follows the last header token and immediately precedes the binary pixel data in P4-P6. Width and height are in decimal ASCII. Binary P6 stores interleaved RGB triples.",
   "completenessScore": 80
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Open XML Paper Specification",
   "formatId": "OXPS",
@@ -536,3 +536,5 @@
   "technicalDetails": "OXPS (ECMA-388) is the Open XML Paper Specification, an evolution of XPS. It uses a ZIP container with XAML-derived fixed page markup. Each page is a .fpage XML file with vector graphics, glyphs, and images. OXPS is the default XPS variant on Windows 8+.",
   "completenessScore": 88
 }
+
+

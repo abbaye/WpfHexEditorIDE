@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Comma-Separated Values",
   "formatId": "CSV",
@@ -160,3 +160,5 @@
     "notes": "No binary magic. Detection is extension-based. RFC 4180 defines CRLF line endings but LF-only files are common. TSV files use tab as delimiter but otherwise follow the same structure."
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Smacker Video (RAD Game Tools)",
   "formatId": "SMK",
   "version": "1.1",
@@ -176,3 +176,5 @@
     "KnownLimitations": "SMK4 extended the format with additional audio track flags; exact per-version differences require further research."
   }
 }
+
+

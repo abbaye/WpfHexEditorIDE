@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Ext4 Filesystem",
   "formatId": "EXT4",
@@ -153,3 +153,5 @@
   "TechnicalDetails": { "SuperblockOffset": "0x400", "MagicOffset": "0x438", "MagicValue": "0xEF53" },
   "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }
+
+

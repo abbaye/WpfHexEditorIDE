@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Valve Texture Format",
   "formatId": "VTF",
   "version": "1.0",
@@ -134,3 +134,5 @@
   "technicalDetails": "Valve Source Engine texture format. Stores complete mipmap chains, animation frames, and cubemap faces. DXT (S3TC) GPU texture compression is standard. Image data layout: low-res thumbnail (16×16 DXT1) followed by mip levels from smallest to largest, for each frame/face. v7.5 added resource blocks for CRC and particle sheet data. Reflectivity values are used by Valve's radiosity lighting system for approximate light bounce calculations.",
   "completenessScore": 85
 }
+
+

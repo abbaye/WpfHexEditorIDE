@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "ONNX Runtime Optimized Model",
   "formatId": "ONNX_RUNTIME_ORT",
   "version": "1.0",
@@ -118,3 +118,5 @@
   "technicalDetails": "The ORT binary format uses FlatBuffers (Google) as its serialization layer, replacing the protobuf encoding used by the parent ONNX format. The FlatBuffers schema is defined in onnxruntime/core/flatbuffers/schema/ort.fbs in the ONNX Runtime source tree. The file begins with a 4-byte magic 'ORT1', followed by a 4-byte format version, then a FlatBuffers root table offset. The graph topology, initializer tensors (weights), and node attributes are all stored in FlatBuffers tables. Sparse initializers and external data references are supported from format version 4 onward. The ORT format is designed for zero-copy read: tensors can be memory-mapped directly without deserialization.",
   "completenessScore": 83
 }
+
+

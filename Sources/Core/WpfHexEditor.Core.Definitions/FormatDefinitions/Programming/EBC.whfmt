@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "EFI Byte Code (EBC)",
   "formatId": "EBC",
@@ -177,3 +177,5 @@
     "specification": "UEFI Specification Chapter 24"
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Markdown with YAML Front Matter",
   "formatId": "MARKDOWN_FRONTMATTER",
   "version": "1.0",
@@ -138,3 +138,5 @@
   "technicalDetails": "Markdown with YAML front matter is a de facto standard encoding. The front matter block starts at byte 0 with '---\\n' (2D 2D 2D 0A) and is closed by another '---\\n' or '...\\n' line. The enclosed content is parsed as YAML. Everything after the closing delimiter is Markdown. Encoding is UTF-8. No BOM should precede the '---' delimiter. The MDX variant adds 'import' statements and JSX expression syntax for React component embedding.",
   "completenessScore": 81
 }
+
+

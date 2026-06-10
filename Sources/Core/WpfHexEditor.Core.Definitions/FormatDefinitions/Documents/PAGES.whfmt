@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Pages",
   "formatId": "PAGES",
@@ -530,3 +530,5 @@
   "technicalDetails": "PAGES (iWork '13+) is a ZIP archive containing Protobuf-encoded .iwa (iWork Archive) files. The document model is stored as Google Protobuf messages in Index/index.iwa. Binary .iwa files use snappy compression internally. Earlier Pages formats (pre-2013) used a different XML-based structure.",
   "completenessScore": 88
 }
+
+

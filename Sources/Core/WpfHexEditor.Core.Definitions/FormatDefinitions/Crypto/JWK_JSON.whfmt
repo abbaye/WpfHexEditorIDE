@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JSON Web Key",
   "formatId": "JWK_JSON",
   "version": "1.0",
@@ -96,3 +96,5 @@
   "technicalDetails": "JSON Web Key (RFC 7517) defines a JSON structure for cryptographic keys. Required field 'kty' identifies the key type. RSA keys use parameters n, e, d, p, q, dp, dq, qi. EC keys specify crv (P-256/P-384/P-521), x, y, and optionally d. OKP keys (RFC 8037) support Ed25519 and X25519. JWK Sets aggregate multiple keys under a 'keys' array, typically served via HTTPS for public key discovery.",
   "completenessScore": 82
 }
+
+

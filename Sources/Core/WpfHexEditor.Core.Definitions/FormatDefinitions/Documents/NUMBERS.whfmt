@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Numbers",
   "formatId": "NUMBERS",
@@ -530,3 +530,5 @@
   "technicalDetails": "NUMBERS (iWork '13+) is a ZIP archive with Protobuf-encoded .iwa files. Sheet and table data are stored as Protobuf messages in the Data/ directory. Cell values, formulas, and formatting are all encoded in the iWork Archive schema using snappy-compressed Protobuf.",
   "completenessScore": 88
 }
+
+

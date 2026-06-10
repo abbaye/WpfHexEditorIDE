@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation",
   "formatId": "PPTX",
@@ -565,3 +565,5 @@
   "technicalDetails": "PPTX (ECMA-376 / ISO 29500) is a ZIP container with PresentationML XML parts. Each slide is a separate XML file in ppt/slides/. Slide masters define layout templates. Animations are in p:timing elements. Media files are embedded in ppt/media/.",
   "completenessScore": 88
 }
+
+

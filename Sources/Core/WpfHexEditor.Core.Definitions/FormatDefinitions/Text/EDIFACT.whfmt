@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "UN/EDIFACT EDI Message",
   "formatId": "EDIFACT",
   "version": "1.0",
@@ -139,3 +139,5 @@
   "technicalDetails": "UN/EDIFACT is an ISO standard (ISO 9735) for electronic business document interchange. Files are ASCII or UNOC (ISO 8859-1) encoded. Segments are terminated by apostrophe '\\'' by default. The UNA service string redefines all 6 special characters. Interchange envelopes (UNB/UNZ) contain functional groups (UNG/UNE) containing messages (UNH/UNT). Message types are defined in the UN/EDIFACT directory (D96A, D01B, etc.).",
   "completenessScore": 82
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Chrome Extension (CRX)",
   "formatId": "CHROME_CRX",
   "version": "1.0.1",
@@ -246,3 +246,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

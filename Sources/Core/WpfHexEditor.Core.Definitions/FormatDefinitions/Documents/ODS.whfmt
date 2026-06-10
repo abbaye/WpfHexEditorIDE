@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OpenDocument Spreadsheet",
   "formatId": "ODS",
@@ -531,3 +531,5 @@
   "technicalDetails": "ODS (ODF 1.2/1.3) is a ZIP container with uncompressed mimetype 'application/vnd.oasis.opendocument.spreadsheet'. Sheet data in content.xml uses table:table/table:table-row/table:table-cell elements. Formulas use ODF formula syntax (of:= prefix).",
   "completenessScore": 88
 }
+
+

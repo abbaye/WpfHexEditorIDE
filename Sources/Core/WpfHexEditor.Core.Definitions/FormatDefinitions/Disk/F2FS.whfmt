@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "F2FS (Flash-Friendly File System)",
   "formatId": "F2FS",
@@ -146,3 +146,5 @@
   "TechnicalDetails": { "SuperblockOffset": "0x400", "MagicValue": "0xF2F52010", "DefaultBlockSize": 4096 },
   "functions": { "readUInt32LE": "Read executable header" }
 }
+
+

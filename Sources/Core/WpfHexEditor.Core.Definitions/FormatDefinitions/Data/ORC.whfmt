@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache ORC",
   "formatId": "ORC",
@@ -223,3 +223,5 @@
     "notes": "ORC file tail: read last byte for postscript length, then postscript Protobuf, then file footer Protobuf. Three levels of statistics: file, stripe, and row group (10000 rows default)."
   }
 }
+
+

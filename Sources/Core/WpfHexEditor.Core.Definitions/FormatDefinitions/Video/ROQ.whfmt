@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "id Software RoQ Video",
   "formatId": "ROQ",
   "version": "1.1.1",
@@ -181,3 +181,5 @@
     "KnownLimitations": "Video dimensions are not in the file header; they appear in the codebook chunk argument requiring chunk-level parsing."
   }
 }
+
+

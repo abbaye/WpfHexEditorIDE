@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "IHO S-57 Electronic Nautical Chart",
   "formatId": "S57_ENC",
   "version": "1.0",
@@ -123,3 +123,5 @@
   "technicalDetails": "IHO S-57 Edition 3.1 uses ISO/IEC 8211-1994 (Information technology — Specification for a data descriptive file for information interchange) as its physical encoding. An ISO 8211 file consists of a single DDR (Data Descriptive Record) that defines the field structure, followed by multiple DRs (Data Records) containing the actual feature data. The DDR leader is 24 bytes of ASCII. S-57 defines specific record types: DSID (dataset identification), DSPM (dataset parameter), VRID (vector record), FRID (feature record), ATTF (attribute), NATF (national attribute), SG2D (sounding group 2D), SG3D (sounding group 3D), and FSPT (feature-to-spatial pointer). Feature objects use IHO object class codes (6-character acronyms) and attribute codes from the S-57 object catalogue. Coordinates are stored as integer values in units of 10^-7 degrees.",
   "completenessScore": 80
 }
+
+

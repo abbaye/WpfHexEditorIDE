@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Xbox Series X/S Package",
   "formatId": "ROM_XSX",
@@ -251,3 +251,4 @@
     "note": "Inferred fuzz strategies for ROM_XSX. Hand-tune weights/rates per format if needed."
   }
 }
+

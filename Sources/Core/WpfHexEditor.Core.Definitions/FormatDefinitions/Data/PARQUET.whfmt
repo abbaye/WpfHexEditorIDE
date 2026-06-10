@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Parquet",
   "formatId": "PARQUET",
@@ -235,3 +235,5 @@
     "notes": "Both header magic at offset 0 and footer magic at EOF-4 must be 'PAR1'. Footer length (int32 LE) at EOF-8 locates the Thrift FileMetaData."
   }
 }
+
+

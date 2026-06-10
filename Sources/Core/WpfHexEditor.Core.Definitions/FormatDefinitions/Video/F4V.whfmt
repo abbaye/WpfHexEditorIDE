@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Flash MP4 Video",
   "formatId": "F4V",
@@ -230,3 +230,5 @@
     "note": "Inferred fuzz strategies for F4V. Hand-tune weights/rates per format if needed."
   }
 }
+
+

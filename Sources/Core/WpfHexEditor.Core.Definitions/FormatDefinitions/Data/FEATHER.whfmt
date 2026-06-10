@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Arrow Feather",
   "formatId": "FEATHER",
@@ -220,3 +220,5 @@
     "notes": "Feather v2 is identical to the Arrow IPC file format. Both have magic at BOF and EOF. Feather v1 is legacy and lacks the Arrow IPC footer structure."
   }
 }
+
+

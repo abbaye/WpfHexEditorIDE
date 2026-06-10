@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.1",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.1",
   "diffMode": "text",
   "formatName": "PHP Source File",
   "formatId": "PHP",
@@ -225,3 +225,5 @@
     ]
   }
 }
+
+

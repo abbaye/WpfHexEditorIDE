@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "GoPro CineForm RAW",
   "formatId": "CINEFORM_RAW",
   "version": "1.0",
@@ -91,3 +91,5 @@
   "technicalDetails": "GoPro CineForm uses a 3D wavelet transform derived from the Wavelet Scalar Quantization (WSQ) scheme. The codec applies a 2D spatial wavelet transform (multiple levels) followed by quantization and entropy coding. The 'RAW' variant supports undemosaiced Bayer pattern data for camera-native processing. CineForm quality levels: 1 (Film Scan 1) through 5 (Film Scan 3) with corresponding bitrate increases. The codec is open-source (Apache 2.0) at github.com/gopro/cineform-sdk. AVI container wrapping follows standard RIFF structure with 'cfhd' FourCC in the strf chunk. Temporal group-of-pictures (GOP) structure allows wavelet subbands to be shared across consecutive frames, reducing bitrate while maintaining quality.",
   "completenessScore": 81
 }
+
+

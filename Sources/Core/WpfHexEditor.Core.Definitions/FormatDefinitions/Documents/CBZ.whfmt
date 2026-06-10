@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Comic Book ZIP",
   "formatId": "CBZ",
@@ -533,3 +533,5 @@
   "technicalDetails": "CBZ is a ZIP archive containing sequentially named image files (JPEG, PNG, WebP) that represent comic book pages. Pages are ordered alphabetically or numerically by filename. An optional ComicInfo.xml (ComicRack schema) provides metadata. CBZ is the most widely supported digital comic format.",
   "completenessScore": 88
 }
+
+

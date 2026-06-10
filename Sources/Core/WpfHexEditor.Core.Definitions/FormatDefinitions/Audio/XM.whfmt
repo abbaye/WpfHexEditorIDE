@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Extended Module (XM)",
   "formatId": "XM",
   "version": "1.1.1",
@@ -185,3 +185,5 @@
     "KnownLimitations": "Pattern block sizes are variable and require sequential parsing to compute exact offsets."
   }
 }
+
+

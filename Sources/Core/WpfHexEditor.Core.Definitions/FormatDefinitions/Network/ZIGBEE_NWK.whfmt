@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "formatName": "ZigBee Network Layer Frame",
   "formatId": "ZIGBEE_NWK",
   "version": "1.1",
@@ -107,3 +107,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

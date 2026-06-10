@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "rzip Long-Distance Compression",
   "formatId": "RZIP",
   "version": "1.0",
@@ -88,3 +88,5 @@
   "technicalDetails": "rzip (version 2.x) performs a two-pass compression. Pass 1: scans the input using a Rabin fingerprint rolling hash to find repeated 16-byte+ matches within a configurable back-window (default ~900MB). Matches are encoded as back-references; unmatched bytes are passed as literals. The output of this pass is a token stream. Pass 2: the token stream is compressed with bzip2 (blocksize 900KB). The file header consists of 2-byte magic 'RZ', 1-byte major version, 1-byte minor version, 4-byte uncompressed size. The compressed body follows directly. rzip can process files larger than available RAM by windowing. lrzip extends this by allowing LZMA, LZO, gzip, or no second-stage compression as alternatives to bzip2.",
   "completenessScore": 80
 }
+
+

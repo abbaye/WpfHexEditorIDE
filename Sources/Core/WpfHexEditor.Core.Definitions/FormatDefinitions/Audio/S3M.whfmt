@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "ScreamTracker 3 Module (S3M)",
   "formatId": "S3M",
   "version": "1.1.1",
@@ -204,3 +204,5 @@
     "KnownLimitations": "OPL2 instrument headers share the same slot count as PCM samples; type must be inferred from header type byte."
   }
 }
+
+

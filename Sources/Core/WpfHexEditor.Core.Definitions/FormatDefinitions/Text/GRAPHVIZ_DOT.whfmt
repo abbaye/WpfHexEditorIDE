@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Graphviz DOT Graph",
   "formatId": "GRAPHVIZ_DOT",
   "version": "1.0",
@@ -129,3 +129,5 @@
   "technicalDetails": "Graphviz DOT is a context-free graph description language. Files are plain text (ASCII or UTF-8). Graphs are declared with 'digraph name {}' or 'graph name {}'. Nodes are referenced by ID; edges use '->' or '--'. Attributes are key=value pairs in brackets. Comments use C-style '//' and '/* */'. The .gv extension is preferred by modern Graphviz; .dot was the original extension.",
   "completenessScore": 81
 }
+
+

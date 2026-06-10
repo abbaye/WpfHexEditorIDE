@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JSON Web Signature Compact Serialization",
   "formatId": "JWS_COMPACT",
   "version": "1.0",
@@ -102,3 +102,5 @@
   "technicalDetails": "JWS (RFC 7515) compact serialization encodes BASE64URL(JOSE Header) || '.' || BASE64URL(JWS Payload) || '.' || BASE64URL(JWS Signature). JWT (RFC 7519) is JWS with a JSON payload containing registered, public, or private claims. The signing input is ASCII(BASE64URL(header) || '.' || BASE64URL(payload)). ECDSA signatures in JWS use (r || s) concatenation, not DER encoding used in X.509.",
   "completenessScore": 81
 }
+
+

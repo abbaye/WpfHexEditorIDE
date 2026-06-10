@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "QEMU QCOW2 Disk Image",
   "formatId": "QCOW2",
   "version": "1.0.1",
@@ -357,3 +357,4 @@
     }
   ]
 }
+

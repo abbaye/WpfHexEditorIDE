@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Excel Workbook (Legacy)",
   "formatId": "XLS",
@@ -510,3 +510,5 @@
   "technicalDetails": "XLS (BIFF8, Binary Interchange File Format 8) is an OLE2 Compound File Binary. The Workbook stream contains BIFF8 records: BOF (beginning of file), SHEET, ROW, and MULRK records encode cell data. Each record has a 2-byte type, 2-byte length, and variable data. Formulas use RPN (Reverse Polish Notation) token arrays.",
   "completenessScore": 82
 }
+
+

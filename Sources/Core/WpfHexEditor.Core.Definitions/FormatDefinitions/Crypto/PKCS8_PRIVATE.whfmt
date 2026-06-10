@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "PKCS#8 Private Key (DER)",
   "formatId": "PKCS8_PRIVATE",
   "version": "1.0",
@@ -107,3 +107,5 @@
   "technicalDetails": "PKCS#8 (RFC 5958) PrivateKeyInfo structure: SEQUENCE { version INTEGER, privateKeyAlgorithm AlgorithmIdentifier, privateKey OCTET STRING }. For RSA keys, the privateKey OCTET STRING contains a PKCS#1 RSAPrivateKey DER. For EC keys it contains an ECPrivateKey DER. DER encoding uses definite-length TLV; keys >127 bytes use long-form length (0x82 marker for 2-byte length).",
   "completenessScore": 83
 }
+
+

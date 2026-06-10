@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "IKE/ISAKMP Key Exchange",
   "formatId": "ISAKMP",
@@ -311,3 +311,5 @@
     "notes": "IKE runs over UDP port 500. When NAT is detected, IKE switches to UDP port 4500 with a non-ESP marker (4 zero bytes) prepended. The ISAKMP header structure is the same for IKEv1 and IKEv2 but payload types and exchange types differ significantly."
   }
 }
+
+

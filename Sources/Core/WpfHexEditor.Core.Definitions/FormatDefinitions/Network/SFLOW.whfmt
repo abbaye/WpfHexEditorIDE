@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "sFlow",
   "formatId": "SFLOW",
@@ -219,3 +219,5 @@
     "note": "Inferred fuzz strategies for SFLOW. Hand-tune weights/rates per format if needed."
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Pro/ENGINEER Assembly",
   "formatId": "ASM",
@@ -163,3 +163,5 @@
     "Conflict": "Extension .asm also used for x86 assembly language source files"
   }
 }
+
+

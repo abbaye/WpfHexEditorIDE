@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Game Boy Advance Save",
   "formatId": "SAVE_GBA",
@@ -161,3 +161,5 @@
     "PokemonRSE": "14 sections x 4096 bytes with per-section checksums"
   }
 }
+
+

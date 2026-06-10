@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "X.509 Certificate Revocation List",
   "formatId": "X509_CRL",
@@ -256,3 +256,5 @@
     "Alternative": "OCSP (RFC 6960) provides real-time per-certificate revocation status"
   }
 }
+
+

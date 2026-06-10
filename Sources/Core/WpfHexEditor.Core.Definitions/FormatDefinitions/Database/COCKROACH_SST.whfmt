@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "CockroachDB RocksDB SSTable",
   "formatId": "COCKROACH_SST",
@@ -223,3 +223,4 @@
     "notes": "Footer magic at end of file. Weak detection since .sst extension is shared with Pebble, LevelDB, and RocksDB variants."
   }
 }
+

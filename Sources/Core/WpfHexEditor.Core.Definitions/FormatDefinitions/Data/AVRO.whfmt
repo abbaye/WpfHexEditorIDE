@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Apache Avro",
   "formatId": "AVRO",
@@ -221,3 +221,5 @@
     "notes": "zigzag encoding: value n encodes as (n<<1)^(n>>63) for signed longs. Map count of 0 signals end of map entries."
   }
 }
+
+

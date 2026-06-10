@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Keynote",
   "formatId": "KEYNOTE",
@@ -532,3 +532,5 @@
   "technicalDetails": "KEYNOTE (iWork '13+) is a ZIP archive using Protobuf-encoded .iwa (iWork Archive) files. Slide content, animations, and transitions are stored as Protobuf messages with snappy compression. Older Keynote files (pre-2013) used a package-folder XML structure.",
   "completenessScore": 88
 }
+
+

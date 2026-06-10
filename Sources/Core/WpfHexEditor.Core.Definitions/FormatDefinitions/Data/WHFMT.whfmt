@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "WPFHexaEditor Format Definition",
   "formatId": "WHFMT",
@@ -420,3 +420,4 @@
     "streamable": false
   }
 }
+

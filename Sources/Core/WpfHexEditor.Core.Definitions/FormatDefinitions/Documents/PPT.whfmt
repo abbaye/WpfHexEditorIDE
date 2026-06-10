@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation (Legacy)",
   "formatId": "PPT",
@@ -507,3 +507,5 @@
   "technicalDetails": "PPT (PowerPoint Binary File Format) is an OLE2 Compound File Binary. The PowerPoint Document stream contains a sequence of PowerPoint records starting with a CurrentUserAtom at offset 0. Each record has a 4-byte header (version/type nibbles) + 4-byte length. Slide records (SlideAtom) reference MasterAtom for layout templates.",
   "completenessScore": 82
 }
+
+

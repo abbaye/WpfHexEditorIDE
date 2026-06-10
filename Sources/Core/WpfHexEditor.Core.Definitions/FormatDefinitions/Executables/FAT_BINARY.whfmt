@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Fat/Universal Binary",
   "formatId": "FAT_BINARY",
   "version": "1.1.2",
@@ -246,3 +246,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

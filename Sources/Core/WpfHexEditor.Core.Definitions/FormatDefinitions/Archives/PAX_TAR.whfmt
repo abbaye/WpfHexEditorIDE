@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "POSIX PAX Extended Tar",
   "formatId": "PAX_TAR",
   "version": "1.0",
@@ -111,3 +111,5 @@
   "technicalDetails": "PAX tar (POSIX.1-2001) is built on the ustar format with a 512-byte header block structure. The ustar header contains: name(100), mode(8), uid(8), gid(8), size(12), mtime(12), checksum(8), typeflag(1), linkname(100), magic(6)='ustar\\0', version(2)='00', uname(32), gname(32), devmajor(8), devminor(8), prefix(155), padding(12). PAX adds typeflag 'x' (per-file extended header) and 'g' (global extended header). Extended headers precede their entry and contain NUL-terminated 'length key=value\\n' records allowing: arbitrary long paths ('path'), link targets ('linkpath'), high-precision modification times ('mtime'), large file sizes ('size'), and custom vendor extensions. All headers and data blocks are 512-byte aligned.",
   "completenessScore": 83
 }
+
+

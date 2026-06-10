@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "vCard Contact",
   "formatId": "VCARD",
@@ -405,3 +405,5 @@
   "technicalDetails": "vCard (RFC 6350 for v4.0, RFC 2426 for v3.0) is a text-based contact information format. Each property is a line with NAME;PARAMS:VALUE syntax. Version 2.1 uses QP encoding; 3.0 uses Base64 for binary data; 4.0 supports URI references and richer media types. Multiple vCards can be concatenated in a single file.",
   "completenessScore": 88
 }
+
+

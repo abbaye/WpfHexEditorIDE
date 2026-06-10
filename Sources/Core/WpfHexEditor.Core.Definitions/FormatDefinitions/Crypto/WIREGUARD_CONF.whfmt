@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "WireGuard Configuration File",
   "formatId": "WIREGUARD_CONF",
   "version": "1.0",
@@ -94,3 +94,5 @@
   "technicalDetails": "WireGuard configuration uses an INI-like format with [Interface] and one or more [Peer] sections. [Interface] fields: PrivateKey (mandatory, base64 Curve25519), Address (tunnel IP/CIDR), ListenPort (UDP port), DNS, MTU. [Peer] fields: PublicKey (mandatory), AllowedIPs (mandatory, routes), Endpoint (IP:port), PresharedKey (optional 32-byte symmetric), PersistentKeepalive (optional seconds). The private key is a 32-byte Curve25519 scalar; public key is derived via scalar multiplication on Curve25519.",
   "completenessScore": 82
 }
+
+

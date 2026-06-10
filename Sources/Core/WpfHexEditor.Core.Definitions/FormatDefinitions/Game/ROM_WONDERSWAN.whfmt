@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Bandai WonderSwan ROM",
   "formatId": "ROM_WONDERSWAN",
@@ -147,3 +147,5 @@
     "notes": "No magic at offset 0. Metadata is in the last 16 bytes. File size is typically a power of two. The monochrome WonderSwan and the color WonderSwan Color share the same ROM header format."
   }
 }
+
+

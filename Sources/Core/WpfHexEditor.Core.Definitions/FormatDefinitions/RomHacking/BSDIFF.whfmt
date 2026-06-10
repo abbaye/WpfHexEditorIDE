@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "bsdiff Binary Patch",
   "formatId": "BSDIFF",
@@ -199,3 +199,5 @@
     "notes": "Three bzip2 streams at offsets 32, 32+ctrlLength, 32+ctrlLength+diffLength. Algorithm by Colin Percival. Successor format bsdiff4 uses more efficient suffix array construction."
   }
 }
+
+

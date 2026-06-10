@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OpenSSH Private Key",
   "formatId": "SSH_KEY",
@@ -264,3 +264,5 @@
     "note": "Inferred fuzz strategies for SSH_KEY. Hand-tune weights/rates per format if needed."
   }
 }
+
+

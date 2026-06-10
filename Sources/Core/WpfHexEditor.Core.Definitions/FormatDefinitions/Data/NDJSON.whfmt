@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "Newline Delimited JSON",
   "formatId": "NDJSON",
@@ -315,3 +315,4 @@
     "note": "Inferred fuzz strategies for NDJSON. Hand-tune weights/rates per format if needed."
   }
 }
+

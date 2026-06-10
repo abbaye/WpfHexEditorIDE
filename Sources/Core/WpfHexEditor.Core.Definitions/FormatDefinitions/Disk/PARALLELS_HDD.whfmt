@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Parallels Desktop HDD Disk Image",
   "formatId": "PARALLELS_HDD",
   "version": "1.0",
@@ -99,3 +99,5 @@
   "technicalDetails": "Parallels HDD v2 format starts with a 16-byte ASCII signature followed by a header containing version, CHS geometry (heads, cylinders per head, sectors per cylinder), and total sector count. The Block Allocation Table (BAT) follows the header and maps virtual cluster numbers to physical offsets within the .hdd file. Unallocated clusters are marked as 0xFFFFFFFF in the BAT. Modern Parallels Desktop wraps the HDD in a bundle directory for metadata management.",
   "completenessScore": 82
 }
+
+

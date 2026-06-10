@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "SNK Neo Geo Pocket ROM",
   "formatId": "ROM_NGP",
@@ -196,3 +196,5 @@
     "notes": "No conventional binary magic at offset 0. Detection relies on structural field values and file extension. The small game library (approximately 80 commercial titles) limits ambiguity."
   }
 }
+
+

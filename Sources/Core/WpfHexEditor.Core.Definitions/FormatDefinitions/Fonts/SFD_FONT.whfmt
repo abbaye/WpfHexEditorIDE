@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "FontForge SFD Source Font",
   "formatId": "SFD_FONT",
   "version": "1.0",
@@ -124,3 +124,5 @@
   "technicalDetails": "The SFD format is documented in the FontForge source code and at https://fontforge.org/docs/techref/sfdformat.html. The file begins with 'SplineFontDB: 3.x\\n'. Global font metadata follows as key: value lines (FontName, FullName, FamilyName, Weight, Copyright, UnicodeInterp, Encoding, etc.). Glyph data is enclosed in StartChar [name]\\n ... EndChar blocks. SplineSet sections use PostScript-like coordinate sequences: 'x y type' where type is 'm'(move-to), 'l'(line-to), 'c'(cubic-bezier). The GlyphOrder section or Encoding entries define Unicode mappings. OpenType feature tables are stored as Lookup/LookupSubtable/Feature/ScriptList sections in the header area. Bitmap strikes use BitmapFont/BDFChar blocks with hex-encoded bitmap data.",
   "completenessScore": 81
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "On2 VP6 Video Codec",
   "formatId": "VP6",
   "version": "1.0",
@@ -83,3 +83,5 @@
   "technicalDetails": "VP6 is a proprietary DCT-based video codec by On2 Technologies (later Google). It uses 8x8 DCT blocks with intra and inter prediction, variable-length coding (Huffman), and a 6-tap bilinear interpolation filter for sub-pixel motion compensation. No standalone file format exists; VP6 is always carried in a container. In FLV, video tags begin with a 1-byte field: high nibble = frame type (1=keyframe, 2=inter), low nibble = codec ID (4=VP6, 5=VP6A). The VP6 frame data then follows. VP6A prepends a 3-byte offset to a separate alpha plane encoded as a second VP6 stream. VP6 was succeeded by VP8 (WebM, 2010) after Google's acquisition of On2.",
   "completenessScore": 80
 }
+
+

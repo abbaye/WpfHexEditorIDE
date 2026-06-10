@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "LDAP Data Interchange Format",
   "formatId": "LDIF",
   "version": "1.0",
@@ -141,3 +141,5 @@
   "technicalDetails": "LDIF (RFC 2849) encodes LDAP directory entries as UTF-8 plain text. Each record starts with 'dn:' followed by attribute-value pairs, one per line. Records are separated by blank lines. Values with binary content or non-ASCII characters are base64-encoded after '::'. Long lines are folded at 76 characters with continuation lines starting with a single space. Change records add 'changetype:' directives. Comment lines start with '#'.",
   "completenessScore": 82
 }
+
+

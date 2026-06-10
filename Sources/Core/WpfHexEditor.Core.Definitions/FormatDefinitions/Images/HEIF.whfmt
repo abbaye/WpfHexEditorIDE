@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "High Efficiency Image Format",
   "formatId": "HEIF",
   "version": "1.0",
@@ -104,3 +104,5 @@
   "technicalDetails": "HEIF is defined by ISO/IEC 23008-12. It uses the ISO Base Media File Format (ISOBMFF, ISO/IEC 14496-12) as its container, which is also the basis for MP4. The file structure consists of boxes (atoms): the first is 'ftyp' identifying the brand, followed by 'mdat' (media data) and 'meta' (metadata including item locations). HEIC specifically uses HEVC (H.265) for compression. Images are stored as items referenced by an item location box ('iloc'). The format supports sequences, image grids, auxiliary images (depth maps, alpha channels), and derived images (rotation, cropping).",
   "completenessScore": 84
 }
+
+

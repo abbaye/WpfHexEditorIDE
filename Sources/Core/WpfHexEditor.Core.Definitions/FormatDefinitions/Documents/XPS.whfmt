@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "XML Paper Specification",
   "formatId": "XPS",
@@ -571,3 +571,5 @@
   "technicalDetails": "XPS (ECMA-313 / Microsoft XML Paper Specification) is a ZIP container with XAML-derived fixed page markup. Font resources are subset-embedded and obfuscated with GUID-based filenames. XPS was replaced by OXPS (ECMA-388) in Windows 8+. The namespace URI is schemas.microsoft.com/xps/2005/06.",
   "completenessScore": 88
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "XCOFF Executable",
   "formatId": "XCOFF",
   "version": "1.0",
@@ -275,3 +275,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

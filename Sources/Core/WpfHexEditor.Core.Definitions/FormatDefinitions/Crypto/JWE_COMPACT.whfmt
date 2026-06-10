@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JSON Web Encryption Compact Serialization",
   "formatId": "JWE_COMPACT",
   "version": "1.0",
@@ -104,3 +104,5 @@
   "technicalDetails": "JWE (RFC 7516) compact serialization encodes five components as BASE64URL(JWE Protected Header) || '.' || BASE64URL(JWE Encrypted Key) || '.' || BASE64URL(JWE Initialization Vector) || '.' || BASE64URL(JWE Ciphertext) || '.' || BASE64URL(JWE Authentication Tag). The header contains 'alg' for key management and 'enc' for content encryption. All five segments are mandatory in compact form.",
   "completenessScore": 81
 }
+
+

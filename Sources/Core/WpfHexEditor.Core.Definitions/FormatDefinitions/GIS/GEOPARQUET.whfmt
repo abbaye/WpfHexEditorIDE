@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "GeoParquet Geospatial Columnar Format",
   "formatId": "GEOPARQUET",
   "version": "1.0",
@@ -116,3 +116,5 @@
   "technicalDetails": "GeoParquet 1.0 is an OGC Community Standard (OGC 23-026r3) that profiles Apache Parquet for geospatial use. The Parquet file format uses Apache Thrift encoding for metadata. The GeoParquet 'geo' key in Parquet file-level key_value_metadata contains a JSON object: { 'version': '1.0.0', 'primary_column': 'geometry', 'columns': { 'geometry': { 'encoding': 'WKB', 'geometry_types': [...], 'crs': { ... }, 'bbox': [...] } } }. The CRS is encoded as PROJJSON (ISO 19162-based JSON). Parquet row groups have a default size of ~128 MB; each row group stores column statistics (min/max encoded WKB bounding boxes) enabling spatial predicate pushdown. The Parquet magic 'PAR1' appears at both offset 0 and at filesize-8 (just before the 4-byte footer length).",
   "completenessScore": 83
 }
+
+

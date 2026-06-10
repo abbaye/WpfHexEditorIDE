@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Word Document (Legacy)",
   "formatId": "DOC",
@@ -616,3 +616,5 @@
   "technicalDetails": "DOC (BIFF8/Word Binary File Format) is an OLE2 Compound File Binary. The main document stream 'WordDocument' stores the File Information Block (FIB) at offset 0. Text is stored in the 'Table' stream (0Table or 1Table) as a piece table (PieceTable). The FIB wFib field indicates the Word version (0x00C1 = Word 97, 0x00D9 = Word 2003).",
   "completenessScore": 85
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ZFS Filesystem",
   "formatId": "ZFS",
@@ -147,3 +147,5 @@
   "TechnicalDetails": { "MagicValue": "0x0CB1BA00", "LabelCount": 4, "UberblockArrayOffset": "0x20000" },
   "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }
+
+

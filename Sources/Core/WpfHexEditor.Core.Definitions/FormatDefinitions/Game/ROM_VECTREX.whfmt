@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Vectrex ROM",
   "formatId": "ROM_VECTREX",
@@ -169,3 +169,5 @@
     "BIOSSize": "8 KB internal at 0xE000-0xFFFF"
   }
 }
+
+

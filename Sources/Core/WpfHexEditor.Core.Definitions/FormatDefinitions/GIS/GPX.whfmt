@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "GPS Exchange Format",
   "formatId": "GPX",
   "version": "1.0",
@@ -127,3 +127,5 @@
   "technicalDetails": "GPX 1.1 is defined by the XML Schema at http://www.topografix.com/GPX/1/1/gpx.xsd. The root element <gpx> carries attributes: version, creator, and xmlns. Coordinates use WGS 84 datum (EPSG:4326). Waypoints use decimal degrees with up to 9 decimal places. Track points are nested as <trk><trkseg><trkpt lat='...' lon='...'> with optional child elements for elevation, time, accuracy, and extensions. The file size is proportional to the number of track points; a 1-hour GPS track at 1Hz produces approximately 3,600 <trkpt> elements and a file around 500KB uncompressed. GPX files are commonly found compressed as .gpx.gz or inside .zip archives from activity export services.",
   "completenessScore": 83
 }
+
+

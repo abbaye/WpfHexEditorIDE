@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Apple CoreML ML Package",
   "formatId": "COREML_MLPACKAGE",
   "version": "1.0",
@@ -121,3 +121,5 @@
   "technicalDetails": "The .mlpackage format is a directory bundle standardized by Apple as part of the CoreML framework (introduced in iOS 11 / macOS 10.13). The bundle root contains a Manifest.json describing the package structure and a Data/ subdirectory with the primary SQLite3 database. The SQLite schema varies by CoreML specification version but consistently includes tables for model metadata, neural network topology (layers as serialized protobuf BLOBs), and optional weight files stored as external references. Compiled models (.mlmodelc) store weights as Float16 or Int8 quantized arrays; uncompiled source .mlpackage files may retain Float32 precision. The CoreML protobuf schema is publicly available in the coremltools Python package under coremltools.proto.",
   "completenessScore": 82
 }
+
+

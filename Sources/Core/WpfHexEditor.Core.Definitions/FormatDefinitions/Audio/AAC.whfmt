@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "AAC Audio",
   "formatId": "AAC",
@@ -315,3 +315,5 @@
     { "from": "MPEG-2 AAC", "to": "MPEG-4 AAC", "changes": [{ "field": "adtsId", "changeType": "set_value", "value": 0 }] }
   ]
 }
+
+

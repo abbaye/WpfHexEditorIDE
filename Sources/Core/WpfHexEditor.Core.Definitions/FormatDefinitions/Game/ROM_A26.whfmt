@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Atari 2600 ROM Cartridge Image",
   "formatId": "ROM_A26",
@@ -191,3 +191,5 @@
     "resetVectorOffset": "0xFFFC-0xFFFF (last 4 bytes of 4KB ROM page)"
   }
 }
+
+

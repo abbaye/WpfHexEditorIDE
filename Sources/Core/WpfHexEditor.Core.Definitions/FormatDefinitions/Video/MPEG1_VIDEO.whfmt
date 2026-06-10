@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "MPEG-1 Video Elementary Stream",
   "formatId": "MPEG1_VIDEO",
   "version": "1.0",
@@ -96,3 +96,5 @@
   "technicalDetails": "MPEG-1 Video (ISO/IEC 11172-2) uses DCT-based lossy compression with intra (I), predictive (P), and bidirectional (B) frame types. The bitstream is byte-aligned and start-code delimited. Sequence Header (0x000001B3) contains image size (12+12 bits), aspect ratio (4b), frame rate (4b), bit_rate (18b), vbv_buffer_size (10b), constrained_parameters_flag (1b), and optional quantization matrices (64 bytes each for intra and non-intra). GOP (Group of Pictures) headers (0x000001B8) delimit closed and open groups. Picture headers (0x00000100) follow with temporal reference and frame type. Macroblocks are 16x16 luma + 8x8 chroma blocks in 4:2:0 format.",
   "completenessScore": 82
 }
+
+

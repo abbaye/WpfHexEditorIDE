@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "SSH authorized_keys File",
   "formatId": "OPENSSH_AUTHORIZED_KEYS",
   "version": "1.0",
@@ -98,3 +98,5 @@
   "technicalDetails": "SSH authorized_keys files (OpenSSH format) contain one public key per line. Each line: optional options (comma-separated), key type identifier, base64-encoded public key wire format, optional comment. The base64 blob decodes to: 4-byte name length + name + algorithm-specific public key parameters (e.g., RSA: e + n exponents; Ed25519: 32-byte public key). File permissions must be 600/644; world-writable files are rejected by sshd.",
   "completenessScore": 80
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "FASTA Sequence",
   "formatId": "FASTA",
@@ -189,3 +189,5 @@
     "LineWidth": "60-80 characters per sequence line (recommended, not enforced)"
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "VeraCrypt Encrypted Volume",
   "formatId": "VERACRYPT",
@@ -156,3 +156,5 @@
     "notes": "Volume format is backward compatible with TrueCrypt volumes (.tc extension). No plaintext bytes exist in the file. The header (when decrypted) contains the master key, volume size, and sector size. VeraCrypt uses higher PBKDF2 iteration counts than TrueCrypt for improved brute-force resistance."
   }
 }
+
+

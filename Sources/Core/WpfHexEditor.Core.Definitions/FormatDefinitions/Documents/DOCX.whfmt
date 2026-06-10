@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Word Document (OOXML family)",
   "formatId": "DOCX",
@@ -786,3 +786,5 @@
   "technicalDetails": "DOCX (ECMA-376 / ISO 29500) is a ZIP container holding XML parts. The document body is in word/document.xml using WordprocessingML. Styles, numbering, footnotes, headers/footers, and embedded media are separate parts linked via relationships.",
   "completenessScore": 88
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "PaddlePaddle Model",
   "formatId": "PADDLE_MODEL",
   "version": "1.0",
@@ -117,3 +117,5 @@
   "technicalDetails": "The PaddlePaddle .pdmodel file serializes the framework.proto.ProgramDesc message using standard Protocol Buffers binary encoding. ProgramDesc contains repeated BlockDesc messages, each with repeated VarDesc (variable/tensor descriptors) and OpDesc (operator descriptors) messages. The version field (field 1, varint) is set to 1 for Paddle 2.x inference models. The .pdiparams companion file uses a proprietary binary layout: a header section containing a serialized tensor name-to-offset map (using Paddle's MemcpySerialization), followed by concatenated raw tensor data blobs. Paddle Lite (.nb format) is a separate compiled format for edge devices and is not covered by this definition.",
   "completenessScore": 80
 }
+
+

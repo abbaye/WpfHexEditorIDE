@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Avid DNxHR Codec",
   "formatId": "DNXHR",
   "version": "1.0",
@@ -85,3 +85,5 @@
   "technicalDetails": "Avid DNxHR is defined in SMPTE ST 2019-7 and is based on the same VC-3 coding scheme as DNxHD (SMPTE ST 2019-1). It uses intra-only DCT compression with fixed bitrate profiles. Each compressed frame is self-contained, enabling random access and easy trimming in editing timelines. DNxHR profiles determine bitrate and chroma: LB (low bandwidth), SQ (standard quality 8-bit 4:2:2), HQ (high quality 8-bit 4:2:2), HQX (12-bit 4:2:2), 444 (12-bit 4:4:4). The codec operates on 8x8 macroblocks with FDCT quantization. Resolution support is flexible and covers up to 8K. MXF wrapping follows SMPTE RP 2057 for Avid-compliant interchange; QuickTime wrapping uses Avid codec FourCC 'AVdh'.",
   "completenessScore": 81
 }
+
+

@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "text",
   "formatName": "Syslog File",
   "formatId": "SYSLOG_NET",
@@ -193,3 +193,5 @@
     "Rotation": "Typically compressed to .gz via logrotate"
   }
 }
+
+

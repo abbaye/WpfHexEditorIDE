@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Mermaid Diagram",
   "formatId": "MERMAID",
   "version": "1.0",
@@ -136,3 +136,5 @@
   "technicalDetails": "Mermaid DSL files are UTF-8 plain text. The first non-comment line must be a diagram type declaration. Comments start with '%%'. Diagram nodes/edges are defined using type-specific syntax. The .mmd extension is canonical; .mermaid is also used. Files are not executable — they require a Mermaid rendering library (mermaid.js) to produce SVG output.",
   "completenessScore": 80
 }
+
+

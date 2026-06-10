@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "InterBase Database",
   "formatId": "INTERBASE",
@@ -139,3 +139,5 @@
   "TechnicalDetails": { "ODSRange": "10–13", "PageSizeRange": "1024–16384 bytes" },
   "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }
+
+

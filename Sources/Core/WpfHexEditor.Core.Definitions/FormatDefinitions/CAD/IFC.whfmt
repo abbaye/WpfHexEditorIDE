@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Industry Foundation Classes (BIM)",
   "formatId": "IFC",
@@ -227,3 +227,5 @@
     "note": "Inferred fuzz strategies for IFC. Hand-tune weights/rates per format if needed."
   }
 }
+
+

@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "MessagePack",
   "formatId": "MSGPACK",
@@ -210,3 +210,5 @@
     "notes": "MessagePack integers are big-endian. Maps and arrays are recursively encoded. No schema embedded — external schema required for type interpretation beyond primitive types."
   }
 }
+
+

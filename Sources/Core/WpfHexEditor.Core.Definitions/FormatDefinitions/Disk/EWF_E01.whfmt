@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Expert Witness Format (EnCase E01)",
   "formatId": "EWF_E01",
   "version": "1.0",
@@ -95,3 +95,5 @@
   "technicalDetails": "EWF E01 (Expert Witness Format) begins with an 8-byte signature followed by a section list. Each section has a 76-byte descriptor: section type (16 bytes), next section offset, section data size, padding, and Adler-32 checksum. Key sections include: header (acquisition metadata), header2 (UTF-16 metadata), volume (disk geometry), table (sector chunk offsets), data (compressed 32KB chunks of 64 sectors), hash (MD5/SHA1), and done. Compression is zlib deflate. Each 32KB chunk has a 4-byte Adler-32 CRC for corruption detection.",
   "completenessScore": 84
 }
+
+

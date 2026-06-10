@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "BSON Document File",
   "formatId": "BSON_FILE",
@@ -213,3 +213,4 @@
     "notes": "No magic bytes — detection relies on extension and size validation. First 4 bytes are uint32 LE total size."
   }
 }
+

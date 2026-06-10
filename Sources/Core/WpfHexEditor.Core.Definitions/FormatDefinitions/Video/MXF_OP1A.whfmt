@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "MXF OP-1a Operational Pattern",
   "formatId": "MXF_OP1A",
   "version": "1.0",
@@ -97,3 +97,5 @@
   "technicalDetails": "MXF (SMPTE 377M) uses KLV (SMPTE 336M) triplets throughout. Every structure is a 16-byte UL key + BER-encoded length + value. The file begins with a Header Partition Pack, followed by Header Metadata (Primer Pack + structural metadata sets), and optionally an Essence Container interleaving video and audio KLV items. A Body Partition may follow for large files. The Footer Partition contains the closed/complete partition pack and optionally a Random Index Pack (RIP) for fast navigation. OP-1a is defined in SMPTE RP 2057 and identified by the operational pattern UL in the partition pack header. The format supports any essence type via registered UL-based essence container designators. Index tables provide frame-accurate random access to essence frames.",
   "completenessScore": 83
 }
+
+

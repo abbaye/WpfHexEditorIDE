@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "FlexBuffers",
   "formatId": "FLEXBUFFERS",
@@ -176,3 +176,4 @@
     "notes": "No magic header. Root type and byte width are in last 2 bytes. All offsets are relative and backward-pointing."
   }
 }
+

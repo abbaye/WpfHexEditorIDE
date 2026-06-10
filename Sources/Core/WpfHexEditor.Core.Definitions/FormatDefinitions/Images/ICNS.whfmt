@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Apple Icon Image",
   "formatId": "ICNS",
   "version": "1.0",
@@ -82,3 +82,5 @@
   "technicalDetails": "ICNS is a container format using 4-byte OSType tag + 4-byte big-endian size chunks. Each chunk is self-describing. The outer file header consists of the 'icns' magic and total file length. Icon entries may contain raw 32-bit RGBA data, run-length encoded data, or compressed PNG/JPEG2000 streams. Alpha channels are stored separately in older formats (e.g., 's8mk' mask for 'il32' icon). Starting with Mac OS X 10.7, PNG-embedded icons (ic08 through ic14) became the standard approach.",
   "completenessScore": 82
 }
+
+

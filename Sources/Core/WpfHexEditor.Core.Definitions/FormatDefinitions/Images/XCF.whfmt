@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "GIMP Image",
   "formatId": "XCF",
@@ -185,3 +185,4 @@
     "note": "Inferred fuzz strategies for XCF. Hand-tune weights/rates per format if needed."
   }
 }
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "ESRI ArcInfo E00 Exchange Format",
   "formatId": "E00",
@@ -234,3 +234,5 @@
     "note": "Inferred fuzz strategies for E00. Hand-tune weights/rates per format if needed."
   }
 }
+
+

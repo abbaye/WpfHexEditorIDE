@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "NumPy Array",
   "formatId": "NPY",
@@ -255,3 +255,5 @@
     "note": "Inferred fuzz strategies for NPY. Hand-tune weights/rates per format if needed."
   }
 }
+
+

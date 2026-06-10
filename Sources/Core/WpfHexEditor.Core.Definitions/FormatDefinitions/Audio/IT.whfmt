@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Impulse Tracker Module (IT)",
   "formatId": "IT",
   "version": "1.1.1",
@@ -205,3 +205,5 @@
     "KnownLimitations": "Offset table entries are file-absolute; block layout depends on creation tool order which may vary."
   }
 }
+
+

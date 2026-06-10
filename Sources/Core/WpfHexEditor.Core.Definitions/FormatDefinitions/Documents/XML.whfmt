@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "XML Document",
   "formatId": "XML",
@@ -605,3 +605,5 @@
   "technicalDetails": "XML (Extensible Markup Language, W3C REC-xml) is a text-based hierarchical data format. Documents begin with an optional XML declaration specifying version and encoding. The root element is followed by nested child elements with attributes. Namespaces (xmlns) prevent element name conflicts across vocabularies.",
   "completenessScore": 88
 }
+
+

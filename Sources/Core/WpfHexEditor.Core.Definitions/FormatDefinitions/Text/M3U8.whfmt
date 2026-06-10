@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "HLS Playlist",
   "formatId": "M3U8",
   "version": "1.0",
@@ -140,3 +140,5 @@
   "technicalDetails": "M3U8 is a UTF-8 plain-text playlist format for HLS (RFC 8216). The file begins with '#EXTM3U'. HLS-specific tags are prefixed with '#EXT-X-'. Segments are referenced by URL relative to the playlist base URI. Adaptive bitrate delivery uses a master playlist referencing variant-stream media playlists at different bitrates. Encryption uses #EXT-X-KEY with AES-128 CBC. Live streams omit #EXT-X-ENDLIST; VOD streams include it.",
   "completenessScore": 83
 }
+
+

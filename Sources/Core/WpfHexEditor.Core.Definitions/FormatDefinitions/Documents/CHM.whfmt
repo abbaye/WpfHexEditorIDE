@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Compiled HTML Help",
   "formatId": "CHM",
@@ -539,3 +539,5 @@
   "technicalDetails": "CHM (Compiled HTML Help, ITSF = ITS File) is a Microsoft proprietary format storing compressed HTML, images, and index files. The ITSF header at offset 0 is followed by an ITSP directory header. Content is LZX-compressed in sections. The internal file listing uses a B-tree structure. CHM execution is restricted by the Zone.Identifier ADS on Windows.",
   "completenessScore": 85
 }
+
+

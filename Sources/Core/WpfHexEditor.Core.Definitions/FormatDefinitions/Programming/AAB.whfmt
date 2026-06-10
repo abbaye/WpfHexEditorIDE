@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Android App Bundle",
   "formatId": "AAB",
@@ -388,3 +388,5 @@
     "note": "Inferred fuzz strategies for AAB. Hand-tune weights/rates per format if needed."
   }
 }
+
+

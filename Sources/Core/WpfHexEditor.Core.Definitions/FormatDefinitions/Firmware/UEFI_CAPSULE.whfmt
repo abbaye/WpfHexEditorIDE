@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "UEFI Update Capsule",
   "formatId": "UEFI_CAPSULE",
   "version": "1.0",
@@ -127,3 +127,5 @@
   "technicalDetails": "The UEFI Capsule format is defined in UEFI Specification Chapter 23 (Firmware Update and Reporting). The EFI_CAPSULE_HEADER structure (28 bytes) precedes the payload. For Windows-managed firmware updates, the capsule body contains an EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER followed by one or more EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER structures, each referencing a signed firmware image payload. The signing envelope is a WIN_CERTIFICATE structure using Authenticode (PKCS#7 SignedData). The ESRT (EFI System Resource Table) in firmware maps each updatable component GUID to its current and lowest supported firmware version, enabling rollback protection. Capsule flags in the UEFI spec: PERSIST_ACROSS_RESET=0x00010000, POPULATE_SYSTEM_TABLE=0x00020000, INITIATE_RESET=0x00040000.",
   "completenessScore": 83
 }
+
+

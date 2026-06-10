@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Windows Cursor",
   "formatId": "CUR",
   "version": "1.0",
@@ -113,3 +113,5 @@
   "technicalDetails": "Windows Cursor format, identical to ICO (ICONDIR structure) but with type=2. The cursor directory entries swap the ICO 'planes' and 'bit_count' fields for 'hotspot_x' and 'hotspot_y'. Hotspot = the pixel that registers as the pointer position. Image data can be DIB (legacy) with XOR+AND bitmask layers for transparency, or PNG (Vista+) for high-DPI antialiased cursors. Windows selects the closest-matching size image from multi-image CUR files based on display DPI.",
   "completenessScore": 80
 }
+
+

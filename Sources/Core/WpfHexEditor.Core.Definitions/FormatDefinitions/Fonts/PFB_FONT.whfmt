@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "PostScript Type 1 Binary Font",
   "formatId": "PFB_FONT",
   "version": "1.0",
@@ -119,3 +119,5 @@
   "technicalDetails": "The PFB format is defined in Adobe Technical Note #5040 (Supporting Downloadable PostScript Language Fonts). The file is divided into variable-length segments, each preceded by a 6-byte header: 0x80 (marker), type (1/2/3), 4-byte little-endian length. Segment 1 is ASCII PostScript text (the font program header up to the 'eexec' keyword). Segment 2 contains the eexec-encrypted portion including the Private dictionary (Subrs array, OtherSubrs, BlueValues, StemSnap) and CharStrings dictionary. The eexec cipher uses seed=55665 and parameters r(n+1) = (r(n) * 52845 + 22719) mod 65536; each cipher byte XORs with the high byte of the running key. Segment 3 has type=3 and length=0, acting as an end-of-file marker. A typical PFB font contains 200-300 KB with glyph outlines for the full ISO Latin character set.",
   "completenessScore": 82
 }
+
+

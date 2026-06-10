@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "GAMESS Quantum Chemistry Log",
   "formatId": "GAMESS_LOG",
@@ -244,3 +244,5 @@
     "note": "Inferred fuzz strategies for GAMESS_LOG. Hand-tune weights/rates per format if needed."
   }
 }
+
+

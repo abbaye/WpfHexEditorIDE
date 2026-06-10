@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Ogg Theora Video",
   "formatId": "THEORA",
   "version": "1.0",
@@ -104,3 +104,5 @@
   "technicalDetails": "Theora is defined by the Theora I Specification (Xiph.Org, 2004). It uses DCT-based block compression derived from On2 VP3 (patent-donated to Xiph in 2001). The bitstream uses three header packets per logical stream: identification header (codec version, frame dimensions, frame rate, aspect ratio), comment header (metadata), and setup header (codebooks, quantization tables). Frame data follows in subsequent Ogg pages. Theora supports I-frames (keyframes) and inter-frames with motion vectors. The granule position in Ogg pages encodes keyframe_number << KFGSHIFT + delta_frame_count. Video is always 4:2:0 chroma subsampled. The Ogg multiplexing layer handles interleaving with Vorbis audio streams.",
   "completenessScore": 82
 }
+
+

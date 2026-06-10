@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JPEG XR (HD Photo)",
   "formatId": "JXR",
   "version": "1.0",
@@ -101,3 +101,5 @@
   "technicalDetails": "ITU-T T.832 / ISO 29199-2 (JPEG XR). Microsoft HD Photo format standardised in 2009. Uses a lapped biorthogonal transform (LBT) with hierarchical DC/LP/HP frequency subbands. Tile-based structure enables random access. Supports: 8/16/32-bit integer, 16/32-bit float, RGB/CMYK/YCbCr/monochrome. Progressive decode via DC-only mode. Alpha plane can be stored in a separate IFD. The jxrlib reference implementation is open source (BSD licence).",
   "completenessScore": 82
 }
+
+

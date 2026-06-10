@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "GeoJSON",
   "formatId": "GEOJSON",
@@ -184,3 +184,5 @@
     "CRS": "WGS84 (EPSG:4326) only per RFC 7946 — coordinate order is [longitude, latitude]"
   }
 }
+
+

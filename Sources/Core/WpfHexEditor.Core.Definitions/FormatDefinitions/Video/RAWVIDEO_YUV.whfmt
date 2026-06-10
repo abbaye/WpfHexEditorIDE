@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Raw Planar YUV Video",
   "formatId": "RAWVIDEO_YUV",
   "version": "1.0",
@@ -73,3 +73,5 @@
   "technicalDetails": "Raw planar YUV is not a file format per se — it is unstructured binary video data without any container or header. The data layout depends entirely on the pixel format: I420/YV12 (4:2:0 planar, 12 bits/pixel), UYVY/YUY2 (4:2:2 packed, 16 bits/pixel), NV12/NV21 (4:2:0 semi-planar, 12 bits/pixel). Frame size in bytes = width * height * bits_per_pixel / 8. For I420: Y-plane (width*height), Cb-plane (width/2 * height/2), Cr-plane (width/2 * height/2). Multiple frames are concatenated with no separator. Y4M (.y4m) format adds 'YUV4MPEG2' text header and per-frame 'FRAME' markers, making it self-describing. Without external metadata, raw .yuv files cannot be reliably parsed.",
   "completenessScore": 80
 }
+
+

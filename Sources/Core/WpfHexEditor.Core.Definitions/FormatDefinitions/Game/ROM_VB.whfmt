@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Nintendo Virtual Boy ROM",
   "formatId": "ROM_VB",
@@ -147,3 +147,5 @@
     "notes": "ROM header is at the last 544 bytes, not at offset 0. No binary magic at start. Commercial library is approximately 22 titles. CPU is NEC V810 (32-bit RISC). Extension .vb and .vboy are both common."
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "formatName": "OPC-UA Binary Message",
   "formatId": "OPCUA_BINARY",
   "version": "1.0.0",
@@ -243,3 +243,5 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+
+

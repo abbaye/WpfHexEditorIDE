@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "AV1 in IVF Container",
   "formatId": "AV1_IVF",
   "version": "1.0",
@@ -104,3 +104,5 @@
   "technicalDetails": "IVF (Indeo Video File / 'DKIF') is a minimal video container created by On2/Google for VP codec development. The 32-byte header contains: 4-byte magic 'DKIF', 2-byte version (0), 2-byte header_size (32), 4-byte codec FourCC ('AV01' for AV1), 2-byte width, 2-byte height, 4-byte frame_rate_numerator, 4-byte frame_rate_denominator, 4-byte frame_count, 4-byte reserved. Each frame record: 4-byte LE frame_size, 8-byte LE timestamp, then frame_size bytes of raw codec data. For AV1, each frame record typically contains a Temporal Delimiter OBU followed by the coded frame OBU(s). There is no audio track, index, or seeking structure; the container is purely sequential.",
   "completenessScore": 84
 }
+
+

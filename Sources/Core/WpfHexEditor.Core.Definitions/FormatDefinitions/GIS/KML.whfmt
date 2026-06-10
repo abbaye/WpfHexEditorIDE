@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Keyhole Markup Language (KML)",
   "formatId": "KML",
@@ -189,3 +189,5 @@
     "Coordinates": "Longitude, latitude, altitude order (note: lon first — opposite of common lat/lon convention)"
   }
 }
+
+

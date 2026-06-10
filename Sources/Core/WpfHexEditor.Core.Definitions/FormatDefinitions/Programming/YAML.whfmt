@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "YAML Configuration",
   "formatId": "YAML_LANG",
@@ -179,3 +179,5 @@
     "BooleanTrap": "YAML 1.1: yes/no/on/off are booleans. YAML 1.2: only true/false."
   }
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Syslog RFC 5424",
   "formatId": "SYSLOG_RFC5424",
   "version": "1.0",
@@ -141,3 +141,5 @@
   "technicalDetails": "RFC 5424 syslog format: '<PRI>VERSION TIMESTAMP HOSTNAME APP-NAME PROCID MSGID STRUCTURED-DATA MSG'. PRI is a 1-3 digit integer in angle brackets. VERSION is always '1'. TIMESTAMP is RFC 3339 ISO 8601. Structured data uses '[id key=\"val\"]' syntax. Nilvalue '-' replaces absent fields. Maximum message length is 2048 bytes in original RFC but modern implementations support unlimited length. UDP port 514 (unencrypted) and TCP port 6514 (TLS-encrypted, RFC 5425) are standard.",
   "completenessScore": 81
 }
+
+

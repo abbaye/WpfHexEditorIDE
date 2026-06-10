@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Bink Video (RAD Game Tools)",
   "formatId": "BIK",
   "version": "1.1",
@@ -170,3 +170,5 @@
     "KnownLimitations": "Audio track header layout differs between Bink1 and Bink2; exact audio fields require codec-specific parsing."
   }
 }
+
+

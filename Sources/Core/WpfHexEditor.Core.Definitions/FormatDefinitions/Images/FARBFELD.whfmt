@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Farbfeld Raw RGBA",
   "formatId": "FARBFELD",
   "version": "1.0",
@@ -84,3 +84,5 @@
   "technicalDetails": "The Farbfeld format consists of a fixed 16-byte header followed by raw uncompressed pixel data. The header comprises 8 bytes of ASCII magic ('farbfeld'), then 4 bytes big-endian width and 4 bytes big-endian height. Pixel data begins at offset 16 and is stored in row-major (left-to-right, top-to-bottom) order. Each pixel is four 16-bit big-endian unsigned values: red, green, blue, alpha. The 16-bit depth allows high dynamic range storage. There is no color space declaration, metadata block, or compression support; what you see is exactly what is stored.",
   "completenessScore": 81
 }
+
+

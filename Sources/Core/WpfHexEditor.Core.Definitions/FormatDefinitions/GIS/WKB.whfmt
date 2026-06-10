@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Well-Known Binary Geometry",
   "formatId": "WKB",
   "version": "1.0",
@@ -134,3 +134,5 @@
   "technicalDetails": "WKB is defined in OGC 06-103r4 (OpenGIS Simple Features) and ISO 19125. A WKB stream starts with a byte order byte (0=big-endian, 1=little-endian), followed by a 4-byte unsigned integer geometry type code, followed by type-specific coordinate data. For a Point: 16 bytes (8-byte double X + 8-byte double Y). For a Polygon: 4-byte ring count, then for each ring: 4-byte point count + n×16 bytes. Multi-geometry types start with a 4-byte count followed by recursively encoded sub-geometries (each with their own byte-order byte). PostGIS EWKB extends the type field with flag bits for SRID (4 bytes, if present), Z, and M coordinate dimensions. GeoPackage defines its own envelope-prefixed WKB variant (GPKG-WKB) with a 2-byte magic + flags + optional envelope before the standard WKB payload.",
   "completenessScore": 82
 }
+
+

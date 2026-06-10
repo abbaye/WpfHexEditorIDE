@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "age Encrypted File",
   "formatId": "AGE_ENCRYPTED",
   "version": "1.0",
@@ -96,3 +96,5 @@
   "technicalDetails": "age (age-encryption.org/v1) uses a text header and binary payload. The header contains a version line, one or more recipient stanzas (each wrapping a file key), and a MAC. The file key (16 bytes, random) is wrapped per-recipient using X25519+HKDF+ChaCha20-Poly1305, scrypt+ChaCha20-Poly1305, or SSH key encryption. The payload uses STREAM (ChaCha20-Poly1305) with 64KB chunks for authenticated streaming decryption.",
   "completenessScore": 82
 }
+
+

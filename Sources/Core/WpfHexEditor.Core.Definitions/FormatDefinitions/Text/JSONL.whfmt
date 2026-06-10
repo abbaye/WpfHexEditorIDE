@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "JSON Lines",
   "formatId": "JSONL",
   "version": "1.0",
@@ -129,3 +129,5 @@
   "technicalDetails": "JSONL encodes one JSON value per line, separated by U+000A LINE FEED. The format is self-delimiting at the line level — each line is independently parseable. Encoding is UTF-8 per RFC 8259. No BOM is recommended. There is no standardized schema or metadata header convention. The MIME type 'application/x-ndjson' is commonly used though not officially registered.",
   "completenessScore": 81
 }
+
+

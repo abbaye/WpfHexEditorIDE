@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Portable Compiled Format Font (PCF)",
   "formatId": "PCF",
   "version": "1.1.1",
@@ -188,3 +188,5 @@
     "KnownLimitations": "Table format word endian/padding bits require per-table interpretation; compressed .pcf.gz requires decompression before parsing."
   }
 }
+
+

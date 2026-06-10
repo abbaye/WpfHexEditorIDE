@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PlayStation 4 Package",
   "formatId": "ROM_PS4",
@@ -319,3 +319,5 @@
     "note": "Inferred fuzz strategies for ROM_PS4. Hand-tune weights/rates per format if needed."
   }
 }
+
+

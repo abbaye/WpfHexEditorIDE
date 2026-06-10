@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "FlatBuffers Binary",
   "formatId": "FLATBUF",
@@ -268,3 +268,5 @@
     "note": "Inferred fuzz strategies for FLATBUF. Hand-tune weights/rates per format if needed."
   }
 }
+
+

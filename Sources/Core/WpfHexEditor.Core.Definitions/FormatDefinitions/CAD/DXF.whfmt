@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "AutoCAD DXF",
   "formatId": "DXF",
@@ -186,3 +186,5 @@
     "versionCodes": ["AC1015=R2000", "AC1018=R2004", "AC1021=R2007", "AC1024=R2010", "AC1027=R2013", "AC1032=R2018"]
   }
 }
+
+

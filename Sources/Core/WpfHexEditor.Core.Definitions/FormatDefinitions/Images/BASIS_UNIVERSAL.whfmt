@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Basis Universal GPU Texture",
   "formatId": "BASIS_UNIVERSAL",
   "version": "1.0",
@@ -93,3 +93,5 @@
   "technicalDetails": "Basis Universal (.basis) is a universal GPU texture container defined by Binomial LLC (open-sourced 2019). The file header contains magic (4 bytes), version (2), header size (2), header CRC16 (4), data size (4), data CRC16 (4), total images, total slices, image width/height, mip levels, tex_format (ETC1S=0, UASTC=1), and flags. ETC1S uses an endpoint/selector codebook shared across slices for high compression. UASTC stores blocks that can be losslessly transcoded to ASTC 4x4 or compressed to BC7. The transcoder (basis_transcoder.cpp) reads the file and outputs native GPU block-compressed data for the target platform.",
   "completenessScore": 81
 }
+
+

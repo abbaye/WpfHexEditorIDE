@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "formatName": "Bluetooth LE Advertisement Packet",
   "formatId": "BLE_ADVERTISEMENT",
   "version": "1.1",
@@ -119,3 +119,4 @@
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
+

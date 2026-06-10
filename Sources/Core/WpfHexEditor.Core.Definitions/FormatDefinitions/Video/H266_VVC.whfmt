@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "H.266/VVC Video Codec",
   "formatId": "H266_VVC",
   "version": "1.0",
@@ -85,3 +85,5 @@
   "technicalDetails": "H.266/VVC (ITU-T H.266 | ISO/IEC 23090-3, finalized July 2020) uses Annex B byte stream format with NALU start codes identical to H.264/H.265. The 2-byte NALU header contains: forbidden_zero_bit(1), nuh_reserved_zero_bit(1), nuh_layer_id(6), nal_unit_type(5), nuh_temporal_id_plus1(3). VVC introduces many new coding tools: extended quad-tree (QT+BT+TT), larger coding units (up to 128x128), affine motion compensation, sub-block based TMVP, BDOF/DMVR for refined motion, LMCS (luma mapping and chroma scaling), and JVET-developed deblocking. Partition structures are significantly more flexible than HEVC. Entropy coding uses CABAC as in HEVC. The format is patented and licensed through the Media Coding Industry Forum (MC-IF).",
   "completenessScore": 80
 }
+
+

@@ -1,5 +1,5 @@
-﻿{
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+{
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2",
   "diffMode": "binary",
   "formatName": "Cap'n Proto Binary Message",
   "formatId": "CAPNPROTO",
@@ -213,3 +213,5 @@
     "notes": "For a single-segment message: file = 8 bytes segment table + seg0_size*8 bytes data. Root struct pointer is always at byte offset 8. capnpSegmentCount value 0 = one segment."
   }
 }
+
+

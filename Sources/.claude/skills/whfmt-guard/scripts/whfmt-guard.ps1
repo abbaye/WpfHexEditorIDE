@@ -53,10 +53,10 @@ if (-not (Test-Path $CatalogRoot)) {
 
 $AllowedStrengths   = @('None','Weak','Medium','Strong','VeryStrong')
 $AllowedSchemaUrls  = @(
-    'https://wpfhexeditor.dev/schemas/whfmt/v2.0',
-    'https://wpfhexeditor.dev/schemas/whfmt/v3.0',
-    'https://wpfhexeditor.dev/schemas/whfmt/v3.1',
-    'https://wpfhexeditor.dev/schemas/whfmt/v3.2'
+    'https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0',
+    'https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0',
+    'https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.1',
+    'https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.2'
 )
 $RequiredFields   = @('formatName','formatId','extensions','category','description')
 
@@ -594,3 +594,4 @@ foreach ($f in $findings) {
 Write-Host "summary: $errCount error(s), $warnCount warning(s)"
 
 exit [Math]::Min($errCount, 100)
+

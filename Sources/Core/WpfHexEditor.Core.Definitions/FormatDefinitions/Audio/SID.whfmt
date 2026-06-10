@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "formatName": "Commodore 64 SID Music (PSID/RSID)",
   "formatId": "SID",
   "version": "1.1",
@@ -171,3 +171,5 @@
     "KnownLimitations": "PSIDv1 has no flags field; PSIDv3/v4 second/third SID address encoding uses high nibble convention."
   }
 }
+
+

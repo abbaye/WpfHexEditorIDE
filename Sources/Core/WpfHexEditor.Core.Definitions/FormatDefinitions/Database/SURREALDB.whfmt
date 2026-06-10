@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "SurrealDB Database",
   "formatId": "SURREALDB",
@@ -214,3 +214,4 @@
     "notes": "No fixed magic signature. Detection relies on file extension. Underlying format depends on configured storage backend."
   }
 }
+

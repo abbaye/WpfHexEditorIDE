@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Hangul Word Processor Document",
   "formatId": "HWP",
@@ -194,3 +194,4 @@
     "notes": "HWP uses OLE2 with 'HWP Document File' stream. HWPX uses ZIP with Contents/ directory. Both share container magic with other formats — stream/entry names distinguish HWP."
   }
 }
+

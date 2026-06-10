@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "iCalendar / vCalendar",
   "formatId": "VCALENDAR",
   "version": "1.0",
@@ -145,3 +145,5 @@
   "technicalDetails": "iCalendar (RFC 5545) is a text format using the MIME type text/calendar. Files are UTF-8 encoded with CRLF line endings. Objects are delimited by BEGIN/END pairs. Properties are 'NAME:value' or 'NAME;param=val:value'. Values exceeding 75 octets are folded (line continuation with leading space). The older vCalendar 1.0 (vCard spec) used quoted-printable encoding and different property names.",
   "completenessScore": 82
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "GBA / SNES Raw Tile Graphics",
   "formatId": "GFX",
@@ -256,3 +256,5 @@
     "AutoRefined": false
   }
 }
+
+

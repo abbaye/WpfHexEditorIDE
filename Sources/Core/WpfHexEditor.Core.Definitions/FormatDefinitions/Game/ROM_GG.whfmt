@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Sega Game Gear ROM",
   "formatId": "ROM_GG",
@@ -201,3 +201,5 @@
     "notes": "Header is located at offset 0x7FF0 within the last 16KB page, not at the start of the file. Some ROMs with non-standard sizes place the header at different offsets."
   }
 }
+
+

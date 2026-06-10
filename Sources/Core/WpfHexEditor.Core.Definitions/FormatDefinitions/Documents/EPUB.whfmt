@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "EPUB eBook",
   "formatId": "EPUB",
@@ -674,3 +674,5 @@
   "technicalDetails": "EPUB 3 (IDPF/W3C) is a ZIP container with an uncompressed 'mimetype' entry 'application/epub+zip' at offset 0. META-INF/container.xml specifies the OPF root file path. The OPF manifest lists all resources; spine defines reading order. EPUB3 uses HTML5+CSS3 content documents.",
   "completenessScore": 88
 }
+
+

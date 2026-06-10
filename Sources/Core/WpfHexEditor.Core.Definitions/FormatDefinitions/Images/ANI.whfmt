@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v3.0",
   "formatName": "Windows Animated Cursor",
   "formatId": "ANI",
   "version": "1.0",
@@ -97,3 +97,5 @@
   "technicalDetails": "ANI is a RIFF-based container (form type ACON) that stores animated cursor data. The file begins with a standard RIFF header (magic, payload size, form type). Key chunks: 'anih' (36 bytes, animation metadata), optional 'LIST' 'INFO' (metadata like name and artist), 'LIST' 'fram' containing the frame images, optional 'rate' (per-frame display rates in jiffies = 1/60s), and optional 'seq ' (display order permutation). Frames are either ICO/CUR files or raw DIB bitmaps. The total number of display steps (nSteps) may differ from frame count (nFrames) when sequence reordering is used.",
   "completenessScore": 81
 }
+
+

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
+  "$schema": "https://raw.githubusercontent.com/abbaye/WpfHexEditorIDE/master/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "Variant Call Format (VCF)",
   "formatId": "VCF_GENOMICS",
@@ -213,3 +213,5 @@
     "note": "Inferred fuzz strategies for VCF_GENOMICS. Hand-tune weights/rates per format if needed."
   }
 }
+
+
