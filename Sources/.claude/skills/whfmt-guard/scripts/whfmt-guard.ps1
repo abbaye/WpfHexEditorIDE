@@ -54,7 +54,9 @@ if (-not (Test-Path $CatalogRoot)) {
 $AllowedStrengths   = @('None','Weak','Medium','Strong','VeryStrong')
 $AllowedSchemaUrls  = @(
     'https://wpfhexeditor.dev/schemas/whfmt/v2.0',
-    'https://wpfhexeditor.dev/schemas/whfmt/v3.0'
+    'https://wpfhexeditor.dev/schemas/whfmt/v3.0',
+    'https://wpfhexeditor.dev/schemas/whfmt/v3.1',
+    'https://wpfhexeditor.dev/schemas/whfmt/v3.2'
 )
 $RequiredFields   = @('formatName','formatId','extensions','category','description')
 
@@ -71,10 +73,10 @@ $AllowedBlockTypes      = @('signature','field','metadata','header','data','cond
                             'union','nested','pointer','bitfield',
                             # Recognized v3 additions (catalog-driven):
                             'group')
-$AllowedValueTypes      = @('uint8','uint16','uint32','uint64','int8','int16','int32','int64',
+$AllowedValueTypes      = @('uint8','uint16','uint24','uint32','uint48','uint64','int8','int16','int24','int32','int64',
                             'float32','float64','ascii','utf8','utf16le','utf16be','bytes','hex',
                             # aliases recognized by WhfmtValueTypes.Parse:
-                            'u8','u16','u32','u64','i8','i16','i32','i64','f32','f64',
+                            'u8','u16','u24','u32','u64','i8','i16','i32','i64','f32','f64',
                             'byte','ushort','uint','ulong','sbyte','short','int','long',
                             'single','float','double','utf-8','utf-16le','utf-16be')
 $AllowedSeverities      = @('error','warning','info')

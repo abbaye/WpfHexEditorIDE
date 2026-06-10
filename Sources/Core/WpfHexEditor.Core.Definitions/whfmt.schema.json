@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v3.1",
-  "schemaVersion": "3.1",
+  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v3.2",
+  "schemaVersion": "3.2",
   "title": "WpfHexEditor Format Definition (.whfmt)",
-  "description": "Schema for .whfmt v3 — adds qualityMetrics/mimeTypes/software/useCases/technicalDetails (camelCase canonical), syntaxDefinition.{completions,outlineRules,diagnosticRules}, detection.{matchMode,minimumScore,entropyHint,validation.minFileSize}, expression-bearing fields (assertions[].expression, blocks[].expression/condition) consumed by the runtime evaluator. PascalCase legacy keys remain accepted at load time via WhfmtVersionMigrator (ADR-038 D2 — zero deletions, ABI preserved). See Sources/Docs/whfmt-v3/ for the architecture and usage guide.",
+  "description": "Schema for .whfmt v3.2 — adds protocolDefinition (transport/port/layerStack/messageTypes/stateTransitions + iotProfile for IoT protocols) and serializationProfile (schemaLanguage/compression/streamable) for Network, IoT, and Data format categories. Fully additive over v3.1 — all new fields are optional, existing consumers unaffected (ADR-040). PascalCase legacy keys remain accepted at load time via WhfmtVersionMigrator (ADR-038 D2 — zero deletions, ABI preserved). See Sources/Docs/whfmt-v3/ for the architecture and usage guide.",
   "type": "object",
   "required": ["formatName"],
   "$comment": "detection and blocks are required for binary formats but optional for source-code language definitions (preferredEditor: code-editor). PascalCase variants (QualityMetrics/MimeTypes/Software/UseCases/TechnicalDetails) are deprecated v2 aliases — accepted but normalized to camelCase at runtime.",
@@ -153,6 +153,16 @@
         "additionalProperties": false
       },
       "description": "Cross-format struct imports. Each entry makes a named block list available via structRef."
+    },
+
+    "protocolDefinition": {
+      "$ref": "#/$defs/ProtocolDefinition",
+      "description": "v3.2: Protocol metadata for Network and IoT formats — transport layer, port, OSI layer, message types, state machine, and optional IoT profile. Not applicable to file-container formats (Archives, Images, etc.)."
+    },
+
+    "serializationProfile": {
+      "$ref": "#/$defs/SerializationProfile",
+      "description": "v3.2: Serialization metadata for Data formats — schema language, self-describing flag, compression, streamability, and wire-compatible formats."
     }
   },
   "$defs": {
@@ -1055,6 +1065,145 @@
         "description": {
           "type": "string",
           "description": "Human-readable explanation of this change."
+        }
+      }
+    },
+
+    "ProtocolMessageType": {
+      "type": "object",
+      "required": ["id", "name"],
+      "description": "v3.2: A distinct message type within a protocol (e.g. CONNECT, PUBLISH for MQTT).",
+      "properties": {
+        "id":          { "type": "string", "description": "Internal identifier (e.g. 'connect', 'publish')" },
+        "name":        { "type": "string", "description": "Human-readable name (e.g. 'CONNECT')" },
+        "direction":   { "type": "string", "enum": ["client→server", "server→client", "bidirectional"], "description": "Message flow direction" },
+        "description": { "type": "string", "description": "What this message type does" },
+        "discriminant": {
+          "type": "object",
+          "description": "Field + mask + value that identifies this message type in the binary stream",
+          "properties": {
+            "field": { "type": "string", "description": "Variable name of the discriminant field (storeAs name)" },
+            "mask":  { "type": "string", "description": "Hex bitmask to apply before comparison (e.g. '0xF0')" },
+            "value": { "type": "string", "description": "Expected hex value after masking (e.g. '0x10')" }
+          }
+        }
+      }
+    },
+
+    "StateTransition": {
+      "type": "object",
+      "required": ["from", "event", "to"],
+      "description": "v3.2: A single state transition in the protocol state machine.",
+      "properties": {
+        "from":        { "type": "string", "description": "Source state name (e.g. 'INIT')" },
+        "event":       { "type": "string", "description": "Triggering message type id or event name" },
+        "to":          { "type": "string", "description": "Target state name (e.g. 'CONNECTED')" },
+        "description": { "type": "string", "description": "Human-readable description of this transition" }
+      }
+    },
+
+    "IotProfile": {
+      "type": "object",
+      "description": "v3.2: IoT-specific profile nested inside protocolDefinition. Only meaningful for IoT protocols.",
+      "properties": {
+        "qosLevels": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 7 },
+          "description": "Supported QoS levels (e.g. [0,1,2] for MQTT)"
+        },
+        "payloadEncoding": {
+          "type": "string",
+          "enum": ["json", "cbor", "tlv", "binary", "text", "xml", "protobuf"],
+          "description": "Primary payload encoding used by this protocol"
+        },
+        "topicModel": {
+          "type": "string",
+          "enum": ["pub-sub", "request-reply", "event", "observe", "broadcast"],
+          "description": "Communication pattern"
+        },
+        "retainSupport":        { "type": "boolean", "description": "Protocol supports message retention (e.g. MQTT retain flag)" },
+        "sleepyDeviceSupport":  { "type": "boolean", "description": "Protocol supports intermittently-connected (sleepy) devices" }
+      }
+    },
+
+    "ProtocolDefinition": {
+      "type": "object",
+      "description": "v3.2: Protocol-level metadata for Network and IoT format definitions.",
+      "properties": {
+        "transport": {
+          "type": "string",
+          "enum": ["udp", "tcp", "both", "websocket", "dtls", "raw", "serial", "bluetooth"],
+          "description": "Transport layer used by this protocol"
+        },
+        "defaultPort": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "Well-known IANA port number"
+        },
+        "alternativePorts": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 65535 },
+          "description": "Alternative ports (e.g. TLS variants)"
+        },
+        "layerModel": {
+          "type": "string",
+          "enum": ["application", "presentation", "session", "transport", "network", "datalink", "physical"],
+          "description": "OSI layer this format operates at"
+        },
+        "layerStack": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered protocol stack from lowest to highest (e.g. ['Ethernet','IP','UDP','DNS'])"
+        },
+        "messageTypes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ProtocolMessageType" },
+          "description": "Distinct message types carried by this protocol"
+        },
+        "stateTransitions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StateTransition" },
+          "description": "Protocol state machine transitions (handshake, session lifecycle)"
+        },
+        "relatedProtocols": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "formatId values of related protocols (e.g. ['DNS_ZONE','DNSSEC'])"
+        },
+        "iotProfile": {
+          "$ref": "#/$defs/IotProfile",
+          "description": "IoT-specific sub-profile. Only set for IoT category protocols."
+        }
+      }
+    },
+
+    "SerializationProfile": {
+      "type": "object",
+      "description": "v3.2: Serialization metadata for Data format definitions.",
+      "properties": {
+        "schemaLanguage": {
+          "type": "string",
+          "enum": ["protobuf", "avro", "thrift", "json-schema", "capnproto", "flatbuffers", "asn1", "none"],
+          "description": "External schema language used to define payload structure"
+        },
+        "selfDescribing": {
+          "type": "boolean",
+          "description": "True if the serialized payload includes its own schema (e.g. Avro with embedded schema)"
+        },
+        "payloadCompression": {
+          "type": "string",
+          "enum": ["none", "gzip", "snappy", "lz4", "zstd", "brotli"],
+          "description": "Compression applied to the payload (if any)"
+        },
+        "wireCompatibleFormats": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "formatId values of formats with compatible wire encoding"
+        },
+        "streamable": {
+          "type": "boolean",
+          "description": "True if records can be streamed without reading the entire file (e.g. NDJSON, Avro)"
         }
       }
     }

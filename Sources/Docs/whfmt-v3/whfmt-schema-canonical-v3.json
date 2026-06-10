@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "whfmt-v3-canonical",
-  "title": "whfmt v3 — Canonical Format Definition Schema",
-  "description": "Schema for WpfHexEditor .whfmt format definition files v3. All fields use camelCase. PascalCase aliases are accepted for backward compatibility but deprecated.",
+  "$id": "whfmt-v3.2-canonical",
+  "title": "whfmt v3.2 — Canonical Format Definition Schema",
+  "description": "Schema for WpfHexEditor .whfmt format definition files v3.2. Adds protocolDefinition (Network/IoT) and serializationProfile (Data) as optional top-level objects. Fully additive over v3.1 — ADR-040. All fields use camelCase. PascalCase aliases accepted for backward compat.",
   "type": "object",
 
   "required": ["formatName", "formatId", "version", "extensions", "description", "category", "author"],
@@ -16,7 +16,7 @@
     "description": { "type": "string" },
     "category": {
       "type": "string",
-      "description": "Canonical category. v3.1 (2026-05): aligned to the on-disk category directories of FormatDefinitions/*.",
+      "description": "Canonical category. v3.2 (2026-06): unchanged from v3.1. Aligned to on-disk category directories of FormatDefinitions/*.",
       "enum": ["3D", "Archives", "Audio", "CAD", "Certificates", "Crypto", "Data", "Database",
                "Disk", "Documents", "Executables", "Firmware", "Fonts", "Game", "GIS",
                "Images", "IoT", "MachineLearning", "Medical", "Network", "Programming",
@@ -527,6 +527,76 @@
       }
     }
   },
+
+    "protocolDefinition": {
+      "type": "object",
+      "description": "v3.2: Protocol metadata — Network and IoT categories only. Optional.",
+      "properties": {
+        "transport":         { "type": "string", "enum": ["udp","tcp","both","websocket","dtls","raw","serial","bluetooth"] },
+        "defaultPort":       { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "alternativePorts":  { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 65535 } },
+        "layerModel":        { "type": "string", "enum": ["application","presentation","session","transport","network","datalink","physical"] },
+        "layerStack":        { "type": "array", "items": { "type": "string" } },
+        "messageTypes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id","name"],
+            "properties": {
+              "id":          { "type": "string" },
+              "name":        { "type": "string" },
+              "direction":   { "type": "string", "enum": ["client→server","server→client","bidirectional"] },
+              "description": { "type": "string" },
+              "discriminant": {
+                "type": "object",
+                "properties": {
+                  "field": { "type": "string" },
+                  "mask":  { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "stateTransitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from","event","to"],
+            "properties": {
+              "from":        { "type": "string" },
+              "event":       { "type": "string" },
+              "to":          { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "relatedProtocols": { "type": "array", "items": { "type": "string" } },
+        "iotProfile": {
+          "type": "object",
+          "description": "IoT sub-profile — only for IoT category protocols.",
+          "properties": {
+            "qosLevels":           { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 7 } },
+            "payloadEncoding":     { "type": "string", "enum": ["json","cbor","tlv","binary","text","xml","protobuf"] },
+            "topicModel":          { "type": "string", "enum": ["pub-sub","request-reply","event","observe","broadcast"] },
+            "retainSupport":       { "type": "boolean" },
+            "sleepyDeviceSupport": { "type": "boolean" }
+          }
+        }
+      }
+    },
+
+    "serializationProfile": {
+      "type": "object",
+      "description": "v3.2: Serialization metadata — Data category only. Optional.",
+      "properties": {
+        "schemaLanguage":        { "type": "string", "enum": ["protobuf","avro","thrift","json-schema","capnproto","flatbuffers","asn1","none"] },
+        "selfDescribing":        { "type": "boolean" },
+        "payloadCompression":    { "type": "string", "enum": ["none","gzip","snappy","lz4","zstd","brotli"] },
+        "wireCompatibleFormats": { "type": "array", "items": { "type": "string" } },
+        "streamable":            { "type": "boolean" }
+      }
+    },
 
   "deprecated_pascal_aliases": {
     "note": "These are PascalCase field names accepted during v2→v3 migration via WhfmtVersionMigrator. They will be removed in v4.",
