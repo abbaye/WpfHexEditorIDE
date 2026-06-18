@@ -4,7 +4,7 @@
 
 1. [Architecture](#architecture)
 2. [API Reference](#api-reference)
-3. [Integration Guide — Level 1: Basic Setup](#level-1-basic-setup)
+3. [Integration Guide — Level 1: Basic Setup](#level-1-basic-setup) — file, stream, **byte array**
 4. [Integration Guide — Level 2: Editing & Undo](#level-2-editing--undo)
 5. [Integration Guide — Level 3: Format Detection & Overlay](#level-3-format-detection--overlay)
 6. [Integration Guide — Level 4: Search & Export](#level-4-search--export)
@@ -91,6 +91,18 @@ string FileName { get; set; }
 
 // Open by stream
 Stream Stream { get; set; }
+
+// Open by byte array — no file required
+byte[] ByteArray { get; set; }                     // XAML bindable
+Task   OpenByteArrayAsync(byte[] data, bool readOnly = false);
+bool   IsByteArrayMode { get; }
+
+// Retrieve current buffer (includes unsaved edits)
+byte[] GetCurrentBytes();
+
+// Save in byte-array mode — fires ByteArraySaved instead of SaveFileDialog
+void   SaveByteArray();
+event  EventHandler<byte[]> ByteArraySaved;
 
 // Close and release resources
 void CloseFile();
@@ -216,6 +228,28 @@ HexEdit.FileName = @"C:\path\to\file.bin";
 
 ```csharp
 HexEdit.Stream = File.OpenRead("data.bin");
+```
+
+### 5b — Open a byte array (no file required)
+
+```xml
+<!-- XAML binding — reloads automatically when the source property changes -->
+<hexe:HexEditor ByteArray="{Binding MyBuffer}" />
+```
+
+```csharp
+// Code-behind
+HexEdit.ByteArray = Convert.FromHexString("DEADBEEF00112233");
+
+// Retrieve the buffer after editing (includes all unsaved changes)
+byte[] result = HexEdit.GetCurrentBytes();
+
+// Save-without-file: subscribe to ByteArraySaved and call SaveByteArray()
+HexEdit.ByteArraySaved += (_, bytes) => _myService.ProcessBytes(bytes);
+HexEdit.SaveByteArray();     // or press Ctrl+S — no SaveFileDialog opens
+
+// Check current mode
+bool isMemoryOnly = HexEdit.IsByteArrayMode;   // true after OpenByteArrayAsync or ByteArray set
 ```
 
 ### 6 — Read back

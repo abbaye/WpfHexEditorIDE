@@ -13,14 +13,14 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WPFHexaEditor</PackageId>
-    <Version>3.4.0</Version>
-    <AssemblyVersion>3.4.0.0</AssemblyVersion>
-    <FileVersion>3.4.0</FileVersion>
+    <Version>3.4.5</Version>
+    <AssemblyVersion>3.4.5.0</AssemblyVersion>
+    <FileVersion>3.4.5</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditorControl</Product>
     <Title>WPFHexaEditor - WPF Hex Editor UserControl</Title>
-    <Description>A full-featured WPF hex editor UserControl for .NET 8. View and edit binary files with syntax coloring, format detection (856 .whfmt definitions via whfmt.FileFormatCatalog 1.5), column/row highlighting, undo/redo (HexByteUndoEntry / IUndoAwareEditor), advanced search, synchronized split-view (HexEditorSplitHost), entropy heatmap visualization, auto-generated settings panel, themed dialogs, and 28 UI locales. Drop-in replacement for WPFHexaEditor 2.x — completely rewritten for performance and modularity.</Description>
+    <Description>A full-featured WPF hex editor UserControl for .NET 8. View and edit binary files with syntax coloring, format detection (856 .whfmt definitions via whfmt.FileFormatCatalog 1.5), column/row highlighting, undo/redo (HexByteUndoEntry / IUndoAwareEditor), advanced search, synchronized split-view (HexEditorSplitHost), entropy heatmap visualization, auto-generated settings panel, themed dialogs, and 28 UI locales. v3.5: first-class byte[] binding (ByteArray DP, OpenByteArrayAsync, ByteArraySaved event, GetCurrentBytes()) — no file required. Drop-in replacement for WPFHexaEditor 2.x — completely rewritten for performance and modularity.</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>hexeditor;hex;binary;wpf;usercontrol;editor;byte;viewer;format-detection;undo-redo</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
@@ -30,7 +30,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>3.4.0 — Entropy heatmap: per-byte Shannon entropy rendered as a color overlay directly on the hex grid (options page + context menu toggle); updated to whfmt.FileFormatCatalog 1.5.0 (856 definitions, schema v3.1 + embeddedLanguages[]); undo/redo fully wired in standalone mode (Ctrl+Z/Y); IsDirty propagation fixed after undo to empty state. 3.3.2 — Fix XamlParseException on startup: HexEditorLocalizedDictionary wired into UserControl.Resources. 3.3.1 — Split-view polish + whfmt.FileFormatCatalog 1.3.2 (799 definitions). 3.3.0 — HexEditorSplitHost; HexEditorSettings; IParsedFieldsPanel API; themed dialogs; +10 localizations (28 total).</PackageReleaseNotes>
+    <PackageReleaseNotes>3.4.5 — First-class byte[] support (issue #253): ByteArray DependencyProperty for direct XAML binding; OpenByteArrayAsync() for async load without UI freeze; ByteArraySaved event for non-file save workflow; GetCurrentBytes() snapshot; IsByteArrayMode flag; SaveByteArray() public API; IsDirty correctly tracks in-memory changes. 3.4.0 — Entropy heatmap: per-byte Shannon entropy rendered as a color overlay directly on the hex grid (options page + context menu toggle); updated to whfmt.FileFormatCatalog 1.5.0 (856 definitions, schema v3.1 + embeddedLanguages[]); undo/redo fully wired in standalone mode (Ctrl+Z/Y); IsDirty propagation fixed after undo to empty state. 3.3.2 — Fix XamlParseException on startup: HexEditorLocalizedDictionary wired into UserControl.Resources. 3.3.1 — Split-view polish + whfmt.FileFormatCatalog 1.3.2 (799 definitions). 3.3.0 — HexEditorSplitHost; HexEditorSettings; IParsedFieldsPanel API; themed dialogs; +10 localizations (28 total).</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

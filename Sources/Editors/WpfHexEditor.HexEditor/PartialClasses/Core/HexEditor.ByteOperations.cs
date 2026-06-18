@@ -231,6 +231,42 @@ namespace WpfHexEditor.HexEditor
             return result;
         }
 
+        // ── ByteArray surface (Issue #253) ──────────────────────────────────
+
+        /// <summary>
+        /// Fired by <see cref="SaveByteArray()"/> (or Ctrl+S when in byte-array mode)
+        /// with the full, post-edit buffer. Subscribe to retrieve modified data without a file.
+        /// </summary>
+        public event EventHandler<byte[]> ByteArraySaved;
+
+        /// <summary>
+        /// <see langword="true"/> when the editor is backed by an in-memory <see cref="byte[]"/>
+        /// loaded via <see cref="ByteArray"/> or <see cref="OpenByteArrayAsync"/>.
+        /// </summary>
+        public bool IsByteArrayMode => _isByteArrayMode;
+
+        /// <summary>
+        /// Returns a snapshot of the current buffer (including any unsaved edits).
+        /// Equivalent to <see cref="GetAllBytes"/> with <c>copyChange = true</c>.
+        /// </summary>
+        public byte[] GetCurrentBytes() => GetAllBytes(copyChange: true);
+
+        /// <summary>
+        /// Fires <see cref="ByteArraySaved"/> with the current buffer and clears the dirty flag.
+        /// Call this instead of <c>Save()</c> when working in byte-array mode.
+        /// </summary>
+        public void SaveByteArray()
+        {
+            if (!_isByteArrayMode) return;
+            var bytes = GetAllBytes(copyChange: true);
+            IsModified = false;
+            RaiseDocumentEditorTitleChanged();
+            RaiseHexStatusChanged();
+            ByteArraySaved?.Invoke(this, bytes);
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+
         /// <summary>
         /// Replace byte with another in current selection
         /// </summary>

@@ -123,6 +123,19 @@ namespace WpfHexEditor.HexEditor
         public Stream Stream => _viewModel?.Provider?.Stream;
 
         /// <summary>
+        /// Bind or set a <see cref="byte[]"/> directly — no file required.
+        /// The array is loaded asynchronously on the UI thread without freezing it.
+        /// After editing, call <see cref="GetCurrentBytes()"/> to retrieve the modified buffer,
+        /// or use <see cref="SaveByteArray()"/> to fire the <see cref="ByteArraySaved"/> event.
+        /// </summary>
+        [Category("Data")]
+        public byte[] ByteArray
+        {
+            get => (byte[])GetValue(ByteArrayProperty);
+            set => SetValue(ByteArrayProperty, value);
+        }
+
+        /// <summary>
         /// Preload byte strategy - DependencyProperty
         /// </summary>
         [Category("Data")]

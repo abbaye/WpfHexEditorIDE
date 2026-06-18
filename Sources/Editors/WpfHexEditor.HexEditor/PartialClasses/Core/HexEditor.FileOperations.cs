@@ -528,6 +528,7 @@ namespace WpfHexEditor.HexEditor
             FileName = string.Empty;
             IsModified = false;
             IsFileOrStreamLoaded = false;  // FIX: Update read-only DP for settings panel
+            SetBacking(OpenMode.FileBacked);
 
             // 7. Clear byte distribution panel
             ClearByteDistributionPanel();

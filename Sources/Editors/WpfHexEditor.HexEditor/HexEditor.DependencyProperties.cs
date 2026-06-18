@@ -891,6 +891,22 @@ namespace WpfHexEditor.HexEditor
             }
         }
 
+        /// <summary>
+        /// ByteArray DependencyProperty — bind or set a <see cref="byte[]"/> directly without a file.
+        /// Setting this property loads the array asynchronously using the same progress pipeline as
+        /// <see cref="OpenFileAsync"/>. Retrieve the (possibly edited) buffer with
+        /// <see cref="GetCurrentBytes()"/> or subscribe to <see cref="ByteArraySaved"/>.
+        /// </summary>
+        public static readonly DependencyProperty ByteArrayProperty =
+            DependencyProperty.Register(nameof(ByteArray), typeof(byte[]), typeof(HexEditor),
+                new PropertyMetadata(null, OnByteArrayPropertyChanged));
+
+        private static void OnByteArrayPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is byte[] data)
+                _ = editor.OpenByteArrayAsync(data);
+        }
+
         #endregion
     }
 }

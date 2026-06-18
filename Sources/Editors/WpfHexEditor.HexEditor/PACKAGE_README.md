@@ -46,14 +46,36 @@ HexEdit.OpenFile(@"C:\path\to\file.bin");
 HexEdit.PrimaryEditor.FileName = @"C:\path\to\file.bin"; // equivalent
 ```
 
-### 4 — Open a stream
+### 4 — Open a byte array (no file needed)
+
+```xml
+<!-- XAML binding -->
+<hex:HexEditor ByteArray="{Binding MyBytes}" />
+```
+
+```csharp
+// Code-behind
+HexEdit.ByteArray = new byte[] { 0x00, 0xFF, 0xDE, 0xAD };
+
+// Async load (same result, returns Task.CompletedTask)
+await HexEdit.OpenByteArrayAsync(myBuffer, readOnly: false);
+
+// Retrieve the (possibly edited) buffer
+byte[] modified = HexEdit.GetCurrentBytes();
+
+// Save without a file — fires the ByteArraySaved event
+HexEdit.ByteArraySaved += (_, bytes) => ProcessBytes(bytes);
+HexEdit.SaveByteArray();  // or Ctrl+S in byte-array mode
+```
+
+### 5 — Open a stream
 
 ```csharp
 HexEdit.Stream = File.OpenRead("data.bin");         // HexEditor
 HexEdit.OpenStream(File.OpenRead("data.bin"));       // HexEditorSplitHost
 ```
 
-### 5 — Read or modify bytes
+### 6 — Read or modify bytes
 
 ```csharp
 // Read
@@ -71,7 +93,7 @@ HexEdit.SubmitChanges();          // save to original file
 HexEdit.SubmitChanges("out.bin"); // save to new file
 ```
 
-### 6 — Resource dictionary (required)
+### 7 — Resource dictionary (required)
 
 Merge once in `App.xaml` so themes and brushes resolve correctly:
 
@@ -124,6 +146,14 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - Binary template compiler (010 Editor compatible)
 - ParsedFields export templates
 
+### In-Memory / Byte Array Mode
+- `ByteArray` DependencyProperty — bind a `byte[]` directly in XAML, no file required
+- `OpenByteArrayAsync(byte[], readOnly)` — programmatic load
+- `GetCurrentBytes()` — snapshot of the current buffer including edits
+- `SaveByteArray()` / `ByteArraySaved` event — save-without-file workflow
+- `IsByteArrayMode` — flag to detect current backing mode
+- `IsDirty` correctly tracks in-memory changes
+
 ### UI Controls
 - `HexEditorSplitHost` — synchronized split-view host with built-in toolbar toggle
 - `HexEditorSettings` — auto-generated settings panel with live binding and JSON persistence
@@ -140,6 +170,19 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - Full `DependencyProperty` API for programmatic control
 - JSON settings persistence (export / import)
 - `ByteToolTipDisplayMode`, `ByteToolTipDetailLevel`, `MouseWheelSpeed`, `FontSize`, `BytePerLine`, and 30+ more
+
+---
+
+## What's New in 3.4.5
+
+- **New**: First-class `byte[]` support — bind or set `ByteArray` directly in XAML without a file (issue #253).
+- **New**: `OpenByteArrayAsync(byte[], readOnly)` — loads an in-memory buffer programmatically.
+- **New**: `GetCurrentBytes()` — retrieves the current buffer (including unsaved edits) as `byte[]`.
+- **New**: `ByteArraySaved` event — fires on `SaveByteArray()` or Ctrl+S in byte-array mode; subscriber receives the full modified buffer.
+- **New**: `IsByteArrayMode` property — `true` when the editor is backed by a `byte[]` rather than a file.
+- **Fix**: `IsDirty` no longer returns `true` for a freshly loaded byte-array document with no edits.
+- **Fix**: Save pipeline (`SaveOrSaveAs`) routes correctly through `ByteArraySaved` when in byte-array mode instead of opening a `SaveFileDialog`.
+- **No breaking API changes** — drop-in upgrade from 3.4.0.
 
 ---
 

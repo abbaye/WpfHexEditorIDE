@@ -44,14 +44,33 @@ namespace WpfHexEditor.HexEditor
         }
 
         // ═══════════════════════════════════════════════════════════════════
-        // IDocumentEditor — New-file state (Phase 12)
+        // IDocumentEditor — Backing-store state
         // ═══════════════════════════════════════════════════════════════════
 
-        /// <summary>
-        /// True after <see cref="OpenNew"/> is called; cleared once saved to disk.
-        /// The editor is backed by a memory buffer (no file path yet).
-        /// </summary>
-        internal bool   _isNewUnsavedFile;
+        /// <summary>Discriminates how the current document is backed.</summary>
+        internal enum OpenMode { FileBacked, NewUnsaved, ByteArrayBacked }
+
+        /// <summary>Current backing mode. Single source of truth — replaces the
+        /// former pair of <c>_isNewUnsavedFile</c> / <c>_isByteArrayMode</c> booleans.</summary>
+        internal OpenMode _backing = OpenMode.FileBacked;
+
+        /// <summary>Atomically transitions <see cref="_backing"/> and keeps derived fields in sync.</summary>
+        internal void SetBacking(OpenMode mode)
+        {
+            _backing = mode;
+            // _isByteArrayMode is the public-surface projection of _backing — keep it aligned.
+            _isByteArrayMode    = mode == OpenMode.ByteArrayBacked;
+            _isNewUnsavedFile   = mode == OpenMode.NewUnsaved;
+        }
+
+        // Compatibility shims — kept so the rest of the partial-class files still compile
+        // without a cascade rewrite.  Assignments route through SetBacking(); reads are free.
+        internal bool _isNewUnsavedFile
+        {
+            get => _backing == OpenMode.NewUnsaved;
+            set { if (value) SetBacking(OpenMode.NewUnsaved); else if (_backing == OpenMode.NewUnsaved) SetBacking(OpenMode.FileBacked); }
+        }
+
         internal string _newFileDisplayName = "";
 
         /// <summary>
@@ -68,7 +87,7 @@ namespace WpfHexEditor.HexEditor
         bool IDocumentEditor.IsDirty
             => _sharedUndoEngine is not null
                 ? !_sharedUndoEngine.IsAtSavePoint
-                : (IsModified || _isNewUnsavedFile);
+                : (IsModified || _backing == OpenMode.NewUnsaved);
 
         /// <inheritdoc />
         bool IDocumentEditor.IsReadOnly
@@ -82,10 +101,10 @@ namespace WpfHexEditor.HexEditor
         {
             get
             {
-                var name = _isNewUnsavedFile && _newFileDisplayName.Length > 0
+                var name = _backing == OpenMode.NewUnsaved && _newFileDisplayName.Length > 0
                     ? _newFileDisplayName
                     : (string.IsNullOrEmpty(FileName) ? "Untitled" : Path.GetFileName(FileName));
-                return (IsModified || _isNewUnsavedFile) ? $"{name} *" : name;
+                return (IsModified || _backing == OpenMode.NewUnsaved) ? $"{name} *" : name;
             }
         }
 
@@ -114,7 +133,7 @@ namespace WpfHexEditor.HexEditor
         ICommand IDocumentEditor.SaveCommand =>
             _docEditorSaveCommand ?? (_docEditorSaveCommand = new HexEditorRelayCommand(
                 _ => SaveOrSaveAs(),
-                _ => (IsModified || _isNewUnsavedFile) && _viewModel != null && !IsOperationActive));
+                _ => (IsModified || _backing == OpenMode.NewUnsaved || _backing == OpenMode.ByteArrayBacked) && _viewModel != null && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.CopyCommand =>
@@ -164,16 +183,14 @@ namespace WpfHexEditor.HexEditor
             }, ct);
         }
 
-        /// <summary>
-        /// Routes to <see cref="SaveAsNewFile"/> for new in-memory documents,
-        /// or to <see cref="Save"/> for normal file-backed documents.
-        /// </summary>
         private void SaveOrSaveAs()
         {
-            if (_isNewUnsavedFile)
-                SaveAsNewFile();
-            else
-                Save();
+            switch (_backing)
+            {
+                case OpenMode.ByteArrayBacked: SaveByteArray();  break;
+                case OpenMode.NewUnsaved:      SaveAsNewFile();  break;
+                default:                       Save();           break;
+            }
         }
 
         /// <summary>
@@ -199,7 +216,7 @@ namespace WpfHexEditor.HexEditor
 
             _viewModel.SaveAs(dlg.FileName, overwrite: true);
             FileName            = dlg.FileName;
-            _isNewUnsavedFile   = false;
+            SetBacking(OpenMode.FileBacked);
             _newFileDisplayName = "";
             IsModified          = false;
             RaiseDocumentEditorTitleChanged();
@@ -229,7 +246,7 @@ namespace WpfHexEditor.HexEditor
                     VerticalScroll.ViewportSize = _viewModel.VisibleLines;
                     UpdateVisibleLines();
 
-                    _isNewUnsavedFile = false;
+                    SetBacking(OpenMode.FileBacked);
 
                     RaiseDocumentEditorTitleChanged();
                     _docEditorStatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");

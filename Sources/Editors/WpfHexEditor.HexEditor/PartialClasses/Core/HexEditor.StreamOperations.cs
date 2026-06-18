@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.HexEditor
@@ -27,6 +28,44 @@ namespace WpfHexEditor.HexEditor
     /// </summary>
     public partial class HexEditor
     {
+        #region Internal State
+
+        /// <summary>
+        /// True when the editor is backed by a <see cref="byte[]"/> set via
+        /// <see cref="ByteArray"/> or <see cref="OpenByteArrayAsync"/>.
+        /// Controls the save pipeline (fires <see cref="ByteArraySaved"/> instead of a SaveFileDialog).
+        /// </summary>
+        internal bool _isByteArrayMode;
+
+        #endregion
+
+        #region Public Methods - ByteArray Async (Issue #253)
+
+        /// <summary>
+        /// Load a <see cref="byte[]"/> directly — no file required.
+        /// Runs synchronously on the UI thread (same as <see cref="OpenMemory"/>).
+        /// For very large arrays (&gt;= 64 MB) use <see cref="OpenMemory"/> within
+        /// <see cref="OpenFileAsync"/> instead to get progress feedback.
+        /// </summary>
+        /// <param name="data">The byte array to display and edit.</param>
+        /// <param name="readOnly">When <see langword="true"/>, editing is disabled.</param>
+        public Task OpenByteArrayAsync(byte[] data, bool readOnly = false)
+        {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            OpenMemory(data, readOnly);
+            SetBacking(OpenMode.ByteArrayBacked);
+            StatusText.Text = readOnly
+                ? $"Byte array loaded: {data.Length / 1024.0:F1} KB (read-only)"
+                : $"Byte array loaded: {data.Length / 1024.0:F1} KB";
+            RaiseHexStatusChanged();
+            RaiseDocumentEditorTitleChanged();
+            return Task.CompletedTask;
+        }
+
+        #endregion
+
         #region Public Methods - Stream Operations (V1 Compatibility)
 
         /// <summary>
@@ -254,8 +293,7 @@ namespace WpfHexEditor.HexEditor
             OpenMemory([0x00], readOnly: false);
             EditMode = WpfHexEditor.Core.Models.EditMode.Insert;
 
-            // Mark as new unsaved file — flags declared in HexEditor.DocumentEditor.cs
-            _isNewUnsavedFile   = true;
+            SetBacking(OpenMode.NewUnsaved);
             _newFileDisplayName = displayName;
 
             // Override the status-bar text set by OpenMemory
