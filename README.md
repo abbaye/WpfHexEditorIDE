@@ -14,6 +14,8 @@
 
   <br/>
 
+  > THIS PROJECT IS MADE WITH CLAUDE CODE FOR LEARNING LLM. IT'S NOT PERFECT BUT IT'S FOR FUN
+  > 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
   > 📅 *Last revised: 2026-05-18*
